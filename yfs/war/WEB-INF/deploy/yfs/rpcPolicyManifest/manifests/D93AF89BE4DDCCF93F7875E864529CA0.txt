@@ -1,0 +1,2 @@
+serviceClass: com.varun.yfs.client.common.StoreLoader
+path: 0F7A7F117B867F480D58F9820FA62EE6.gwt.rpc

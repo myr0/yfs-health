@@ -1,0 +1,2 @@
+serviceClass: com.varun.yfs.client.screening.rpc.ScreeningDetailService
+path: 596C0092F5F59C0DAA98EEDBD41FF9A0.gwt.rpc
