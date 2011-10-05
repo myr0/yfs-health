@@ -10,9 +10,10 @@ import org.hibernate.Transaction;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.varun.yfs.dto.Util;
+import com.varun.yfs.client.util.Util;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.common.data.DataUtil;
+import com.varun.yfs.server.models.ChapterName;
 import com.varun.yfs.server.models.City;
 import com.varun.yfs.server.models.Country;
 import com.varun.yfs.server.models.Locality;
@@ -20,7 +21,7 @@ import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Town;
 import com.varun.yfs.server.models.Village;
 
-public enum ModelDataEnum 
+public enum ModelDataEnum
 {
 	City
 	{
@@ -59,17 +60,15 @@ public enum ModelDataEnum
 					City hibObject = dozerMapper.map(modelData, City.class);
 					String stateName = modelData.get("stateName").toString();
 
+					hibObject.setState(findParent(lstStates, new State(stateName)));
+
 					if (hibObject.getId() <= 0)
 					{
-						updateParent(lstStates, hibObject, stateName);
-
 						hibObject.setName(modelData.get("cityName").toString());
 						session.save(hibObject);
 
 					} else
 					{
-						updateParent(lstStates, hibObject, stateName);
-
 						session.saveOrUpdate(hibObject);
 					}
 				}
@@ -89,7 +88,7 @@ public enum ModelDataEnum
 
 		@Override
 		public List<ModelData> getListStoreContents()
-		{			
+		{
 			return DataUtil.getModelList("City");
 		}
 
@@ -187,16 +186,16 @@ public enum ModelDataEnum
 				for (ModelData modelData : lstModels)
 				{
 					Locality hibObject = dozerMapper.map(modelData, Locality.class);
+
 					String cityName = modelData.get("cityName").toString();
+					hibObject.setCity(findParent(lstCities, new City(cityName)));
+
 					if (hibObject.getId() <= 0) // new state - find the parent
 					{
-						updateParent(lstCities, hibObject, cityName);
-
 						hibObject.setName(modelData.get("localityName").toString());
 						session.save(hibObject);
 					} else
 					{
-						updateParent(lstCities, hibObject, cityName);
 						session.saveOrUpdate(hibObject);
 					}
 				}
@@ -253,16 +252,13 @@ public enum ModelDataEnum
 					State hibObject = dozerMapper.map(modelData, State.class);
 					String countryName = modelData.get("countryName").toString();
 
+					hibObject.setCountry(findParent(lstCountry, new Country(countryName)));
 					if (hibObject.getId() <= 0)
 					{
-						updateParent(lstCountry, hibObject, countryName);
-
 						hibObject.setName(modelData.get("stateName").toString());
 						session.save(hibObject);
 					} else
 					{
-						updateParent(lstCountry, hibObject, countryName);
-
 						session.saveOrUpdate(hibObject);
 					}
 				}
@@ -317,17 +313,16 @@ public enum ModelDataEnum
 				for (ModelData modelData : lstModels)
 				{
 					Town hibObject = dozerMapper.map(modelData, Town.class);
+
 					String stateName = modelData.get("stateName").toString();
+					hibObject.setState(findParent(lstStates, new State(stateName)));
 
 					if (hibObject.getId() <= 0) // new state - find the parent
 					{
-						updateParent(lstStates, hibObject, stateName);
-
 						hibObject.setName(modelData.get("townName").toString());
 						session.save(hibObject);
 					} else
 					{
-						updateParent(lstStates, hibObject, stateName);
 						session.saveOrUpdate(hibObject);
 					}
 				}
@@ -383,17 +378,16 @@ public enum ModelDataEnum
 				for (ModelData modelData : lstModels)
 				{
 					Village hibObject = dozerMapper.map(modelData, Village.class);
+
 					String stateName = modelData.get("stateName").toString();
+					hibObject.setState(findParent(lstStates, new State(stateName)));
 
 					if (hibObject.getId() <= 0) // new state - find the parent
 					{
-						updateParent(lstStates, hibObject, stateName);
-
 						hibObject.setName(modelData.get("villageName").toString());
 						session.save(hibObject);
 					} else
 					{
-						updateParent(lstStates, hibObject, stateName);
 						session.saveOrUpdate(hibObject);
 					}
 				}
@@ -413,6 +407,93 @@ public enum ModelDataEnum
 		{
 			return DataUtil.getModelList("Village");
 		}
+	},
+	ChapterName
+	{
+
+		@Override
+		public List<ModelData> getListStoreContents()
+		{
+			return DataUtil.getModelList("ChapterName");
+		}
+
+		@Override
+		public ModelData getStoreContents()
+		{
+			ModelData modelData = new BaseModelData();
+
+			List<ModelData> list = DataUtil.<ModelData> getModelList("ChapterName");
+			modelData.set("data", list);
+			modelData.set("parentStoreCountry", DataUtil.<ModelData> getModelList("Country"));
+			modelData.set("parentStoreState", DataUtil.<ModelData> getModelList("State"));
+			modelData.set("parentStoreVillage", DataUtil.<ModelData> getModelList("Village"));
+			modelData.set("parentStoreTown", DataUtil.<ModelData> getModelList("Town"));
+			modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
+			modelData.set("parentStoreLocality", DataUtil.<ModelData> getModelList("Locality"));
+
+			modelData.set("configIds", Arrays.asList("name", "countryName", "stateName", "villageName", "townName", "cityName", "localityName"));
+			modelData.set("configCols", Arrays.asList("Chapter Name", "Country", "State", "Village", "Town", "City", "Locality"));
+			modelData.set("configType", Arrays.asList("Text", "combo", "combo", "combo", "combo", "combo", "combo"));
+			return modelData;
+		}
+
+		@Override
+		public String saveModel(ModelData model)
+		{
+			String status = "Failed";
+			try
+			{
+				List<Country> lstCountry = DataUtil.<Country> getRawList("Country");
+				List<State> lstState = DataUtil.<State> getRawList("State");
+				List<City> lstCity = DataUtil.<City> getRawList("City");
+				List<Town> lstTown = DataUtil.<Town> getRawList("Town");
+				List<Village> lstVillage = DataUtil.<Village> getRawList("Village");
+				List<Locality> lstLocality = DataUtil.<Locality> getRawList("Locality");
+
+				List<ModelData> lstModels = model.get("data");
+
+				Session session = HibernateUtil.getSessionFactory().openSession();
+				Mapper dozerMapper = HibernateUtil.getDozerMapper();
+
+				Transaction transact = session.beginTransaction();
+
+				for (ModelData modelData : lstModels)
+				{
+					ChapterName hibObject = dozerMapper.map(modelData, ChapterName.class);
+					String countryName = Util.safeToString(modelData.get("countryName"));
+					String stateName = Util.safeToString(modelData.get("stateName"));
+					String cityName = Util.safeToString(modelData.get("cityName"));
+					String townName = Util.safeToString(modelData.get("townName"));
+					String villageName = Util.safeToString(modelData.get("villageName"));
+					String localityName = Util.safeToString(modelData.get("localityName"));
+
+					hibObject.setCountry(findParent(lstCountry, new Country(countryName)));
+					hibObject.setState(findParent(lstState, new State(stateName)));
+					hibObject.setCity(findParent(lstCity, new City(cityName)));
+					hibObject.setTown(findParent(lstTown, new Town(townName)));
+					hibObject.setVillage(findParent(lstVillage, new Village(villageName)));
+					hibObject.setLocality(findParent(lstLocality, new Locality(localityName)));
+
+					if (hibObject.getId() <= 0) // new chaptername object - find
+					{
+						hibObject.setName(modelData.get("chapterName").toString());
+						session.save(hibObject);
+					} else
+					{
+						session.saveOrUpdate(hibObject);
+					}
+				}
+				transact.commit();
+				session.flush();
+				session.close();
+				status = "Success";
+			} catch (HibernateException ex)
+			{
+				ex.printStackTrace();
+			}
+			return status;
+		}
+
 	},
 	Users
 	{
@@ -440,7 +521,7 @@ public enum ModelDataEnum
 			try
 			{
 				List<ModelData> modelList = model.get("users");
-				DataUtil.<ModelData> saveListStore(Util.normalize("Users"), modelList);
+				DataUtil.<ModelData> saveListStore(Util.stripSpace("Users"), modelList);
 				status = "Success";
 			} catch (HibernateException ex)
 			{
@@ -455,7 +536,7 @@ public enum ModelDataEnum
 			return DataUtil.getModelList("Users");
 		}
 	};
-	
+
 	public static boolean isEnumElement(String entityName)
 	{
 		for (ModelDataEnum entity : values())
@@ -466,38 +547,51 @@ public enum ModelDataEnum
 		return false;
 	}
 
-	private static void updateParent(List<City> lstCities, Locality hibObject, String cityName)
+	protected <E> E findParent(List<E> lstCountry, E country)
 	{
-		int cntIndex = lstCities.indexOf(new City(cityName));
-		hibObject.setCity(lstCities.get(cntIndex));
+		int cntIndex = lstCountry.indexOf(country);
+		if (cntIndex < 0)
+			return null;
+		return lstCountry.get(cntIndex);
 	}
 
-	private static void updateParent(List<Country> lstCountry, State hibObject, String countryName)
-	{
-		int cntIndex = lstCountry.indexOf(new Country(countryName));
-		hibObject.setCountry(lstCountry.get(cntIndex));
-	}
+	// private static void updateParent(List<City> lstCities, Locality
+	// hibObject, String cityName)
+	// {
+	// int cntIndex = lstCities.indexOf(new City(cityName));
+	// hibObject.setCity(lstCities.get(cntIndex));
+	// }
+	//
+	// private static void updateParent(List<Country> lstCountry, State
+	// hibObject, String countryName)
+	// {
+	// int cntIndex = lstCountry.indexOf(new Country(countryName));
+	// hibObject.setCountry(lstCountry.get(cntIndex));
+	// }
+	//
+	// private static void updateParent(List<State> lstStates, City hibObject,
+	// String stateName)
+	// {
+	// int cntIndex = lstStates.indexOf(new State(stateName));
+	// hibObject.setState(lstStates.get(cntIndex));
+	// }
+	//
+	// private static void updateParent(List<State> lstStates, Town hibObject,
+	// String stateName)
+	// {
+	// int cntIndex = lstStates.indexOf(new State(stateName));
+	// hibObject.setState(lstStates.get(cntIndex));
+	// }
 
-	private static void updateParent(List<State> lstStates, City hibObject, String stateName)
-	{
-		int cntIndex = lstStates.indexOf(new State(stateName));
-		hibObject.setState(lstStates.get(cntIndex));
-	}
-
-	private static void updateParent(List<State> lstStates, Town hibObject, String stateName)
-	{
-		int cntIndex = lstStates.indexOf(new State(stateName));
-		hibObject.setState(lstStates.get(cntIndex));
-	}
-
-	private static void updateParent(List<State> lstStates, Village hibObject, String stateName)
-	{
-		int cntIndex = lstStates.indexOf(new State(stateName));
-		hibObject.setState(lstStates.get(cntIndex));
-	}
+	// private static void updateParent(List<State> lstStates, Village
+	// hibObject, String stateName)
+	// {
+	// int cntIndex = lstStates.indexOf(new State(stateName));
+	// hibObject.setState(lstStates.get(cntIndex));
+	// }
 
 	abstract public List<ModelData> getListStoreContents();
-	
+
 	abstract public ModelData getStoreContents();
 
 	abstract public String saveModel(ModelData model);

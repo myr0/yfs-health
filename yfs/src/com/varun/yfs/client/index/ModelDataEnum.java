@@ -7,7 +7,8 @@ public enum ModelDataEnum
 	Locality,
 	State, 
 	Town,
-	Village;
+	Village,
+	ChapterName;
 
 	public static boolean isLocationAdmin(String entityName)
 	{

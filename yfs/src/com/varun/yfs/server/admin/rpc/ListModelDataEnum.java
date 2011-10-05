@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.dto.CityDTO;
 import com.varun.yfs.dto.CountryDTO;
+import com.varun.yfs.dto.ScreeningDetailDTO;
 import com.varun.yfs.dto.StateDTO;
 import com.varun.yfs.dto.TownDTO;
 import com.varun.yfs.dto.VillageDTO;
@@ -26,14 +27,6 @@ public enum ListModelDataEnum
 		}
 	},
 
-	ChapterName
-	{
-		@Override
-		public List<ModelData> getListStoreContents()
-		{
-			return DataUtil.getModelList("ChapterName");
-		}
-	},
 	ContactInformation
 	{
 		@Override
@@ -114,6 +107,8 @@ public enum ListModelDataEnum
 					List<ModelData> statesChild = new ArrayList<ModelData>();
 					stateNode.set("children", statesChild);
 					
+					List<ScreeningDetailDTO> lstScreeningDet;
+					
 					Set<VillageDTO> villages = stateDTO.getVillages();
 					for (VillageDTO villageDTO : villages)
 					{
@@ -121,6 +116,11 @@ public enum ListModelDataEnum
 						villageNode.set("name", villageDTO.getName());
 						villageNode.set("icon", "");
 						statesChild.add(villageNode);
+						
+						lstScreeningDet = new ArrayList<ScreeningDetailDTO>();
+						villageNode.set("children", lstScreeningDet);
+						List<ScreeningDetailDTO> screeningDetail = DataUtil.getScreeningDetail("Village", "id", String.valueOf(villageDTO.getId()));
+						lstScreeningDet.addAll(screeningDetail);
 					}
 					
 					Set<TownDTO> towns = stateDTO.getTowns();
@@ -130,6 +130,11 @@ public enum ListModelDataEnum
 						townNode.set("name", townDTO.getName());
 						townNode.set("icon", "");
 						statesChild.add(townNode);
+						
+						lstScreeningDet = new ArrayList<ScreeningDetailDTO>();
+						townNode.set("children", lstScreeningDet);
+						List<ScreeningDetailDTO> screeningDetail = DataUtil.getScreeningDetail("Town","id", String.valueOf(townDTO.getId()));
+						lstScreeningDet.addAll(screeningDetail);
 					}
 					
 					Set<CityDTO> cities = stateDTO.getCities();
@@ -139,6 +144,11 @@ public enum ListModelDataEnum
 						cityNode.set("name", cityDTO.getName());
 						cityNode.set("icon", "");
 						statesChild.add(cityNode);
+						
+						lstScreeningDet = new ArrayList<ScreeningDetailDTO>();
+						cityNode.set("children", lstScreeningDet);
+						List<ScreeningDetailDTO> screeningDetail = DataUtil.getScreeningDetail("City","id", String.valueOf(cityDTO.getId()));
+						lstScreeningDet.addAll(screeningDetail);
 					}
 				}
 			}

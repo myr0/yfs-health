@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailService;
 import com.varun.yfs.dto.ScreeningDetailDTO;
@@ -29,6 +30,7 @@ public class ScreeningDetailServiceServlet extends RemoteServiceServlet implemen
 		modelData.set("lstVillage", DataUtil.getModelList(ModelDataEnum.Village.name()));
 		modelData.set("lstLocality", DataUtil.getModelList(ModelDataEnum.Locality.name()));
 
+		modelData.set("lstChapterName", DataUtil.getModelList(ModelDataEnum.ChapterName.name()));
 		modelData.set("lstProcessType", DataUtil.getModelList(ListModelDataEnum.ProcessType.name()));
 		modelData.set("lstTypeOfLocation", DataUtil.getModelList(ListModelDataEnum.TypeOfLocation.name()));
 		modelData.set("lstVolunteers", DataUtil.getModelList(ListModelDataEnum.Volunteer.name()));
@@ -38,33 +40,16 @@ public class ScreeningDetailServiceServlet extends RemoteServiceServlet implemen
 	}
 
 	@Override
-	public String saveModel(String entityName, ScreeningDetailDTO modelData)
+	public RpcStatusEnum saveModel(String entityName, ScreeningDetailDTO modelData)
 	{
-		// ScreeningDetailDTO screeningDetailDTO = new ScreeningDetailDTO();
-		// screeningDetailDTO.setCountry((CountryDTO) modelData.get("country"));
-		// screeningDetailDTO.setState((StateDTO) modelData.get("state"));
-		// screeningDetailDTO.setCity((CityDTO) modelData.get("city"));
-		// screeningDetailDTO.setTown((TownDTO) modelData.get("town"));
-		// screeningDetailDTO.setVillage((VillageDTO) modelData.get("village"));
-		// screeningDetailDTO.setLocality((LocalityDTO)
-		// modelData.get("locality"));
-		//
-		// screeningDetailDTO.setProcessType((ProcessTypeDTO)
-		// modelData.get("processType"));
-		// screeningDetailDTO.setTypeOfLocation((TypeOfLocationDTO)
-		// modelData.get("typeOfLocation"));
-		// screeningDetail.setSetVolunteers((Set<VolunteerDTO>)
-		// modelData.get("volunteers"));
-		// screeningDetail.setSetDoctors((Set<DoctorDTO>)
-		// modelData.get("doctors"));
-		String status = "Sucess";
+		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
 			DataUtil.saveScreeningDetail(modelData);
 		} catch (HibernateException ex)
 		{
 			logger.error("Encountered error trying to save the model" + ex.getCause());
-			status = "Failed";
+			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
 	}

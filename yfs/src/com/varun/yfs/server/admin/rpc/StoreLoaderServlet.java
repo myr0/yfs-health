@@ -7,7 +7,8 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
-import com.varun.yfs.dto.Util;
+import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.util.Util;
 import com.varun.yfs.server.common.data.DataUtil;
 
 public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoader
@@ -20,24 +21,24 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 	{
 		List<ModelData> arrayList = new ArrayList<ModelData>();
 
-		if (ModelDataEnum.isEnumElement(normalize(className)))
-			arrayList = ModelDataEnum.valueOf(normalize(className)).getListStoreContents();
+		if (ModelDataEnum.isEnumElement(Util.stripSpace(className)))
+			arrayList = ModelDataEnum.valueOf(Util.stripSpace(className)).getListStoreContents();
 		else
-			arrayList = ListModelDataEnum.valueOf(normalize(className)).getListStoreContents();
+			arrayList = ListModelDataEnum.valueOf(Util.stripSpace(className)).getListStoreContents();
 
 		return arrayList;
 	}
 
 	@Override
-	public String saveListStore(String entityName, List<ModelData> lstModels)
+	public RpcStatusEnum saveListStore(String entityName, List<ModelData> lstModels)
 	{
-		String status = "Success";
+		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
-			DataUtil.<ModelData> saveListStore(normalize(entityName), lstModels);
+			DataUtil.<ModelData> saveListStore(Util.stripSpace(entityName), lstModels);
 		} catch (Exception ex)
 		{
-			status = "Failed";
+			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
 	}
@@ -48,34 +49,30 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 
 		ModelData modelStore = new BaseModelData();
 
-		modelStore = ModelDataEnum.valueOf(normalize(entityName)).getStoreContents();
+		modelStore = ModelDataEnum.valueOf(Util.stripSpace(entityName)).getStoreContents();
 
 		return modelStore;
 	}
 
 	@Override
-	public String saveModel(String entityName, ModelData model)
+	public RpcStatusEnum saveModel(String entityName, ModelData model)
 	{
-		String status = "Success";
+		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
-			ModelDataEnum.valueOf(normalize(entityName)).saveModel(model);
+			ModelDataEnum.valueOf(Util.stripSpace(entityName)).saveModel(model);
 		} catch (Exception ex)
 		{
 			ex.printStackTrace();
-			status = "Failed";
+			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
 	}
-	
+
 	@Override
-	public String saveModel(String entityName, List<ModelData> lstModels)
+	public RpcStatusEnum saveModel(String entityName, List<ModelData> lstModels)
 	{
 		return null;
 	}
 
-	private String normalize(String entityName)
-	{
-		return Util.normalize(entityName);
-	}
 }

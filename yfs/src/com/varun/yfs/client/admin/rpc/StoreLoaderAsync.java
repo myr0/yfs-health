@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.varun.yfs.client.common.RpcStatusEnum;
 
 public interface StoreLoaderAsync
 {
@@ -12,9 +13,9 @@ public interface StoreLoaderAsync
 
 	void getListStore(String className, AsyncCallback<List<ModelData>> callback);
 
-	void saveModel(String entityName, List<ModelData> lstModels, AsyncCallback<String> callback);
+	void saveModel(String entityName, List<ModelData> lstModels, AsyncCallback<RpcStatusEnum> callback);
 
-	void saveModel(String entityName, ModelData model, AsyncCallback<String> callback);
+	void saveModel(String entityName, ModelData model, AsyncCallback<RpcStatusEnum> callback);
 
-	void saveListStore(String className, List<ModelData> lstModels, AsyncCallback<String> callback);
+	void saveListStore(String className, List<ModelData> lstModels, AsyncCallback<RpcStatusEnum> callback);
 }

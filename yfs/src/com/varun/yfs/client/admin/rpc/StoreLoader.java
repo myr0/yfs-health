@@ -5,6 +5,7 @@ import java.util.List;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.varun.yfs.client.common.RpcStatusEnum;
 
 @RemoteServiceRelativePath("storeloader")
 public interface StoreLoader extends RemoteService
@@ -13,10 +14,10 @@ public interface StoreLoader extends RemoteService
 
 	List<ModelData> getListStore(String className);
 
-	String saveModel(String entityName, ModelData model);
+	RpcStatusEnum saveModel(String entityName, ModelData model);
 
-	String saveModel(String entityName, List<ModelData> lstModels);
+	RpcStatusEnum saveModel(String entityName, List<ModelData> lstModels);
 
-	String saveListStore(String className, List<ModelData> lstModels);
+	RpcStatusEnum saveListStore(String className, List<ModelData> lstModels);
 
 }

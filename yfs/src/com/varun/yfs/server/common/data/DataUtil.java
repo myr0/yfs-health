@@ -2,9 +2,12 @@ package com.varun.yfs.server.common.data;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +15,7 @@ import java.util.Map;
 import org.dozer.Mapper;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
@@ -180,5 +184,33 @@ public class DataUtil
 			session.flush();
 			session.close();
 		}
+	}
+
+	public static List<ScreeningDetailDTO> getScreeningDetail(String joinTableName, String propertyName, String value)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Query filter = session.createQuery("select sd from ScreeningDetail sd, " + joinTableName + " tb where sd." + joinTableName.toLowerCase() + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
+		List<ScreeningDetailDTO> lstScreening = new ArrayList<ScreeningDetailDTO>();
+		try
+		{
+			Mapper dozerMapper = HibernateUtil.getDozerMapper();
+			Calendar  cal = Calendar.getInstance();
+			for (Object entity : filter.list())
+			{
+				ScreeningDetailDTO dtoObject = (ScreeningDetailDTO) dozerMapper.map(entity, ScreeningDetailDTO.class);
+				cal.setTimeInMillis(Long.parseLong(dtoObject.getScreeningDate()));
+				dtoObject.set("name", DateFormat.getDateInstance(DateFormat.SHORT).format(cal.getTime()));
+				lstScreening.add(dtoObject);
+			}
+
+		} catch (HibernateException ex)
+		{
+			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			throw ex;
+		} finally
+		{
+			session.close();
+		}
+		return lstScreening;
 	}
 }

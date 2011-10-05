@@ -78,7 +78,6 @@ public class ScreeningDetail extends LayoutContainer
 
 	public ScreeningDetail()
 	{
-		setSize("700", "600");
 	}
 
 	@Override
@@ -192,7 +191,7 @@ public class ScreeningDetail extends LayoutContainer
 		doctors.setStore(new ListStore<ModelData>());
 		doctors.setDisplayProperty("name");
 		doctors.setStore(new ListStore<ModelData>());
-//		doctors.setSize("150", "70");
+		// doctors.setSize("150", "70");
 
 		final ContentPanel cPanelVolunteers = new ContentPanel();
 		cPanelVolunteers.setScrollMode(Scroll.AUTOY);
@@ -203,7 +202,7 @@ public class ScreeningDetail extends LayoutContainer
 		volunteers.setStore(new ListStore<ModelData>());
 		volunteers.setDisplayProperty("name");
 		volunteers.setStore(new ListStore<ModelData>());
-//		volunteers.setSize("150", "70");
+		// volunteers.setSize("150", "70");
 
 		cpMain.add(cpPart3, td_cpPart3);
 		cpPart3.setSize("33%", "280");
@@ -277,6 +276,7 @@ public class ScreeningDetail extends LayoutContainer
 				modelData.setVillage((VillageDTO) village.getSelection().get(0));
 				modelData.setLocality((LocalityDTO) locality.getSelection().get(0));
 
+				modelData.setProcessType((ProcessTypeDTO) chapterName.getSelection().get(0));
 				modelData.setProcessType((ProcessTypeDTO) processType.getSelection().get(0));
 				modelData.setTypeOfLocation((TypeOfLocationDTO) typeOfLocation.getSelection().get(0));
 				modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
@@ -424,6 +424,7 @@ public class ScreeningDetail extends LayoutContainer
 				village.getStore().add((List<ModelData>) modelData.get("lstVillage"));
 				locality.getStore().add((List<ModelData>) modelData.get("lstLocality"));
 
+				chapterName.getStore().add((List<ModelData>) modelData.get("lstChapterName"));
 				processType.getStore().add((List<ModelData>) modelData.get("lstProcessType"));
 				typeOfLocation.getStore().add((List<ModelData>) modelData.get("lstTypeOfLocation"));
 				volunteers.getStore().add((List<ModelData>) modelData.get("lstVolunteers"));

@@ -223,4 +223,11 @@ public class ScreeningDetailDTO extends BaseModelData
 		return setPatientDetails;
 	}
 
+	@Override
+	public String toString()
+	{
+		return screeningDate;
+	}
+
+	
 }

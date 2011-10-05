@@ -3,6 +3,7 @@ package com.varun.yfs.client.index;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -39,7 +40,8 @@ import com.varun.yfs.client.landing.LandingPage;
 import com.varun.yfs.client.reports.ReportPage;
 import com.varun.yfs.client.screening.ScreeningDetail;
 import com.varun.yfs.client.screening.imports.ImportDetail;
-import com.varun.yfs.dto.Util;
+import com.varun.yfs.client.util.Util;
+import com.varun.yfs.dto.ScreeningDetailDTO;
 
 public class IndexPage extends LayoutContainer
 {
@@ -189,7 +191,7 @@ public class IndexPage extends LayoutContainer
 					layoutContainerCenter.mask();
 					layoutContainerCenter.removeAll();
 
-					String adminEntityEdit = Util.normalize(selectedItem.get("name").toString());
+					String adminEntityEdit = Util.stripSpace(selectedItem.get("name").toString());
 					if (ModelDataEnum.isLocationAdmin(adminEntityEdit))
 					{
 						LocationAdministration widget = new LocationAdministration();
@@ -319,7 +321,7 @@ public class IndexPage extends LayoutContainer
 		
 		ToolBar toolbar = new ToolBar();
 		SplitButton splitItem = new SplitButton("");
-		splitItem.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/add.png"));
+		splitItem.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/Home.png"));
 	  
 	    Menu menu = new Menu();  
 	    splitItem.setMenu(menu);  
@@ -442,6 +444,13 @@ public class IndexPage extends LayoutContainer
 						{
 							List<ModelData> child = (List<ModelData>) modelData2.get("children");
 							tree.getStore().add(modelData2, child, true);
+							
+							for (ModelData modelData3 : child) // screening data
+							{
+//								List<ScreeningDetailDTO> childScr = (List<ScreeningDetailDTO>) modelData2.get("children");
+								List<ModelData> childScr = (List<ModelData>) modelData3.get("children");
+								tree.getStore().add(modelData3, childScr, true);
+							}
 						}
 					}
 				}
