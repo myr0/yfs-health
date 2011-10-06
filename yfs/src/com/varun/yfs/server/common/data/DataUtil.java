@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.ScreeningDetailDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.ScreeningDetail;
@@ -189,7 +190,7 @@ public class DataUtil
 	public static List<ScreeningDetailDTO> getScreeningDetail(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from ScreeningDetail sd, " + joinTableName + " tb where sd." + joinTableName.toLowerCase() + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
+		Query filter = session.createQuery("select sd from ScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName)+ "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
 		List<ScreeningDetailDTO> lstScreening = new ArrayList<ScreeningDetailDTO>();
 		try
 		{

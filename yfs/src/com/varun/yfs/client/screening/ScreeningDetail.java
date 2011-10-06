@@ -13,7 +13,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -36,9 +35,11 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.IndexPage;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailService;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailServiceAsync;
+import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.CityDTO;
 import com.varun.yfs.dto.CountryDTO;
 import com.varun.yfs.dto.LocalityDTO;
@@ -79,6 +80,13 @@ public class ScreeningDetail extends LayoutContainer
 	public ScreeningDetail()
 	{
 	}
+
+	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
+	{
+		public void handleEvent(MessageBoxEvent ce)
+		{
+		}
+	};
 
 	@Override
 	protected void onRender(Element parent, int index)
@@ -276,7 +284,7 @@ public class ScreeningDetail extends LayoutContainer
 				modelData.setVillage((VillageDTO) village.getSelection().get(0));
 				modelData.setLocality((LocalityDTO) locality.getSelection().get(0));
 
-				modelData.setProcessType((ProcessTypeDTO) chapterName.getSelection().get(0));
+				modelData.setChapterName((ChapterNameDTO) chapterName.getSelection().get(0));
 				modelData.setProcessType((ProcessTypeDTO) processType.getSelection().get(0));
 				modelData.setTypeOfLocation((TypeOfLocationDTO) typeOfLocation.getSelection().get(0));
 				modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
@@ -442,15 +450,8 @@ public class ScreeningDetail extends LayoutContainer
 
 	private void savePage(ScreeningDetailDTO model)
 	{
-		detailServiceAsync.saveModel("", model, new AsyncCallback<String>()
+		detailServiceAsync.saveModel("", model, new AsyncCallback<RpcStatusEnum>()
 		{
-			final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
-			{
-				public void handleEvent(MessageBoxEvent ce)
-				{
-				}
-			};
-
 			@Override
 			public void onFailure(Throwable caught)
 			{
@@ -459,9 +460,13 @@ public class ScreeningDetail extends LayoutContainer
 			}
 
 			@Override
-			public void onSuccess(String result)
+			public void onSuccess(RpcStatusEnum result)
 			{
 				IndexPage.unmaskCenterComponent();
+				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
+				{
+					MessageBox.alert("Alert", "Error encountered while saving", l);
+				}
 			}
 		});
 	}

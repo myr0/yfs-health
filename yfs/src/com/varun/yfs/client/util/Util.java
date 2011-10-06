@@ -18,4 +18,12 @@ public class Util
 		else
 			return obj.toString();
 	}
+
+	public static String firstCharLower(String value)
+	{
+		char[] values = value.toCharArray();
+		values[0] = Character.toLowerCase(value.charAt(0));
+
+		return new String(values);
+	}
 }

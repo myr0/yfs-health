@@ -3,7 +3,6 @@ package com.varun.yfs.client.index;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -41,7 +40,7 @@ import com.varun.yfs.client.reports.ReportPage;
 import com.varun.yfs.client.screening.ScreeningDetail;
 import com.varun.yfs.client.screening.imports.ImportDetail;
 import com.varun.yfs.client.util.Util;
-import com.varun.yfs.dto.ScreeningDetailDTO;
+
 
 public class IndexPage extends LayoutContainer
 {
@@ -433,25 +432,33 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onSuccess(List<ModelData> result)
 			{
+//				for (ModelData modelData : result)
+//				{
+//					tree.getStore().add(modelData, true); // country
+//					List<ModelData> children = (List<ModelData>) modelData.get("children"); // states
+//					if (children != null)
+//					{
+//						tree.getStore().add(modelData, children, true);
+//						for (ModelData modelData2 : children) // Villages, Towns, Cities
+//						{
+//							List<ModelData> child = (List<ModelData>) modelData2.get("children");
+//							tree.getStore().add(modelData2, child, true);
+//							
+//							for (ModelData modelData3 : child) // screening data
+//							{
+//								List<ModelData> childScr = (List<ModelData>) modelData3.get("children");
+//								tree.getStore().add(modelData3, childScr, true);
+//							}
+//						}
+//					}
+//				}
 				for (ModelData modelData : result)
 				{
-					tree.getStore().add(modelData, true); // country
-					List<ModelData> children = (List<ModelData>) modelData.get("children"); // states
+					tree.getStore().add(modelData, true); // chapter-name
+					List<ModelData> children = (List<ModelData>) modelData.get("children"); // screening
 					if (children != null)
 					{
 						tree.getStore().add(modelData, children, true);
-						for (ModelData modelData2 : children) // Villages, Towns, Cities
-						{
-							List<ModelData> child = (List<ModelData>) modelData2.get("children");
-							tree.getStore().add(modelData2, child, true);
-							
-							for (ModelData modelData3 : child) // screening data
-							{
-//								List<ScreeningDetailDTO> childScr = (List<ScreeningDetailDTO>) modelData2.get("children");
-								List<ModelData> childScr = (List<ModelData>) modelData3.get("children");
-								tree.getStore().add(modelData3, childScr, true);
-							}
-						}
 					}
 				}
 			}

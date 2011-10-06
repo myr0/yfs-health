@@ -7,13 +7,14 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -29,6 +30,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
+import com.varun.yfs.client.common.RpcStatusEnum;
 
 public class AdministrationPage extends LayoutContainer
 {
@@ -42,6 +44,13 @@ public class AdministrationPage extends LayoutContainer
 	public AdministrationPage()
 	{
 	}
+	
+	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
+	{
+		public void handleEvent(MessageBoxEvent ce)
+		{
+		}
+	};
 
 	@Override
 	protected void onRender(Element parent, int index)
@@ -143,23 +152,24 @@ public class AdministrationPage extends LayoutContainer
 
 	public void savePage(final List<ModelData> lstModels)
 	{
-		storeLoader.saveListStore(curAdminEntity, lstModels, new AsyncCallback<String>()
+		storeLoader.saveListStore(curAdminEntity, lstModels, new AsyncCallback<RpcStatusEnum>()
 		{
 
 			@Override
-			public void onSuccess(String result)
+			public void onSuccess(RpcStatusEnum result)
 			{
 				reinitPage(curAdminEntity);
+				if(result.compareTo(RpcStatusEnum.FAILURE) == 0)
+				{
+					MessageBox.alert("Alert", "Error encountered while saving", l);
+				}
 			}
 
 			@Override
 			public void onFailure(Throwable caught)
 			{
 				editorGrid.unmask();
-				MessageBox mBox = new MessageBox();
-				mBox.setType(MessageBoxType.ALERT);
-				mBox.updateText("Error Encountered while saving :" + caught.getMessage());
-				mBox.show();
+				MessageBox.alert("Alert", "Error encountered while saving", l);
 			}
 		});
 	}
@@ -184,10 +194,7 @@ public class AdministrationPage extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				editorGrid.unmask();
-				MessageBox mBox = new MessageBox();
-				mBox.setType(MessageBoxType.ALERT);
-				mBox.updateText("Error Encountered while loading contents :" + caught.getMessage());
-				mBox.show();
+				MessageBox.alert("Alert", "Error encountered while loading", l);
 			}
 		});
 	}
