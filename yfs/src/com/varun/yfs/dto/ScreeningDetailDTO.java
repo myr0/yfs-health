@@ -1,6 +1,6 @@
 package com.varun.yfs.dto;
 
-import java.util.Set;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
@@ -22,9 +22,9 @@ public class ScreeningDetailDTO extends BaseModelData
 	private ProcessTypeDTO processType;
 	private String contactInformation;
 	private TypeOfLocationDTO typeOfLocation;
-	private Set<VolunteerDTO> setVolunteers;
-	private Set<DoctorDTO> setDoctors;
-	private Set<PatientDetailDTO> setPatientDetails;
+	private List<VolunteerDTO> setVolunteers;
+	private List<DoctorDTO> setDoctors;
+	private List<PatientDetailDTO> setPatientDetails;
 
 	public ScreeningDetailDTO()
 	{
@@ -43,7 +43,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setId(long id)
 	{
-		set("id",id);
+		set("id", id);
 		this.id = id;
 	}
 
@@ -54,7 +54,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setDeleted(String deleted)
 	{
-		set("deleted",deleted);
+		set("deleted", deleted);
 		this.deleted = deleted;
 	}
 
@@ -65,7 +65,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setCountry(CountryDTO country)
 	{
-		set("country",country);
+		set("country", country);
 		this.country = country;
 	}
 
@@ -76,7 +76,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setState(StateDTO state)
 	{
-		set("state",state);
+		set("state", state);
 		this.state = state;
 	}
 
@@ -87,7 +87,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setCity(CityDTO city)
 	{
-		set("city",city);
+		set("city", city);
 		this.city = city;
 	}
 
@@ -98,7 +98,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setTown(TownDTO town)
 	{
-		set("town",town);
+		set("town", town);
 		this.town = town;
 	}
 
@@ -109,7 +109,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setVillage(VillageDTO village)
 	{
-		set("village",village);
+		set("village", village);
 		this.village = village;
 	}
 
@@ -120,7 +120,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setChapterName(ChapterNameDTO chapterName)
 	{
-		set("chapterName",chapterName);
+		set("chapterName", chapterName);
 		this.chapterName = chapterName;
 	}
 
@@ -131,7 +131,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setLocality(LocalityDTO locality)
 	{
-		set("locality",locality);
+		set("locality", locality);
 		this.locality = locality;
 	}
 
@@ -142,7 +142,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setAddress(String address)
 	{
-		set("address",address);
+		set("address", address);
 		this.address = address;
 	}
 
@@ -153,7 +153,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setScreeningDate(String screeningDate)
 	{
-		set("screeningDate",screeningDate);
+		set("screeningDate", screeningDate);
 		this.screeningDate = screeningDate;
 	}
 
@@ -164,7 +164,7 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setProcessType(ProcessTypeDTO processType)
 	{
-		set("processType",processType);
+		set("processType", processType);
 		this.processType = processType;
 	}
 
@@ -175,29 +175,29 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setTypeOfLocation(TypeOfLocationDTO typeOfLocation)
 	{
-		set("typeOfLocation",typeOfLocation);
+		set("typeOfLocation", typeOfLocation);
 		this.typeOfLocation = typeOfLocation;
 	}
 
-	public Set<VolunteerDTO> getSetVolunteers()
+	public List<VolunteerDTO> getVolunteers()
 	{
 		return setVolunteers;
 	}
 
-	public void setSetVolunteers(Set<VolunteerDTO> setVolunteers)
+	public void setVolunteers(List<VolunteerDTO> setVolunteers)
 	{
-		set("volunteers",setVolunteers);
+		set("volunteers", setVolunteers);
 		this.setVolunteers = setVolunteers;
 	}
 
-	public Set<DoctorDTO> getSetDoctors()
+	public List<DoctorDTO> getDoctors()
 	{
 		return setDoctors;
 	}
 
-	public void setSetDoctors(Set<DoctorDTO> setDoctors)
+	public void setDoctors(List<DoctorDTO> setDoctors)
 	{
-		set("doctors",setDoctors);
+		set("doctors", setDoctors);
 		this.setDoctors = setDoctors;
 	}
 
@@ -208,17 +208,17 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setContactInformation(String contactInformation)
 	{
-		set("contactInformation",contactInformation);
+		set("contactInformation", contactInformation);
 		this.contactInformation = contactInformation;
 	}
 
-	public void setSetPatientDetails(Set<PatientDetailDTO> setPatientDetails)
+	public void setPatientDetails(List<PatientDetailDTO> setPatientDetails)
 	{
-		set("patientDetails",setPatientDetails);
+		set("patientDetails", setPatientDetails);
 		this.setPatientDetails = setPatientDetails;
 	}
 
-	public Set<PatientDetailDTO> getSetPatientDetails()
+	public List<PatientDetailDTO> getPatientDetails()
 	{
 		return setPatientDetails;
 	}
@@ -226,8 +226,7 @@ public class ScreeningDetailDTO extends BaseModelData
 	@Override
 	public String toString()
 	{
-		return screeningDate;
+		return get("name");
 	}
 
-	
 }

@@ -1,4 +1,4 @@
-package com.varun.yfs.server.models;
+package com.varun.yfs.dto;
 
 import java.io.Serializable;
 
@@ -9,82 +9,50 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.ForeignKey;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
-
-@Entity
-@Table(name = "patientDetail")
-public class PatientDetail implements Serializable
+public class PatientDetail extends BaseModelData
 {
 	private static final long serialVersionUID = 8343184437177073237L;
 
-	@Id
-	@GeneratedValue
-	@Column(name = "patientDetailId")
 	private long id;
 
-	@Column(nullable = false)
 	private String deleted;
 
-	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
 	private String age;
 
-	@Column(nullable = false)
 	private String sex;
 
-	@Column(nullable = false)
 	private String standard;
 
-	@Column(nullable = false)
 	private String height;
 
-	@Column(nullable = false)
 	private String weight;
 
-	@Column(nullable = false)
 	private String address;
 
-	@Column(nullable = false)
 	private String contactNo;
 
-	@OneToOne(optional = true)
-	@ForeignKey(name = "paediatricScreeningInfoId")
-	private PaediatricScreeningInfo paediatric;
+//	private PaediatricScreeningInfo paediatric;
+//
+//	private DentalScreeningInfo dental;
+//
+//	private EyeScreeningInfo eye;
+//
+//	private ENTScreeningInfo ent;
+//
+//	private SkinScreeningInfo skin;
+//
+//	private CardiacScreeningInfo cardiac;
+//
+//	private OtherScreeningInfo other;
 
-	@OneToOne(optional = true)
-	@ForeignKey(name="dentalScreeningInfoId")
-	private DentalScreeningInfo dental;
-
-	@OneToOne(optional = true)
-	@ForeignKey(name="eyeScreeningInfoId")
-	private EyeScreeningInfo eye;
-
-	@OneToOne(optional = true)
-	@ForeignKey(name="entScreeningInfoId")
-	private ENTScreeningInfo ent;
-
-	@OneToOne(optional = true)
-	@ForeignKey(name="skinScreeningInfoId")
-	private SkinScreeningInfo skin;
-
-	@OneToOne(optional = true)
-	@ForeignKey(name="cardiacScreeningInfoId")
-	private CardiacScreeningInfo cardiac;
-
-	@OneToOne(optional = true)
-	@ForeignKey(name="otherScreeningInfoId")
-	private OtherScreeningInfo other;
-
-	@OneToOne(optional = true)
 	private YesNoEnum emergency;
 
-	@OneToOne(optional = true)
 	private YesNoEnum caseClosed;
 
-	@OneToOne(optional = true)
 	private YesNoEnum surgeryCase;
 
 	public long getId()
@@ -185,76 +153,6 @@ public class PatientDetail implements Serializable
 	public void setContactNo(String contactNo)
 	{
 		this.contactNo = contactNo;
-	}
-
-	public PaediatricScreeningInfo getPaediatric()
-	{
-		return paediatric;
-	}
-
-	public void setPaediatric(PaediatricScreeningInfo paediatric)
-	{
-		this.paediatric = paediatric;
-	}
-
-	public DentalScreeningInfo getDental()
-	{
-		return dental;
-	}
-
-	public void setDental(DentalScreeningInfo dental)
-	{
-		this.dental = dental;
-	}
-
-	public EyeScreeningInfo getEye()
-	{
-		return eye;
-	}
-
-	public void setEye(EyeScreeningInfo eye)
-	{
-		this.eye = eye;
-	}
-
-	public ENTScreeningInfo getEnt()
-	{
-		return ent;
-	}
-
-	public void setEnt(ENTScreeningInfo ent)
-	{
-		this.ent = ent;
-	}
-
-	public SkinScreeningInfo getSkin()
-	{
-		return skin;
-	}
-
-	public void setSkin(SkinScreeningInfo skin)
-	{
-		this.skin = skin;
-	}
-
-	public CardiacScreeningInfo getCardiac()
-	{
-		return cardiac;
-	}
-
-	public void setCardiac(CardiacScreeningInfo cardiac)
-	{
-		this.cardiac = cardiac;
-	}
-
-	public OtherScreeningInfo getOther()
-	{
-		return other;
-	}
-
-	public void setOther(OtherScreeningInfo other)
-	{
-		this.other = other;
 	}
 
 	public YesNoEnum getEmergency()

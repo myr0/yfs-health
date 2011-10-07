@@ -172,6 +172,7 @@ public class DataUtil
 				session.save(scrDetHibObj);
 			} else
 			{
+				scrDetHibObj.setId(Long.parseLong(id));
 				session.saveOrUpdate(scrDetHibObj);
 			}
 		} catch (HibernateException ex)
@@ -190,12 +191,12 @@ public class DataUtil
 	public static List<ScreeningDetailDTO> getScreeningDetail(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from ScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName)+ "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
+		Query filter = session.createQuery("select sd from ScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
 		List<ScreeningDetailDTO> lstScreening = new ArrayList<ScreeningDetailDTO>();
 		try
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
-			Calendar  cal = Calendar.getInstance();
+			Calendar cal = Calendar.getInstance();
 			for (Object entity : filter.list())
 			{
 				ScreeningDetailDTO dtoObject = (ScreeningDetailDTO) dozerMapper.map(entity, ScreeningDetailDTO.class);
@@ -213,5 +214,32 @@ public class DataUtil
 			session.close();
 		}
 		return lstScreening;
+	}
+
+	public static ScreeningDetailDTO getScreeningDetail(long scrId)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		ScreeningDetailDTO dtoObject = null;
+
+		Criteria filter = session.createCriteria(ScreeningDetail.class);
+		filter.add(Restrictions.eq("id", scrId));
+		filter.add(Restrictions.eq("deleted", "N"));
+		try
+		{
+			Mapper dozerMapper = HibernateUtil.getDozerMapper();
+			dtoObject = (ScreeningDetailDTO) dozerMapper.map(filter.uniqueResult(), ScreeningDetailDTO.class);
+			dtoObject.getDoctors();
+			dtoObject.getVolunteers();
+			dtoObject.getPatientDetails();
+
+		} catch (HibernateException ex)
+		{
+			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			throw ex;
+		} finally
+		{
+			session.close();
+		}
+		return dtoObject;
 	}
 }

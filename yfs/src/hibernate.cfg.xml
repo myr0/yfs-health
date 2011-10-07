@@ -29,6 +29,14 @@
 		<mapping class="com.varun.yfs.server.models.Village"/>
 		<mapping class="com.varun.yfs.server.models.Volunteer"/>
 		<mapping class="com.varun.yfs.server.models.Users"/>
+		<mapping class="com.varun.yfs.server.models.PaediatricScreeningInfo"/>
+		<mapping class="com.varun.yfs.server.models.DentalScreeningInfo"/>
+		<mapping class="com.varun.yfs.server.models.ENTScreeningInfo"/>
+		<mapping class="com.varun.yfs.server.models.EyeScreeningInfo"/>
+		<mapping class="com.varun.yfs.server.models.SkinScreeningInfo"/>
+		<mapping class="com.varun.yfs.server.models.CardiacScreeningInfo"/>
+		<mapping class="com.varun.yfs.server.models.OtherScreeningInfo"/>
+		<mapping class="com.varun.yfs.server.models.YesNoEnum"/>
 		
 	</session-factory>
 </hibernate-configuration>

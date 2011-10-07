@@ -1,7 +1,7 @@
 package com.varun.yfs.server.models;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,7 +22,7 @@ public class ScreeningDetail implements Serializable
 
 	@Id
 	@GeneratedValue
-	@Column(name = "SD_ID")
+	@Column(name = "screeningDetailId")
 	private long id;
 
 	@Column(nullable = false)
@@ -73,14 +73,14 @@ public class ScreeningDetail implements Serializable
 	@JoinColumn(name = "typeOfLocationId", nullable = true, updatable = true, insertable = true)
 	private TypeOfLocation typeOfLocation;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<Volunteer> setVolunteers;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Volunteer> lstVolunteers;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<Doctor> setDoctors;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Doctor> lstDoctors;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<PatientDetail> setPatientDetails;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<PatientDetail> lstPatientDetails;
 
 	public ScreeningDetail()
 	{
@@ -222,24 +222,24 @@ public class ScreeningDetail implements Serializable
 		this.typeOfLocation = typeOfLocation;
 	}
 
-	public Set<Volunteer> getSetVolunteers()
+	public List<Volunteer> getVolunteers()
 	{
-		return setVolunteers;
+		return lstVolunteers;
 	}
 
-	public void setSetVolunteers(Set<Volunteer> setVolunteers)
+	public void setVolunteers(List<Volunteer> volunteers)
 	{
-		this.setVolunteers = setVolunteers;
+		this.lstVolunteers = volunteers;
 	}
 
-	public Set<Doctor> getSetDoctors()
+	public List<Doctor> getDoctors()
 	{
-		return setDoctors;
+		return lstDoctors;
 	}
 
-	public void setSetDoctors(Set<Doctor> setDoctors)
+	public void setDoctors(List<Doctor> doctors)
 	{
-		this.setDoctors = setDoctors;
+		this.lstDoctors = doctors;
 	}
 
 	public String getContactInformation()
@@ -252,14 +252,14 @@ public class ScreeningDetail implements Serializable
 		this.contactInformation = contactInformation;
 	}
 
-	public void setSetPatientDetails(Set<PatientDetail> setPatientDetails)
+	public void setPatientDetails(List<PatientDetail> setPatientDetails)
 	{
-		this.setPatientDetails = setPatientDetails;
+		this.lstPatientDetails = setPatientDetails;
 	}
 
-	public Set<PatientDetail> getSetPatientDetails()
+	public List<PatientDetail> getPatientDetails()
 	{
-		return setPatientDetails;
+		return lstPatientDetails;
 	}
 
 }

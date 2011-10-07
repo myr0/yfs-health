@@ -1,6 +1,7 @@
 package com.varun.yfs.client.screening;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -17,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -42,6 +44,7 @@ import com.varun.yfs.client.screening.rpc.ScreeningDetailServiceAsync;
 import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.CityDTO;
 import com.varun.yfs.dto.CountryDTO;
+import com.varun.yfs.dto.DoctorDTO;
 import com.varun.yfs.dto.LocalityDTO;
 import com.varun.yfs.dto.PatientDetailDTO;
 import com.varun.yfs.dto.ProcessTypeDTO;
@@ -50,6 +53,7 @@ import com.varun.yfs.dto.StateDTO;
 import com.varun.yfs.dto.TownDTO;
 import com.varun.yfs.dto.TypeOfLocationDTO;
 import com.varun.yfs.dto.VillageDTO;
+import com.varun.yfs.dto.VolunteerDTO;
 
 public class ScreeningDetail extends LayoutContainer
 {
@@ -66,8 +70,8 @@ public class ScreeningDetail extends LayoutContainer
 	private final ComboBox<ModelData> locality = new ComboBox<ModelData>();
 	private final ComboBox<ModelData> processType = new ComboBox<ModelData>();
 	private final ComboBox<ModelData> typeOfLocation = new ComboBox<ModelData>();
-	private final CheckBoxListView<ModelData> volunteers = new CheckBoxListView<ModelData>();
-	private final CheckBoxListView<ModelData> doctors = new CheckBoxListView<ModelData>();
+	private final CheckBoxListView<VolunteerDTO> volunteers = new CheckBoxListView<VolunteerDTO>();
+	private final CheckBoxListView<DoctorDTO> doctors = new CheckBoxListView<DoctorDTO>();
 	private final TextArea address = new TextArea();
 	private final TextArea contactInformation = new TextArea();
 	private final DateField screeningDate = new DateField();
@@ -76,6 +80,8 @@ public class ScreeningDetail extends LayoutContainer
 	private final ColumnModel cm = getColumnModel(configs);
 	private final ListStore<ModelData> store = new ListStore<ModelData>();
 	private final EditorGrid<ModelData> editorGrid = new EditorGrid<ModelData>(store, cm);
+
+	private String scrId;
 
 	public ScreeningDetail()
 	{
@@ -111,6 +117,7 @@ public class ScreeningDetail extends LayoutContainer
 		country.setSize("150", "22");
 		country.setFieldLabel("Country");
 		country.setDisplayField("countryName");
+		country.setTriggerAction(TriggerAction.ALL);
 		country.setStore(new ListStore<ModelData>());
 
 		state.setEditable(false);
@@ -118,31 +125,35 @@ public class ScreeningDetail extends LayoutContainer
 		state.setSize("150", "22");
 		state.setFieldLabel("State");
 		state.setDisplayField("stateName");
+		state.setTriggerAction(TriggerAction.ALL);
 		state.setStore(new ListStore<ModelData>());
 
 		cpPart1.add(city, new FormData("90%"));
 		city.setSize("150", "22");
 		city.setFieldLabel("City");
-		city.setValueField("id");
 		city.setDisplayField("cityName");
+		city.setTriggerAction(TriggerAction.ALL);
 		city.setStore(new ListStore<ModelData>());
 
 		town.setFieldLabel("Town");
 		cpPart1.add(town, new FormData("90%"));
 		town.setSize("150", "22");
 		town.setDisplayField("townName");
+		town.setTriggerAction(TriggerAction.ALL);
 		town.setStore(new ListStore<ModelData>());
 
 		village.setFieldLabel("Village");
 		cpPart1.add(village, new FormData("90%"));
 		village.setSize("150", "22");
 		village.setDisplayField("villageName");
+		village.setTriggerAction(TriggerAction.ALL);
 		village.setStore(new ListStore<ModelData>());
 
 		chapterName.setFieldLabel("Chapter Name");
 		cpPart1.add(chapterName, new FormData("90%"));
 		chapterName.setSize("150", "22");
 		chapterName.setDisplayField("name");
+		chapterName.setTriggerAction(TriggerAction.ALL);
 		chapterName.setStore(new ListStore<ModelData>());
 
 		mainContainerPanel.add(cpMain);
@@ -154,6 +165,7 @@ public class ScreeningDetail extends LayoutContainer
 		cpPart2.add(locality, new FormData("100%"));
 		locality.setFieldLabel("Locality");
 		locality.setDisplayField("localityName");
+		locality.setTriggerAction(TriggerAction.ALL);
 		locality.setStore(new ListStore<ModelData>());
 		locality.setWidth("150");
 
@@ -163,11 +175,13 @@ public class ScreeningDetail extends LayoutContainer
 		cpPart2.add(processType, new FormData("90%"));
 		processType.setFieldLabel("Process Type");
 		processType.setDisplayField("name");
+		processType.setTriggerAction(TriggerAction.ALL);
 		processType.setStore(new ListStore<ModelData>());
 
 		cpPart2.add(typeOfLocation, new FormData("90%"));
 		typeOfLocation.setFieldLabel("Type of Location");
 		typeOfLocation.setDisplayField("name");
+		typeOfLocation.setTriggerAction(TriggerAction.ALL);
 		typeOfLocation.setStore(new ListStore<ModelData>());
 
 		cpPart2.add(address, new FormData("100% -240"));
@@ -196,21 +210,20 @@ public class ScreeningDetail extends LayoutContainer
 		cPanelDoctors.setFrame(false);
 		cPanelDoctors.setBorders(false);
 		cpPart3.add(cPanelDoctors);
-		doctors.setStore(new ListStore<ModelData>());
+		doctors.setStore(new ListStore<DoctorDTO>());
 		doctors.setDisplayProperty("name");
-		doctors.setStore(new ListStore<ModelData>());
-		// doctors.setSize("150", "70");
 
 		final ContentPanel cPanelVolunteers = new ContentPanel();
 		cPanelVolunteers.setScrollMode(Scroll.AUTOY);
 		cPanelVolunteers.setHeading("Select Volunteers");
 		cPanelVolunteers.setSize("150", "90");
 		cPanelVolunteers.add(volunteers);
+		cPanelVolunteers.setBodyBorder(false);
+		cPanelVolunteers.setFrame(false);
+		cPanelVolunteers.setBorders(false);
 		cpPart3.add(cPanelVolunteers);
-		volunteers.setStore(new ListStore<ModelData>());
+		volunteers.setStore(new ListStore<VolunteerDTO>());
 		volunteers.setDisplayProperty("name");
-		volunteers.setStore(new ListStore<ModelData>());
-		// volunteers.setSize("150", "70");
 
 		cpMain.add(cpPart3, td_cpPart3);
 		cpPart3.setSize("33%", "280");
@@ -226,21 +239,21 @@ public class ScreeningDetail extends LayoutContainer
 		gridHolderPanel.setHeaderVisible(true);
 
 		ToolBar toolBar = new ToolBar();
-		Button add = new Button("Add Patient");
+		Button add = new Button("Add");
 		add.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				PatientDetailDTO plant = new PatientDetailDTO();
-				editorGrid.stopEditing(false);
-				store.insert(plant, 0);
+				PatientDetailDTO patientDetail = new PatientDetailDTO();
+				editorGrid.stopEditing(true);
+				store.insert(patientDetail, 0);
 				editorGrid.startEditing(0, 0);
 			}
 		});
 		toolBar.add(add);
 
-		Button remove = new Button("Remove Patient");
+		Button remove = new Button("Remove");
 		add.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -288,8 +301,10 @@ public class ScreeningDetail extends LayoutContainer
 				modelData.setProcessType((ProcessTypeDTO) processType.getSelection().get(0));
 				modelData.setTypeOfLocation((TypeOfLocationDTO) typeOfLocation.getSelection().get(0));
 				modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
-				// modelData.setSetVolunteers(volunteers.getChecked());
-				// modelData.setSetDoctors(doctors.getChecked());
+				modelData.setContactInformation(contactInformation.getValue());
+				modelData.setAddress(address.getValue());
+				modelData.setVolunteers(volunteers.getChecked());
+				modelData.setDoctors(doctors.getChecked());
 				savePage(modelData);
 			}
 		}));
@@ -413,17 +428,19 @@ public class ScreeningDetail extends LayoutContainer
 		return configs;
 	}
 
-	public void initialize(String title)
+	public void initialize(String title, String scrId)
 	{
 		mainContainerPanel.setHeading(title);
+		this.scrId = scrId;
 
-		detailServiceAsync.getModel("", new AsyncCallback<ModelData>()
+		detailServiceAsync.getModel(scrId, new AsyncCallback<ModelData>()
 		{
-
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(ModelData modelData)
 			{
+				clearStores();
+
 				editorGrid.reconfigure(new ListStore<ModelData>(), cm);
 				country.getStore().add((List<ModelData>) modelData.get("lstCountry"));
 				state.getStore().add((List<ModelData>) modelData.get("lstState"));
@@ -435,14 +452,42 @@ public class ScreeningDetail extends LayoutContainer
 				chapterName.getStore().add((List<ModelData>) modelData.get("lstChapterName"));
 				processType.getStore().add((List<ModelData>) modelData.get("lstProcessType"));
 				typeOfLocation.getStore().add((List<ModelData>) modelData.get("lstTypeOfLocation"));
-				volunteers.getStore().add((List<ModelData>) modelData.get("lstVolunteers"));
-				doctors.getStore().add((List<ModelData>) modelData.get("lstDoctors"));
+				volunteers.getStore().add((List<VolunteerDTO>) modelData.get("lstVolunteers"));
+				doctors.getStore().add((List<DoctorDTO>) modelData.get("lstDoctors"));
+
+				ScreeningDetailDTO scrDto = modelData.get("data");
+				if (scrDto != null)
+				{
+					address.setValue(scrDto.getAddress());
+					chapterName.setValue(scrDto.getChapterName());
+					city.setValue(scrDto.getCity());
+					contactInformation.setValue(scrDto.getContactInformation());
+					country.setValue(scrDto.getCountry());
+					locality.setValue(scrDto.getLocality());
+					processType.setValue(scrDto.getProcessType());
+					screeningDate.setValue(new Date(Long.valueOf(scrDto.getScreeningDate())));
+					state.setValue(scrDto.getState());
+					town.setValue(scrDto.getTown());
+					typeOfLocation.setValue(scrDto.getTypeOfLocation());
+					village.setValue(scrDto.getVillage());
+					
+					for (DoctorDTO doctor : scrDto.getDoctors())
+					{
+						doctors.setChecked(doctor, true);
+					}
+					
+					for (VolunteerDTO volunteer : scrDto.getVolunteers())
+					{
+						volunteers.setChecked(volunteer, true);
+					}
+				}
 				IndexPage.unmaskCenterComponent();
 			}
 
 			@Override
 			public void onFailure(Throwable caught)
 			{
+				MessageBox.alert("Alert", "Error encountered while loading", l);
 			}
 		});
 
@@ -450,7 +495,7 @@ public class ScreeningDetail extends LayoutContainer
 
 	private void savePage(ScreeningDetailDTO model)
 	{
-		detailServiceAsync.saveModel("", model, new AsyncCallback<RpcStatusEnum>()
+		detailServiceAsync.saveModel(this.scrId, model, new AsyncCallback<RpcStatusEnum>()
 		{
 			@Override
 			public void onFailure(Throwable caught)
@@ -467,7 +512,37 @@ public class ScreeningDetail extends LayoutContainer
 				{
 					MessageBox.alert("Alert", "Error encountered while saving", l);
 				}
+				clearStores();
+				IndexPage.reinitScreeningPanel();
 			}
 		});
+	}
+
+	private void clearStores()
+	{
+		country.clearSelections();
+		state.clearSelections();
+		city.clearSelections();
+		town.clearSelections();
+		village.clearSelections();
+		locality.clearSelections();
+		chapterName.clearSelections();
+		processType.clearSelections();
+		typeOfLocation.clearSelections();
+		address.clear();
+		contactInformation.clear();
+		screeningDate.clear();
+
+		country.getStore().removeAll();
+		state.getStore().removeAll();
+		city.getStore().removeAll();
+		town.getStore().removeAll();
+		village.getStore().removeAll();
+		locality.getStore().removeAll();
+		chapterName.getStore().removeAll();
+		processType.getStore().removeAll();
+		typeOfLocation.getStore().removeAll();
+		doctors.getStore().removeAll();
+		volunteers.getStore().removeAll();
 	}
 }

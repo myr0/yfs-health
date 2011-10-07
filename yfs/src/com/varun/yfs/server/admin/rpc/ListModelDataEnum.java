@@ -102,6 +102,7 @@ public enum ListModelDataEnum
 				{
 					ModelData scrNode = new BaseModelData();
 					scrNode.set("name", screeningDetailDTO.toString());
+					scrNode.set("id", String.valueOf(screeningDetailDTO.getId()));
 					scrNode.set("icon", "");
 					chapterNodes.add(scrNode);
 				}

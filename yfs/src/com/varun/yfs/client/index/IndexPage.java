@@ -41,16 +41,18 @@ import com.varun.yfs.client.screening.ScreeningDetail;
 import com.varun.yfs.client.screening.imports.ImportDetail;
 import com.varun.yfs.client.util.Util;
 
-
 public class IndexPage extends LayoutContainer
 {
-	private StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
+	private static StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
 	private LayoutContainer layoutContainer;
 	private static LayoutContainer layoutContainerCenter;
 	private LayoutContainer layoutContainerEast;
 	private LayoutContainer layoutContainerSouth;
 	private LayoutContainer layoutContainerNorth;
 	private LayoutContainer layoutContainerWest;
+
+	private final static TreeStore<ModelData> screeningPanelStore = new TreeStore<ModelData>();
+	private final static TreePanel<ModelData> treeScreeningPanel = new TreePanel<ModelData>(screeningPanelStore);
 
 	public IndexPage()
 	{
@@ -63,7 +65,12 @@ public class IndexPage extends LayoutContainer
 		layoutContainerNorth = new LayoutContainer();
 		layoutContainerWest = new LayoutContainer();
 	}
-	
+
+	public static void reinitScreeningPanel()
+	{
+		reloadScreeningPanel(true);
+	}
+
 	public static void maskCenterComponent(String message)
 	{
 		layoutContainerCenter.mask(message);
@@ -73,7 +80,7 @@ public class IndexPage extends LayoutContainer
 	{
 		layoutContainerCenter.unmask();
 	}
-	
+
 	@Override
 	protected void onRender(Element parent, int index)
 	{
@@ -317,16 +324,14 @@ public class IndexPage extends LayoutContainer
 		cpScreening.setLayout(new FitLayout());
 		layoutContainerWest.add(cpScreening);
 
-		
 		ToolBar toolbar = new ToolBar();
 		SplitButton splitItem = new SplitButton("");
 		splitItem.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/Home.png"));
-	  
-	    Menu menu = new Menu();  
-	    splitItem.setMenu(menu);  
-	  
-	    toolbar.add(splitItem);  
-	    
+
+		Menu menu = new Menu();
+		splitItem.setMenu(menu);
+
+		toolbar.add(splitItem);
 
 		final ScreeningDetail widget = new ScreeningDetail();
 
@@ -337,18 +342,18 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void componentSelected(MenuEvent ce)
 			{
+				layoutContainerCenter.mask("Loading...");
 				layoutContainerCenter.removeAll();
 				layoutContainerCenter.setLayoutData(new FitData(15));
-				
-				layoutContainerCenter.mask("Loading...");
+
 				layoutContainerCenter.add(widget);
-				widget.initialize("New Screening");
-				
+				widget.initialize("New Screening", null);
+
 				layoutContainerCenter.layout(true);
 			}
 		});
 		menu.add(newScreening);
-		
+
 		MenuItem referralButton = new MenuItem("New Referral", IconHelper.createPath(GWT.getModuleBaseURL() + "images/arrow_refresh.png", 16, 16));
 		referralButton.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
@@ -357,11 +362,11 @@ public class IndexPage extends LayoutContainer
 			{
 				layoutContainerCenter.removeAll();
 				layoutContainerCenter.setLayoutData(new FitData(15));
-				
+
 				layoutContainerCenter.mask("Loading...");
 				layoutContainerCenter.add(widget);
-				widget.initialize("New Referral");
-				
+				widget.initialize("New Referral", null);
+
 				layoutContainerCenter.layout(true);
 			}
 		});
@@ -373,12 +378,12 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void componentSelected(MenuEvent ce)
 			{
+				layoutContainerCenter.mask("Loading...");
 				layoutContainerCenter.removeAll();
 				layoutContainerCenter.setLayoutData(new FitData(15));
-				
-				layoutContainerCenter.mask("Loading...");
+
 				layoutContainerCenter.add(new ImportDetail());
-				
+
 				layoutContainerCenter.layout(true);
 			}
 		});
@@ -386,9 +391,7 @@ public class IndexPage extends LayoutContainer
 
 		cpScreening.setTopComponent(toolbar);
 
-		TreeStore<ModelData> store = new TreeStore<ModelData>();
-		final TreePanel<ModelData> tree = new TreePanel<ModelData>(store);
-		tree.setIconProvider(new ModelIconProvider<ModelData>()
+		treeScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
 		{
 			public AbstractImagePrototype getIcon(ModelData model)
 			{
@@ -401,7 +404,7 @@ public class IndexPage extends LayoutContainer
 				}
 			}
 		});
-		tree.setDisplayProperty("name");
+		treeScreeningPanel.setDisplayProperty("name");
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
@@ -416,8 +419,41 @@ public class IndexPage extends LayoutContainer
 				return false;
 			}
 		};
-		filter.bind(store);
+		filter.bind(screeningPanelStore);
 		toolbar.add(filter);
+
+		reloadScreeningPanel(false);
+
+		treeScreeningPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
+		{
+			@Override
+			public void handleEvent(BaseEvent be)
+			{
+				ModelData selectedItem = treeScreeningPanel.getSelectionModel().getSelectedItem();
+				boolean isLeaf = treeScreeningPanel.isLeaf(selectedItem);
+				if (!cpScreening.isCollapsed() && isLeaf)
+				{
+					layoutContainerCenter.removeAll();
+					layoutContainerCenter.mask("Loading...");
+					
+					layoutContainerCenter.setLayoutData(new FitData(15));
+					
+					String title = "Edit Screening " + selectedItem.get("name").toString();
+					widget.initialize(title, selectedItem.get("id").toString());
+					
+					layoutContainerCenter.add(widget);
+					layoutContainerCenter.layout(true);
+				}
+			}
+		});
+
+		cpScreening.add(treeScreeningPanel);
+	}
+
+	private static void reloadScreeningPanel(boolean forceRemoveAll)
+	{
+		if (forceRemoveAll)
+			treeScreeningPanel.getStore().removeAll();
 
 		storeLoader.getListStore(MainPanelEnum.ScreeningLocations.name(), new AsyncCallback<List<ModelData>>()
 		{
@@ -432,56 +468,17 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onSuccess(List<ModelData> result)
 			{
-//				for (ModelData modelData : result)
-//				{
-//					tree.getStore().add(modelData, true); // country
-//					List<ModelData> children = (List<ModelData>) modelData.get("children"); // states
-//					if (children != null)
-//					{
-//						tree.getStore().add(modelData, children, true);
-//						for (ModelData modelData2 : children) // Villages, Towns, Cities
-//						{
-//							List<ModelData> child = (List<ModelData>) modelData2.get("children");
-//							tree.getStore().add(modelData2, child, true);
-//							
-//							for (ModelData modelData3 : child) // screening data
-//							{
-//								List<ModelData> childScr = (List<ModelData>) modelData3.get("children");
-//								tree.getStore().add(modelData3, childScr, true);
-//							}
-//						}
-//					}
-//				}
+
 				for (ModelData modelData : result)
 				{
-					tree.getStore().add(modelData, true); // chapter-name
+					treeScreeningPanel.getStore().add(modelData, true); // chapter-name
 					List<ModelData> children = (List<ModelData>) modelData.get("children"); // screening
 					if (children != null)
 					{
-						tree.getStore().add(modelData, children, true);
+						treeScreeningPanel.getStore().add(modelData, children, true);
 					}
 				}
 			}
 		});
-
-		tree.addListener(Events.OnClick, new Listener<BaseEvent>()
-		{
-			@Override
-			public void handleEvent(BaseEvent be)
-			{
-				boolean isLeaf = tree.isLeaf(tree.getSelectionModel().getSelectedItem());
-				if (!cpScreening.isCollapsed() && isLeaf)
-				{
-					layoutContainerCenter.removeAll();
-					layoutContainerCenter.setLayoutData(new FitData(15));
-					String string = "Referral " + tree.getSelectionModel().getSelectedItem().get("name").toString();
-					widget.initialize(string);
-					layoutContainerCenter.add(widget);
-					layoutContainerCenter.layout(true);
-				}
-			}
-		});
-
-		cpScreening.add(tree);
 	}
 }

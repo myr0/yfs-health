@@ -41,4 +41,17 @@ public class DoctorDTO extends BaseModelData
 	{
 		set("deleted", deleted);
 	}
+
+	@Override
+	public boolean equals(Object arg0)
+	{
+		if (arg0 == null)
+			return false;
+		if (get("name") == null)
+			return false;
+		if (arg0.getClass() != this.getClass())
+			return false;
+		DoctorDTO doctor = (DoctorDTO) arg0;
+		return getName().equalsIgnoreCase(doctor.getName());
+	}
 }

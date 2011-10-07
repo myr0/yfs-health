@@ -20,9 +20,15 @@ public class ScreeningDetailServiceServlet extends RemoteServiceServlet implemen
 	private static final long serialVersionUID = 4397970043413666183L;
 
 	@Override
-	public ModelData getModel(String entityName)
+	public ModelData getModel(String scrId)
 	{
 		ModelData modelData = new BaseModelData();
+		if (scrId != null)
+		{
+			ScreeningDetailDTO scrDto = DataUtil.getScreeningDetail(Long.valueOf(scrId));
+			modelData.set("data", scrDto);
+		}
+
 		modelData.set("lstCountry", DataUtil.getModelList(ModelDataEnum.Country.name()));
 		modelData.set("lstState", DataUtil.getModelList(ModelDataEnum.State.name()));
 		modelData.set("lstCity", DataUtil.getModelList(ModelDataEnum.City.name()));
@@ -40,11 +46,14 @@ public class ScreeningDetailServiceServlet extends RemoteServiceServlet implemen
 	}
 
 	@Override
-	public RpcStatusEnum saveModel(String entityName, ScreeningDetailDTO modelData)
+	public RpcStatusEnum saveModel(String scrId, ScreeningDetailDTO modelData)
 	{
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
+			if (scrId != null)
+				modelData.set("id", scrId);
+			
 			DataUtil.saveScreeningDetail(modelData);
 		} catch (HibernateException ex)
 		{
