@@ -36,6 +36,7 @@ public class ENTScreeningInfo  implements Serializable
 	@Enumerated(EnumType.STRING)
 	private YesNoEnum medicine;
 	
+	
 	public String getFindings()
 	{
 		return findings;
@@ -66,14 +67,15 @@ public class ENTScreeningInfo  implements Serializable
 		this.referral = referral;
 	}
 
-	public YesNoEnum getMedicine()
-	{
-		return medicine;
-	}
 
 	public void setMedicine(YesNoEnum medicine)
 	{
 		this.medicine = medicine;
+	}
+
+	public YesNoEnum getMedicine()
+	{
+		return medicine;
 	}
 
 	public void setId(long id)

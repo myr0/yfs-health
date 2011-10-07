@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +22,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.ScreeningDetailDTO;
 import com.varun.yfs.server.common.HibernateUtil;
+import com.varun.yfs.server.models.PaediatricScreeningInfo;
+import com.varun.yfs.server.models.PatientDetail;
 import com.varun.yfs.server.models.ScreeningDetail;
+import com.varun.yfs.server.models.YesNoEnum;
 
 public class DataUtil
 {
@@ -167,14 +172,18 @@ public class DataUtil
 		{
 			ScreeningDetail scrDetHibObj = dozerMapper.map(screeningDetailDto, ScreeningDetail.class);
 			String id = screeningDetailDto.get("id");
+
 			if (id == null)
 			{
+				extractPatientDetailData(screeningDetailDto, scrDetHibObj);
 				session.save(scrDetHibObj);
 			} else
 			{
 				scrDetHibObj.setId(Long.parseLong(id));
 				session.saveOrUpdate(scrDetHibObj);
 			}
+			trans.commit();
+			session.flush();
 		} catch (HibernateException ex)
 		{
 			trans.rollback();
@@ -182,8 +191,6 @@ public class DataUtil
 			throw ex;
 		} finally
 		{
-			trans.commit();
-			session.flush();
 			session.close();
 		}
 	}
@@ -241,5 +248,45 @@ public class DataUtil
 			session.close();
 		}
 		return dtoObject;
+	}
+	
+	
+	private static void extractPatientDetailData(ScreeningDetailDTO screeningDetailDto, ScreeningDetail scrDetHibObj)
+	{
+		int index = 0;
+		for (ModelData modelData : screeningDetailDto.getPatientDetails())
+		{
+			PatientDetail patientDetail = scrDetHibObj.getPatientDetails().get(index++);
+
+			patientDetail.setAddress(Util.safeToString(modelData.get("address")));
+			patientDetail.setAge(Util.safeToString(modelData.get("age")));
+			patientDetail.setContactNo(Util.safeToString(modelData.get("contactno")));
+			patientDetail.setName(Util.safeToString(modelData.get("name")));
+			patientDetail.setSex(Util.safeToString(modelData.get("sex")));
+			patientDetail.setStandard(Util.safeToString(modelData.get("class")));
+			patientDetail.setHeight(Util.safeToString(modelData.get("height")));
+			patientDetail.setWeight(Util.safeToString(modelData.get("weight")));
+			patientDetail.setDeleted("N");
+
+			extractPaediatricInfo(modelData, patientDetail);
+		}
+	}
+
+	private static void extractPaediatricInfo(ModelData modelData, PatientDetail patientDetail)
+	{
+		PaediatricScreeningInfo paediatric = patientDetail.getPaediatric();
+		if (paediatric != null)
+		{
+			paediatric.setId(Long.valueOf(modelData.get("PaediatricId").toString()));
+		}
+		else
+		{
+			patientDetail.setPaediatric(new PaediatricScreeningInfo());
+			paediatric = patientDetail.getPaediatric();
+		}
+		paediatric.setFindings(Util.safeToString(modelData.get("PaediatricFindings")));
+		paediatric.setMedicine(YesNoEnum.valueOf(Util.safeToString(modelData.get("PaediatricMedicine"))));
+		paediatric.setReferral(YesNoEnum.valueOf(Util.safeToString(modelData.get("PaediatricReferral"))));
+		paediatric.setTreatmentAdviced(Util.safeToString(modelData.get("PaediatricFindings")));
 	}
 }

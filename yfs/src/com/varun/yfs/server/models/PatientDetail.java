@@ -18,6 +18,11 @@ public class PatientDetail implements Serializable
 {
 	private static final long serialVersionUID = 8343184437177073237L;
 
+	public PatientDetail()
+	{
+		setDeleted("N");
+	}
+	
 	@Id
 	@GeneratedValue
 	@Column(name = "patientDetailId")
@@ -44,10 +49,10 @@ public class PatientDetail implements Serializable
 	@Column(nullable = false)
 	private String weight;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String address;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String contactNo;
 
 	@OneToOne(optional = true)

@@ -57,14 +57,10 @@ public class PaediatricScreeningInfo  implements Serializable
 		this.treatmentAdviced = treatmentAdviced;
 	}
 
-	public YesNoEnum getReferral()
-	{
-		return referral;
-	}
 
-	public void setReferral(YesNoEnum referral)
+	public void setMedicine(YesNoEnum medicine)
 	{
-		this.referral = referral;
+		this.medicine = medicine;
 	}
 
 	public YesNoEnum getMedicine()
@@ -72,9 +68,14 @@ public class PaediatricScreeningInfo  implements Serializable
 		return medicine;
 	}
 
-	public void setMedicine(YesNoEnum medicine)
+	public void setReferral(YesNoEnum referral)
 	{
-		this.medicine = medicine;
+		this.referral = referral;
+	}
+
+	public YesNoEnum getReferral()
+	{
+		return referral;
 	}
 
 	public void setId(long id)

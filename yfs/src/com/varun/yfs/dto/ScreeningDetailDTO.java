@@ -3,6 +3,7 @@ package com.varun.yfs.dto;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelData;
 
 public class ScreeningDetailDTO extends BaseModelData
 {
@@ -22,9 +23,9 @@ public class ScreeningDetailDTO extends BaseModelData
 	private ProcessTypeDTO processType;
 	private String contactInformation;
 	private TypeOfLocationDTO typeOfLocation;
-	private List<VolunteerDTO> setVolunteers;
-	private List<DoctorDTO> setDoctors;
-	private List<PatientDetailDTO> setPatientDetails;
+	private List<VolunteerDTO> lstVolunteers;
+	private List<DoctorDTO> lstDoctors;
+	private List<PatientDetailDTO> lstPatientDetails;
 
 	public ScreeningDetailDTO()
 	{
@@ -181,24 +182,24 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public List<VolunteerDTO> getVolunteers()
 	{
-		return setVolunteers;
+		return lstVolunteers;
 	}
 
 	public void setVolunteers(List<VolunteerDTO> setVolunteers)
 	{
 		set("volunteers", setVolunteers);
-		this.setVolunteers = setVolunteers;
+		this.lstVolunteers = setVolunteers;
 	}
 
 	public List<DoctorDTO> getDoctors()
 	{
-		return setDoctors;
+		return lstDoctors;
 	}
 
 	public void setDoctors(List<DoctorDTO> setDoctors)
 	{
 		set("doctors", setDoctors);
-		this.setDoctors = setDoctors;
+		this.lstDoctors = setDoctors;
 	}
 
 	public String getContactInformation()
@@ -215,12 +216,12 @@ public class ScreeningDetailDTO extends BaseModelData
 	public void setPatientDetails(List<PatientDetailDTO> setPatientDetails)
 	{
 		set("patientDetails", setPatientDetails);
-		this.setPatientDetails = setPatientDetails;
+		this.lstPatientDetails = setPatientDetails;
 	}
 
 	public List<PatientDetailDTO> getPatientDetails()
 	{
-		return setPatientDetails;
+		return get("patientDetails");
 	}
 
 	@Override

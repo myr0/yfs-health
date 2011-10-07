@@ -73,6 +73,7 @@ public class CardiacScreeningInfo
 		this.medicine = medicine;
 	}
 
+
 	public void setId(long id)
 	{
 		this.id = id;
