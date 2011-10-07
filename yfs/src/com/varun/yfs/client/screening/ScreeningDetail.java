@@ -88,8 +88,13 @@ public class ScreeningDetail extends LayoutContainer
 	private List<ColumnConfig> configs;
 	private ListStore<ModelData> editorGridStore;
 	private EditorGrid<ModelData> editorGrid;
-
 	private String scrId;
+	
+	enum YesNo {
+		Yes,
+		No;
+	}
+
 
 	public ScreeningDetail()
 	{
@@ -455,7 +460,7 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig medicinesEnt = new ColumnConfig("EntMedicines", "Medicines", 100);
 		configs.add(medicinesEnt);
 		
-
+		
 		for (ColumnConfig cc : configs)
 		{
 			if(cc.getId().endsWith("Referral") ||  cc.getId().endsWith("Medicines"))
@@ -463,9 +468,6 @@ public class ScreeningDetail extends LayoutContainer
 				ComboBox<ModelData> field = new ComboBox<ModelData>();
 				
 				field.setStore(new ListStore<ModelData>());
-				field.setDisplayField("name");
-				field.setValueField("name");
-				
 				List<ModelData> comboModels = new ArrayList<ModelData>();
 				
 				ModelData model = new BaseModelData();
