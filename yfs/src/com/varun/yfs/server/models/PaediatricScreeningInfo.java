@@ -4,11 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
@@ -29,13 +26,11 @@ public class PaediatricScreeningInfo  implements Serializable
 	@Column(nullable = true)
 	private String treatmentAdviced;
 	
-	@ManyToOne
-	@Enumerated(EnumType.STRING)
-	private YesNoEnum referral;
+	@Column(nullable = true)
+	private String referral;
 	
-	@ManyToOne
-	@Enumerated(EnumType.STRING)
-	private YesNoEnum medicine;
+	@Column(nullable = true)
+	private String medicine;
 	
 	public String getFindings()
 	{
@@ -58,22 +53,22 @@ public class PaediatricScreeningInfo  implements Serializable
 	}
 
 
-	public void setMedicine(YesNoEnum medicine)
+	public void setMedicine(String medicine)
 	{
 		this.medicine = medicine;
 	}
 
-	public YesNoEnum getMedicine()
+	public String getMedicine()
 	{
 		return medicine;
 	}
 
-	public void setReferral(YesNoEnum referral)
+	public void setReferral(String referral)
 	{
 		this.referral = referral;
 	}
 
-	public YesNoEnum getReferral()
+	public String getReferral()
 	{
 		return referral;
 	}

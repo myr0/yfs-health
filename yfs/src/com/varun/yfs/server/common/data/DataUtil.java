@@ -15,6 +15,7 @@ import org.dozer.Mapper;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
@@ -22,16 +23,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.ScreeningDetailDTO;
 import com.varun.yfs.server.common.HibernateUtil;
+import com.varun.yfs.server.models.CardiacScreeningInfo;
+import com.varun.yfs.server.models.DentalScreeningInfo;
+import com.varun.yfs.server.models.ENTScreeningInfo;
+import com.varun.yfs.server.models.EyeScreeningInfo;
+import com.varun.yfs.server.models.OtherScreeningInfo;
 import com.varun.yfs.server.models.PaediatricScreeningInfo;
 import com.varun.yfs.server.models.PatientDetail;
 import com.varun.yfs.server.models.ScreeningDetail;
-import com.varun.yfs.server.models.YesNoEnum;
+import com.varun.yfs.server.models.SkinScreeningInfo;
 
 public class DataUtil
 {
@@ -172,10 +175,9 @@ public class DataUtil
 		{
 			ScreeningDetail scrDetHibObj = dozerMapper.map(screeningDetailDto, ScreeningDetail.class);
 			String id = screeningDetailDto.get("id");
-
+			extractPatientDetailData(session, screeningDetailDto, scrDetHibObj);
 			if (id == null)
 			{
-				extractPatientDetailData(screeningDetailDto, scrDetHibObj);
 				session.save(scrDetHibObj);
 			} else
 			{
@@ -228,16 +230,18 @@ public class DataUtil
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		ScreeningDetailDTO dtoObject = null;
 
-		Criteria filter = session.createCriteria(ScreeningDetail.class);
-		filter.add(Restrictions.eq("id", scrId));
-		filter.add(Restrictions.eq("deleted", "N"));
+		 Criteria filter = session.createCriteria(ScreeningDetail.class);
+		 filter.add(Restrictions.eq("id",scrId)).add(Restrictions.eq("deleted", "N"));
+		 filter.add(Restrictions.sqlRestriction(""));
+//		SQLQuery query = session.createSQLQuery("select sdd.* from screeningdetail sdd, screeningdetail_patientdetail sd, patientdetail pd" + " where sd.lstpatientdetails_patientdetailid = pd.patientdetailid and" + " sdd.screeningdetailid = sd.screeningdetail_screeningdetailid " + "and pd.deleted = 'N' and sdd.deleted = 'N'");
 		try
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
-			dtoObject = (ScreeningDetailDTO) dozerMapper.map(filter.uniqueResult(), ScreeningDetailDTO.class);
-			dtoObject.getDoctors();
-			dtoObject.getVolunteers();
-			dtoObject.getPatientDetails();
+			ScreeningDetail screeningDetail = (ScreeningDetail) filter.uniqueResult();
+			screeningDetail.getDoctors();
+			screeningDetail.getVolunteers();
+			screeningDetail.getPatientDetails();
+			dtoObject = (ScreeningDetailDTO) dozerMapper.map(screeningDetail, ScreeningDetailDTO.class);
 
 		} catch (HibernateException ex)
 		{
@@ -249,9 +253,8 @@ public class DataUtil
 		}
 		return dtoObject;
 	}
-	
-	
-	private static void extractPatientDetailData(ScreeningDetailDTO screeningDetailDto, ScreeningDetail scrDetHibObj)
+
+	private static void extractPatientDetailData(Session session, ScreeningDetailDTO screeningDetailDto, ScreeningDetail scrDetHibObj)
 	{
 		int index = 0;
 		for (ModelData modelData : screeningDetailDto.getPatientDetails())
@@ -266,27 +269,69 @@ public class DataUtil
 			patientDetail.setStandard(Util.safeToString(modelData.get("class")));
 			patientDetail.setHeight(Util.safeToString(modelData.get("height")));
 			patientDetail.setWeight(Util.safeToString(modelData.get("weight")));
+			patientDetail.setEmergency(Util.safeToString(modelData.get("emergency")));
+			patientDetail.setCaseClosed(Util.safeToString(modelData.get("caseClosed")));
+			patientDetail.setSurgeryCase(Util.safeToString(modelData.get("surgeryCase")));
 			patientDetail.setDeleted("N");
 
-			extractPaediatricInfo(modelData, patientDetail);
-		}
-	}
+			PaediatricScreeningInfo paediatric = patientDetail.getPaediatric();
+			if (paediatric.getId() > 0)
+			{
+				session.saveOrUpdate(paediatric);
+				session.flush();
+			} else
+				session.save(paediatric);
 
-	private static void extractPaediatricInfo(ModelData modelData, PatientDetail patientDetail)
-	{
-		PaediatricScreeningInfo paediatric = patientDetail.getPaediatric();
-		if (paediatric != null)
-		{
-			paediatric.setId(Long.valueOf(modelData.get("PaediatricId").toString()));
+			CardiacScreeningInfo cardiac = patientDetail.getCardiac();
+			if (cardiac.getId() > 0)
+			{
+				session.saveOrUpdate(cardiac);
+				session.flush();
+			} else
+				session.save(cardiac);
+
+			DentalScreeningInfo dental = patientDetail.getDental();
+			if (dental.getId() > 0)
+			{
+				session.saveOrUpdate(dental);
+				session.flush();
+			} else
+				session.save(dental);
+
+			ENTScreeningInfo ent = patientDetail.getEnt();
+			if (ent.getId() > 0)
+			{
+				session.saveOrUpdate(ent);
+				session.flush();
+			} else
+				session.save(ent);
+
+			EyeScreeningInfo eye = patientDetail.getEye();
+			if (eye.getId() > 0)
+			{
+				session.saveOrUpdate(eye);
+				session.flush();
+			} else
+				session.save(eye);
+
+			OtherScreeningInfo other = patientDetail.getOther();
+			if (other.getId() > 0)
+			{
+				session.saveOrUpdate(other);
+				session.flush();
+			} else
+				session.save(other);
+
+			SkinScreeningInfo skin = patientDetail.getSkin();
+			if (skin.getId() > 0)
+			{
+				session.saveOrUpdate(skin);
+				session.flush();
+			} else
+				session.save(skin);
+
+			session.save(patientDetail);
+			session.flush();
 		}
-		else
-		{
-			patientDetail.setPaediatric(new PaediatricScreeningInfo());
-			paediatric = patientDetail.getPaediatric();
-		}
-		paediatric.setFindings(Util.safeToString(modelData.get("PaediatricFindings")));
-		paediatric.setMedicine(YesNoEnum.valueOf(Util.safeToString(modelData.get("PaediatricMedicine"))));
-		paediatric.setReferral(YesNoEnum.valueOf(Util.safeToString(modelData.get("PaediatricReferral"))));
-		paediatric.setTreatmentAdviced(Util.safeToString(modelData.get("PaediatricFindings")));
 	}
 }

@@ -2,27 +2,24 @@ package com.varun.yfs.server.models;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.ForeignKey;
-
 
 @Entity
 @Table(name = "patientDetail")
 public class PatientDetail implements Serializable
 {
 	private static final long serialVersionUID = 8343184437177073237L;
-
-	public PatientDetail()
-	{
-		setDeleted("N");
-	}
-	
 	@Id
 	@GeneratedValue
 	@Column(name = "patientDetailId")
@@ -55,42 +52,54 @@ public class PatientDetail implements Serializable
 	@Column(nullable = true)
 	private String contactNo;
 
-	@OneToOne(optional = true)
+	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
 	@ForeignKey(name = "paediatricScreeningInfoId")
+	@Fetch(value = FetchMode.SELECT)
 	private PaediatricScreeningInfo paediatric;
 
-	@OneToOne(optional = true)
-	@ForeignKey(name="dentalScreeningInfoId")
+	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@ForeignKey(name = "dentalScreeningInfoId")
+	@Fetch(value = FetchMode.SELECT)
 	private DentalScreeningInfo dental;
 
-	@OneToOne(optional = true)
-	@ForeignKey(name="eyeScreeningInfoId")
+	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@ForeignKey(name = "eyeScreeningInfoId")
+	@Fetch(value = FetchMode.SELECT)
 	private EyeScreeningInfo eye;
 
-	@OneToOne(optional = true)
-	@ForeignKey(name="entScreeningInfoId")
+	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@ForeignKey(name = "entScreeningInfoId")
+	@Fetch(value = FetchMode.SELECT)
 	private ENTScreeningInfo ent;
 
-	@OneToOne(optional = true)
-	@ForeignKey(name="skinScreeningInfoId")
+	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@ForeignKey(name = "skinScreeningInfoId")
+	@Fetch(value = FetchMode.SELECT)
 	private SkinScreeningInfo skin;
 
-	@OneToOne(optional = true)
-	@ForeignKey(name="cardiacScreeningInfoId")
+	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@ForeignKey(name = "cardiacScreeningInfoId")
+	@Fetch(value = FetchMode.SELECT)
 	private CardiacScreeningInfo cardiac;
 
-	@OneToOne(optional = true)
-	@ForeignKey(name="otherScreeningInfoId")
+	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@ForeignKey(name = "otherScreeningInfoId")
+	@Fetch(value = FetchMode.SELECT)
 	private OtherScreeningInfo other;
 
-	@OneToOne(optional = true)
-	private YesNoEnum emergency;
+	@Column(nullable = true)
+	private String emergency;
 
-	@OneToOne(optional = true)
-	private YesNoEnum caseClosed;
+	@Column(nullable = true)
+	private String caseClosed;
 
-	@OneToOne(optional = true)
-	private YesNoEnum surgeryCase;
+	@Column(nullable = true)
+	private String surgeryCase;
+
+	public PatientDetail()
+	{
+		setDeleted("N");
+	}
 
 	public long getId()
 	{
@@ -262,32 +271,32 @@ public class PatientDetail implements Serializable
 		this.other = other;
 	}
 
-	public YesNoEnum getEmergency()
+	public String getEmergency()
 	{
 		return emergency;
 	}
 
-	public void setEmergency(YesNoEnum emergency)
+	public void setEmergency(String emergency)
 	{
 		this.emergency = emergency;
 	}
 
-	public YesNoEnum getCaseClosed()
+	public String getCaseClosed()
 	{
 		return caseClosed;
 	}
 
-	public void setCaseClosed(YesNoEnum caseClosed)
+	public void setCaseClosed(String caseClosed)
 	{
 		this.caseClosed = caseClosed;
 	}
 
-	public YesNoEnum getSurgeryCase()
+	public String getSurgeryCase()
 	{
 		return surgeryCase;
 	}
 
-	public void setSurgeryCase(YesNoEnum surgeryCase)
+	public void setSurgeryCase(String surgeryCase)
 	{
 		this.surgeryCase = surgeryCase;
 	}

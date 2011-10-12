@@ -3,7 +3,6 @@ package com.varun.yfs.dto;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
 
 public class ScreeningDetailDTO extends BaseModelData
 {
@@ -213,16 +212,17 @@ public class ScreeningDetailDTO extends BaseModelData
 		this.contactInformation = contactInformation;
 	}
 
-	public void setPatientDetails(List<PatientDetailDTO> setPatientDetails)
+	public void setPatientDetails(List<PatientDetailDTO> lstPatientDetails)
 	{
-		set("patientDetails", setPatientDetails);
-		this.lstPatientDetails = setPatientDetails;
+		set("patientDetails", lstPatientDetails);
+		this.lstPatientDetails = lstPatientDetails;
 	}
 
 	public List<PatientDetailDTO> getPatientDetails()
 	{
 		return get("patientDetails");
 	}
+
 
 	@Override
 	public String toString()

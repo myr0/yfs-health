@@ -3,17 +3,11 @@ package com.varun.yfs.server.admin.rpc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.dto.ChapterNameDTO;
-import com.varun.yfs.dto.CityDTO;
-import com.varun.yfs.dto.CountryDTO;
 import com.varun.yfs.dto.ScreeningDetailDTO;
-import com.varun.yfs.dto.StateDTO;
-import com.varun.yfs.dto.TownDTO;
-import com.varun.yfs.dto.VillageDTO;
 import com.varun.yfs.server.common.data.DataUtil;
 
 public enum ListModelDataEnum

@@ -1,7 +1,10 @@
 package com.varun.yfs.dto;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.varun.yfs.client.util.Util;
 
 public class PatientDetailDTO extends BaseModelData
 {
@@ -20,8 +23,16 @@ public class PatientDetailDTO extends BaseModelData
 	private String emergency;
 	private String caseClosed;
 	private String surgeryCase;
-	
-	
+	private YesNoDTO yesNo;
+	private GenderDTO gender;
+
+	private PaediatricScreeningInfoDTO paediatric;
+	private DentalScreeningInfoDTO dental;
+	private EyeScreeningInfoDTO eye;
+	private ENTScreeningInfoDTO ent;
+	private SkinScreeningInfoDTO skin;
+	private CardiacScreeningInfoDTO cardiac;
+	private OtherScreeningInfoDTO other;
 
 	public long getId()
 	{
@@ -166,32 +177,198 @@ public class PatientDetailDTO extends BaseModelData
 		this.surgeryCase = surgeryCase;
 	}
 
-	@Override
-	public int hashCode()
+	public YesNoDTO getYesNo()
 	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+		return yesNo;
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	public void setYesNo(YesNoDTO yesNo)
 	{
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		PatientDetailDTO other = (PatientDetailDTO) obj;
-		if (name == null)
+		this.yesNo = yesNo;
+	}
+
+	public GenderDTO getGender()
+	{
+		return gender;
+	}
+
+	public void setGender(GenderDTO gender)
+	{
+		this.gender = gender;
+	}
+
+	public PaediatricScreeningInfoDTO getPaediatric()
+	{
+		return paediatric;
+	}
+
+	public void setPaediatric(PaediatricScreeningInfoDTO paediatric)
+	{
+		this.paediatric = paediatric;
+	}
+
+	public DentalScreeningInfoDTO getDental()
+	{
+		return dental;
+	}
+
+	public void setDental(DentalScreeningInfoDTO dental)
+	{
+		this.dental = dental;
+	}
+
+	public EyeScreeningInfoDTO getEye()
+	{
+		return eye;
+	}
+
+	public void setEye(EyeScreeningInfoDTO eye)
+	{
+		this.eye = eye;
+	}
+
+	public ENTScreeningInfoDTO getEnt()
+	{
+		return ent;
+	}
+
+	public void setEnt(ENTScreeningInfoDTO ent)
+	{
+		this.ent = ent;
+	}
+
+	public SkinScreeningInfoDTO getSkin()
+	{
+		return skin;
+	}
+
+	public void setSkin(SkinScreeningInfoDTO skin)
+	{
+		this.skin = skin;
+	}
+
+	public CardiacScreeningInfoDTO getCardiac()
+	{
+		return cardiac;
+	}
+
+	public void setCardiac(CardiacScreeningInfoDTO cardiac)
+	{
+		this.cardiac = cardiac;
+	}
+
+	public OtherScreeningInfoDTO getOther()
+	{
+		return other;
+	}
+
+	public void setOther(OtherScreeningInfoDTO other)
+	{
+		this.other = other;
+	}
+
+	public void unFlattenObject()
+	{
+		if (paediatric == null)
 		{
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+			paediatric = new PaediatricScreeningInfoDTO();
+		}
+		paediatric.setFindings(this.get("PaediatricFindings", Util.EMPTY));
+		paediatric.setMedicine(Util.safeToString(this.get("PaediatricMedicines")));
+		paediatric.setReferral(Util.safeToString(this.get("PaediatricReferral")));
+		paediatric.setTreatmentAdviced(this.get("PaediatricTreatment", Util.EMPTY));
+
+		if (this.dental == null)
+		{
+			this.dental = new DentalScreeningInfoDTO();
+		}
+		dental.setFindings(this.get("DentalFindings", Util.EMPTY));
+		dental.setMedicine(Util.safeToString(this.get("DentalMedicines")));
+		dental.setReferral(Util.safeToString(this.get("DentalReferral")));
+		dental.setTreatmentAdviced(this.get("DentalTreatment", Util.EMPTY));
+
+		if (eye == null)
+		{
+			this.eye = new EyeScreeningInfoDTO();
+		}
+		eye.setFindings(this.get("EyeFindings", Util.EMPTY));
+		eye.setMedicine(Util.safeToString(this.get("EyeMedicines")));
+		eye.setReferral(Util.safeToString(this.get("EyeReferral")));
+		eye.setTreatmentAdviced(this.get("EyeTreatment", Util.EMPTY));
+
+		if (ent == null)
+		{
+			this.ent = new ENTScreeningInfoDTO();
+		}
+		ent.setFindings(this.get("EntFindings", Util.EMPTY));
+		ent.setMedicine(Util.safeToString(this.get("EntMedicines")));
+		ent.setReferral(Util.safeToString(this.get("EntReferral")));
+		ent.setTreatmentAdviced(this.get("EntTreatment", Util.EMPTY));
+
+		if (skin == null)
+		{
+			this.skin = new SkinScreeningInfoDTO();
+		}
+		skin.setFindings(this.get("SkinFindings", Util.EMPTY));
+		skin.setMedicine(Util.safeToString(this.get("SkinMedicines")));
+		skin.setReferral(Util.safeToString(this.get("SkinReferral")));
+		skin.setTreatmentAdviced(this.get("SkinTreatment", Util.EMPTY));
+
+		if (cardiac == null)
+		{
+			this.cardiac = new CardiacScreeningInfoDTO();
+		}
+		cardiac.setFindings(this.get("CardiacFindings", Util.EMPTY));
+		cardiac.setMedicine(Util.safeToString(this.get("CardiacMedicines")));
+		cardiac.setReferral(Util.safeToString(this.get("CardiacReferral")));
+		cardiac.setTreatmentAdviced(this.get("CardiacTreatment", Util.EMPTY));
+
+		if (other == null)
+		{
+			other = new OtherScreeningInfoDTO();
+		}
+		other.setFindings(this.get("OtherFindings", Util.EMPTY));
+		other.setMedicine(Util.safeToString(this.get("OtherMedicines")));
+		other.setReferral(Util.safeToString(this.get("OtherReferral")));
+		other.setTreatmentAdviced(this.get("OtherTreatment", Util.EMPTY));
+
+	}
+
+	public void flattenObject()
+	{
+		Map<String, Object> mapAllProperties = new HashMap<String, Object>();
+
+		PaediatricScreeningInfoDTO paediatric2 = this.getPaediatric();
+		if (paediatric2 != null)
+			mapAllProperties.putAll(paediatric2.getProperties());
+
+		DentalScreeningInfoDTO dental2 = this.getDental();
+		if (dental2 != null)
+			mapAllProperties.putAll(dental2.getProperties());
+
+		EyeScreeningInfoDTO eye2 = this.getEye();
+		if (eye2 != null)
+			mapAllProperties.putAll(eye2.getProperties());
+
+		ENTScreeningInfoDTO ent2 = this.getEnt();
+		if (ent2 != null)
+			mapAllProperties.putAll(ent2.getProperties());
+
+		SkinScreeningInfoDTO skin2 = this.getSkin();
+		if (skin2 != null)
+			mapAllProperties.putAll(skin2.getProperties());
+
+		CardiacScreeningInfoDTO cardiac2 = this.getCardiac();
+		if (cardiac2 != null)
+			mapAllProperties.putAll(cardiac2.getProperties());
+
+		OtherScreeningInfoDTO other2 = this.getOther();
+		if (other2 != null)
+			mapAllProperties.putAll(other2.getProperties());
+
+		mapAllProperties.putAll(this.getProperties());
+
+		this.setProperties(mapAllProperties);
 	}
 
 }

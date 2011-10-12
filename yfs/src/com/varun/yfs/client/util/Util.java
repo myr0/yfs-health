@@ -4,7 +4,7 @@ public class Util
 {
 
 	private static final String SPACE = " ";
-	private static final String EMPTY = "";
+	public static final String EMPTY = "";
 
 	public static String stripSpace(String entityName)
 	{
@@ -17,6 +17,13 @@ public class Util
 			return EMPTY;
 		else
 			return obj.toString();
+	}
+
+	public static boolean isEmpty(String str)
+	{
+		if (str == null)
+			return true;
+		return str.trim().equalsIgnoreCase(EMPTY);
 	}
 
 	public static String firstCharLower(String value)

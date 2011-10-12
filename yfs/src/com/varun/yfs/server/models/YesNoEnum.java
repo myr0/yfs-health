@@ -16,5 +16,15 @@ public enum YesNoEnum
 	@GeneratedValue
 	@Column(name = "yesNoEnumId")
 	private long id;
+
+	public void setId(long id)
+	{
+		this.id = id;
+	}
+
+	public long getId()
+	{
+		return id;
+	}
 	
 };

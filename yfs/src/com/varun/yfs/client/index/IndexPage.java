@@ -333,7 +333,6 @@ public class IndexPage extends LayoutContainer
 
 		toolbar.add(splitItem);
 
-		final ScreeningDetail widget = new ScreeningDetail();
 
 		MenuItem newScreening = new MenuItem("New Screening", IconHelper.createPath(GWT.getModuleBaseURL() + "images/add.png", 16, 16));
 		newScreening.addSelectionListener(new SelectionListener<MenuEvent>()
@@ -346,6 +345,7 @@ public class IndexPage extends LayoutContainer
 				layoutContainerCenter.removeAll();
 				layoutContainerCenter.setLayoutData(new FitData(15));
 
+				final ScreeningDetail widget = new ScreeningDetail();
 				layoutContainerCenter.add(widget);
 				widget.initialize("New Screening", null);
 
@@ -362,7 +362,8 @@ public class IndexPage extends LayoutContainer
 			{
 				layoutContainerCenter.removeAll();
 				layoutContainerCenter.setLayoutData(new FitData(15));
-
+				
+				final ScreeningDetail widget = new ScreeningDetail();
 				layoutContainerCenter.mask("Loading...");
 				layoutContainerCenter.add(widget);
 				widget.initialize("New Referral", null);
@@ -438,6 +439,7 @@ public class IndexPage extends LayoutContainer
 					
 					layoutContainerCenter.setLayoutData(new FitData(15));
 					
+					final ScreeningDetail widget = new ScreeningDetail();
 					String title = "Edit Screening " + selectedItem.get("name").toString();
 					widget.initialize(title, selectedItem.get("id").toString());
 					

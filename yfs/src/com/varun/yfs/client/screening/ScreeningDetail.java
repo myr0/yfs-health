@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -15,6 +14,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -47,6 +47,7 @@ import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.CityDTO;
 import com.varun.yfs.dto.CountryDTO;
 import com.varun.yfs.dto.DoctorDTO;
+import com.varun.yfs.dto.GenderDTO;
 import com.varun.yfs.dto.LocalityDTO;
 import com.varun.yfs.dto.PatientDetailDTO;
 import com.varun.yfs.dto.ProcessTypeDTO;
@@ -56,6 +57,7 @@ import com.varun.yfs.dto.TownDTO;
 import com.varun.yfs.dto.TypeOfLocationDTO;
 import com.varun.yfs.dto.VillageDTO;
 import com.varun.yfs.dto.VolunteerDTO;
+import com.varun.yfs.dto.YesNoDTO;
 
 public class ScreeningDetail extends LayoutContainer
 {
@@ -78,23 +80,10 @@ public class ScreeningDetail extends LayoutContainer
 	private final TextArea contactInformation = new TextArea();
 	private final DateField screeningDate = new DateField();
 
-	// private final List<ColumnConfig> configs = getColumnConfigs();
-	// private final ColumnModel cm = getColumnModel(configs);
-	// private final ListStore<PatientDetailDTO> store = new
-	// ListStore<PatientDetailDTO>();
-	// private final EditorGrid<PatientDetailDTO> editorGrid = new
-	// EditorGrid<PatientDetailDTO>(store, cm);
-
 	private List<ColumnConfig> configs;
 	private ListStore<ModelData> editorGridStore;
 	private EditorGrid<ModelData> editorGrid;
 	private String scrId;
-	
-	enum YesNo {
-		Yes,
-		No;
-	}
-
 
 	public ScreeningDetail()
 	{
@@ -131,6 +120,7 @@ public class ScreeningDetail extends LayoutContainer
 		country.setSize("150", "22");
 		country.setFieldLabel("Country");
 		country.setDisplayField("countryName");
+		country.setForceSelection(true);
 		country.setTriggerAction(TriggerAction.ALL);
 		country.setStore(new ListStore<ModelData>());
 
@@ -267,9 +257,11 @@ public class ScreeningDetail extends LayoutContainer
 			{
 				editorGrid.unmask();
 				PatientDetailDTO patientDetail = new PatientDetailDTO();
-				patientDetail.set("name", "Type Here");
+				patientDetail.setName("");
+				patientDetail.setDeleted("N");
 				editorGrid.stopEditing();
 				editorGrid.getStore().insert(patientDetail, 0);
+				editorGrid.startEditing(editorGrid.getStore().indexOf(patientDetail), 0);
 			}
 		});
 		toolBar.add(add);
@@ -285,9 +277,10 @@ public class ScreeningDetail extends LayoutContainer
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
-					List<ModelData> lstModels = editorGrid.getStore().getModels();
-					editorGrid.getStore().remove(selectedItem);
 					editorGrid.mask("Removing Entry...");
+					ScreeningDetailDTO modelData = extractFormData();
+					savePage(modelData);
+					editorGrid.getStore().remove(selectedItem);
 				}
 			}
 		});
@@ -301,6 +294,8 @@ public class ScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
+				clearStores();
+				initialize(getTitle(), scrId);
 			}
 		}));
 
@@ -309,28 +304,22 @@ public class ScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				IndexPage.maskCenterComponent("Saving...");
-				ScreeningDetailDTO modelData = new ScreeningDetailDTO();
-				modelData.setCountry((CountryDTO) country.getSelection().get(0));
-				modelData.setState((StateDTO) state.getSelection().get(0));
-				modelData.setCity((CityDTO) city.getSelection().get(0));
-				modelData.setTown((TownDTO) town.getSelection().get(0));
-				modelData.setVillage((VillageDTO) village.getSelection().get(0));
-				modelData.setLocality((LocalityDTO) locality.getSelection().get(0));
+				if (!validateFormEntry())
+					return;
 
-				modelData.setChapterName((ChapterNameDTO) chapterName.getSelection().get(0));
-				modelData.setProcessType((ProcessTypeDTO) processType.getSelection().get(0));
-				modelData.setTypeOfLocation((TypeOfLocationDTO) typeOfLocation.getSelection().get(0));
-				modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
-				modelData.setContactInformation(contactInformation.getValue());
-				modelData.setAddress(address.getValue());
-				modelData.setVolunteers(volunteers.getChecked());
-				modelData.setDoctors(doctors.getChecked());
-
-				editorGrid.stopEditing();
-				editorGrid.getStore().commitChanges();
-				modelData.set("patientDetails", editorGrid.getStore().getModels());
+				ScreeningDetailDTO modelData = extractFormData();
 				savePage(modelData);
+			}
+
+			private boolean validateFormEntry()
+			{
+				boolean validationState = true;
+				if (country.getSelection().isEmpty())
+				{
+					Info.display("New Screening", "You need to select a country to proceed.");
+					validationState = false;
+				}
+				return validationState;
 			}
 		}));
 
@@ -344,16 +333,49 @@ public class ScreeningDetail extends LayoutContainer
 
 	}
 
+	private ScreeningDetailDTO extractFormData()
+	{
+		IndexPage.maskCenterComponent("Saving...");
+		ScreeningDetailDTO modelData = new ScreeningDetailDTO();
+		modelData.setCountry((CountryDTO) country.getSelection().get(0));
+		modelData.setState((StateDTO) state.getSelection().get(0));
+		modelData.setCity((CityDTO) city.getSelection().get(0));
+		modelData.setTown((TownDTO) town.getSelection().get(0));
+		modelData.setVillage((VillageDTO) village.getSelection().get(0));
+		modelData.setLocality((LocalityDTO) locality.getSelection().get(0));
+
+		modelData.setChapterName((ChapterNameDTO) chapterName.getSelection().get(0));
+		modelData.setProcessType((ProcessTypeDTO) processType.getSelection().get(0));
+		modelData.setTypeOfLocation((TypeOfLocationDTO) typeOfLocation.getSelection().get(0));
+		modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
+		modelData.setContactInformation(contactInformation.getValue());
+		modelData.setAddress(address.getValue());
+		modelData.setVolunteers(volunteers.getChecked());
+		modelData.setDoctors(doctors.getChecked());
+
+		editorGrid.stopEditing();
+		editorGrid.getStore().commitChanges();
+		List<ModelData> models = editorGrid.getStore().getModels();
+		for (ModelData modelData2 : models)
+		{
+			PatientDetailDTO patient = (PatientDetailDTO) modelData2;
+			patient.unFlattenObject();
+		}
+		modelData.set("patientDetails", models);
+		return modelData;
+	}
+
 	private ColumnModel getColumnModel()
 	{
 		List<ColumnConfig> configs = getColumnConfigs();
 		ColumnModel cm = new ColumnModel(configs);
-		cm.addHeaderGroup(0, 8, new HeaderGroupConfig("Paediatric", 1, 5));
-		cm.addHeaderGroup(0, 13, new HeaderGroupConfig("Dental", 1, 5));
-		cm.addHeaderGroup(0, 18, new HeaderGroupConfig("Eye", 1, 5));
-		cm.addHeaderGroup(0, 23, new HeaderGroupConfig("Skin", 1, 5));
-		cm.addHeaderGroup(0, 28, new HeaderGroupConfig("Cardiac", 1, 5));
-		cm.addHeaderGroup(0, 33, new HeaderGroupConfig("ENT", 1, 5));
+		cm.addHeaderGroup(0, 8, new HeaderGroupConfig("Paediatric", 1, 4));
+		cm.addHeaderGroup(0, 12, new HeaderGroupConfig("Dental", 1, 4));
+		cm.addHeaderGroup(0, 16, new HeaderGroupConfig("Eye", 1, 4));
+		cm.addHeaderGroup(0, 20, new HeaderGroupConfig("Skin", 1, 4));
+		cm.addHeaderGroup(0, 24, new HeaderGroupConfig("Cardiac", 1, 4));
+		cm.addHeaderGroup(0, 28, new HeaderGroupConfig("ENT", 1, 4));
+		cm.addHeaderGroup(0, 32, new HeaderGroupConfig("Other", 1, 4));
 		return cm;
 	}
 
@@ -363,9 +385,6 @@ public class ScreeningDetail extends LayoutContainer
 
 		ColumnConfig nameColumn = new ColumnConfig("name", "Name", 150);
 		configs.add(nameColumn);
-		TextField<String> text = new TextField<String>();
-		text.setAllowBlank(false);
-		nameColumn.setEditor(new CellEditor(text));
 
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
 		configs.add(ageColumn);
@@ -435,7 +454,7 @@ public class ScreeningDetail extends LayoutContainer
 
 		ColumnConfig medicinesS = new ColumnConfig("SkinMedicines", "Medicines", 100);
 		configs.add(medicinesS);
-		
+
 		ColumnConfig findingsCardiac = new ColumnConfig("CardiacFindings", "Findings", 100);
 		configs.add(findingsCardiac);
 
@@ -447,7 +466,7 @@ public class ScreeningDetail extends LayoutContainer
 
 		ColumnConfig medicinesCardiac = new ColumnConfig("CardiacMedicines", "Medicines", 100);
 		configs.add(medicinesCardiac);
-		
+
 		ColumnConfig findingsEnt = new ColumnConfig("EntFindings", "Findings", 100);
 		configs.add(findingsEnt);
 
@@ -459,63 +478,52 @@ public class ScreeningDetail extends LayoutContainer
 
 		ColumnConfig medicinesEnt = new ColumnConfig("EntMedicines", "Medicines", 100);
 		configs.add(medicinesEnt);
-		
-		
+
+		ColumnConfig findingsOther = new ColumnConfig("OtherFindings", "Findings", 100);
+		configs.add(findingsOther);
+
+		ColumnConfig treatmentOther = new ColumnConfig("OtherTreatment", "Treatment Adviced", 100);
+		configs.add(treatmentOther);
+
+		ColumnConfig referralOther = new ColumnConfig("OtherReferral", "Referral", 100);
+		configs.add(referralOther);
+
+		ColumnConfig medicinesOther = new ColumnConfig("OtherMedicines", "Medicines", 100);
+		configs.add(medicinesOther);
+
 		for (ColumnConfig cc : configs)
 		{
-			if(cc.getId().endsWith("Referral") ||  cc.getId().endsWith("Medicines"))
+			if (cc.getId().endsWith("Referral") || cc.getId().endsWith("Medicines"))
 			{
-				ComboBox<ModelData> field = new ComboBox<ModelData>();
-				
-				field.setStore(new ListStore<ModelData>());
-				List<ModelData> comboModels = new ArrayList<ModelData>();
-				
-				ModelData model = new BaseModelData();
-				model.set("name", "Yes");
-				comboModels.add(model);
-				
-				model = new BaseModelData();
-				model.set("name", "No");
-				comboModels.add(model);
-				
-				cc.setEditor(new CellEditor(field));
-				field.getStore().add(comboModels);
-				field.setTriggerAction(TriggerAction.ALL);
-			}
-			else if(cc.getId().equalsIgnoreCase("sex"))
-			{
-				ComboBox<ModelData> field = new ComboBox<ModelData>();
-				
-				field.setStore(new ListStore<ModelData>());
+				ComboBox<YesNoDTO> field = new ComboBox<YesNoDTO>();
 				field.setDisplayField("name");
 				field.setValueField("name");
-				
-				List<ModelData> comboModels = new ArrayList<ModelData>();
-				
-				ModelData model = new BaseModelData();
-				model.set("name", "Male");
-				comboModels.add(model);
-				
-				model = new BaseModelData();
-				model.set("name", "Female");
-				comboModels.add(model);
-				
-				field.getStore().add(comboModels);
+				field.setStore(YesNoDTO.getValues());
+
 				cc.setEditor(new CellEditor(field));
 				field.setTriggerAction(TriggerAction.ALL);
-			}	
-			else
+
+			} else if (cc.getId().equalsIgnoreCase("sex"))
+			{
+				ComboBox<GenderDTO> field = new ComboBox<GenderDTO>();
+				field.setDisplayField("name");
+				field.setValueField("name");
+				field.setStore(GenderDTO.getValues());
+
+				cc.setEditor(new CellEditor(field));
+				field.setTriggerAction(TriggerAction.ALL);
+			} else
 			{
 				cc.setEditor(new CellEditor(new TextField<String>()));
 			}
 		}
-		
+
 		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
 		configs.add(emergency);
-		
+
 		ColumnConfig surgeryCase = new ColumnConfig("surgeryCase", "Surgery Case", 100);
 		configs.add(surgeryCase);
-		
+
 		ColumnConfig caseClosed = new ColumnConfig("caseClosed", "Case Closed", 100);
 		configs.add(caseClosed);
 
@@ -577,7 +585,12 @@ public class ScreeningDetail extends LayoutContainer
 						volunteers.setChecked(volunteer, true);
 					}
 
-					editorGrid.getStore().add(scrDto.getPatientDetails());
+					List<PatientDetailDTO> patientDetails = scrDto.getPatientDetails();
+					for (PatientDetailDTO patientDetail : patientDetails)
+					{
+						patientDetail.flattenObject();
+					}
+					editorGrid.getStore().add(patientDetails);
 				}
 				IndexPage.unmaskCenterComponent();
 			}
@@ -609,9 +622,11 @@ public class ScreeningDetail extends LayoutContainer
 				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
 				{
 					MessageBox.alert("Alert", "Error encountered while saving", l);
+				} else
+				{
+					clearStores();
+					IndexPage.reinitScreeningPanel();
 				}
-				clearStores();
-				IndexPage.reinitScreeningPanel();
 			}
 		});
 	}
