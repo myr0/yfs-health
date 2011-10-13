@@ -1,434 +1,295 @@
 package com.varun.yfs.server.screening.imports;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.util.ArrayList;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.openxml4j.opc.PackageAccess;
-import org.apache.poi.ss.usermodel.BuiltinFormats;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.xssf.eventusermodel.ReadOnlySharedStringsTable;
-import org.apache.poi.xssf.eventusermodel.XSSFReader;
-import org.apache.poi.xssf.model.StylesTable;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFRichTextString;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-
-/* http://www.coderanch.com/t/424181/open-source/Read-xls-xlsx-file-format */
-
+/*http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/ss/examples/ToCSV.java*/
 public class ExcelReader
 {
 
-	/**
-	 * The type of the data value is indicated by an attribute on the cell. The
-	 * value is usually in a "v" element within the cell.
-	 */
-	enum xssfDataType
+	private Workbook workbook = null;
+	private ArrayList<ArrayList> csvData = null;
+	private int maxRowWidth = 0;
+	private int formattingConvention = 0;
+	private DataFormatter formatter = null;
+	private FormulaEvaluator evaluator = null;
+	private String separator = null;
+
+	private static final String CSV_FILE_EXTENSION = ".csv";
+	private static final String DEFAULT_SEPARATOR = ",";
+
+	public static final int EXCEL_STYLE_ESCAPING = 0;
+	public static final int UNIX_STYLE_ESCAPING = 1;
+
+	public void convertExcelToCSV(String strSource, String strDestination) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
 	{
-		BOOL, ERROR, FORMULA, INLINESTR, SSTINDEX, NUMBER,
+		this.convertExcelToCSV(strSource, strDestination, ExcelReader.DEFAULT_SEPARATOR, ExcelReader.EXCEL_STYLE_ESCAPING);
 	}
 
-	int countrows = 0;
-
-	/**
-	 * Derived from http://poi.apache.org/spreadsheet/how-to.html#xssf_sax_api
-	 * <p/>
-	 * Also see Standard ECMA-376, 1st edition, part 4, pages 1928ff, at
-	 * http://www.ecma-international.org/publications/standards/Ecma-376.htm
-	 * <p/>
-	 * A web-friendly version is http://openiso.org/Ecma/376/Part4
-	 */
-	class MyXSSFSheetHandler extends DefaultHandler
+	public void convertExcelToCSV(String strSource, String strDestination, String separator) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
 	{
+		this.convertExcelToCSV(strSource, strDestination, separator, ExcelReader.EXCEL_STYLE_ESCAPING);
+	}
 
-		/**
-		 * Table with styles
-		 */
-		private StylesTable stylesTable;
+	public void convertExcelToCSV(String strSource, String strDestination, String separator, int formattingConvention) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
+	{
+		File source = new File(strSource);
+		File destination = new File(strDestination);
+		File[] filesList = null;
+		String destinationFilename = null;
 
-		/**
-		 * Table with unique strings
-		 */
-		private ReadOnlySharedStringsTable sharedStringsTable;
-
-		/**
-		 * Destination for data
-		 */
-		private final PrintStream output;
-
-		/**
-		 * Number of columns to read starting with leftmost
-		 */
-		private final int minColumnCount;
-
-		// Set when V start element is seen
-		private boolean vIsOpen;
-
-		// Set when cell start element is seen;
-		// used when cell close element is seen.
-		private xssfDataType nextDataType;
-
-		// Used to format numeric cell values.
-		private short formatIndex;
-		private String formatString;
-		private final DataFormatter formatter;
-
-		private int thisColumn = -1;
-		// The last column printed to the output stream
-		private int lastColumnNumber = -1;
-
-		// Gathers characters as they are seen.
-		private StringBuffer value;
-
-		/**
-		 * Accepts objects needed while parsing.
-		 * 
-		 * @param styles
-		 *            Table of styles
-		 * @param strings
-		 *            Table of shared strings
-		 * @param cols
-		 *            Minimum number of columns to show
-		 * @param target
-		 *            Sink for output
-		 */
-		public MyXSSFSheetHandler(StylesTable styles, ReadOnlySharedStringsTable strings, int cols, PrintStream target)
+		if (!source.exists())
 		{
-			this.stylesTable = styles;
-			this.sharedStringsTable = strings;
-			this.minColumnCount = cols;
-			this.output = target;
-			this.value = new StringBuffer();
-			this.nextDataType = xssfDataType.NUMBER;
+			throw new IllegalArgumentException("The source for the Excel " + "file(s) cannot be found.");
+		}
+
+		if (!destination.exists())
+		{
+			throw new IllegalArgumentException("The folder/directory for the " + "converted CSV file(s) does not exist.");
+		}
+		if (!destination.isDirectory())
+		{
+			throw new IllegalArgumentException("The destination for the CSV " + "file(s) is not a directory/folder.");
+		}
+
+		if (formattingConvention != ExcelReader.EXCEL_STYLE_ESCAPING && formattingConvention != ExcelReader.UNIX_STYLE_ESCAPING)
+		{
+			throw new IllegalArgumentException("The value passed to the " + "formattingConvention parameter is out of range.");
+		}
+
+		this.separator = separator;
+		this.formattingConvention = formattingConvention;
+
+		if (source.isDirectory())
+		{
+			filesList = source.listFiles(new ExcelFilenameFilter());
+		} else
+		{
+			filesList = new File[] { source };
+		}
+
+		for (File excelFile : filesList)
+		{
+			this.openWorkbook(excelFile);
+
+			this.convertToCSV();
+
+			destinationFilename = excelFile.getName();
+			destinationFilename = destinationFilename.substring(0, destinationFilename.lastIndexOf(".")) + ExcelReader.CSV_FILE_EXTENSION;
+
+			this.saveCSVFile(new File(destination, destinationFilename));
+		}
+	}
+
+	private void openWorkbook(File file) throws FileNotFoundException, IOException, InvalidFormatException
+	{
+		FileInputStream fis = null;
+		try
+		{
+			System.out.println("Opening workbook [" + file.getName() + "]");
+
+			fis = new FileInputStream(file);
+
+			this.workbook = WorkbookFactory.create(fis);
+			this.evaluator = this.workbook.getCreationHelper().createFormulaEvaluator();
 			this.formatter = new DataFormatter();
+		} finally
+		{
+			if (fis != null)
+			{
+				fis.close();
+			}
 		}
+	}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
-		 * java.lang.String, java.lang.String, org.xml.sax.Attributes)
-		 */
-		public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException
+	private void convertToCSV()
+	{
+		Sheet sheet = null;
+		Row row = null;
+		int lastRowNum = 0;
+		this.csvData = new ArrayList<ArrayList>();
+
+		System.out.println("Converting files contents to CSV format.");
+
+		int numSheets = this.workbook.getNumberOfSheets();
+
+		for (int i = 0; i < numSheets; i++)
 		{
 
-			if ("inlineStr".equals(name) || "v".equals(name))
+			sheet = this.workbook.getSheetAt(i);
+			if (sheet.getPhysicalNumberOfRows() > 0)
 			{
-				vIsOpen = true;
-				// Clear contents cache
-				value.setLength(0);
-			}
-			// c => cell
-			else if ("c".equals(name))
-			{
-				// Get the cell reference
-				String r = attributes.getValue("r");
-				int firstDigit = -1;
-				for (int c = 0; c < r.length(); ++c)
+				lastRowNum = sheet.getLastRowNum();
+				for (int j = 0; j <= lastRowNum; j++)
 				{
-					if (Character.isDigit(r.charAt(c)))
-					{
-						firstDigit = c;
-						break;
-					}
-				}
-				thisColumn = nameToColumn(r.substring(0, firstDigit));
-
-				// Set up defaults.
-				this.nextDataType = xssfDataType.NUMBER;
-				this.formatIndex = -1;
-				this.formatString = null;
-				String cellType = attributes.getValue("t");
-				String cellStyleStr = attributes.getValue("s");
-				if ("b".equals(cellType))
-					nextDataType = xssfDataType.BOOL;
-				else if ("e".equals(cellType))
-					nextDataType = xssfDataType.ERROR;
-				else if ("inlineStr".equals(cellType))
-					nextDataType = xssfDataType.INLINESTR;
-				else if ("s".equals(cellType))
-					nextDataType = xssfDataType.SSTINDEX;
-				else if ("str".equals(cellType))
-					nextDataType = xssfDataType.FORMULA;
-				else if (cellStyleStr != null)
-				{
-					// It's a number, but almost certainly one
-					// with a special style or format
-					int styleIndex = Integer.parseInt(cellStyleStr);
-					XSSFCellStyle style = stylesTable.getStyleAt(styleIndex);
-					this.formatIndex = style.getDataFormat();
-					this.formatString = style.getDataFormatString();
-					if (this.formatString == null)
-						this.formatString = BuiltinFormats.getBuiltinFormat(this.formatIndex);
+					row = sheet.getRow(j);
+					this.rowToCSV(row);
 				}
 			}
-
 		}
+	}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String,
-		 * java.lang.String, java.lang.String)
-		 */
-		public void endElement(String uri, String localName, String name) throws SAXException
+	private void saveCSVFile(File file) throws FileNotFoundException, IOException
+	{
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		ArrayList<String> line = null;
+		StringBuffer buffer = null;
+		String csvLineElement = null;
+		try
 		{
 
-			String thisStr = null;
+			System.out.println("Saving the CSV file [" + file.getName() + "]");
 
-			// v => contents of a cell
-			if ("v".equals(name))
+			fw = new FileWriter(file);
+			bw = new BufferedWriter(fw);
+
+			for (int i = 0; i < this.csvData.size(); i++)
 			{
-				// Process the value contents as required.
-				// Do now, as characters() may be called more than once
-				switch (nextDataType)
+				buffer = new StringBuffer();
+
+				line = this.csvData.get(i);
+				for (int j = 0; j < this.maxRowWidth; j++)
 				{
-
-				case BOOL:
-					char first = value.charAt(0);
-					thisStr = first == '0' ? "FALSE" : "TRUE";
-					break;
-
-				case ERROR:
-					thisStr = "\"ERROR:" + value.toString() + '"';
-					break;
-
-				case FORMULA:
-					// A formula could result in a string value,
-					// so always add double-quote characters.
-					thisStr = '"' + value.toString() + '"';
-					break;
-
-				case INLINESTR:
-					// TODO: have seen an example of this, so it's untested.
-					XSSFRichTextString rtsi = new XSSFRichTextString(value.toString());
-					thisStr = '"' + rtsi.toString() + '"';
-					break;
-
-				case SSTINDEX:
-					String sstIndex = value.toString();
-					try
+					if (line.size() > j)
 					{
-						int idx = Integer.parseInt(sstIndex);
-						XSSFRichTextString rtss = new XSSFRichTextString(sharedStringsTable.getEntryAt(idx));
-						thisStr = '"' + rtss.toString() + '"';
-					} catch (NumberFormatException ex)
-					{
-						output.println("Failed to parse SST index '" + sstIndex + "': " + ex.toString());
+						csvLineElement = line.get(j);
+						if (csvLineElement != null)
+						{
+							buffer.append(this.escapeEmbeddedCharacters(csvLineElement));
+						}
 					}
-					break;
-
-				case NUMBER:
-					String n = value.toString();
-					if (this.formatString != null)
-						thisStr = formatter.formatRawCellContents(Double.parseDouble(n), this.formatIndex, this.formatString);
-					else
-						thisStr = n;
-					break;
-
-				default:
-					thisStr = "(TODO: Unexpected type: " + nextDataType + ")";
-					break;
-				}
-
-				// Output after we've seen the string contents
-				// Emit commas for any fields that were missing on this row
-				if (lastColumnNumber == -1)
-				{
-					lastColumnNumber = 0;
-				}
-				for (int i = lastColumnNumber; i < thisColumn; ++i)
-					output.print(',');
-
-				// Might be the empty string.
-				output.print(thisStr);
-
-				// Update column
-				if (thisColumn > -1)
-					lastColumnNumber = thisColumn;
-
-			} else if ("row".equals(name))
-			{
-
-				// Print out any missing commas if needed
-				if (minColumns > 0)
-				{
-					// Columns are 0 based
-					if (lastColumnNumber == -1)
+					if (j < (this.maxRowWidth - 1))
 					{
-						lastColumnNumber = 0;
-					}
-					for (int i = lastColumnNumber; i < (this.minColumnCount); i++)
-					{
-						output.print(',');
+						buffer.append(this.separator);
 					}
 				}
 
-				// We're onto a new row
+				bw.write(buffer.toString().trim());
 
-				output.println();
-				output.println(countrows++);
-				lastColumnNumber = -1;
-
+				if (i < (this.csvData.size() - 1))
+				{
+					bw.newLine();
+				}
 			}
-
-		}
-
-		/**
-		 * Captures characters only if a suitable element is open. Originally
-		 * was just "v"; extended for inlineStr also.
-		 */
-		public void characters(char[] ch, int start, int length) throws SAXException
+		} finally
 		{
-			if (vIsOpen)
-				value.append(ch, start, length);
-		}
-
-		/**
-		 * Converts an Excel column name like "C" to a zero-based index.
-		 * 
-		 * @param name
-		 * @return Index corresponding to the specified name
-		 */
-		private int nameToColumn(String name)
-		{
-			int column = -1;
-			for (int i = 0; i < name.length(); ++i)
+			if (bw != null)
 			{
-				int c = name.charAt(i);
-				column = (column + 1) * 26 + c - 'A';
+				bw.flush();
+				bw.close();
 			}
-			return column;
 		}
-
 	}
 
-	// /////////////////////////////////////
-
-	private OPCPackage xlsxPackage;
-	private int minColumns;
-	private PrintStream output;
-
-	/**
-	 * Creates a new XLSX -> CSV converter
-	 * 
-	 * @param pkg
-	 *            The XLSX package to process
-	 * @param output
-	 *            The PrintStream to output the CSV to
-	 * @param minColumns
-	 *            The minimum number of columns to output, or -1 for no minimum
-	 */
-	public ExcelReader(OPCPackage pkg, PrintStream output, int minColumns)
+	private void rowToCSV(Row row)
 	{
-		this.xlsxPackage = pkg;
-		this.output = output;
-		this.minColumns = minColumns;
-	}
+		Cell cell = null;
+		int lastCellNum = 0;
+		ArrayList<String> csvLine = new ArrayList<String>();
 
-	/**
-	 * Parses and shows the content of one sheet using the specified styles and
-	 * shared-strings tables.
-	 * 
-	 * @param styles
-	 * @param strings
-	 * @param sheetInputStream
-	 */
-	public void processSheet(StylesTable styles, ReadOnlySharedStringsTable strings, InputStream sheetInputStream) throws IOException, ParserConfigurationException, SAXException
-	{
-
-		InputSource sheetSource = new InputSource(sheetInputStream);
-		SAXParserFactory saxFactory = SAXParserFactory.newInstance();
-		SAXParser saxParser = saxFactory.newSAXParser();
-		XMLReader sheetParser = saxParser.getXMLReader();
-		ContentHandler handler = new MyXSSFSheetHandler(styles, strings, this.minColumns, this.output);
-		sheetParser.setContentHandler(handler);
-		sheetParser.parse(sheetSource);
-	}
-
-	/**
-	 * Initiates the processing of the XLS workbook file to CSV.
-	 * 
-	 * @throws IOException
-	 * @throws OpenXML4JException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 */
-	public void process() throws IOException, OpenXML4JException, ParserConfigurationException, SAXException
-	{
-
-		ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(this.xlsxPackage);
-		XSSFReader xssfReader = new XSSFReader(this.xlsxPackage);
-
-		StylesTable styles = xssfReader.getStylesTable();
-		XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
-		int index = 0;
-		while (iter.hasNext())
+		if (row != null)
 		{
-			InputStream stream = iter.next();
-			String sheetName = iter.getSheetName();
-			this.output.println();
-			this.output.println(sheetName + " [index=" + index + "]:");
-			processSheet(styles, strings, stream);
-			stream.close();
-			++index;
+			lastCellNum = row.getLastCellNum();
+			for (int i = 0; i <= lastCellNum; i++)
+			{
+				cell = row.getCell(i);
+				if (cell == null)
+				{
+					csvLine.add("");
+				} else
+				{
+					if (cell.getCellType() != Cell.CELL_TYPE_FORMULA)
+					{
+						csvLine.add(this.formatter.formatCellValue(cell));
+					} else
+					{
+						csvLine.add(this.formatter.formatCellValue(cell, this.evaluator));
+					}
+				}
+			}
+			if (lastCellNum > this.maxRowWidth)
+			{
+				this.maxRowWidth = lastCellNum;
+			}
 		}
+		this.csvData.add(csvLine);
 	}
 
-	public static void main(String[] args) throws Exception
+	private String escapeEmbeddedCharacters(String field)
 	{
-		/*
-		 * if (args.length < 1) { System.err.println("Use:");
-		 * System.err.println("  XLSX2CSV <xlsx file> [min columns]"); return; }
-		 */
+		StringBuffer buffer = null;
 
-		// File xlsxFile = new File(args[0]);
-		File xlsxFile = new File("Excel template.xlsx");
-		if (!xlsxFile.exists())
+		if (this.formattingConvention == ExcelReader.EXCEL_STYLE_ESCAPING)
 		{
-			System.err.println("Not found or not a file: " + xlsxFile.getPath());
-			return;
+
+			if (field.contains("\""))
+			{
+				buffer = new StringBuffer(field.replaceAll("\"", "\\\"\\\""));
+				buffer.insert(0, "\"");
+				buffer.append("\"");
+			} else
+			{
+				buffer = new StringBuffer(field);
+				if ((buffer.indexOf(this.separator)) > -1 || (buffer.indexOf("\n")) > -1)
+				{
+					buffer.insert(0, "\"");
+					buffer.append("\"");
+				}
+			}
+			return (buffer.toString().trim());
 		}
-
-		int minColumns = -1;
-		// if (args.length >= 2)
-		// minColumns = Integer.parseInt(args[1]);
-
-		// File originFile = new File("c:\\excel\\file1.txt");
-//		File destinationFile = new File("c:\\excel\\file1.txt");
-//
-//		try
-//		{
-//
-//			// FileInputStream fis = new FileInputStream(originFile);
-//			FileOutputStream fos = new FileOutputStream(destinationFile);
-//
-//			fos.close();
-//		} catch (IOException e)
-//		{
-//			System.out.println(e);
-//		}
-
-		minColumns = 2;
-		// The package open is instantaneous, as it should be.
-		OPCPackage p = OPCPackage.open(xlsxFile.getPath(), PackageAccess.READ);
-		ExcelReader xlsx2csv = new ExcelReader(p, System.out, minColumns);
-		xlsx2csv.process();
+		else
+		{
+			if (field.contains(this.separator))
+			{
+				field = field.replaceAll(this.separator, ("\\\\" + this.separator));
+			}
+			if (field.contains("\n"))
+			{
+				field = field.replaceAll("\n", "\\\\\n");
+			}
+			return (field);
+		}
 	}
 
+	public static void main(String[] args)
+	{
+		ExcelReader converter = null;
+		try
+		{
+			converter = new ExcelReader();
+			converter.convertExcelToCSV("Excel template.xlsx","c:\\");
+		}
+		catch (Exception ex)
+		{
+			System.out.println("Caught an: " + ex.getClass().getName());
+			System.out.println("Message: " + ex.getMessage());
+			System.out.println("Stacktrace follows:.....");
+			ex.printStackTrace(System.out);
+		}
+	}
+
+	class ExcelFilenameFilter implements FilenameFilter
+	{
+		public boolean accept(File file, String name)
+		{
+			return (name.endsWith(".xls") || name.endsWith(".xlsx"));
+		}
+	}
 }
