@@ -337,7 +337,6 @@ public class IndexPage extends LayoutContainer
 		MenuItem newScreening = new MenuItem("New Screening", IconHelper.createPath(GWT.getModuleBaseURL() + "images/add.png", 16, 16));
 		newScreening.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
-
 			@Override
 			public void componentSelected(MenuEvent ce)
 			{
@@ -346,8 +345,8 @@ public class IndexPage extends LayoutContainer
 				layoutContainerCenter.setLayoutData(new FitData(15));
 
 				final ScreeningDetail widget = new ScreeningDetail();
-				layoutContainerCenter.add(widget);
 				widget.initialize("New Screening", null);
+				layoutContainerCenter.add(widget);
 
 				layoutContainerCenter.layout(true);
 			}
@@ -434,16 +433,16 @@ public class IndexPage extends LayoutContainer
 				boolean isLeaf = treeScreeningPanel.isLeaf(selectedItem);
 				if (!cpScreening.isCollapsed() && isLeaf)
 				{
-					layoutContainerCenter.removeAll();
 					layoutContainerCenter.mask("Loading...");
+					layoutContainerCenter.removeAll();
 					
 					layoutContainerCenter.setLayoutData(new FitData(15));
 					
 					final ScreeningDetail widget = new ScreeningDetail();
+					layoutContainerCenter.add(widget);
 					String title = "Edit Screening " + selectedItem.get("name").toString();
 					widget.initialize(title, selectedItem.get("id").toString());
 					
-					layoutContainerCenter.add(widget);
 					layoutContainerCenter.layout(true);
 				}
 			}

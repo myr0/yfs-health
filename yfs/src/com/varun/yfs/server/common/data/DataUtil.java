@@ -230,10 +230,14 @@ public class DataUtil
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		ScreeningDetailDTO dtoObject = null;
 
-		 Criteria filter = session.createCriteria(ScreeningDetail.class);
-		 filter.add(Restrictions.eq("id",scrId)).add(Restrictions.eq("deleted", "N"));
-		 filter.add(Restrictions.sqlRestriction(""));
-//		SQLQuery query = session.createSQLQuery("select sdd.* from screeningdetail sdd, screeningdetail_patientdetail sd, patientdetail pd" + " where sd.lstpatientdetails_patientdetailid = pd.patientdetailid and" + " sdd.screeningdetailid = sd.screeningdetail_screeningdetailid " + "and pd.deleted = 'N' and sdd.deleted = 'N'");
+		Criteria filter = session.createCriteria(ScreeningDetail.class);
+		filter.add(Restrictions.eq("id", scrId)).add(Restrictions.eq("deleted", "N"));
+		// SQLQuery query =
+		// session.createSQLQuery("select sdd.* from screeningdetail sdd, screeningdetail_patientdetail sd, patientdetail pd"
+		// +
+		// " where sd.lstpatientdetails_patientdetailid = pd.patientdetailid and"
+		// + " sdd.screeningdetailid = sd.screeningdetail_screeningdetailid " +
+		// "and pd.deleted = 'N' and sdd.deleted = 'N'");
 		try
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
@@ -263,10 +267,10 @@ public class DataUtil
 
 			patientDetail.setAddress(Util.safeToString(modelData.get("address")));
 			patientDetail.setAge(Util.safeToString(modelData.get("age")));
-			patientDetail.setContactNo(Util.safeToString(modelData.get("contactno")));
+			patientDetail.setContactNo(Util.safeToString(modelData.get("contactNo")));
+			patientDetail.setStandard(Util.safeToString(modelData.get("standard")));
 			patientDetail.setName(Util.safeToString(modelData.get("name")));
 			patientDetail.setSex(Util.safeToString(modelData.get("sex")));
-			patientDetail.setStandard(Util.safeToString(modelData.get("class")));
 			patientDetail.setHeight(Util.safeToString(modelData.get("height")));
 			patientDetail.setWeight(Util.safeToString(modelData.get("weight")));
 			patientDetail.setEmergency(Util.safeToString(modelData.get("emergency")));

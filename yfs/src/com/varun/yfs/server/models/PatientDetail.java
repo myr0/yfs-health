@@ -33,7 +33,7 @@ public class PatientDetail implements Serializable
 
 	@Column(nullable = false)
 	private String age;
-
+	
 	@Column(nullable = false)
 	private String sex;
 

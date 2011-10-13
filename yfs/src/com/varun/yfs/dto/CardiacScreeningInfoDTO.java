@@ -18,7 +18,7 @@ public class CardiacScreeningInfoDTO extends BaseModelData
 
 	public void setFindings(String findings)
 	{
-		set("CardiacScreeningInfoFindings",findings);
+		set("CardiacFindings",findings);
 		this.findings = findings;
 	}
 
@@ -29,14 +29,14 @@ public class CardiacScreeningInfoDTO extends BaseModelData
 
 	public void setTreatmentAdviced(String treatmentAdviced)
 	{
-		set("CardiacScreeningInfoTreatmentAdviced",treatmentAdviced);
+		set("CardiacTreatment",treatmentAdviced);
 		this.treatmentAdviced = treatmentAdviced;
 	}
 
 
 	public void setMedicine(String medicine)
 	{
-		set("CardiacScreeningInfoMedicine",medicine);
+		set("CardiacMedicine",medicine);
 		this.medicine = medicine;
 	}
 
@@ -47,7 +47,7 @@ public class CardiacScreeningInfoDTO extends BaseModelData
 
 	public void setReferral(String referral)
 	{
-		set("CardiacScreeningInfoReferral",referral);
+		set("CardiacReferral",referral);
 		this.referral = referral;
 	}
 

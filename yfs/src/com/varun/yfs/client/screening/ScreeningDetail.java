@@ -80,7 +80,6 @@ public class ScreeningDetail extends LayoutContainer
 	private final TextArea contactInformation = new TextArea();
 	private final DateField screeningDate = new DateField();
 
-	private List<ColumnConfig> configs;
 	private ListStore<ModelData> editorGridStore;
 	private EditorGrid<ModelData> editorGrid;
 	private String scrId;
@@ -233,12 +232,12 @@ public class ScreeningDetail extends LayoutContainer
 		cpPart3.setSize("33%", "280");
 
 		editorGridStore = new ListStore<ModelData>();
-		configs = new ArrayList<ColumnConfig>();
-		editorGrid = new EditorGrid<ModelData>(editorGridStore, new ColumnModel(configs));
+		ColumnModel columnModel = getColumnModel();
+		editorGrid = new EditorGrid<ModelData>(editorGridStore, columnModel);
+		editorGrid.reconfigure(editorGridStore, columnModel);
 		editorGrid.setBorders(true);
 		editorGrid.setSelectionModel(new GridSelectionModel<ModelData>());
 		editorGrid.setLoadMask(true);
-		editorGrid.mask("Loading...");
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
 		editorGrid.setHeight("310px");
@@ -392,7 +391,7 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig sexColumn = new ColumnConfig("sex", "Sex", 50);
 		configs.add(sexColumn);
 
-		ColumnConfig classColumn = new ColumnConfig("class", "Class", 100);
+		ColumnConfig classColumn = new ColumnConfig("standard", "Standard", 100);
 		configs.add(classColumn);
 
 		ColumnConfig heightColumn = new ColumnConfig("height", "Height(cm)", 100);
@@ -404,7 +403,7 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
 		configs.add(addressColumn);
 
-		ColumnConfig contactNoColumn = new ColumnConfig("contactno", "Contact No.", 100);
+		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
 		configs.add(contactNoColumn);
 
 		ColumnConfig findingsPColumn = new ColumnConfig("PaediatricFindings", "Findings", 100);
@@ -416,7 +415,7 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig referralPColumn = new ColumnConfig("PaediatricReferral", "Referral", 100);
 		configs.add(referralPColumn);
 
-		ColumnConfig medicinesPColumn = new ColumnConfig("PaediatricMedicines", "Medicines", 100);
+		ColumnConfig medicinesPColumn = new ColumnConfig("PaediatricMedicine", "Medicines", 100);
 		configs.add(medicinesPColumn);
 
 		ColumnConfig findingsDColumn = new ColumnConfig("DentalFindings", "Findings", 100);
@@ -428,7 +427,7 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig referralD = new ColumnConfig("DentalReferral", "Referral", 100);
 		configs.add(referralD);
 
-		ColumnConfig medicinesD = new ColumnConfig("DentalMedicines", "Medicines", 100);
+		ColumnConfig medicinesD = new ColumnConfig("DentalMedicine", "Medicines", 100);
 		configs.add(medicinesD);
 
 		ColumnConfig findingsE = new ColumnConfig("EyeFindings", "Findings", 100);
@@ -440,7 +439,7 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig referralE = new ColumnConfig("EyeReferral", "Referral", 100);
 		configs.add(referralE);
 
-		ColumnConfig medicinesE = new ColumnConfig("EyeMedicines", "Medicines", 100);
+		ColumnConfig medicinesE = new ColumnConfig("EyeMedicine", "Medicines", 100);
 		configs.add(medicinesE);
 
 		ColumnConfig findingsS = new ColumnConfig("SkinFindings", "Findings", 100);
@@ -452,7 +451,7 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig referralS = new ColumnConfig("SkinReferral", "Referral", 100);
 		configs.add(referralS);
 
-		ColumnConfig medicinesS = new ColumnConfig("SkinMedicines", "Medicines", 100);
+		ColumnConfig medicinesS = new ColumnConfig("SkinMedicine", "Medicines", 100);
 		configs.add(medicinesS);
 
 		ColumnConfig findingsCardiac = new ColumnConfig("CardiacFindings", "Findings", 100);
@@ -464,7 +463,7 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig referralCardiac = new ColumnConfig("CardiacReferral", "Referral", 100);
 		configs.add(referralCardiac);
 
-		ColumnConfig medicinesCardiac = new ColumnConfig("CardiacMedicines", "Medicines", 100);
+		ColumnConfig medicinesCardiac = new ColumnConfig("CardiacMedicine", "Medicines", 100);
 		configs.add(medicinesCardiac);
 
 		ColumnConfig findingsEnt = new ColumnConfig("EntFindings", "Findings", 100);
@@ -476,7 +475,7 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig referralEnt = new ColumnConfig("EntReferral", "Referral", 100);
 		configs.add(referralEnt);
 
-		ColumnConfig medicinesEnt = new ColumnConfig("EntMedicines", "Medicines", 100);
+		ColumnConfig medicinesEnt = new ColumnConfig("EntMedicine", "Medicines", 100);
 		configs.add(medicinesEnt);
 
 		ColumnConfig findingsOther = new ColumnConfig("OtherFindings", "Findings", 100);
@@ -488,12 +487,21 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig referralOther = new ColumnConfig("OtherReferral", "Referral", 100);
 		configs.add(referralOther);
 
-		ColumnConfig medicinesOther = new ColumnConfig("OtherMedicines", "Medicines", 100);
+		ColumnConfig medicinesOther = new ColumnConfig("OtherMedicine", "Medicines", 100);
 		configs.add(medicinesOther);
+
+		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
+		configs.add(emergency);
+
+		ColumnConfig surgeryCase = new ColumnConfig("surgeryCase", "Surgery Case", 100);
+		configs.add(surgeryCase);
+
+		ColumnConfig caseClosed = new ColumnConfig("caseClosed", "Case Closed", 100);
+		configs.add(caseClosed);
 
 		for (ColumnConfig cc : configs)
 		{
-			if (cc.getId().endsWith("Referral") || cc.getId().endsWith("Medicines"))
+			if (cc.getId().endsWith("Referral") || cc.getId().endsWith("Medicines") || cc.getId().endsWith("emergency") || cc.getId().endsWith("Case") || cc.getId().endsWith("Closed"))
 			{
 				ComboBox<YesNoDTO> field = new ComboBox<YesNoDTO>();
 				field.setDisplayField("name");
@@ -517,15 +525,6 @@ public class ScreeningDetail extends LayoutContainer
 				cc.setEditor(new CellEditor(new TextField<String>()));
 			}
 		}
-
-		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
-		configs.add(emergency);
-
-		ColumnConfig surgeryCase = new ColumnConfig("surgeryCase", "Surgery Case", 100);
-		configs.add(surgeryCase);
-
-		ColumnConfig caseClosed = new ColumnConfig("caseClosed", "Case Closed", 100);
-		configs.add(caseClosed);
 
 		return configs;
 	}
@@ -556,8 +555,8 @@ public class ScreeningDetail extends LayoutContainer
 				volunteers.getStore().add((List<VolunteerDTO>) modelData.get("lstVolunteers"));
 				doctors.getStore().add((List<DoctorDTO>) modelData.get("lstDoctors"));
 
-				ListStore<ModelData> lstStore = new ListStore<ModelData>();
-				editorGrid.reconfigure(lstStore, getColumnModel());
+				// ListStore<ModelData> lstStore = new ListStore<ModelData>();
+				// editorGrid.reconfigure(lstStore, getColumnModel());
 
 				ScreeningDetailDTO scrDto = modelData.get("data");
 				if (scrDto != null)
@@ -624,7 +623,8 @@ public class ScreeningDetail extends LayoutContainer
 					MessageBox.alert("Alert", "Error encountered while saving", l);
 				} else
 				{
-					clearStores();
+					// clearStores();
+					Info.display("Screening Detail", "Save Completed Sucessfully.");
 					IndexPage.reinitScreeningPanel();
 				}
 			}

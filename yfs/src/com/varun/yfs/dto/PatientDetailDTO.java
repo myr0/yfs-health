@@ -274,8 +274,8 @@ public class PatientDetailDTO extends BaseModelData
 			paediatric = new PaediatricScreeningInfoDTO();
 		}
 		paediatric.setFindings(this.get("PaediatricFindings", Util.EMPTY));
-		paediatric.setMedicine(Util.safeToString(this.get("PaediatricMedicines")));
-		paediatric.setReferral(Util.safeToString(this.get("PaediatricReferral")));
+		paediatric.setMedicine(this.get("PaediatricMedicines", YesNoDTO.NO.toString()));
+		paediatric.setReferral(this.get("PaediatricReferral", YesNoDTO.NO.toString()));
 		paediatric.setTreatmentAdviced(this.get("PaediatricTreatment", Util.EMPTY));
 
 		if (this.dental == null)
@@ -283,8 +283,8 @@ public class PatientDetailDTO extends BaseModelData
 			this.dental = new DentalScreeningInfoDTO();
 		}
 		dental.setFindings(this.get("DentalFindings", Util.EMPTY));
-		dental.setMedicine(Util.safeToString(this.get("DentalMedicines")));
-		dental.setReferral(Util.safeToString(this.get("DentalReferral")));
+		dental.setMedicine(this.get("DentalMedicines", YesNoDTO.NO.toString()));
+		dental.setReferral(this.get("DentalReferral", YesNoDTO.NO.toString()));
 		dental.setTreatmentAdviced(this.get("DentalTreatment", Util.EMPTY));
 
 		if (eye == null)
@@ -292,8 +292,8 @@ public class PatientDetailDTO extends BaseModelData
 			this.eye = new EyeScreeningInfoDTO();
 		}
 		eye.setFindings(this.get("EyeFindings", Util.EMPTY));
-		eye.setMedicine(Util.safeToString(this.get("EyeMedicines")));
-		eye.setReferral(Util.safeToString(this.get("EyeReferral")));
+		eye.setMedicine(this.get("EyeMedicines", YesNoDTO.NO.toString()));
+		eye.setReferral(this.get("EyeReferral", YesNoDTO.NO.toString()));
 		eye.setTreatmentAdviced(this.get("EyeTreatment", Util.EMPTY));
 
 		if (ent == null)
@@ -301,8 +301,8 @@ public class PatientDetailDTO extends BaseModelData
 			this.ent = new ENTScreeningInfoDTO();
 		}
 		ent.setFindings(this.get("EntFindings", Util.EMPTY));
-		ent.setMedicine(Util.safeToString(this.get("EntMedicines")));
-		ent.setReferral(Util.safeToString(this.get("EntReferral")));
+		ent.setMedicine(this.get("EntMedicines", YesNoDTO.NO.toString()));
+		ent.setReferral(this.get("EntReferral", YesNoDTO.NO.toString()));
 		ent.setTreatmentAdviced(this.get("EntTreatment", Util.EMPTY));
 
 		if (skin == null)
@@ -310,8 +310,8 @@ public class PatientDetailDTO extends BaseModelData
 			this.skin = new SkinScreeningInfoDTO();
 		}
 		skin.setFindings(this.get("SkinFindings", Util.EMPTY));
-		skin.setMedicine(Util.safeToString(this.get("SkinMedicines")));
-		skin.setReferral(Util.safeToString(this.get("SkinReferral")));
+		skin.setMedicine(this.get("SkinMedicines", YesNoDTO.NO.toString()));
+		skin.setReferral(this.get("SkinReferral", YesNoDTO.NO.toString()));
 		skin.setTreatmentAdviced(this.get("SkinTreatment", Util.EMPTY));
 
 		if (cardiac == null)
@@ -319,8 +319,8 @@ public class PatientDetailDTO extends BaseModelData
 			this.cardiac = new CardiacScreeningInfoDTO();
 		}
 		cardiac.setFindings(this.get("CardiacFindings", Util.EMPTY));
-		cardiac.setMedicine(Util.safeToString(this.get("CardiacMedicines")));
-		cardiac.setReferral(Util.safeToString(this.get("CardiacReferral")));
+		cardiac.setMedicine(this.get("CardiacMedicines", YesNoDTO.NO.toString()));
+		cardiac.setReferral(this.get("CardiacReferral", YesNoDTO.NO.toString()));
 		cardiac.setTreatmentAdviced(this.get("CardiacTreatment", Util.EMPTY));
 
 		if (other == null)
@@ -328,9 +328,13 @@ public class PatientDetailDTO extends BaseModelData
 			other = new OtherScreeningInfoDTO();
 		}
 		other.setFindings(this.get("OtherFindings", Util.EMPTY));
-		other.setMedicine(Util.safeToString(this.get("OtherMedicines")));
-		other.setReferral(Util.safeToString(this.get("OtherReferral")));
+		other.setMedicine(this.get("OtherMedicines", YesNoDTO.NO.toString()));
+		other.setReferral(this.get("OtherReferral", YesNoDTO.NO.toString()));
 		other.setTreatmentAdviced(this.get("OtherTreatment", Util.EMPTY));
+
+		this.setEmergency(this.get("emergency", YesNoDTO.NO.toString()));
+		this.setCaseClosed(this.get("caseClosed", YesNoDTO.NO.toString()));
+		this.setSurgeryCase(this.get("surgeryCase", YesNoDTO.NO.toString()));
 
 	}
 
