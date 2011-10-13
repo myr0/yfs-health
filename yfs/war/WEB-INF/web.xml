@@ -30,7 +30,7 @@
   
 	<servlet>
 		<servlet-name>uploadServlet</servlet-name>
-		<servlet-class>com.varun.yfs.server.SampleUploadServlet</servlet-class>
+		<servlet-class>com.varun.yfs.server.UploadServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>uploadServlet</servlet-name>

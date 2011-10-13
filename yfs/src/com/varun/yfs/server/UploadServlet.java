@@ -14,52 +14,30 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 
-/**
- * This is an example of how to use UploadAction class.
- * 
- * This servlet saves all received files in a temporary folder, and deletes them
- * when the user sends a remove request.
- * 
- * @author Manolo Carrasco Moñino
- * 
- */
-public class SampleUploadServlet extends UploadAction
+public class UploadServlet extends UploadAction
 {
 
 	private static final long serialVersionUID = 1L;
 
 	Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
-	/**
-	 * Maintain a list with received files and their content types.
-	 */
 	Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
 
-	/**
-	 * Override executeAction to save the received files in a custom place and
-	 * delete this items from session.
-	 */
 	@Override
 	public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) throws UploadActionException
 	{
 		String response = "";
-		int cont = 0;
 		for (FileItem item : sessionFiles)
 		{
 			if (false == item.isFormField())
 			{
-				cont++;
 				try
 				{
-					// / Create a temporary file placed in the default system
-					// temp folder
-					File file = File.createTempFile("upload-", ".bin");
+					File file = File.createTempFile(item.getName(),"");
 					item.write(file);
 
-					// / Save a list with the received files
 					receivedFiles.put(item.getFieldName(), file);
 					receivedContentTypes.put(item.getFieldName(), item.getContentType());
 
-					// / Send a customized message to the client.
 					response += "File saved as " + file.getAbsolutePath();
 
 				} catch (Exception e)
@@ -69,16 +47,11 @@ public class SampleUploadServlet extends UploadAction
 			}
 		}
 
-		// / Remove files from session because we have a copy of them
 		removeSessionFileItems(request);
 
-		// / Send your customized message to the client.
 		return response;
 	}
 
-	/**
-	 * Get the content of an uploaded file.
-	 */
 	@Override
 	public void getUploadedFile(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
