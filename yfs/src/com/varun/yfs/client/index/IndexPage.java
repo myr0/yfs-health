@@ -382,7 +382,9 @@ public class IndexPage extends LayoutContainer
 				layoutContainerCenter.removeAll();
 				layoutContainerCenter.setLayoutData(new FitData(15));
 
-				layoutContainerCenter.add(new ImportDetail());
+				ImportDetail widget = new ImportDetail();
+				widget.initialize("New Screening Import", null);
+				layoutContainerCenter.add(widget);
 
 				layoutContainerCenter.layout(true);
 			}

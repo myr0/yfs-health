@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,8 +33,21 @@ public class UploadServlet extends UploadAction
 			{
 				try
 				{
-					File file = File.createTempFile(item.getName(),"");
+					File file = File.createTempFile(item.getName(), "");
 					item.write(file);
+
+					ExcelReader converter = null;
+					try
+					{
+						converter = new ExcelReader();
+						converter.convertExcelToCSV(file.getAbsolutePath(), "c:\\");
+					} catch (Exception ex)
+					{
+						System.out.println("Caught an: " + ex.getClass().getName());
+						System.out.println("Message: " + ex.getMessage());
+						System.out.println("Stacktrace follows:.....");
+						ex.printStackTrace(System.out);
+					}
 
 					receivedFiles.put(item.getFieldName(), file);
 					receivedContentTypes.put(item.getFieldName(), item.getContentType());

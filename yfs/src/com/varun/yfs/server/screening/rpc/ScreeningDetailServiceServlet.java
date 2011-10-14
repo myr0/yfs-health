@@ -1,8 +1,5 @@
 package com.varun.yfs.server.screening.rpc;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +10,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailService;
-import com.varun.yfs.dto.PatientDetailDTO;
 import com.varun.yfs.dto.ScreeningDetailDTO;
 import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
 import com.varun.yfs.server.common.data.DataUtil;

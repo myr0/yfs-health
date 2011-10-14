@@ -88,7 +88,7 @@ public class ScreeningDetail extends LayoutContainer
 	{
 	}
 
-	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
+	protected final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
 		{
