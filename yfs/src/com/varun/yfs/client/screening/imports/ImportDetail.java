@@ -7,15 +7,25 @@ import gwtupload.client.MultiUploader;
 import gwtupload.client.PreloadedImage;
 import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -25,8 +35,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.varun.yfs.client.index.IndexPage;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
 
 public class ImportDetail extends LayoutContainer
 {
@@ -34,7 +42,7 @@ public class ImportDetail extends LayoutContainer
 
 	public ImportDetail()
 	{
-		setSize("600", "575");
+		setSize("600", "375");
 	}
 
 	@Override
@@ -47,31 +55,37 @@ public class ImportDetail extends LayoutContainer
 		ContentPanel mainContainerPanel = new ContentPanel();
 		mainContainerPanel.setHeading("Import Screening Data");
 		add(mainContainerPanel);
-		mainContainerPanel.setSize("600px", "");
+		mainContainerPanel.setSize("600px", "315px");
 
 		LayoutContainer lcUploadComponent = buildUploadComponent();
 		LayoutContainer lcTemplateComponent = buildTemplateComponent();
 
 		mainContainerPanel.add(lcUploadComponent, new FitData(5));
-		lcTemplateComponent_1.setLayout(new FitLayout());
 		mainContainerPanel.add(lcTemplateComponent, new FitData(5));
-		lcTemplateComponent_1.setSize("600", "");
+		
+		mainContainerPanel.setButtonAlign(HorizontalAlignment.CENTER);
+		mainContainerPanel.addButton(new Button("Process", new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+			}
+		}));
+		
 		add(mainContainerPanel);
 	}
 
 	private LayoutContainer buildTemplateComponent()
 	{
-		lcTemplateComponent_1 = new LayoutContainer();
-
 		ContentPanel mainTemplateSettingsPanel = new ContentPanel();
 		mainTemplateSettingsPanel.setHeading("Template Settings");
-		mainTemplateSettingsPanel.setLayout(new TableLayout(3));
+		mainTemplateSettingsPanel.setLayout(new TableLayout(2));
 
 		FormPanel templateSettings1 = new FormPanel();
 		templateSettings1.setLayout(new FormLayout());
 		templateSettings1.setHeaderVisible(false);
 		templateSettings1.setHeading("New FormPanel");
-		templateSettings1.setSize("200", "330");
+		templateSettings1.setSize("200", "230px");
 
 		NumberField firstDataRow = new NumberField();
 		firstDataRow.setMaxLength(2);
@@ -111,85 +125,34 @@ public class ImportDetail extends LayoutContainer
 		addressColumn.setMaxLength(2);
 		addressColumn.setFieldLabel("Address Column");
 		templateSettings1.add(addressColumn, new FormData("100%"));
-
-		FormPanel templateSettings2 = new FormPanel();
-		templateSettings2.setSize("200", "330");
-		templateSettings2.setHeaderVisible(false);
-		templateSettings2.setHeading("New FormPanel");
-		templateSettings2.setCollapsible(true);
-
-		FieldSet fldstPaediatric = new FieldSet();
-		fldstPaediatric.setLayout(new FormLayout());
-		templateSettings2.add(fldstPaediatric, new FormData("100%"));
-		fldstPaediatric.setHeading("Paediatric ");
-		fldstPaediatric.setCollapsible(true);
-		buildScreeningDetailTemplate(fldstPaediatric);
-
-		FieldSet fldstDental = new FieldSet();
-		fldstDental.setLayout(new FormLayout());
-		templateSettings2.add(fldstDental, new FormData("100%"));
-		fldstDental.setHeading("Dental");
-		fldstDental.setCollapsible(true);
-		buildScreeningDetailTemplate(fldstDental);
-
-		FieldSet fldstEye = new FieldSet();
-		fldstEye.setLayout(new FormLayout());
-		templateSettings2.add(fldstEye, new FormData("100%"));
-		fldstEye.setHeading("Eye");
-		fldstEye.setCollapsible(true);
-		buildScreeningDetailTemplate(fldstEye);
-
-
-		FormPanel templateSettings3 = new FormPanel();
-		templateSettings3.setSize("200", "260");
-		templateSettings3.setHeaderVisible(false);
-		templateSettings3.setHeading("New FormPanel");
-		templateSettings3.setCollapsible(true);
-
-		FieldSet fldstSkin = new FieldSet();
-		templateSettings3.add(fldstSkin, new FormData("100%"));
-		fldstSkin.setLayout(new FormLayout());
-		fldstSkin.setHeading("Skin");
-		fldstSkin.setCollapsible(true);
-		buildScreeningDetailTemplate(fldstSkin);
-
-		FieldSet fldstEnt = new FieldSet();
-		templateSettings3.add(fldstEnt, new FormData("100%"));
-		fldstEnt.setLayout(new FormLayout());
-		fldstEnt.setHeading("ENT");
-		fldstEnt.setCollapsible(true);
-		buildScreeningDetailTemplate(fldstEnt);
-
-		FieldSet fldstOther = new FieldSet();
-		templateSettings3.add(fldstOther, new FormData("100%"));
-		fldstOther.setLayout(new FormLayout());
-		fldstOther.setHeading("Other");
-		fldstOther.setCollapsible(true);
-		buildScreeningDetailTemplate(fldstOther);
 		
 		mainTemplateSettingsPanel.add(templateSettings1);
+		mainTemplateSettingsPanel.setSize("550", "266px");
+		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+		
+		ColumnConfig clmncnfgNewColumn = new ColumnConfig("id", "Ailment Type", 100);
+		configs.add(clmncnfgNewColumn);
+		
+		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("id", "Ailment Type Column", 120);
+		configs.add(clmncnfgNewColumn_1);
+		
+		ColumnConfig clmncnfgNewColumn_2 = new ColumnConfig("id", "Findings", 100);
+		configs.add(clmncnfgNewColumn_2);
+		
+		FormPanel templateSettings2 = new FormPanel();
+		templateSettings2.setLayout(new FormLayout());
+		templateSettings2.setHeaderVisible(false);
+		templateSettings2.setHeading("Template Details Grid");
+		
+		EditorGrid editorGrid = new EditorGrid(new ListStore(), new ColumnModel(configs));
+		templateSettings2.add(editorGrid, new FormData("-15 -15"));
+		editorGrid.setSize("210px", "330");
+		editorGrid.setBorders(true);
 		mainTemplateSettingsPanel.add(templateSettings2);
-		mainTemplateSettingsPanel.add(templateSettings3);
-		mainTemplateSettingsPanel.setSize("700", "400");
-		lcTemplateComponent_1.add(mainTemplateSettingsPanel);
-		return lcTemplateComponent_1;
+		templateSettings2.setSize("340px", "230px");
+		return mainTemplateSettingsPanel;
 	}
-
-	private void buildScreeningDetailTemplate(FieldSet fieldSet)
-	{
-
-		NumberField staartColumn = new NumberField();
-		staartColumn.setMaxLength(2);
-		staartColumn.setFieldLabel("Start Column");
-		fieldSet.add(staartColumn, new FormData("100%"));
-
-		NumberField endColumn = new NumberField();
-		endColumn.setMaxLength(2);
-		endColumn.setFieldLabel("End Column");
-		fieldSet.add(endColumn, new FormData("100%"));
-
-	}
-
+	
 	private LayoutContainer buildUploadComponent()
 	{
 		LayoutContainer lcUploadComponent = new LayoutContainer();
