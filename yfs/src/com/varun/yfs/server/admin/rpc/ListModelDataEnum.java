@@ -260,6 +260,14 @@ public enum ListModelDataEnum
 		{
 			return Collections.emptyList();
 		}
+	},
+	ReferralType
+	{
+		@Override
+		public List<ModelData> getListStoreContents()
+		{
+			return DataUtil.getModelList("ReferralType");
+		}
 	};
 
 	public static boolean isEnumElement(String entityName)

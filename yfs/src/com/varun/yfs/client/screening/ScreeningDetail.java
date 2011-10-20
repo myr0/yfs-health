@@ -28,7 +28,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
-import com.extjs.gxt.ui.client.widget.grid.HeaderGroupConfig;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -51,6 +50,7 @@ import com.varun.yfs.dto.GenderDTO;
 import com.varun.yfs.dto.LocalityDTO;
 import com.varun.yfs.dto.PatientDetailDTO;
 import com.varun.yfs.dto.ProcessTypeDTO;
+import com.varun.yfs.dto.ReferralTypeDTO;
 import com.varun.yfs.dto.ScreeningDetailDTO;
 import com.varun.yfs.dto.StateDTO;
 import com.varun.yfs.dto.TownDTO;
@@ -80,12 +80,13 @@ public class ScreeningDetail extends LayoutContainer
 	private final TextArea contactInformation = new TextArea();
 	private final DateField screeningDate = new DateField();
 
-	private ListStore<ModelData> editorGridStore;
-	private EditorGrid<ModelData> editorGrid;
+	private ListStore<PatientDetailDTO> editorGridStore;
+	private EditorGrid<PatientDetailDTO> editorGrid;
 	private String scrId;
 
 	public ScreeningDetail()
 	{
+		setSize("700", "600");
 	}
 
 	protected final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
@@ -231,12 +232,12 @@ public class ScreeningDetail extends LayoutContainer
 		cpMain.add(cpPart3, td_cpPart3);
 		cpPart3.setSize("33%", "280");
 
-		editorGridStore = new ListStore<ModelData>();
+		editorGridStore = new ListStore<PatientDetailDTO>();
 		ColumnModel columnModel = getColumnModel();
-		editorGrid = new EditorGrid<ModelData>(editorGridStore, columnModel);
-		editorGrid.reconfigure(editorGridStore, columnModel);
+		editorGrid = new EditorGrid<PatientDetailDTO>(editorGridStore, columnModel);
+		// editorGrid.reconfigure(editorGridStore, columnModel);
 		editorGrid.setBorders(true);
-		editorGrid.setSelectionModel(new GridSelectionModel<ModelData>());
+		editorGrid.setSelectionModel(new GridSelectionModel<PatientDetailDTO>());
 		editorGrid.setLoadMask(true);
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
@@ -256,11 +257,10 @@ public class ScreeningDetail extends LayoutContainer
 			{
 				editorGrid.unmask();
 				PatientDetailDTO patientDetail = new PatientDetailDTO();
-				patientDetail.setName("");
 				patientDetail.setDeleted("N");
 				editorGrid.stopEditing();
-				editorGrid.getStore().insert(patientDetail, 0);
-				editorGrid.startEditing(editorGrid.getStore().indexOf(patientDetail), 0);
+				editorGridStore.insert(patientDetail, 0);
+				editorGrid.startEditing(editorGridStore.indexOf(patientDetail), 0);
 			}
 		});
 		toolBar.add(add);
@@ -272,7 +272,7 @@ public class ScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGrid.stopEditing();
-				ModelData selectedItem = editorGrid.getSelectionModel().getSelectedItem();
+				PatientDetailDTO selectedItem = editorGrid.getSelectionModel().getSelectedItem();
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
@@ -353,29 +353,16 @@ public class ScreeningDetail extends LayoutContainer
 		modelData.setDoctors(doctors.getChecked());
 
 		editorGrid.stopEditing();
-		editorGrid.getStore().commitChanges();
-		List<ModelData> models = editorGrid.getStore().getModels();
-		for (ModelData modelData2 : models)
-		{
-			PatientDetailDTO patient = (PatientDetailDTO) modelData2;
-			patient.unFlattenObject();
-		}
-		modelData.set("patientDetails", models);
+		editorGridStore.commitChanges();
+		List<PatientDetailDTO> models = editorGridStore.getModels();
+		modelData.setPatientDetails(models);
 		return modelData;
 	}
 
 	private ColumnModel getColumnModel()
 	{
 		List<ColumnConfig> configs = getColumnConfigs();
-		ColumnModel cm = new ColumnModel(configs);
-		cm.addHeaderGroup(0, 8, new HeaderGroupConfig("Paediatric", 1, 4));
-		cm.addHeaderGroup(0, 12, new HeaderGroupConfig("Dental", 1, 4));
-		cm.addHeaderGroup(0, 16, new HeaderGroupConfig("Eye", 1, 4));
-		cm.addHeaderGroup(0, 20, new HeaderGroupConfig("Skin", 1, 4));
-		cm.addHeaderGroup(0, 24, new HeaderGroupConfig("Cardiac", 1, 4));
-		cm.addHeaderGroup(0, 28, new HeaderGroupConfig("ENT", 1, 4));
-		cm.addHeaderGroup(0, 32, new HeaderGroupConfig("Other", 1, 4));
-		return cm;
+		return new ColumnModel(configs);
 	}
 
 	private List<ColumnConfig> getColumnConfigs()
@@ -406,89 +393,20 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
 		configs.add(contactNoColumn);
 
-		ColumnConfig findingsPColumn = new ColumnConfig("PaediatricFindings", "Findings", 100);
+		ColumnConfig findingsPColumn = new ColumnConfig("findings", "Findings", 100);
 		configs.add(findingsPColumn);
 
-		ColumnConfig treatmentPColumn = new ColumnConfig("PaediatricTreatment", "Treatment Adviced", 100);
-		configs.add(treatmentPColumn);
+		ColumnConfig treatmentColumn = new ColumnConfig("treatment", "Treatment", 100);
+		configs.add(treatmentColumn);
 
-		ColumnConfig referralPColumn = new ColumnConfig("PaediatricReferral", "Referral", 100);
-		configs.add(referralPColumn);
+		ColumnConfig referral1Column = new ColumnConfig("referral1", "Referral 1", 100);
+		configs.add(referral1Column);
 
-		ColumnConfig medicinesPColumn = new ColumnConfig("PaediatricMedicine", "Medicines", 100);
-		configs.add(medicinesPColumn);
+		ColumnConfig medicines2Column = new ColumnConfig("referral2", "Referral 2", 100);
+		configs.add(medicines2Column);
 
-		ColumnConfig findingsDColumn = new ColumnConfig("DentalFindings", "Findings", 100);
-		configs.add(findingsDColumn);
-
-		ColumnConfig treatmentD = new ColumnConfig("DentalTreatment", "Treatment Adviced", 100);
-		configs.add(treatmentD);
-
-		ColumnConfig referralD = new ColumnConfig("DentalReferral", "Referral", 100);
-		configs.add(referralD);
-
-		ColumnConfig medicinesD = new ColumnConfig("DentalMedicine", "Medicines", 100);
-		configs.add(medicinesD);
-
-		ColumnConfig findingsE = new ColumnConfig("EyeFindings", "Findings", 100);
-		configs.add(findingsE);
-
-		ColumnConfig treatmentE = new ColumnConfig("EyeTreatment", "Treatment Adviced", 100);
-		configs.add(treatmentE);
-
-		ColumnConfig referralE = new ColumnConfig("EyeReferral", "Referral", 100);
-		configs.add(referralE);
-
-		ColumnConfig medicinesE = new ColumnConfig("EyeMedicine", "Medicines", 100);
-		configs.add(medicinesE);
-
-		ColumnConfig findingsS = new ColumnConfig("SkinFindings", "Findings", 100);
-		configs.add(findingsS);
-
-		ColumnConfig treatmentS = new ColumnConfig("SkinTreatment", "Treatment Adviced", 100);
-		configs.add(treatmentS);
-
-		ColumnConfig referralS = new ColumnConfig("SkinReferral", "Referral", 100);
-		configs.add(referralS);
-
-		ColumnConfig medicinesS = new ColumnConfig("SkinMedicine", "Medicines", 100);
-		configs.add(medicinesS);
-
-		ColumnConfig findingsCardiac = new ColumnConfig("CardiacFindings", "Findings", 100);
-		configs.add(findingsCardiac);
-
-		ColumnConfig treatmentCardiac = new ColumnConfig("CardiacTreatment", "Treatment Adviced", 100);
-		configs.add(treatmentCardiac);
-
-		ColumnConfig referralCardiac = new ColumnConfig("CardiacReferral", "Referral", 100);
-		configs.add(referralCardiac);
-
-		ColumnConfig medicinesCardiac = new ColumnConfig("CardiacMedicine", "Medicines", 100);
-		configs.add(medicinesCardiac);
-
-		ColumnConfig findingsEnt = new ColumnConfig("EntFindings", "Findings", 100);
-		configs.add(findingsEnt);
-
-		ColumnConfig treatmentEnt = new ColumnConfig("EntTreatment", "Treatment Adviced", 100);
-		configs.add(treatmentEnt);
-
-		ColumnConfig referralEnt = new ColumnConfig("EntReferral", "Referral", 100);
-		configs.add(referralEnt);
-
-		ColumnConfig medicinesEnt = new ColumnConfig("EntMedicine", "Medicines", 100);
-		configs.add(medicinesEnt);
-
-		ColumnConfig findingsOther = new ColumnConfig("OtherFindings", "Findings", 100);
-		configs.add(findingsOther);
-
-		ColumnConfig treatmentOther = new ColumnConfig("OtherTreatment", "Treatment Adviced", 100);
-		configs.add(treatmentOther);
-
-		ColumnConfig referralOther = new ColumnConfig("OtherReferral", "Referral", 100);
-		configs.add(referralOther);
-
-		ColumnConfig medicinesOther = new ColumnConfig("OtherMedicine", "Medicines", 100);
-		configs.add(medicinesOther);
+		ColumnConfig medicines3Column = new ColumnConfig("referral3", "Referral 3", 100);
+		configs.add(medicines3Column);
 
 		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
 		configs.add(emergency);
@@ -501,7 +419,7 @@ public class ScreeningDetail extends LayoutContainer
 
 		for (ColumnConfig cc : configs)
 		{
-			if (cc.getId().endsWith("Referral") || cc.getId().endsWith("Medicines") || cc.getId().endsWith("emergency") || cc.getId().endsWith("Case") || cc.getId().endsWith("Closed"))
+			if (cc.getId().endsWith("emergency") || cc.getId().endsWith("Case") || cc.getId().endsWith("Closed"))
 			{
 				ComboBox<YesNoDTO> field = new ComboBox<YesNoDTO>();
 				field.setDisplayField("name");
@@ -555,9 +473,32 @@ public class ScreeningDetail extends LayoutContainer
 				volunteers.getStore().add((List<VolunteerDTO>) modelData.get("lstVolunteers"));
 				doctors.getStore().add((List<DoctorDTO>) modelData.get("lstDoctors"));
 
-				// ListStore<ModelData> lstStore = new ListStore<ModelData>();
-				// editorGrid.reconfigure(lstStore, getColumnModel());
+				List<ReferralTypeDTO> lst = (List<ReferralTypeDTO>) modelData.get("lstReferralTypes");
 
+				ColumnConfig columnById = editorGrid.getColumnModel().getColumnById("referral1");
+				ComboBox<ReferralTypeDTO> field = new ComboBox<ReferralTypeDTO>();
+				field.setStore(new ListStore<ReferralTypeDTO>());
+				field.setDisplayField("name");
+				field.setValueField("name");
+				columnById.setEditor(new CellEditor(field));
+				field.getStore().add(lst);
+
+				columnById = editorGrid.getColumnModel().getColumnById("referral2");
+				field = new ComboBox<ReferralTypeDTO>();
+				field.setStore(new ListStore<ReferralTypeDTO>());
+				field.setDisplayField("name");
+				field.setValueField("name");
+				columnById.setEditor(new CellEditor(field));
+				field.getStore().add(lst);
+
+				columnById = editorGrid.getColumnModel().getColumnById("referral3");
+				field = new ComboBox<ReferralTypeDTO>();
+				field.setStore(new ListStore<ReferralTypeDTO>());
+				field.setDisplayField("name");
+				field.setValueField("name");
+				columnById.setEditor(new CellEditor(field));
+				field.getStore().add(lst);
+				
 				ScreeningDetailDTO scrDto = modelData.get("data");
 				if (scrDto != null)
 				{
@@ -584,12 +525,9 @@ public class ScreeningDetail extends LayoutContainer
 						volunteers.setChecked(volunteer, true);
 					}
 
+					editorGridStore.removeAll();
 					List<PatientDetailDTO> patientDetails = scrDto.getPatientDetails();
-					for (PatientDetailDTO patientDetail : patientDetails)
-					{
-						patientDetail.flattenObject();
-					}
-					editorGrid.getStore().add(patientDetails);
+					editorGridStore.add(patientDetails);
 				}
 				IndexPage.unmaskCenterComponent();
 			}
@@ -657,6 +595,6 @@ public class ScreeningDetail extends LayoutContainer
 		typeOfLocation.getStore().removeAll();
 		doctors.getStore().removeAll();
 		volunteers.getStore().removeAll();
-		editorGrid.getStore().removeAll();
+		editorGridStore.removeAll();
 	}
 }

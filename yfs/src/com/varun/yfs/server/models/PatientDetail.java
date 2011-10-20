@@ -2,18 +2,11 @@ package com.varun.yfs.server.models;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.ForeignKey;
 
 @Entity
 @Table(name = "patientDetail")
@@ -51,41 +44,21 @@ public class PatientDetail implements Serializable
 
 	@Column(nullable = true)
 	private String contactNo;
-
-	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-	@ForeignKey(name = "paediatricScreeningInfoId")
-	@Fetch(value = FetchMode.SELECT)
-	private PaediatricScreeningInfo paediatric;
-
-	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-	@ForeignKey(name = "dentalScreeningInfoId")
-	@Fetch(value = FetchMode.SELECT)
-	private DentalScreeningInfo dental;
-
-	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-	@ForeignKey(name = "eyeScreeningInfoId")
-	@Fetch(value = FetchMode.SELECT)
-	private EyeScreeningInfo eye;
-
-	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-	@ForeignKey(name = "entScreeningInfoId")
-	@Fetch(value = FetchMode.SELECT)
-	private ENTScreeningInfo ent;
-
-	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-	@ForeignKey(name = "skinScreeningInfoId")
-	@Fetch(value = FetchMode.SELECT)
-	private SkinScreeningInfo skin;
-
-	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-	@ForeignKey(name = "cardiacScreeningInfoId")
-	@Fetch(value = FetchMode.SELECT)
-	private CardiacScreeningInfo cardiac;
-
-	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-	@ForeignKey(name = "otherScreeningInfoId")
-	@Fetch(value = FetchMode.SELECT)
-	private OtherScreeningInfo other;
+	
+	@Column(nullable = true)
+	private String findings;
+	
+	@Column(nullable = true)
+	private String treatment;
+	
+	@Column(nullable = true)
+	private String referral1;
+	
+	@Column(nullable = true)
+	private String referral2;
+	
+	@Column(nullable = true)
+	private String referral3;
 
 	@Column(nullable = true)
 	private String emergency;
@@ -201,74 +174,54 @@ public class PatientDetail implements Serializable
 		this.contactNo = contactNo;
 	}
 
-	public PaediatricScreeningInfo getPaediatric()
+	public String getFindings()
 	{
-		return paediatric;
+		return findings;
 	}
 
-	public void setPaediatric(PaediatricScreeningInfo paediatric)
+	public void setFindings(String findings)
 	{
-		this.paediatric = paediatric;
+		this.findings = findings;
 	}
 
-	public DentalScreeningInfo getDental()
+	public String getTreatment()
 	{
-		return dental;
+		return treatment;
 	}
 
-	public void setDental(DentalScreeningInfo dental)
+	public void setTreatment(String treatment)
 	{
-		this.dental = dental;
+		this.treatment = treatment;
 	}
 
-	public EyeScreeningInfo getEye()
+	public String getReferral1()
 	{
-		return eye;
+		return referral1;
 	}
 
-	public void setEye(EyeScreeningInfo eye)
+	public void setReferral1(String referral1)
 	{
-		this.eye = eye;
+		this.referral1 = referral1;
 	}
 
-	public ENTScreeningInfo getEnt()
+	public String getReferral2()
 	{
-		return ent;
+		return referral2;
 	}
 
-	public void setEnt(ENTScreeningInfo ent)
+	public void setReferral2(String referral2)
 	{
-		this.ent = ent;
+		this.referral2 = referral2;
 	}
 
-	public SkinScreeningInfo getSkin()
+	public String getReferral3()
 	{
-		return skin;
+		return referral3;
 	}
 
-	public void setSkin(SkinScreeningInfo skin)
+	public void setReferral3(String referral3)
 	{
-		this.skin = skin;
-	}
-
-	public CardiacScreeningInfo getCardiac()
-	{
-		return cardiac;
-	}
-
-	public void setCardiac(CardiacScreeningInfo cardiac)
-	{
-		this.cardiac = cardiac;
-	}
-
-	public OtherScreeningInfo getOther()
-	{
-		return other;
-	}
-
-	public void setOther(OtherScreeningInfo other)
-	{
-		this.other = other;
+		this.referral3 = referral3;
 	}
 
 	public String getEmergency()

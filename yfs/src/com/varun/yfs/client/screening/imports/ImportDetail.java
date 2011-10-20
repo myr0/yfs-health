@@ -7,26 +7,18 @@ import gwtupload.client.MultiUploader;
 import gwtupload.client.PreloadedImage;
 import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
-import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
@@ -42,7 +34,7 @@ public class ImportDetail extends LayoutContainer
 
 	public ImportDetail()
 	{
-		setSize("600", "375");
+		setSize("400", "175");
 	}
 
 	@Override
@@ -54,109 +46,12 @@ public class ImportDetail extends LayoutContainer
 
 		ContentPanel mainContainerPanel = new ContentPanel();
 		mainContainerPanel.setHeading("Import Screening Data");
-		add(mainContainerPanel);
-		mainContainerPanel.setSize("600px", "315px");
 
-		LayoutContainer lcUploadComponent = buildUploadComponent();
-		LayoutContainer lcTemplateComponent = buildTemplateComponent();
+		FieldSet fldstStepChoose = new FieldSet();
 
-		mainContainerPanel.add(lcUploadComponent, new FitData(5));
-		mainContainerPanel.add(lcTemplateComponent, new FitData(5));
-		
-		mainContainerPanel.setButtonAlign(HorizontalAlignment.CENTER);
-		mainContainerPanel.addButton(new Button("Process", new SelectionListener<ButtonEvent>()
-		{
-			@Override
-			public void componentSelected(ButtonEvent ce)
-			{
-			}
-		}));
-		
-		add(mainContainerPanel);
-	}
-
-	private LayoutContainer buildTemplateComponent()
-	{
-		ContentPanel mainTemplateSettingsPanel = new ContentPanel();
-		mainTemplateSettingsPanel.setHeading("Template Settings");
-		mainTemplateSettingsPanel.setLayout(new TableLayout(2));
-
-		FormPanel templateSettings1 = new FormPanel();
-		templateSettings1.setLayout(new FormLayout());
-		templateSettings1.setHeaderVisible(false);
-		templateSettings1.setHeading("New FormPanel");
-		templateSettings1.setSize("200", "230px");
-
-		NumberField firstDataRow = new NumberField();
-		firstDataRow.setMaxLength(2);
-		templateSettings1.add(firstDataRow, new FormData("100%"));
-		firstDataRow.setFieldLabel("First Data Row");
-
-		NumberField nameColumn = new NumberField();
-		nameColumn.setMaxLength(2);
-		templateSettings1.add(nameColumn, new FormData("100%"));
-		nameColumn.setFieldLabel("Name Column");
-
-		NumberField ageColumn = new NumberField();
-		ageColumn.setMaxLength(2);
-		ageColumn.setFieldLabel("Age Column");
-		templateSettings1.add(ageColumn, new FormData("50%"));
-
-		NumberField sexColumn = new NumberField();
-		sexColumn.setFieldLabel("Sex Column");
-		templateSettings1.add(ageColumn, new FormData("100%"));
-
-		NumberField standardColumn = new NumberField();
-		standardColumn.setMaxLength(2);
-		standardColumn.setFieldLabel("Standard Column");
-		templateSettings1.add(standardColumn, new FormData("100%"));
-
-		NumberField heightColumn = new NumberField();
-		heightColumn.setMaxLength(2);
-		heightColumn.setFieldLabel("Height Column");
-		templateSettings1.add(heightColumn, new FormData("100%"));
-
-		NumberField weightColumn = new NumberField();
-		weightColumn.setMaxLength(2);
-		weightColumn.setFieldLabel("Weight Column");
-		templateSettings1.add(weightColumn, new FormData("100%"));
-
-		NumberField addressColumn = new NumberField();
-		addressColumn.setMaxLength(2);
-		addressColumn.setFieldLabel("Address Column");
-		templateSettings1.add(addressColumn, new FormData("100%"));
-		
-		mainTemplateSettingsPanel.add(templateSettings1);
-		mainTemplateSettingsPanel.setSize("550", "266px");
-		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-		
-		ColumnConfig clmncnfgNewColumn = new ColumnConfig("id", "Ailment Type", 100);
-		configs.add(clmncnfgNewColumn);
-		
-		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("id", "Ailment Type Column", 120);
-		configs.add(clmncnfgNewColumn_1);
-		
-		ColumnConfig clmncnfgNewColumn_2 = new ColumnConfig("id", "Findings", 100);
-		configs.add(clmncnfgNewColumn_2);
-		
-		FormPanel templateSettings2 = new FormPanel();
-		templateSettings2.setLayout(new FormLayout());
-		templateSettings2.setHeaderVisible(false);
-		templateSettings2.setHeading("Template Details Grid");
-		
-		EditorGrid editorGrid = new EditorGrid(new ListStore(), new ColumnModel(configs));
-		templateSettings2.add(editorGrid, new FormData("-15 -15"));
-		editorGrid.setSize("210px", "330");
-		editorGrid.setBorders(true);
-		mainTemplateSettingsPanel.add(templateSettings2);
-		templateSettings2.setSize("340px", "230px");
-		return mainTemplateSettingsPanel;
-	}
-	
-	private LayoutContainer buildUploadComponent()
-	{
-		LayoutContainer lcUploadComponent = new LayoutContainer();
-		lcUploadComponent.setLayout(new TableLayout(2));
+		LayoutContainer lcUploadComponent_1 = new LayoutContainer();
+		fldstStepChoose.add(lcUploadComponent_1);
+		lcUploadComponent_1.setLayout(new TableLayout(2));
 
 		LabelField lblFileImport = new LabelField("Select a file to Import:");
 		lblFileImport.setSize("120", "20");
@@ -168,10 +63,37 @@ public class ImportDetail extends LayoutContainer
 		defaultUploader.setAvoidRepeatFiles(true);
 		defaultUploader.setTitle("Select a file to upload:");
 
-		lcUploadComponent.add(lblFileImport);
-		lcUploadComponent.add(defaultUploader);
-		lcUploadComponent.setWidth("400");
-		return lcUploadComponent;
+		lcUploadComponent_1.add(lblFileImport);
+		lcUploadComponent_1.add(defaultUploader);
+		defaultUploader.setWidth("80%");
+		lcUploadComponent_1.setWidth("400");
+		FormData fd_fldstStepChoose = new FormData("80%");
+		fd_fldstStepChoose.setMargins(new Margins(5, 5, 5, 5));
+		mainContainerPanel.add(fldstStepChoose, fd_fldstStepChoose);
+		fldstStepChoose.setHeading("Step 1: Choose a file");
+		fldstStepChoose.setCollapsible(true);
+
+		FieldSet fldstStepProcess = new FieldSet();
+		Button btnStartProcessing = new Button("Start Processing", new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+			}
+		});
+		fldstStepProcess.add(btnStartProcessing);
+		FormData fd_fldstStepProcess = new FormData("80%");
+		fd_fldstStepProcess.setMargins(new Margins(5, 5, 5, 5));
+		mainContainerPanel.add(fldstStepProcess, fd_fldstStepProcess);
+		fldstStepProcess.setHeading("Step 2: Process");
+		fldstStepProcess.setCollapsible(true);
+		add(mainContainerPanel);
+		mainContainerPanel.setSize("600px", "165px");
+		mainContainerPanel.setLayout(new FormLayout());
+
+		mainContainerPanel.setButtonAlign(HorizontalAlignment.CENTER);
+
+		add(mainContainerPanel);
 	}
 
 	public void initialize(String title, String scrId)
@@ -229,5 +151,4 @@ public class ImportDetail extends LayoutContainer
 			panelImages.add(image);
 		}
 	};
-	private LayoutContainer lcTemplateComponent_1;
 }

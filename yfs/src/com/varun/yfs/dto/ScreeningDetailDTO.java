@@ -214,15 +214,14 @@ public class ScreeningDetailDTO extends BaseModelData
 
 	public void setPatientDetails(List<PatientDetailDTO> lstPatientDetails)
 	{
-		set("patientDetails", lstPatientDetails);
+		set("lstPatientDetails", lstPatientDetails);
 		this.lstPatientDetails = lstPatientDetails;
 	}
 
 	public List<PatientDetailDTO> getPatientDetails()
 	{
-		return get("patientDetails");
+		return lstPatientDetails;
 	}
-
 
 	@Override
 	public String toString()

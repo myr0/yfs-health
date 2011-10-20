@@ -154,7 +154,6 @@ public class AdministrationPage extends LayoutContainer
 	{
 		storeLoader.saveListStore(curAdminEntity, lstModels, new AsyncCallback<RpcStatusEnum>()
 		{
-
 			@Override
 			public void onSuccess(RpcStatusEnum result)
 			{
@@ -180,7 +179,6 @@ public class AdministrationPage extends LayoutContainer
 		gridPanel.setHeading(entityName);
 		storeLoader.getListStore(entityName, new AsyncCallback<List<ModelData>>()
 		{
-
 			@Override
 			public void onSuccess(List<ModelData> result)
 			{

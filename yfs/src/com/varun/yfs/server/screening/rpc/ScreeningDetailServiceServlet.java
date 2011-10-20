@@ -37,6 +37,7 @@ public class ScreeningDetailServiceServlet extends RemoteServiceServlet implemen
 		modelData.set("lstLocality", DataUtil.getModelList(ModelDataEnum.Locality.name()));
 
 		modelData.set("lstChapterName", DataUtil.getModelList(ModelDataEnum.ChapterName.name()));
+		modelData.set("lstReferralTypes", DataUtil.getModelList(ListModelDataEnum.ReferralType.name()));
 		modelData.set("lstProcessType", DataUtil.getModelList(ListModelDataEnum.ProcessType.name()));
 		modelData.set("lstTypeOfLocation", DataUtil.getModelList(ListModelDataEnum.TypeOfLocation.name()));
 		modelData.set("lstVolunteers", DataUtil.getModelList(ListModelDataEnum.Volunteer.name()));

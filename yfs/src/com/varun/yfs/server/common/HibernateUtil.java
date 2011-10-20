@@ -25,6 +25,7 @@ import com.varun.yfs.server.models.Doctor;
 import com.varun.yfs.server.models.Entities;
 import com.varun.yfs.server.models.Locality;
 import com.varun.yfs.server.models.ProcessType;
+import com.varun.yfs.server.models.ReferralType;
 import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Town;
 import com.varun.yfs.server.models.TypeOfLocation;
@@ -97,9 +98,20 @@ public class HibernateUtil
 		insertTypeOfLocation(session);
 		insertVolunteer(session);
 		insertUsers(session);
+		
+		insertReferralTypes(session);
 
 		transaction.commit();
 		session.close();
+	}
+
+	private static void insertReferralTypes(Session session)
+	{
+		session.save(new ReferralType("Paediatric"));
+		session.save(new ReferralType("Skin"));
+		session.save(new ReferralType("ENT"));
+		session.save(new ReferralType("Dental"));
+		session.save(new ReferralType("Orthopaedic"));
 	}
 
 	private static void insertUsers(Session session)
