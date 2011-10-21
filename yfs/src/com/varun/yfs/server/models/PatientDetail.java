@@ -24,19 +24,19 @@ public class PatientDetail implements Serializable
 	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String age;
 	
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String sex;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String standard;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String height;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String weight;
 
 	@Column(nullable = true)

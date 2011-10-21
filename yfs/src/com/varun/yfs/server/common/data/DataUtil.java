@@ -167,7 +167,7 @@ public class DataUtil
 		{
 			ScreeningDetail scrDetHibObj = dozerMapper.map(screeningDetailDto, ScreeningDetail.class);
 			String id = screeningDetailDto.get("id");
-			extractPatientDetailData(screeningDetailDto, scrDetHibObj);
+			extractPatientDetailData(session, screeningDetailDto, scrDetHibObj);
 			if (id == null)
 			{
 				session.save(scrDetHibObj);
@@ -224,6 +224,7 @@ public class DataUtil
 
 		Criteria filter = session.createCriteria(ScreeningDetail.class);
 		filter.add(Restrictions.eq("id", scrId)).add(Restrictions.eq("deleted", "N"));
+		filter.createCriteria("lstPatientDetails").add(Restrictions.eq("deleted", "N"));
 		try
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
@@ -244,7 +245,7 @@ public class DataUtil
 		return dtoObject;
 	}
 
-	private static void extractPatientDetailData(ScreeningDetailDTO screeningDetailDto, ScreeningDetail scrDetHibObj)
+	private static void extractPatientDetailData(Session session, ScreeningDetailDTO screeningDetailDto, ScreeningDetail scrDetHibObj)
 	{
 		int index = 0;
 		for (ModelData modelData : screeningDetailDto.getPatientDetails())
@@ -253,23 +254,53 @@ public class DataUtil
 
 			patientDetail.setName(Util.safeToString(modelData.get("name")));
 			patientDetail.setAge(Util.safeToString(modelData.get("age")));
-			patientDetail.setSex(Util.safeToString(modelData.get("sex")));
+
+			Object object = modelData.get("sex");
+			if (object != null)
+				patientDetail.setSex(object.toString());
+
 			patientDetail.setStandard(Util.safeToString(modelData.get("standard")));
 			patientDetail.setHeight(Util.safeToString(modelData.get("height")));
 			patientDetail.setWeight(Util.safeToString(modelData.get("weight")));
 			patientDetail.setAddress(Util.safeToString(modelData.get("address")));
 			patientDetail.setContactNo(Util.safeToString(modelData.get("contactNo")));
-			
-			patientDetail.setContactNo(Util.safeToString(modelData.get("findings")));
-			patientDetail.setContactNo(Util.safeToString(modelData.get("treatment")));
-			patientDetail.setContactNo(Util.safeToString(modelData.get("referral1")));
-			patientDetail.setContactNo(Util.safeToString(modelData.get("referral2")));
-			patientDetail.setContactNo(Util.safeToString(modelData.get("referral3")));
-			
-			patientDetail.setEmergency(Util.safeToString(modelData.get("emergency")));
-			patientDetail.setCaseClosed(Util.safeToString(modelData.get("caseClosed")));
-			patientDetail.setSurgeryCase(Util.safeToString(modelData.get("surgeryCase")));
+			patientDetail.setDeleted(modelData.get("deleted").toString());
 
+			patientDetail.setFindings(Util.safeToString(modelData.get("findings")));
+			patientDetail.setTreatment(Util.safeToString(modelData.get("treatment")));
+
+			object = modelData.get("referral1");
+			if (object != null)
+				patientDetail.setReferral1(object.toString());
+
+			object = modelData.get("referral2");
+			if (object != null)
+				patientDetail.setReferral2(object.toString());
+
+			object = modelData.get("referral3");
+			if (object != null)
+				patientDetail.setReferral3(object.toString());
+
+			object = modelData.get("emergency");
+			if (object != null)
+				patientDetail.setEmergency(object.toString());
+
+			object = modelData.get("caseClosed");
+			if (object != null)
+				patientDetail.setCaseClosed(object.toString());
+
+			object = modelData.get("surgeryCase");
+			if (object != null)
+				patientDetail.setSurgeryCase(object.toString());
+
+			if (patientDetail.getId() > 0)
+			{
+				session.saveOrUpdate(patientDetail);
+			} else
+			{
+				session.save(patientDetail);
+			}
+			session.flush();
 		}
 	}
 }

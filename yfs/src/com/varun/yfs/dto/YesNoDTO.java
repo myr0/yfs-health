@@ -30,15 +30,9 @@ public class YesNoDTO extends BaseModelData
 
 	public static ListStore<YesNoDTO> getValues()
 	{
-		YesNoDTO yes = new YesNoDTO();
-		yes.setName("YES");
-
-		YesNoDTO no = new YesNoDTO();
-		no.setName("NO");
-
 		ListStore<YesNoDTO> listStore = new ListStore<YesNoDTO>();
-		listStore.add(no);
-		listStore.add(yes);
+		listStore.add(NO);
+		listStore.add(YES);
 		return listStore;
 	}
 

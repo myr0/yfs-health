@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -175,6 +176,7 @@ public class ScreeningDetail extends LayoutContainer
 
 		cpPart2.add(screeningDate, new FormData("90%"));
 		screeningDate.setFieldLabel("Date");
+		screeningDate.setAllowBlank(false);
 
 		cpPart2.add(processType, new FormData("90%"));
 		processType.setFieldLabel("Process Type");
@@ -242,7 +244,7 @@ public class ScreeningDetail extends LayoutContainer
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
 		editorGrid.setHeight("310px");
-		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.TWO);
+		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 
 		final ContentPanel gridHolderPanel = new ContentPanel();
 		gridHolderPanel.setHeading("Patient Details");
@@ -318,6 +320,61 @@ public class ScreeningDetail extends LayoutContainer
 					Info.display("New Screening", "You need to select a country to proceed.");
 					validationState = false;
 				}
+				if (state.getSelection().isEmpty())
+				{
+					Info.display("New Screening", "You need to select a state to proceed.");
+					validationState = false;
+				}
+				if (city.getSelection().isEmpty())
+				{
+					Info.display("New Screening", "You need to select a city to proceed.");
+					validationState = false;
+				}
+				if (town.getSelection().isEmpty())
+				{
+					Info.display("New Screening", "You need to select a town to proceed.");
+					validationState = false;
+				}
+				if (village.getSelection().isEmpty())
+				{
+					Info.display("New Screening", "You need to select a village to proceed.");
+					validationState = false;
+				}
+				if (chapterName.getSelection().isEmpty())
+				{
+					Info.display("New Screening", "You need to select a Chapter Name to proceed.");
+					validationState = false;
+				}
+				if (locality.getSelection().isEmpty())
+				{
+					Info.display("New Screening", "You need to select a Locality to proceed.");
+					validationState = false;
+				}
+				if (screeningDate.getValue() == null)
+				{
+					Info.display("New Screening", "You need to select a Screening-Date to proceed.");
+					validationState = false;
+				}
+				if (processType.getSelection().isEmpty())
+				{
+					Info.display("New Screening", "You need to select a Process Type to proceed.");
+					validationState = false;
+				}
+				if (typeOfLocation.getSelection().isEmpty())
+				{
+					Info.display("New Screening", "You need to select a Type Of Location to proceed.");
+					validationState = false;
+				}
+				if (address.getValue().isEmpty())
+				{
+					Info.display("New Screening", "You need to enter the Address to proceed.");
+					validationState = false;
+				}
+				if (contactInformation.getValue().isEmpty())
+				{
+					Info.display("New Screening", "You need to enter the Contact Information to proceed.");
+					validationState = false;
+				}
 				return validationState;
 			}
 		}));
@@ -369,35 +426,82 @@ public class ScreeningDetail extends LayoutContainer
 	{
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-		ColumnConfig nameColumn = new ColumnConfig("name", "Name", 150);
+		ColumnConfig nameColumn = new ColumnConfig("id", "Id", 20);
+		configs.add(nameColumn);
+
+		nameColumn = new ColumnConfig("name", "Name", 150);
+		TextField<String> textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(255);
+		nameColumn.setEditor(new CellEditor(textField));
 		configs.add(nameColumn);
 
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
+		NumberField numField = new NumberField();
+		numField.setAllowBlank(false);
+		numField.setMinLength(1);
+		numField.setMaxLength(3);
+		ageColumn.setEditor(new CellEditor(numField));
 		configs.add(ageColumn);
 
 		ColumnConfig sexColumn = new ColumnConfig("sex", "Sex", 50);
+		ComboBox<GenderDTO> field = new ComboBox<GenderDTO>();
+		field.setDisplayField("name");
+		field.setValueField("name");
+		field.setStore(GenderDTO.getValues());
+		field.setTriggerAction(TriggerAction.ALL);
+		field.setEditable(false);
+		sexColumn.setEditor(new CellEditor(field));
 		configs.add(sexColumn);
 
 		ColumnConfig classColumn = new ColumnConfig("standard", "Standard", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(4);
+		classColumn.setEditor(new CellEditor(textField));
 		configs.add(classColumn);
 
 		ColumnConfig heightColumn = new ColumnConfig("height", "Height(cm)", 100);
+		numField = new NumberField();
+		numField.setAllowBlank(false);
+		numField.setMinLength(1);
+		numField.setMaxLength(3);
+		heightColumn.setEditor(new CellEditor(numField));
 		configs.add(heightColumn);
 
 		ColumnConfig weightColumn = new ColumnConfig("weight", "Weight(kg)", 100);
+		numField = new NumberField();
+		numField.setAllowBlank(false);
+		numField.setMinLength(1);
+		numField.setMaxLength(3);
+		weightColumn.setEditor(new CellEditor(numField));
 		configs.add(weightColumn);
 
 		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(255);
+		addressColumn.setEditor(new CellEditor(textField));
 		configs.add(addressColumn);
 
 		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
+		numField = new NumberField();
+		numField.setAllowBlank(false);
+		numField.setMinLength(4);
+		numField.setMaxLength(14);
+		contactNoColumn.setEditor(new CellEditor(numField));
 		configs.add(contactNoColumn);
 
 		ColumnConfig findingsPColumn = new ColumnConfig("findings", "Findings", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(255);
+		addressColumn.setEditor(new CellEditor(textField));
 		configs.add(findingsPColumn);
-
-		ColumnConfig treatmentColumn = new ColumnConfig("treatment", "Treatment", 100);
-		configs.add(treatmentColumn);
 
 		ColumnConfig referral1Column = new ColumnConfig("referral1", "Referral 1", 100);
 		configs.add(referral1Column);
@@ -409,40 +513,34 @@ public class ScreeningDetail extends LayoutContainer
 		configs.add(medicines3Column);
 
 		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
+		ComboBox<YesNoDTO> yesNoDto = new ComboBox<YesNoDTO>();
+		yesNoDto.setDisplayField("name");
+		yesNoDto.setValueField("name");
+		yesNoDto.setEditable(false);
+		yesNoDto.setStore(YesNoDTO.getValues());
+		yesNoDto.setTriggerAction(TriggerAction.ALL);
+		emergency.setEditor(new CellEditor(yesNoDto));
 		configs.add(emergency);
 
 		ColumnConfig surgeryCase = new ColumnConfig("surgeryCase", "Surgery Case", 100);
+		yesNoDto = new ComboBox<YesNoDTO>();
+		yesNoDto.setDisplayField("name");
+		yesNoDto.setValueField("name");
+		yesNoDto.setEditable(false);
+		yesNoDto.setStore(YesNoDTO.getValues());
+		yesNoDto.setTriggerAction(TriggerAction.ALL);
+		surgeryCase.setEditor(new CellEditor(yesNoDto));
 		configs.add(surgeryCase);
 
 		ColumnConfig caseClosed = new ColumnConfig("caseClosed", "Case Closed", 100);
+		yesNoDto = new ComboBox<YesNoDTO>();
+		yesNoDto.setDisplayField("name");
+		yesNoDto.setValueField("name");
+		yesNoDto.setEditable(false);
+		yesNoDto.setStore(YesNoDTO.getValues());
+		yesNoDto.setTriggerAction(TriggerAction.ALL);
+		caseClosed.setEditor(new CellEditor(yesNoDto));
 		configs.add(caseClosed);
-
-		for (ColumnConfig cc : configs)
-		{
-			if (cc.getId().endsWith("emergency") || cc.getId().endsWith("Case") || cc.getId().endsWith("Closed"))
-			{
-				ComboBox<YesNoDTO> field = new ComboBox<YesNoDTO>();
-				field.setDisplayField("name");
-				field.setValueField("name");
-				field.setStore(YesNoDTO.getValues());
-
-				cc.setEditor(new CellEditor(field));
-				field.setTriggerAction(TriggerAction.ALL);
-
-			} else if (cc.getId().equalsIgnoreCase("sex"))
-			{
-				ComboBox<GenderDTO> field = new ComboBox<GenderDTO>();
-				field.setDisplayField("name");
-				field.setValueField("name");
-				field.setStore(GenderDTO.getValues());
-
-				cc.setEditor(new CellEditor(field));
-				field.setTriggerAction(TriggerAction.ALL);
-			} else
-			{
-				cc.setEditor(new CellEditor(new TextField<String>()));
-			}
-		}
 
 		return configs;
 	}
@@ -480,6 +578,7 @@ public class ScreeningDetail extends LayoutContainer
 				field.setStore(new ListStore<ReferralTypeDTO>());
 				field.setDisplayField("name");
 				field.setValueField("name");
+				field.setEditable(false);
 				columnById.setEditor(new CellEditor(field));
 				field.getStore().add(lst);
 
@@ -488,6 +587,7 @@ public class ScreeningDetail extends LayoutContainer
 				field.setStore(new ListStore<ReferralTypeDTO>());
 				field.setDisplayField("name");
 				field.setValueField("name");
+				field.setEditable(false);
 				columnById.setEditor(new CellEditor(field));
 				field.getStore().add(lst);
 
@@ -496,9 +596,10 @@ public class ScreeningDetail extends LayoutContainer
 				field.setStore(new ListStore<ReferralTypeDTO>());
 				field.setDisplayField("name");
 				field.setValueField("name");
+				field.setEditable(false);
 				columnById.setEditor(new CellEditor(field));
 				field.getStore().add(lst);
-				
+
 				ScreeningDetailDTO scrDto = modelData.get("data");
 				if (scrDto != null)
 				{
@@ -556,6 +657,7 @@ public class ScreeningDetail extends LayoutContainer
 			public void onSuccess(RpcStatusEnum result)
 			{
 				IndexPage.unmaskCenterComponent();
+				editorGrid.unmask();
 				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
 				{
 					MessageBox.alert("Alert", "Error encountered while saving", l);
