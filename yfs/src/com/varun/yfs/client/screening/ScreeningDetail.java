@@ -1,5 +1,6 @@
 package com.varun.yfs.client.screening;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -442,6 +443,7 @@ public class ScreeningDetail extends LayoutContainer
 		numField.setAllowBlank(false);
 		numField.setMinLength(1);
 		numField.setMaxLength(3);
+		numField.setPropertyEditorType(Integer.class);
 		ageColumn.setEditor(new CellEditor(numField));
 		configs.add(ageColumn);
 
@@ -468,6 +470,7 @@ public class ScreeningDetail extends LayoutContainer
 		numField.setAllowBlank(false);
 		numField.setMinLength(1);
 		numField.setMaxLength(3);
+		numField.setPropertyEditorType(Integer.class);
 		heightColumn.setEditor(new CellEditor(numField));
 		configs.add(heightColumn);
 
@@ -476,6 +479,7 @@ public class ScreeningDetail extends LayoutContainer
 		numField.setAllowBlank(false);
 		numField.setMinLength(1);
 		numField.setMaxLength(3);
+		numField.setPropertyEditorType(Integer.class);
 		weightColumn.setEditor(new CellEditor(numField));
 		configs.add(weightColumn);
 
@@ -492,6 +496,7 @@ public class ScreeningDetail extends LayoutContainer
 		numField.setAllowBlank(false);
 		numField.setMinLength(4);
 		numField.setMaxLength(14);
+		numField.setPropertyEditorType(Integer.class);
 		contactNoColumn.setEditor(new CellEditor(numField));
 		configs.add(contactNoColumn);
 
