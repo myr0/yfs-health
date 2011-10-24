@@ -18,7 +18,7 @@ public class ScreeningDetailServiceServlet extends RemoteServiceServlet implemen
 {
 	private static Logger logger = LoggerFactory.getLogger(ScreeningDetailServiceServlet.class);
 	private static final long serialVersionUID = 4397970043413666183L;
-
+	
 	@Override
 	public ModelData getModel(String scrId)
 	{
@@ -58,7 +58,7 @@ public class ScreeningDetailServiceServlet extends RemoteServiceServlet implemen
 			DataUtil.saveScreeningDetail(modelData);
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error trying to save the model" + ex.getCause());
+			logger.error("Encountered error trying to save the model." + ex.getCause());
 			status = RpcStatusEnum.FAILURE;
 		}
 		return status;

@@ -23,11 +23,14 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 /*based on this example : http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/ss/examples/ToCSV.java*/
 public class ExcelReader
 {
+	private static final String WORKSHEET_NAME = "Screening Detail";
+
 	private static Logger logger = Logger.getLogger(ExcelReader.class);
 
 	private Workbook workbook = null;
 	private DataFormatter formatter = null;
 	private FormulaEvaluator evaluator = null;
+	private Sheet sheet = null;
 
 	private int maxRowWidth = 0;
 	private int lastRowNum;
@@ -50,21 +53,6 @@ public class ExcelReader
 	public void readContentsAsCSV(String strSource) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
 	{
 		this.processedRowCount = 0;
-		File source = new File(strSource);
-
-		if (!source.exists())
-		{
-			throw new IllegalArgumentException("The source for the Excel " + "file(s) cannot be found.");
-		}
-
-		if (source.isDirectory())
-		{
-			// filesList = source.listFiles(new ExcelFilenameFilter());
-			throw new IllegalArgumentException("The source for the Excel " + "file(s) seems to be a directory.");
-		}
-
-		openWorkbook(source);
-
 		extractContents();
 	}
 
@@ -78,18 +66,37 @@ public class ExcelReader
 		return this.processedRowCount;
 	}
 
-	private void openWorkbook(File file) throws FileNotFoundException, IOException, InvalidFormatException
+	public void validateFile(String filePath) throws FileNotFoundException, IOException, InvalidFormatException, IllegalArgumentException
 	{
+		File source = new File(filePath);
+
+		if (!source.exists())
+		{
+			throw new IllegalArgumentException("The source for the Excel " + "file(s) cannot be found.");
+		}
+
+		if (source.isDirectory())
+		{
+			// filesList = source.listFiles(new ExcelFilenameFilter());
+			throw new IllegalArgumentException("The source for the Excel " + "file(s) seems to be a directory.");
+		}
+
 		FileInputStream fis = null;
 		try
 		{
-			logger.debug("Opening workbook [" + file.getName() + "]");
+			logger.debug("Opening workbook [" + source.getName() + "]");
 
-			fis = new FileInputStream(file);
+			fis = new FileInputStream(source);
 
 			this.workbook = WorkbookFactory.create(fis);
 			this.evaluator = this.workbook.getCreationHelper().createFormulaEvaluator();
 			this.formatter = new DataFormatter();
+
+			sheet = this.workbook.getSheet(WORKSHEET_NAME);
+
+			if (sheet == null)
+				throw new IllegalArgumentException("The sheet must be named as " + WORKSHEET_NAME);
+
 		} finally
 		{
 			if (fis != null)
@@ -101,40 +108,33 @@ public class ExcelReader
 
 	private void extractContents()
 	{
-		Sheet sheet = null;
 		Row row = null;
 
 		logger.debug("Converting files contents to CSV string");
 
-		sheet = this.workbook.getSheet("Consolidated");
-
-		if (sheet != null)
+		if (sheet.getPhysicalNumberOfRows() > 0)
 		{
-			if (sheet.getPhysicalNumberOfRows() > 0)
+			lastRowNum = sheet.getLastRowNum();
+			for (int j = 0; j <= lastRowNum; j++)
 			{
-				lastRowNum = sheet.getLastRowNum();
-				for (int j = 0; j <= lastRowNum; j++)
+				row = sheet.getRow(j);
+				try
 				{
-					row = sheet.getRow(j);
-					try
-					{
-						Thread.currentThread().sleep(50);
-					} catch (InterruptedException e)
-					{
-						logger.error("Thread interrupted while attempting to read excel rows.");
-						e.printStackTrace();
-					}
-					this.rowToCSV(row);
+					Thread.currentThread().sleep(50);
+				} catch (InterruptedException e)
+				{
+					logger.error("Thread interrupted while attempting to read excel rows.");
+					e.printStackTrace();
+				}
+				this.rowToCSV(row);
 
-					if (j == lastRowNum)
-					{
-						this.excelRows.add(Collections.EMPTY_LIST);
-						logger.debug("Excel Reader encountered EOF.");
-					}
+				if (j == lastRowNum)
+				{
+					this.excelRows.add(Collections.EMPTY_LIST);
+					logger.debug("Excel Reader encountered EOF.");
 				}
 			}
 		}
-
 	}
 
 	private void rowToCSV(Row row)

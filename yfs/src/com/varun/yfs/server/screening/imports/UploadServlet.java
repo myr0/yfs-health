@@ -13,14 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.log4j.Logger;
 
 public class UploadServlet extends UploadAction
 {
 
 	private static final long serialVersionUID = 1L;
 
-	Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
-	Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
+	private static Logger logger = Logger.getLogger(UploadServlet.class);
+	private Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
+	private Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
 
 	@Override
 	public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) throws UploadActionException
@@ -35,6 +37,8 @@ public class UploadServlet extends UploadAction
 					File file = File.createTempFile(item.getName(), "");
 					item.write(file);
 
+					logger.debug("Writing the file to temporary folder." + file.getAbsolutePath());
+
 					receivedFiles.put(item.getFieldName(), file);
 					receivedContentTypes.put(item.getFieldName(), item.getContentType());
 
@@ -42,6 +46,7 @@ public class UploadServlet extends UploadAction
 
 				} catch (Exception e)
 				{
+					logger.error("Encountered an error while uploading the file. Action aborted: " + e.getMessage());
 					throw new UploadActionException(e);
 				}
 			}

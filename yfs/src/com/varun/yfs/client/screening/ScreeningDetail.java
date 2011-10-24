@@ -84,10 +84,19 @@ public class ScreeningDetail extends LayoutContainer
 	private ListStore<PatientDetailDTO> editorGridStore;
 	private EditorGrid<PatientDetailDTO> editorGrid;
 	private String scrId;
+	
+	public EditorGrid<PatientDetailDTO> getEditorGrid()
+	{
+		return editorGrid;
+	}
+
+	public void setEditorGrid(EditorGrid<PatientDetailDTO> editorGrid)
+	{
+		this.editorGrid = editorGrid;
+	}
 
 	public ScreeningDetail()
 	{
-		// setSize("700", "600");
 	}
 
 	protected final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
@@ -106,7 +115,6 @@ public class ScreeningDetail extends LayoutContainer
 		setLayoutData(new FitData(5));
 
 		mainContainerPanel.setHeading(headerText);
-		// mainContainerPanel.setScrollMode(Scroll.AUTOY);
 
 		LayoutContainer cpMain = new LayoutContainer();
 		cpMain.setLayout(new TableLayout(3));

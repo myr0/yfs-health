@@ -3,6 +3,7 @@ package com.varun.yfs.server.admin.rpc;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.dozer.Mapper;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -20,6 +21,7 @@ import com.varun.yfs.server.models.Locality;
 import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Town;
 import com.varun.yfs.server.models.Village;
+import com.varun.yfs.server.screening.imports.ExcelReader;
 
 public enum ModelDataEnum
 {
@@ -81,7 +83,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				ex.printStackTrace();
+				logger.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -140,7 +142,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				ex.printStackTrace();
+				logger.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -205,7 +207,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				ex.printStackTrace();
+				logger.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -268,7 +270,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				ex.printStackTrace();
+				logger.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -332,7 +334,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				ex.printStackTrace();
+				logger.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -397,7 +399,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				ex.printStackTrace();
+				logger.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -489,7 +491,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				ex.printStackTrace();
+				logger.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -595,5 +597,7 @@ public enum ModelDataEnum
 	abstract public ModelData getStoreContents();
 
 	abstract public String saveModel(ModelData model);
+
+	private static Logger logger = Logger.getLogger(ModelDataEnum.class);
 
 }

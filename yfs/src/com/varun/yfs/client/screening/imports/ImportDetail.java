@@ -7,8 +7,13 @@ import gwtupload.client.PreloadedImage;
 import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
 import gwtupload.client.SingleUploader;
 
+import java.util.List;
+
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Info;
@@ -25,18 +30,28 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.IndexPage;
 import com.varun.yfs.client.screening.ScreeningDetail;
+import com.varun.yfs.dto.PatientDetailDTO;
 
 public class ImportDetail extends LayoutContainer
 {
+	private static final PatientDataImportServiceAsync patientDataImportService = PatientDataImportService.Util.getInstance();
 	private FlowPanel panelImages = new FlowPanel();
 	private String uploadPath;
+	private ScreeningDetail screeningDetail;
 
 	public ImportDetail()
 	{
-//		setSize("400", "175");
 	}
+
+	protected final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
+	{
+		public void handleEvent(MessageBoxEvent ce)
+		{
+		}
+	};
 
 	@Override
 	protected void onRender(Element parent, int index)
@@ -65,24 +80,24 @@ public class ImportDetail extends LayoutContainer
 
 		lcUploadComponent.add(lblFileImport);
 		lcUploadComponent.add(defaultUploader);
-		
+
 		FormData fdStep1 = new FormData("80%");
 		fdStep1.setMargins(new Margins(5, 5, 5, 5));
 		fldstStep1.setHeading("Step 1: Choose a file");
 		fldstStep1.setCollapsible(true);
 
-//		ContentPanel fldstStep2 = new ContentPanel();
-//		fldstStep2.setHeading("Step 2: Preview Results");
-//		fldstStep2.setScrollMode(Scroll.AUTOY);
+		// ContentPanel fldstStep2 = new ContentPanel();
+		// fldstStep2.setHeading("Step 2: Preview Results");
+		// fldstStep2.setScrollMode(Scroll.AUTOY);
 		FormData fdStep2 = new FormData("90%");
 		fdStep2.setMargins(new Margins(5, 5, 5, 5));
-		ScreeningDetail widget = new ScreeningDetail();
-		widget.setHeight("700");
-		widget.initialize("New Screening", null);
-//		fldstStep2.add(widget,fdStep2);
-		
+		screeningDetail = new ScreeningDetail();
+		screeningDetail.setHeight("700");
+		screeningDetail.initialize("New Screening", null);
+		// fldstStep2.add(widget,fdStep2);
+
 		mainContainerPanel.add(fldstStep1, fdStep1);
-		mainContainerPanel.add(widget, fdStep2);
+		mainContainerPanel.add(screeningDetail, fdStep2);
 		mainContainerPanel.setScrollMode(Scroll.AUTOY);
 		mainContainerPanel.setLayout(new FormLayout());
 		mainContainerPanel.setButtonAlign(HorizontalAlignment.CENTER);
@@ -116,59 +131,103 @@ public class ImportDetail extends LayoutContainer
 				System.out.println("server message: " + info.message);
 
 				uploadPath = info.message;
+				IndexPage.maskCenterComponent("Please wait...");
+				startProcessing();
+			}
+		}
 
-				PatientDataImportService.Util.getInstance().startProcessing(uploadPath, new AsyncCallback<Boolean>()
+		private void startProcessing()
+		{
+			patientDataImportService.startProcessing(uploadPath, new AsyncCallback<String>()
+			{
+				@Override
+				public void onSuccess(String result)
 				{
-
-					@Override
-					public void onSuccess(Boolean result)
+					IndexPage.unmaskCenterComponent();
+					if (!result.equalsIgnoreCase(RpcStatusEnum.SUCCESS.name()))
 					{
-						final MessageBox box = MessageBox.progress("Please wait", "Processing records...", "");
-						final ProgressBar bar = box.getProgressBar();
-						final Timer t = new Timer()
+						MessageBox.info("Import Failed", result, l);
+						return;
+					}
+
+					final MessageBox box = MessageBox.progress("Please wait", "Processing records...", "");
+					final ProgressBar bar = box.getProgressBar();
+					final Timer t = new Timer()
+					{
+						@Override
+						public void run()
 						{
-							@Override
-							public void run()
+							updateProgress();
+						}
+
+						private void updateProgress()
+						{
+							patientDataImportService.getProgress(new AsyncCallback<String>()
 							{
-								PatientDataImportService.Util.getInstance().getProgress(new AsyncCallback<String>()
+								@Override
+								public void onFailure(Throwable caught)
 								{
-									@Override
-									public void onFailure(Throwable caught)
+									cancel();
+									box.close();
+									Info.display("Import Failed", "Processing failed", "");
+								}
+
+								@Override
+								public void onSuccess(String result)
+								{
+									bar.updateText(result);
+
+									int curProcessed = Integer.parseInt(result.split("/")[0]);
+									int totalProcessed = Integer.parseInt(result.split("/")[1]);
+
+									if (curProcessed >= totalProcessed)
 									{
 										cancel();
 										box.close();
-										Info.display("Import Failed", "Processing failed", "");
+										Info.display("Import Completed", "Processing completed", "");
+
+										screeningDetail.getEditorGrid().mask("Please wait...");
+										updateProcessedRecords();
+
 									}
+								}
 
-									@Override
-									public void onSuccess(String result)
-									{
-										bar.updateText(result);
+							});
+						}
+					};
+					t.scheduleRepeating(500);
+				}
 
-										int curProcessed = Integer.parseInt(result.split("/")[0]);
-										int totalProcessed = Integer.parseInt(result.split("/")[1]);
+				@Override
+				public void onFailure(Throwable caught)
+				{
+					IndexPage.unmaskCenterComponent();
+					Info.display("Import Failed", "Processing Aborted. Please try again", "");
+				}
 
-										if (curProcessed == totalProcessed)
-										{
-											cancel();
-											box.close();
-											Info.display("Import Completed", "Processing completed", "");
-										}
-									}
-
-								});
-							}
-						};
-						t.scheduleRepeating(500);
-					}
-
-					@Override
-					public void onFailure(Throwable caught)
+				private void updateProcessedRecords()
+				{
+					patientDataImportService.getProcessedRecords(new AsyncCallback<List<PatientDetailDTO>>()
 					{
-						Info.display("Import Failed", "Processing Aborted. Please try again", "");
-					}
-				});
-			}
+						@Override
+						public void onFailure(Throwable caught)
+						{
+							MessageBox.prompt("Preview Failed", "Failed to retrieve records. " + caught.getMessage());
+							return;
+						}
+
+						@Override
+						public void onSuccess(List<PatientDetailDTO> result)
+						{
+							ListStore<PatientDetailDTO> store = screeningDetail.getEditorGrid().getStore();
+							store.removeAll();
+							store.add(result);
+							screeningDetail.getEditorGrid().unmask();
+						}
+
+					});
+				}
+			});
 		}
 	};
 

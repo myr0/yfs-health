@@ -46,15 +46,17 @@ public class HibernateUtil
 			PropertyConfigurator.configure("log4j.properties");
 
 			sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
-			log.debug("Obtained session factory.");
+			log.debug("The application is booting...");
 
 			mapper = new DozerBeanMapper();
 
 			insertReferenceData();
+			
+			log.debug("The application has finished booting.The reference data insertion is complete.");
 
 		} catch (Throwable ex)
 		{
-			System.err.println("Initial SessionFactory creation failed." + ex);
+			log.error("Initial SessionFactory creation failed. No database connections available. " + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
 	}
