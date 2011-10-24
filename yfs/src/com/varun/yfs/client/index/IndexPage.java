@@ -423,6 +423,7 @@ public class IndexPage extends LayoutContainer
 				return false;
 			}
 		};
+		filter.setWidth("100");
 		filter.bind(screeningPanelStore);
 		toolbar.add(filter);
 
