@@ -43,6 +43,22 @@ public class ReferralTypeDTO extends BaseModelData
 	}
 	
 	@Override
+	public boolean equals(Object obj)
+	{
+		if(obj == null)
+			 return false;
+		if(this.getClass() != obj.getClass())
+			return false;
+		
+		ReferralTypeDTO refType  = (ReferralTypeDTO) obj;
+		
+		if(this.getName().equalsIgnoreCase(refType.getName()))
+			return true;
+		
+		return false;
+	}
+	
+	@Override
 	public String toString()
 	{
 		return getName();

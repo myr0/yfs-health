@@ -7,17 +7,27 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.log4j.Logger;
 
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.varun.yfs.dto.GenderDTO;
 import com.varun.yfs.dto.PatientDetailDTO;
+import com.varun.yfs.dto.ReferralTypeDTO;
+import com.varun.yfs.dto.YesNoDTO;
+import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
+import com.varun.yfs.server.common.data.DataUtil;
 
 public class PatientDetailImporter
 {
 	private static Logger logger = Logger.getLogger(PatientDetailImporter.class);
+
+	private int processedRowCount;
 	private ArrayBlockingQueue<List<String>> excelRows;
+	private List<String> errorRows;
 	private List<PatientDetailDTO> patientDetails = new ArrayList<PatientDetailDTO>();
 
-	public PatientDetailImporter(ArrayBlockingQueue<List<String>> excelRows)
+	public PatientDetailImporter(ArrayBlockingQueue<List<String>> excelRows, List<String> errorRows)
 	{
 		this.excelRows = excelRows;
+		this.errorRows = errorRows;
 	}
 
 	public void convertRecords()
@@ -29,6 +39,7 @@ public class PatientDetailImporter
 			try
 			{
 				lstCols = this.excelRows.take();
+				processedRowCount++;
 			} catch (InterruptedException e)
 			{
 				e.printStackTrace();
@@ -40,13 +51,15 @@ public class PatientDetailImporter
 			}
 
 			convertToPatientDetailDTO(lstCols);
-			logger.debug("Current row processed: " + this.patientDetails.get(this.patientDetails.size() - 1));
+
+			if (this.patientDetails.size() > 0)
+				logger.debug("Current row processed: " + this.patientDetails.get(this.patientDetails.size() - 1));
 		}
 	}
 
 	public int getProcessedRecordsCount()
 	{
-		return patientDetails.size();
+		return processedRowCount;
 	}
 
 	public List<PatientDetailDTO> getProcessedRecords()
@@ -56,13 +69,26 @@ public class PatientDetailImporter
 
 	private void convertToPatientDetailDTO(List<String> lstCols)
 	{
+		logger.debug(processedRowCount + "- starting conversion.");
+
+		if (lstCols.size() < 14)
+		{
+			logger.debug(processedRowCount + " -record conversion aborted. Insufficient columns in recordd.");
+			return;
+		}
+
+		int startErrorCount = errorRows.size();
+
 		PatientDetailDTO patientDetailDTO = new PatientDetailDTO();
 		// patientDetailDTO.setCaseClosed(lstCols.get(4));
 		// patientDetailDTO.setReferral3(lstCols.get());
 
 		patientDetailDTO.setDeleted("N");
 		patientDetailDTO.setName(lstCols.get(1));
-		patientDetailDTO.setSex(lstCols.get(2));
+
+		String decodeSexColumn = decodeSexColumn(lstCols.get(2));
+		patientDetailDTO.setSex(decodeSexColumn);
+
 		patientDetailDTO.setStandard(lstCols.get(3));
 		patientDetailDTO.setAge(lstCols.get(4));
 		patientDetailDTO.setAddress(lstCols.get(5));
@@ -71,11 +97,83 @@ public class PatientDetailImporter
 		patientDetailDTO.setWeight(lstCols.get(8));
 		patientDetailDTO.setFindings(lstCols.get(9));
 		patientDetailDTO.setTreatment(lstCols.get(10));
-		patientDetailDTO.setReferral1(lstCols.get(11));
-		patientDetailDTO.setReferral2(lstCols.get(12));
-		patientDetailDTO.setEmergency(lstCols.get(13));
-		patientDetailDTO.setSurgeryCase(lstCols.get(14));
 
-		patientDetails.add(patientDetailDTO);
+		String decodeReferral = decodeReferral(lstCols.get(11));
+		patientDetailDTO.setReferral1(decodeReferral);
+
+		String decodeReferral2 = decodeReferral(lstCols.get(12));
+		patientDetailDTO.setReferral2(decodeReferral2);
+
+		String decodeEmergency = decodeEmergency(lstCols.get(13));
+		patientDetailDTO.setEmergency(decodeEmergency);
+
+		String decodeSurgery = decodeSurgery(lstCols.get(14));
+		patientDetailDTO.setSurgeryCase(decodeSurgery);
+
+		int endErrorCount = errorRows.size();
+
+		if (startErrorCount == endErrorCount)
+			patientDetails.add(patientDetailDTO);
+
+		logger.debug(processedRowCount + " -record conversion completed :" + (startErrorCount == endErrorCount));
+	}
+
+	private String decodeSurgery(String string)
+	{
+		return decodeEmergency(string);
+	}
+
+	private String decodeEmergency(String string)
+	{
+		ListStore<YesNoDTO> yesNoDTO = YesNoDTO.getValues();
+		for (YesNoDTO yesNoDTO1 : yesNoDTO.getModels())
+		{
+			if (yesNoDTO1.getName().toLowerCase().indexOf(string.toLowerCase(), 0) >= 0)
+				return yesNoDTO1.getName();
+		}
+		String errorMessage = processedRowCount + " Unable to decode. No matching value for " + string + " found in database.";
+		logger.debug("Decode for Emergency/Surgery Column failed. " + errorMessage);
+		errorRows.add(errorMessage);
+		return null;
+	}
+
+	private String decodeReferral(String string)
+	{
+		String referral = string.toLowerCase();
+		List<ReferralTypeDTO> referralTypes = DataUtil.getModelList(ListModelDataEnum.ReferralType.name());
+
+		for (ReferralTypeDTO referralTypeDTO : referralTypes)
+		{
+			if (referral.indexOf(referralTypeDTO.getName().toLowerCase(), 0) >= 0)
+			{
+				referral = referralTypeDTO.getName();
+				return referral;
+			}
+		}
+		String errorMessage = processedRowCount + " Unable to decode. No matching value for " + string + " found in database.";
+		logger.debug("Decode for Referral Column failed. " + errorMessage);
+		errorRows.add(errorMessage);
+		return null;
+	}
+
+	private String decodeSexColumn(String string)
+	{
+		ListStore<GenderDTO> gender = GenderDTO.getValues();
+		for (GenderDTO gender1 : gender.getModels())
+		{
+			if (gender1.getName().toLowerCase().indexOf(string.toLowerCase(), 0) >= 0)
+				return gender1.getName();
+		}
+		String errorMessage = processedRowCount + " Unable to decode. No matching value for " + string + " found in database.";
+		logger.debug("Decode for Sex Column failed. " + errorMessage);
+		errorRows.add(errorMessage);
+		return null;
+	}
+
+	public void reinit()
+	{
+		processedRowCount = 0;
+		patientDetails.clear();
+
 	}
 }

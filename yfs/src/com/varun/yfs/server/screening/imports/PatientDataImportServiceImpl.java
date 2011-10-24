@@ -2,6 +2,8 @@ package com.varun.yfs.server.screening.imports;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -19,12 +21,18 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	private static Logger logger = Logger.getLogger(PatientDataImportServiceImpl.class);
 
 	private final ArrayBlockingQueue<List<String>> excelRows = new ArrayBlockingQueue<List<String>>(1000);
-	private final ExcelReader converter = new ExcelReader(excelRows);
-	private final PatientDetailImporter patientDetailImporter = new PatientDetailImporter(excelRows);
+	private final List<String> errorRows =  Collections.synchronizedList(new ArrayList<String>(1000));
+
+	private final ExcelReader converter = new ExcelReader(excelRows, errorRows);
+	private final PatientDetailImporter patientDetailImporter = new PatientDetailImporter(excelRows, errorRows);
 
 	@Override
 	public String startProcessing(final String path)
 	{
+		converter.reinit();
+		patientDetailImporter.reinit();
+		excelRows.clear();
+		errorRows.clear();
 		String statusMessage = RpcStatusEnum.SUCCESS.name();
 		try
 		{

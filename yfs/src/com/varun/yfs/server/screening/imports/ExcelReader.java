@@ -36,6 +36,7 @@ public class ExcelReader
 	private int lastRowNum;
 	private int processedRowCount;
 	private ArrayBlockingQueue<List<String>> excelRows;
+	private List<String> errorRows;
 
 	class ExcelFilenameFilter implements FilenameFilter
 	{
@@ -45,9 +46,10 @@ public class ExcelReader
 		}
 	}
 
-	public ExcelReader(ArrayBlockingQueue<List<String>> excelRows)
+	public ExcelReader(ArrayBlockingQueue<List<String>> excelRows, List<String> errorRows)
 	{
 		this.excelRows = excelRows;
+		this.errorRows = errorRows;
 	}
 
 	public void readContentsAsCSV(String strSource) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
@@ -177,6 +179,11 @@ public class ExcelReader
 			logger.error("Thread interrupted while attempting to put in the excel rows to the pipe.");
 			e.printStackTrace();
 		}
+	}
+
+	public void reinit()
+	{
+		processedRowCount = 0;
 	}
 
 }
