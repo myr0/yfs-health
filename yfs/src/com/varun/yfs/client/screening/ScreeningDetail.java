@@ -1,6 +1,5 @@
 package com.varun.yfs.client.screening;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,7 +87,7 @@ public class ScreeningDetail extends LayoutContainer
 
 	public ScreeningDetail()
 	{
-		setSize("700", "600");
+		// setSize("700", "600");
 	}
 
 	protected final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
@@ -107,6 +106,7 @@ public class ScreeningDetail extends LayoutContainer
 		setLayoutData(new FitData(5));
 
 		mainContainerPanel.setHeading(headerText);
+		// mainContainerPanel.setScrollMode(Scroll.AUTOY);
 
 		LayoutContainer cpMain = new LayoutContainer();
 		cpMain.setLayout(new TableLayout(3));
@@ -366,12 +366,12 @@ public class ScreeningDetail extends LayoutContainer
 					Info.display("New Screening", "You need to select a Type Of Location to proceed.");
 					validationState = false;
 				}
-				if (address.getValue().isEmpty())
+				if (address != null && address.getValue().isEmpty())
 				{
 					Info.display("New Screening", "You need to enter the Address to proceed.");
 					validationState = false;
 				}
-				if (contactInformation.getValue().isEmpty())
+				if (contactInformation != null && contactInformation.getValue().isEmpty())
 				{
 					Info.display("New Screening", "You need to enter the Contact Information to proceed.");
 					validationState = false;
@@ -386,7 +386,7 @@ public class ScreeningDetail extends LayoutContainer
 
 		mainContainerPanel.add(gridHolderPanel, new FitData(5));
 		add(mainContainerPanel);
-		mainContainerPanel.setSize("700px", "600px");
+//		mainContainerPanel.setSize("700px", "600px");
 
 	}
 

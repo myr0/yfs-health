@@ -35,23 +35,10 @@ public class UploadServlet extends UploadAction
 					File file = File.createTempFile(item.getName(), "");
 					item.write(file);
 
-					ExcelReader converter = null;
-					try
-					{
-						converter = new ExcelReader();
-						converter.convertExcelToCSV(file.getAbsolutePath(), "c:\\");
-					} catch (Exception ex)
-					{
-						System.out.println("Caught an: " + ex.getClass().getName());
-						System.out.println("Message: " + ex.getMessage());
-						System.out.println("Stacktrace follows:.....");
-						ex.printStackTrace(System.out);
-					}
-
 					receivedFiles.put(item.getFieldName(), file);
 					receivedContentTypes.put(item.getFieldName(), item.getContentType());
 
-					response += "File saved as " + file.getAbsolutePath();
+					response += file.getAbsolutePath();
 
 				} catch (Exception e)
 				{

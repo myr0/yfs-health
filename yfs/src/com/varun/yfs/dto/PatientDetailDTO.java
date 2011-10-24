@@ -29,7 +29,7 @@ public class PatientDetailDTO extends BaseModelData
 	private String surgeryCase;
 	private YesNoDTO yesNo;
 	private GenderDTO gender;
-	
+
 	private ReferralTypeDTO referral;
 
 	public PatientDetailDTO()
@@ -253,6 +253,12 @@ public class PatientDetailDTO extends BaseModelData
 	{
 		set("referral3", referral3);
 		this.referral3 = referral3;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "PatientDetailDTO [id=" + id + ", deleted=" + deleted + ", name=" + name + ", age=" + age + ", sex=" + sex + ", standard=" + standard + ", height=" + height + ", weight=" + weight + ", address=" + address + ", contactNo=" + contactNo + ", findings=" + findings + ", treatment=" + treatment + ", referral1=" + referral1 + ", referral2=" + referral2 + ", referral3=" + referral3 + ", emergency=" + emergency + ", caseClosed=" + caseClosed + ", surgeryCase=" + surgeryCase + "]";
 	}
 
 }

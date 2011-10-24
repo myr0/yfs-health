@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -74,10 +75,10 @@ public class ScreeningDetail implements Serializable
 	@JoinColumn(name = "typeOfLocationId", nullable = true, updatable = true, insertable = true)
 	private TypeOfLocation typeOfLocation;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Volunteer> lstVolunteers;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Doctor> lstDoctors;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

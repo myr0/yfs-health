@@ -56,6 +56,14 @@
 		<url-pattern>/yfs/screeningDetailService</url-pattern>
 	</servlet-mapping>
   
+	<servlet>
+		<servlet-name>PatientDataImportService</servlet-name>
+		<servlet-class>com.varun.yfs.server.screening.imports.PatientDataImportServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PatientDataImportService</servlet-name>
+		<url-pattern>/yfs/PatientDataImportService</url-pattern>
+	</servlet-mapping>
   
 	<listener>
 		<listener-class>com.varun.yfs.server.startup.StatusReportContextListener</listener-class>
@@ -65,5 +73,6 @@
 	<welcome-file-list>
 		<welcome-file>Yfs.html</welcome-file>
 	</welcome-file-list>
+	
 
 </web-app>

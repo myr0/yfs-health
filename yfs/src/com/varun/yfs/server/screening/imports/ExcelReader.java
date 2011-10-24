@@ -1,14 +1,16 @@
 package com.varun.yfs.server.screening.imports;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -18,82 +20,62 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-/*http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/ss/examples/ToCSV.java*/
+/*based on this example : http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/ss/examples/ToCSV.java*/
 public class ExcelReader
 {
+	private static Logger logger = Logger.getLogger(ExcelReader.class);
 
 	private Workbook workbook = null;
-	private ArrayList<ArrayList> csvData = null;
-	private int maxRowWidth = 0;
-	private int formattingConvention = 0;
 	private DataFormatter formatter = null;
 	private FormulaEvaluator evaluator = null;
-	private String separator = null;
 
-	private static final String CSV_FILE_EXTENSION = ".csv";
-	private static final String DEFAULT_SEPARATOR = ",";
+	private int maxRowWidth = 0;
+	private int lastRowNum;
+	private int processedRowCount;
+	private ArrayBlockingQueue<List<String>> excelRows;
 
-	public static final int EXCEL_STYLE_ESCAPING = 0;
-	public static final int UNIX_STYLE_ESCAPING = 1;
-
-	public void convertExcelToCSV(String strSource, String strDestination) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
+	class ExcelFilenameFilter implements FilenameFilter
 	{
-		this.convertExcelToCSV(strSource, strDestination, ExcelReader.DEFAULT_SEPARATOR, ExcelReader.EXCEL_STYLE_ESCAPING);
+		public boolean accept(File file, String name)
+		{
+			return (name.endsWith(".xls") || name.endsWith(".xlsx"));
+		}
 	}
 
-	public void convertExcelToCSV(String strSource, String strDestination, String separator) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
+	public ExcelReader(ArrayBlockingQueue<List<String>> excelRows)
 	{
-		this.convertExcelToCSV(strSource, strDestination, separator, ExcelReader.EXCEL_STYLE_ESCAPING);
+		this.excelRows = excelRows;
 	}
 
-	public void convertExcelToCSV(String strSource, String strDestination, String separator, int formattingConvention) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
+	public void readContentsAsCSV(String strSource) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
 	{
+		this.processedRowCount = 0;
 		File source = new File(strSource);
-		File destination = new File(strDestination);
-		File[] filesList = null;
-		String destinationFilename = null;
 
 		if (!source.exists())
 		{
 			throw new IllegalArgumentException("The source for the Excel " + "file(s) cannot be found.");
 		}
 
-		if (!destination.exists())
-		{
-			throw new IllegalArgumentException("The folder/directory for the " + "converted CSV file(s) does not exist.");
-		}
-		if (!destination.isDirectory())
-		{
-			throw new IllegalArgumentException("The destination for the CSV " + "file(s) is not a directory/folder.");
-		}
-
-		if (formattingConvention != ExcelReader.EXCEL_STYLE_ESCAPING && formattingConvention != ExcelReader.UNIX_STYLE_ESCAPING)
-		{
-			throw new IllegalArgumentException("The value passed to the " + "formattingConvention parameter is out of range.");
-		}
-
-		this.separator = separator;
-		this.formattingConvention = formattingConvention;
-
 		if (source.isDirectory())
 		{
-			filesList = source.listFiles(new ExcelFilenameFilter());
-		} else
-		{
-			filesList = new File[] { source };
+			// filesList = source.listFiles(new ExcelFilenameFilter());
+			throw new IllegalArgumentException("The source for the Excel " + "file(s) seems to be a directory.");
 		}
 
-		for (File excelFile : filesList)
-		{
-			this.openWorkbook(excelFile);
+		openWorkbook(source);
 
-			this.convertToCSV();
+		extractContents();
+	}
 
-			destinationFilename = excelFile.getName();
-			destinationFilename = destinationFilename.substring(0, destinationFilename.lastIndexOf(".")) + ExcelReader.CSV_FILE_EXTENSION;
+	public int getMaxRecords()
+	{
+		return this.lastRowNum;
+	}
 
-			this.saveCSVFile(new File(destination, destinationFilename));
-		}
+	public int getProcessedCount()
+	{
+		return this.processedRowCount;
 	}
 
 	private void openWorkbook(File file) throws FileNotFoundException, IOException, InvalidFormatException
@@ -101,7 +83,7 @@ public class ExcelReader
 		FileInputStream fis = null;
 		try
 		{
-			System.out.println("Opening workbook [" + file.getName() + "]");
+			logger.debug("Opening workbook [" + file.getName() + "]");
 
 			fis = new FileInputStream(file);
 
@@ -117,84 +99,42 @@ public class ExcelReader
 		}
 	}
 
-	private void convertToCSV()
+	private void extractContents()
 	{
 		Sheet sheet = null;
 		Row row = null;
-		int lastRowNum = 0;
-		this.csvData = new ArrayList<ArrayList>();
 
-		System.out.println("Converting files contents to CSV format.");
+		logger.debug("Converting files contents to CSV string");
 
-		int numSheets = this.workbook.getNumberOfSheets();
+		sheet = this.workbook.getSheet("Consolidated");
 
-		for (int i = 0; i < numSheets; i++)
+		if (sheet != null)
 		{
-
-			sheet = this.workbook.getSheetAt(i);
 			if (sheet.getPhysicalNumberOfRows() > 0)
 			{
 				lastRowNum = sheet.getLastRowNum();
 				for (int j = 0; j <= lastRowNum; j++)
 				{
 					row = sheet.getRow(j);
+					try
+					{
+						Thread.currentThread().sleep(50);
+					} catch (InterruptedException e)
+					{
+						logger.error("Thread interrupted while attempting to read excel rows.");
+						e.printStackTrace();
+					}
 					this.rowToCSV(row);
+
+					if (j == lastRowNum)
+					{
+						this.excelRows.add(Collections.EMPTY_LIST);
+						logger.debug("Excel Reader encountered EOF.");
+					}
 				}
 			}
 		}
-	}
 
-	private void saveCSVFile(File file) throws FileNotFoundException, IOException
-	{
-		FileWriter fw = null;
-		BufferedWriter bw = null;
-		ArrayList<String> line = null;
-		StringBuffer buffer = null;
-		String csvLineElement = null;
-		try
-		{
-
-			System.out.println("Saving the CSV file [" + file.getName() + "]");
-
-			fw = new FileWriter(file);
-			bw = new BufferedWriter(fw);
-
-			for (int i = 0; i < this.csvData.size(); i++)
-			{
-				buffer = new StringBuffer();
-
-				line = this.csvData.get(i);
-				for (int j = 0; j < this.maxRowWidth; j++)
-				{
-					if (line.size() > j)
-					{
-						csvLineElement = line.get(j);
-						if (csvLineElement != null)
-						{
-							buffer.append(this.escapeEmbeddedCharacters(csvLineElement));
-						}
-					}
-					if (j < (this.maxRowWidth - 1))
-					{
-						buffer.append(this.separator);
-					}
-				}
-
-				bw.write(buffer.toString().trim());
-
-				if (i < (this.csvData.size() - 1))
-				{
-					bw.newLine();
-				}
-			}
-		} finally
-		{
-			if (bw != null)
-			{
-				bw.flush();
-				bw.close();
-			}
-		}
 	}
 
 	private void rowToCSV(Row row)
@@ -228,68 +168,15 @@ public class ExcelReader
 				this.maxRowWidth = lastCellNum;
 			}
 		}
-		this.csvData.add(csvLine);
-	}
-
-	private String escapeEmbeddedCharacters(String field)
-	{
-		StringBuffer buffer = null;
-
-		if (this.formattingConvention == ExcelReader.EXCEL_STYLE_ESCAPING)
-		{
-
-			if (field.contains("\""))
-			{
-				buffer = new StringBuffer(field.replaceAll("\"", "\\\"\\\""));
-				buffer.insert(0, "\"");
-				buffer.append("\"");
-			} else
-			{
-				buffer = new StringBuffer(field);
-				if ((buffer.indexOf(this.separator)) > -1 || (buffer.indexOf("\n")) > -1)
-				{
-					buffer.insert(0, "\"");
-					buffer.append("\"");
-				}
-			}
-			return (buffer.toString().trim());
-		}
-		else
-		{
-			if (field.contains(this.separator))
-			{
-				field = field.replaceAll(this.separator, ("\\\\" + this.separator));
-			}
-			if (field.contains("\n"))
-			{
-				field = field.replaceAll("\n", "\\\\\n");
-			}
-			return (field);
-		}
-	}
-
-	public static void main(String[] args)
-	{
-		ExcelReader converter = null;
 		try
 		{
-			converter = new ExcelReader();
-			converter.convertExcelToCSV("Excel template.xlsx","c:\\");
-		}
-		catch (Exception ex)
+			excelRows.put(csvLine);
+			processedRowCount++;
+		} catch (InterruptedException e)
 		{
-			System.out.println("Caught an: " + ex.getClass().getName());
-			System.out.println("Message: " + ex.getMessage());
-			System.out.println("Stacktrace follows:.....");
-			ex.printStackTrace(System.out);
+			logger.error("Thread interrupted while attempting to put in the excel rows to the pipe.");
+			e.printStackTrace();
 		}
 	}
 
-	class ExcelFilenameFilter implements FilenameFilter
-	{
-		public boolean accept(File file, String name)
-		{
-			return (name.endsWith(".xls") || name.endsWith(".xlsx"));
-		}
-	}
 }
