@@ -1,5 +1,8 @@
 package com.varun.yfs.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 
@@ -9,6 +12,11 @@ public class GenderDTO extends BaseModelData
 
 	public GenderDTO()
 	{
+	}
+
+	public GenderDTO(String val)
+	{
+		this.setName(val);
 	}
 
 	public String getName()
@@ -55,5 +63,13 @@ public class GenderDTO extends BaseModelData
 
 		GenderDTO yesNo = (GenderDTO) arg0;
 		return this.getName().equalsIgnoreCase(yesNo.getName());
+	}
+
+	public static List<String> getStringValues()
+	{
+		List<String> values = new ArrayList<String>();
+		values.add("Male");
+		values.add("Female");
+		return values;
 	}
 }

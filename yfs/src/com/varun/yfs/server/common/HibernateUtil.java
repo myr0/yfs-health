@@ -110,6 +110,10 @@ public class HibernateUtil
 	private static void insertReferralTypes(Session session)
 	{
 		session.save(new ReferralType("Paediatric"));
+		session.save(new ReferralType("Paediatrician"));
+		session.save(new ReferralType("Others"));
+		session.save(new ReferralType("Eye"));
+		session.save(new ReferralType("Gynec"));
 		session.save(new ReferralType("Skin"));
 		session.save(new ReferralType("ENT"));
 		session.save(new ReferralType("Dental"));

@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Info;
@@ -22,6 +23,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -29,6 +31,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
+import com.extjs.gxt.ui.client.widget.grid.RowNumberer;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -37,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.varun.yfs.client.common.RpcStatusEnum;
@@ -84,7 +88,8 @@ public class ScreeningDetail extends LayoutContainer
 	private ListStore<PatientDetailDTO> editorGridStore;
 	private EditorGrid<PatientDetailDTO> editorGrid;
 	private String scrId;
-	
+	final NumberFormat number = NumberFormat.getFormat("0.00");
+
 	public EditorGrid<PatientDetailDTO> getEditorGrid()
 	{
 		return editorGrid;
@@ -260,7 +265,7 @@ public class ScreeningDetail extends LayoutContainer
 		gridHolderPanel.setHeaderVisible(true);
 
 		ToolBar toolBar = new ToolBar();
-		Button add = new Button("Add");
+		Button add = new Button("Add", IconHelper.createPath(GWT.getModuleBaseURL() + "images/add.png"));
 		add.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -276,7 +281,7 @@ public class ScreeningDetail extends LayoutContainer
 		});
 		toolBar.add(add);
 
-		Button remove = new Button("Remove");
+		Button remove = new Button("Remove", IconHelper.createPath(GWT.getModuleBaseURL() + "images/delete.png"));
 		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -288,8 +293,7 @@ public class ScreeningDetail extends LayoutContainer
 				{
 					selectedItem.set("deleted", "Y");
 					editorGrid.mask("Removing Entry...");
-					ScreeningDetailDTO modelData = extractFormData();
-					savePage(modelData);
+					validateAndSave();
 					editorGrid.getStore().remove(selectedItem);
 				}
 			}
@@ -314,78 +318,9 @@ public class ScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				if (!validateFormEntry())
-					return;
-
-				ScreeningDetailDTO modelData = extractFormData();
-				savePage(modelData);
+				validateAndSave();
 			}
 
-			private boolean validateFormEntry()
-			{
-				boolean validationState = true;
-				if (country.getSelection().isEmpty())
-				{
-					Info.display("New Screening", "You need to select a country to proceed.");
-					validationState = false;
-				}
-				if (state.getSelection().isEmpty())
-				{
-					Info.display("New Screening", "You need to select a state to proceed.");
-					validationState = false;
-				}
-				if (city.getSelection().isEmpty())
-				{
-					Info.display("New Screening", "You need to select a city to proceed.");
-					validationState = false;
-				}
-				if (town.getSelection().isEmpty())
-				{
-					Info.display("New Screening", "You need to select a town to proceed.");
-					validationState = false;
-				}
-				if (village.getSelection().isEmpty())
-				{
-					Info.display("New Screening", "You need to select a village to proceed.");
-					validationState = false;
-				}
-				if (chapterName.getSelection().isEmpty())
-				{
-					Info.display("New Screening", "You need to select a Chapter Name to proceed.");
-					validationState = false;
-				}
-				if (locality.getSelection().isEmpty())
-				{
-					Info.display("New Screening", "You need to select a Locality to proceed.");
-					validationState = false;
-				}
-				if (screeningDate.getValue() == null)
-				{
-					Info.display("New Screening", "You need to select a Screening-Date to proceed.");
-					validationState = false;
-				}
-				if (processType.getSelection().isEmpty())
-				{
-					Info.display("New Screening", "You need to select a Process Type to proceed.");
-					validationState = false;
-				}
-				if (typeOfLocation.getSelection().isEmpty())
-				{
-					Info.display("New Screening", "You need to select a Type Of Location to proceed.");
-					validationState = false;
-				}
-				if (address != null && address.getValue().isEmpty())
-				{
-					Info.display("New Screening", "You need to enter the Address to proceed.");
-					validationState = false;
-				}
-				if (contactInformation != null && contactInformation.getValue().isEmpty())
-				{
-					Info.display("New Screening", "You need to enter the Contact Information to proceed.");
-					validationState = false;
-				}
-				return validationState;
-			}
 		}));
 
 		gridHolderPanel.setLayout(new FitLayout());
@@ -394,8 +329,85 @@ public class ScreeningDetail extends LayoutContainer
 
 		mainContainerPanel.add(gridHolderPanel, new FitData(5));
 		add(mainContainerPanel);
-//		mainContainerPanel.setSize("700px", "600px");
+		// mainContainerPanel.setSize("700px", "600px");
 
+	}
+
+	private void validateAndSave()
+	{
+		if (!validateFormEntry())
+		{
+			editorGrid.unmask();
+			return;
+		}
+
+		ScreeningDetailDTO modelData = extractFormData();
+		savePage(modelData);
+	}
+
+	private boolean validateFormEntry()
+	{
+		if (country.getSelection().isEmpty())
+		{
+			Info.display("New Screening", "You need to select a country to proceed.");
+			return false;
+		}
+		if (state.getSelection().isEmpty())
+		{
+			Info.display("New Screening", "You need to select a state to proceed.");
+			return false;
+		}
+		if (city.getSelection().isEmpty())
+		{
+			Info.display("New Screening", "You need to select a city to proceed.");
+			return false;
+		}
+		if (town.getSelection().isEmpty())
+		{
+			Info.display("New Screening", "You need to select a town to proceed.");
+			return false;
+		}
+		if (village.getSelection().isEmpty())
+		{
+			Info.display("New Screening", "You need to select a village to proceed.");
+			return false;
+		}
+		if (chapterName.getSelection().isEmpty())
+		{
+			Info.display("New Screening", "You need to select a Chapter Name to proceed.");
+			return false;
+		}
+		if (locality.getSelection().isEmpty())
+		{
+			Info.display("New Screening", "You need to select a Locality to proceed.");
+			return false;
+		}
+		if (screeningDate.getValue() == null)
+		{
+			Info.display("New Screening", "You need to select a Screening-Date to proceed.");
+			return false;
+		}
+		if (processType.getSelection().isEmpty())
+		{
+			Info.display("New Screening", "You need to select a Process Type to proceed.");
+			return false;
+		}
+		if (typeOfLocation.getSelection().isEmpty())
+		{
+			Info.display("New Screening", "You need to select a Type Of Location to proceed.");
+			return false;
+		}
+		if (address != null && address.getValue().isEmpty())
+		{
+			Info.display("New Screening", "You need to enter the Address to proceed.");
+			return false;
+		}
+		if (contactInformation != null && contactInformation.getValue().isEmpty())
+		{
+			Info.display("New Screening", "You need to enter the Contact Information to proceed.");
+			return false;
+		}
+		return true;
 	}
 
 	private ScreeningDetailDTO extractFormData()
@@ -435,6 +447,9 @@ public class ScreeningDetail extends LayoutContainer
 	{
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
+		RowNumberer rowNumber = new RowNumberer();
+		configs.add(rowNumber);
+
 		ColumnConfig nameColumn = new ColumnConfig("id", "Id", 20);
 		configs.add(nameColumn);
 
@@ -456,13 +471,33 @@ public class ScreeningDetail extends LayoutContainer
 		configs.add(ageColumn);
 
 		ColumnConfig sexColumn = new ColumnConfig("sex", "Sex", 50);
-		ComboBox<GenderDTO> field = new ComboBox<GenderDTO>();
-		field.setDisplayField("name");
-		field.setValueField("name");
-		field.setStore(GenderDTO.getValues());
+		final SimpleComboBox<String> field = new SimpleComboBox<String>();
 		field.setTriggerAction(TriggerAction.ALL);
-		field.setEditable(false);
-		sexColumn.setEditor(new CellEditor(field));
+		field.setForceSelection(true);
+		field.add(GenderDTO.getStringValues());
+		CellEditor editor = new CellEditor(field)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return field.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		sexColumn.setEditor(editor);
 		configs.add(sexColumn);
 
 		ColumnConfig classColumn = new ColumnConfig("standard", "Standard", 100);
@@ -474,21 +509,19 @@ public class ScreeningDetail extends LayoutContainer
 		configs.add(classColumn);
 
 		ColumnConfig heightColumn = new ColumnConfig("height", "Height(cm)", 100);
-		numField = new NumberField();
-		numField.setAllowBlank(false);
-		numField.setMinLength(1);
-		numField.setMaxLength(3);
-		numField.setPropertyEditorType(Integer.class);
-		heightColumn.setEditor(new CellEditor(numField));
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(15);
+		heightColumn.setEditor(new CellEditor(textField));
 		configs.add(heightColumn);
 
 		ColumnConfig weightColumn = new ColumnConfig("weight", "Weight(kg)", 100);
-		numField = new NumberField();
-		numField.setAllowBlank(false);
-		numField.setMinLength(1);
-		numField.setMaxLength(3);
-		numField.setPropertyEditorType(Integer.class);
-		weightColumn.setEditor(new CellEditor(numField));
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(1);
+		textField.setMaxLength(3);
+		weightColumn.setEditor(new CellEditor(textField));
 		configs.add(weightColumn);
 
 		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
@@ -500,21 +533,28 @@ public class ScreeningDetail extends LayoutContainer
 		configs.add(addressColumn);
 
 		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
-		numField = new NumberField();
-		numField.setAllowBlank(false);
-		numField.setMinLength(4);
-		numField.setMaxLength(14);
-		numField.setPropertyEditorType(Integer.class);
-		contactNoColumn.setEditor(new CellEditor(numField));
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(15);
+		contactNoColumn.setEditor(new CellEditor(textField));
 		configs.add(contactNoColumn);
 
 		ColumnConfig findingsPColumn = new ColumnConfig("findings", "Findings", 100);
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
 		textField.setMinLength(2);
-		textField.setMaxLength(255);
-		addressColumn.setEditor(new CellEditor(textField));
+		textField.setMaxLength(1024);
+		findingsPColumn.setEditor(new CellEditor(textField));
 		configs.add(findingsPColumn);
+
+		ColumnConfig treatment = new ColumnConfig("treatment", "Treatment", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(1024);
+		treatment.setEditor(new CellEditor(textField));
+		configs.add(treatment);
 
 		ColumnConfig referral1Column = new ColumnConfig("referral1", "Referral 1", 100);
 		configs.add(referral1Column);
@@ -526,33 +566,93 @@ public class ScreeningDetail extends LayoutContainer
 		configs.add(medicines3Column);
 
 		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
-		ComboBox<YesNoDTO> yesNoDto = new ComboBox<YesNoDTO>();
-		yesNoDto.setDisplayField("name");
-		yesNoDto.setValueField("name");
-		yesNoDto.setEditable(false);
-		yesNoDto.setStore(YesNoDTO.getValues());
+		final SimpleComboBox<String> yesNoDto = new SimpleComboBox<String>();
 		yesNoDto.setTriggerAction(TriggerAction.ALL);
-		emergency.setEditor(new CellEditor(yesNoDto));
+		yesNoDto.setForceSelection(true);
+		yesNoDto.add(YesNoDTO.getStringValues());
+		editor = new CellEditor(yesNoDto)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDto.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		emergency.setEditor(editor);
 		configs.add(emergency);
 
 		ColumnConfig surgeryCase = new ColumnConfig("surgeryCase", "Surgery Case", 100);
-		yesNoDto = new ComboBox<YesNoDTO>();
-		yesNoDto.setDisplayField("name");
-		yesNoDto.setValueField("name");
-		yesNoDto.setEditable(false);
-		yesNoDto.setStore(YesNoDTO.getValues());
-		yesNoDto.setTriggerAction(TriggerAction.ALL);
-		surgeryCase.setEditor(new CellEditor(yesNoDto));
+		final SimpleComboBox<String> yesNoDtoSurgeryCase = new SimpleComboBox<String>();
+		yesNoDtoSurgeryCase.setEditable(false);
+		yesNoDtoSurgeryCase.add(YesNoDTO.getStringValues());
+		yesNoDtoSurgeryCase.setTriggerAction(TriggerAction.ALL);
+		editor = new CellEditor(yesNoDtoSurgeryCase)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoSurgeryCase.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		surgeryCase.setEditor(editor);
 		configs.add(surgeryCase);
 
 		ColumnConfig caseClosed = new ColumnConfig("caseClosed", "Case Closed", 100);
-		yesNoDto = new ComboBox<YesNoDTO>();
-		yesNoDto.setDisplayField("name");
-		yesNoDto.setValueField("name");
-		yesNoDto.setEditable(false);
-		yesNoDto.setStore(YesNoDTO.getValues());
-		yesNoDto.setTriggerAction(TriggerAction.ALL);
-		caseClosed.setEditor(new CellEditor(yesNoDto));
+		final SimpleComboBox<String> yesNoDtoCaseClosed = new SimpleComboBox<String>();
+		yesNoDtoCaseClosed.setEditable(false);
+		yesNoDtoCaseClosed.add(YesNoDTO.getStringValues());
+		yesNoDtoCaseClosed.setTriggerAction(TriggerAction.ALL);
+		editor = new CellEditor(yesNoDtoCaseClosed)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoCaseClosed.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		caseClosed.setEditor(editor);
 		configs.add(caseClosed);
 
 		return configs;
@@ -585,33 +685,98 @@ public class ScreeningDetail extends LayoutContainer
 				doctors.getStore().add((List<DoctorDTO>) modelData.get("lstDoctors"));
 
 				List<ReferralTypeDTO> lst = (List<ReferralTypeDTO>) modelData.get("lstReferralTypes");
+				List<String> lstReferrals = new ArrayList<String>(lst.size());
+				for (ReferralTypeDTO referralTypeDTO : lst)
+				{
+					lstReferrals.add(referralTypeDTO.toString());
+				}
 
 				ColumnConfig columnById = editorGrid.getColumnModel().getColumnById("referral1");
-				ComboBox<ReferralTypeDTO> field = new ComboBox<ReferralTypeDTO>();
-				field.setStore(new ListStore<ReferralTypeDTO>());
-				field.setDisplayField("name");
-				field.setValueField("name");
-				field.setEditable(false);
-				columnById.setEditor(new CellEditor(field));
-				field.getStore().add(lst);
+				final SimpleComboBox<String> fieldReferral1 = new SimpleComboBox<String>();
+				fieldReferral1.setEditable(false);
+				fieldReferral1.setTriggerAction(TriggerAction.ALL);
+				CellEditor editorReferral1 = new CellEditor(fieldReferral1)
+				{
+					@Override
+					public Object preProcessValue(Object value)
+					{
+						if (value == null)
+						{
+							return value;
+						}
+						return fieldReferral1.findModel(value.toString());
+					}
+
+					@Override
+					public Object postProcessValue(Object value)
+					{
+						if (value == null)
+						{
+							return value;
+						}
+						return ((ModelData) value).get("value");
+					}
+				};
+				columnById.setEditor(editorReferral1);
+				fieldReferral1.add(lstReferrals);
 
 				columnById = editorGrid.getColumnModel().getColumnById("referral2");
-				field = new ComboBox<ReferralTypeDTO>();
-				field.setStore(new ListStore<ReferralTypeDTO>());
-				field.setDisplayField("name");
-				field.setValueField("name");
-				field.setEditable(false);
-				columnById.setEditor(new CellEditor(field));
-				field.getStore().add(lst);
+				final SimpleComboBox<String> fieldReferral2 = new SimpleComboBox<String>();
+				fieldReferral2.setEditable(false);
+				fieldReferral2.setTriggerAction(TriggerAction.ALL);
+				CellEditor editorReferral2 = new CellEditor(fieldReferral2)
+				{
+					@Override
+					public Object preProcessValue(Object value)
+					{
+						if (value == null)
+						{
+							return value;
+						}
+						return fieldReferral2.findModel(value.toString());
+					}
+
+					@Override
+					public Object postProcessValue(Object value)
+					{
+						if (value == null)
+						{
+							return value;
+						}
+						return ((ModelData) value).get("value");
+					}
+				};
+				columnById.setEditor(editorReferral2);
+				fieldReferral2.add(lstReferrals);
 
 				columnById = editorGrid.getColumnModel().getColumnById("referral3");
-				field = new ComboBox<ReferralTypeDTO>();
-				field.setStore(new ListStore<ReferralTypeDTO>());
-				field.setDisplayField("name");
-				field.setValueField("name");
-				field.setEditable(false);
-				columnById.setEditor(new CellEditor(field));
-				field.getStore().add(lst);
+				final SimpleComboBox<String> fieldReferral3 = new SimpleComboBox<String>();
+				fieldReferral3.setEditable(false);
+				fieldReferral3.setTriggerAction(TriggerAction.ALL);
+				CellEditor editorReferral3 = new CellEditor(fieldReferral3)
+				{
+					@Override
+					public Object preProcessValue(Object value)
+					{
+						if (value == null)
+						{
+							return value;
+						}
+						return fieldReferral3.findModel(value.toString());
+					}
+
+					@Override
+					public Object postProcessValue(Object value)
+					{
+						if (value == null)
+						{
+							return value;
+						}
+						return ((ModelData) value).get("value");
+					}
+				};
+				columnById.setEditor(editorReferral3);
+				fieldReferral3.add(lstReferrals);
 
 				ScreeningDetailDTO scrDto = modelData.get("data");
 				if (scrDto != null)
@@ -676,7 +841,7 @@ public class ScreeningDetail extends LayoutContainer
 					MessageBox.alert("Alert", "Error encountered while saving", l);
 				} else
 				{
-					// clearStores();
+					clearStores();
 					Info.display("Screening Detail", "Save Completed Sucessfully.");
 					IndexPage.reinitScreeningPanel();
 				}

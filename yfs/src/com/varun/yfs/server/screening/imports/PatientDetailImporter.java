@@ -23,6 +23,8 @@ public class PatientDetailImporter
 	private ArrayBlockingQueue<List<String>> excelRows;
 	private List<String> errorRows;
 	private List<PatientDetailDTO> patientDetails = new ArrayList<PatientDetailDTO>();
+	private List<ReferralTypeDTO> referralTypes = DataUtil.getModelList(ListModelDataEnum.ReferralType.name());
+	private StringBuilder errorString = new StringBuilder();
 
 	public PatientDetailImporter(ArrayBlockingQueue<List<String>> excelRows, List<String> errorRows)
 	{
@@ -70,10 +72,11 @@ public class PatientDetailImporter
 	private void convertToPatientDetailDTO(List<String> lstCols)
 	{
 		logger.debug(processedRowCount + "- starting conversion.");
+		errorString.trimToSize();
 
 		if (lstCols.size() < 14)
 		{
-			logger.debug(processedRowCount + " -record conversion aborted. Insufficient columns in recordd.");
+			logger.debug(processedRowCount + " -record conversion aborted. Insufficient columns in record.");
 			return;
 		}
 
@@ -116,6 +119,8 @@ public class PatientDetailImporter
 			patientDetails.add(patientDetailDTO);
 
 		logger.debug(processedRowCount + " -record conversion completed :" + (startErrorCount == endErrorCount));
+
+		errorRows.add(processedRowCount + " - " + errorString.toString());
 	}
 
 	private String decodeSurgery(String string)
@@ -125,48 +130,63 @@ public class PatientDetailImporter
 
 	private String decodeEmergency(String string)
 	{
+		if (string == null)
+			return null;
+		if (string.isEmpty())
+			return null;
+
+		String emergency = string.toLowerCase();
 		ListStore<YesNoDTO> yesNoDTO = YesNoDTO.getValues();
 		for (YesNoDTO yesNoDTO1 : yesNoDTO.getModels())
 		{
-			if (yesNoDTO1.getName().toLowerCase().indexOf(string.toLowerCase(), 0) >= 0)
-				return yesNoDTO1.getName();
+			if (yesNoDTO1.toString().toLowerCase().equalsIgnoreCase(emergency))
+				return yesNoDTO1.toString();
 		}
-		String errorMessage = processedRowCount + " Unable to decode. No matching value for " + string + " found in database.";
+		String errorMessage = " Unable to decode. No matching value for " + string + " found in database.";
 		logger.debug("Decode for Emergency/Surgery Column failed. " + errorMessage);
-		errorRows.add(errorMessage);
+		errorString.append(errorMessage);
 		return null;
 	}
 
 	private String decodeReferral(String string)
 	{
+		if (string == null)
+			return null;
+		if (string.isEmpty())
+			return null;
+
 		String referral = string.toLowerCase();
-		List<ReferralTypeDTO> referralTypes = DataUtil.getModelList(ListModelDataEnum.ReferralType.name());
 
 		for (ReferralTypeDTO referralTypeDTO : referralTypes)
 		{
-			if (referral.indexOf(referralTypeDTO.getName().toLowerCase(), 0) >= 0)
+			if (referralTypeDTO.toString().equalsIgnoreCase(referral))
 			{
-				referral = referralTypeDTO.getName();
-				return referral;
+				return referralTypeDTO.toString();
 			}
 		}
-		String errorMessage = processedRowCount + " Unable to decode. No matching value for " + string + " found in database.";
+		String errorMessage = " Unable to decode. No matching value for " + string + " found in database.";
 		logger.debug("Decode for Referral Column failed. " + errorMessage);
-		errorRows.add(errorMessage);
+		errorString.append(errorMessage);
 		return null;
 	}
 
 	private String decodeSexColumn(String string)
 	{
+		if (string == null)
+			return null;
+		if (string.isEmpty())
+			return null;
+
+		String sexColumn = string.toLowerCase();
 		ListStore<GenderDTO> gender = GenderDTO.getValues();
 		for (GenderDTO gender1 : gender.getModels())
 		{
-			if (gender1.getName().toLowerCase().indexOf(string.toLowerCase(), 0) >= 0)
-				return gender1.getName();
+			if (gender1.toString().equalsIgnoreCase(sexColumn))
+				return gender1.toString();
 		}
-		String errorMessage = processedRowCount + " Unable to decode. No matching value for " + string + " found in database.";
+		String errorMessage = " Unable to decode. No matching value for " + string + " found in database.";
 		logger.debug("Decode for Sex Column failed. " + errorMessage);
-		errorRows.add(errorMessage);
+		errorString.append(errorMessage);
 		return null;
 	}
 
@@ -174,6 +194,6 @@ public class PatientDetailImporter
 	{
 		processedRowCount = 0;
 		patientDetails.clear();
-
+		this.referralTypes = DataUtil.getModelList(ListModelDataEnum.ReferralType.name());
 	}
 }

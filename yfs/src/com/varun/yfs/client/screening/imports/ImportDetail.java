@@ -34,6 +34,7 @@ import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.IndexPage;
 import com.varun.yfs.client.screening.ScreeningDetail;
 import com.varun.yfs.dto.PatientDetailDTO;
+import com.varun.yfs.dto.ProgressDTO;
 
 public class ImportDetail extends LayoutContainer
 {
@@ -86,21 +87,18 @@ public class ImportDetail extends LayoutContainer
 		fldstStep1.setHeading("Step 1: Choose a file");
 		fldstStep1.setCollapsible(true);
 
-		// ContentPanel fldstStep2 = new ContentPanel();
-		// fldstStep2.setHeading("Step 2: Preview Results");
-		// fldstStep2.setScrollMode(Scroll.AUTOY);
 		FormData fdStep2 = new FormData("90%");
 		fdStep2.setMargins(new Margins(5, 5, 5, 5));
 		screeningDetail = new ScreeningDetail();
 		screeningDetail.setHeight("700");
 		screeningDetail.initialize("New Screening", null);
-		// fldstStep2.add(widget,fdStep2);
 
 		mainContainerPanel.add(fldstStep1, fdStep1);
 		mainContainerPanel.add(screeningDetail, fdStep2);
 		mainContainerPanel.setScrollMode(Scroll.AUTOY);
 		mainContainerPanel.setLayout(new FormLayout());
 		mainContainerPanel.setButtonAlign(HorizontalAlignment.CENTER);
+		
 		add(mainContainerPanel);
 
 	}
@@ -162,7 +160,7 @@ public class ImportDetail extends LayoutContainer
 
 						private void updateProgress()
 						{
-							patientDataImportService.getProgress(new AsyncCallback<String>()
+							patientDataImportService.getProgress(new AsyncCallback<ProgressDTO>()
 							{
 								@Override
 								public void onFailure(Throwable caught)
@@ -173,14 +171,21 @@ public class ImportDetail extends LayoutContainer
 								}
 
 								@Override
-								public void onSuccess(String result)
+								public void onSuccess(ProgressDTO result)
 								{
-									bar.updateText(result);
+									String progress = result.getProgress();
+									bar.updateText(progress);
 
-									int curProcessed = Integer.parseInt(result.split("/")[0]);
-									int totalProcessed = Integer.parseInt(result.split("/")[1]);
-
-									if (curProcessed >= totalProcessed)
+									int curProcessed = Integer.parseInt(progress.split("/")[0]);
+									int totalProcessed = Integer.parseInt(progress.split("/")[1]);
+									
+									if(result.getStatus().equals(RpcStatusEnum.FAILURE))
+									{
+										cancel();
+										box.close();
+										Info.display("Screening Detail Import", "Processing failed", "");
+									}
+									else if (curProcessed >= totalProcessed)
 									{
 										cancel();
 										box.close();
@@ -188,10 +193,8 @@ public class ImportDetail extends LayoutContainer
 
 										screeningDetail.getEditorGrid().mask("Please wait...");
 										updateProcessedRecords();
-
 									}
 								}
-
 							});
 						}
 					};
@@ -212,7 +215,7 @@ public class ImportDetail extends LayoutContainer
 						@Override
 						public void onFailure(Throwable caught)
 						{
-							MessageBox.prompt("Preview Failed", "Failed to retrieve records. " + caught.getMessage());
+							MessageBox.info("Preview Failed", "Failed to retrieve records. " + caught.getMessage(), l);
 							return;
 						}
 

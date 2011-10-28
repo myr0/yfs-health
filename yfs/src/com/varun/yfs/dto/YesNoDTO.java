@@ -1,5 +1,8 @@
 package com.varun.yfs.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 
@@ -33,6 +36,14 @@ public class YesNoDTO extends BaseModelData
 		ListStore<YesNoDTO> listStore = new ListStore<YesNoDTO>();
 		listStore.add(NO);
 		listStore.add(YES);
+		return listStore;
+	}
+
+	public static List<String> getStringValues()
+	{
+		List<String> listStore = new ArrayList<String>();
+		listStore.add(NO.toString());
+		listStore.add(YES.toString());
 		return listStore;
 	}
 

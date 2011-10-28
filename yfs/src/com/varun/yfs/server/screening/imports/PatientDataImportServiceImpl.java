@@ -14,6 +14,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.screening.imports.PatientDataImportService;
 import com.varun.yfs.dto.PatientDetailDTO;
+import com.varun.yfs.dto.ProgressDTO;
 
 public class PatientDataImportServiceImpl extends RemoteServiceServlet implements PatientDataImportService
 {
@@ -21,10 +22,16 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	private static Logger logger = Logger.getLogger(PatientDataImportServiceImpl.class);
 
 	private final ArrayBlockingQueue<List<String>> excelRows = new ArrayBlockingQueue<List<String>>(1000);
-	private final List<String> errorRows =  Collections.synchronizedList(new ArrayList<String>(1000));
+	private final List<String> errorRows = Collections.synchronizedList(new ArrayList<String>(1000));
 
 	private final ExcelReader converter = new ExcelReader(excelRows, errorRows);
+	private Thread excelConverterThread;
+
 	private final PatientDetailImporter patientDetailImporter = new PatientDetailImporter(excelRows, errorRows);
+	private Thread patientDetailImporterThread;
+
+	private final ProgressDTO progressDto = new ProgressDTO();
+	private RpcStatusEnum status = RpcStatusEnum.COMPLETED;
 
 	@Override
 	public String startProcessing(final String path)
@@ -68,15 +75,26 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	}
 
 	@Override
-	public String getProgress()
+	public ProgressDTO getProgress()
 	{
-		return patientDetailImporter.getProcessedRecordsCount() + "/" + converter.getMaxRecords();
+		if (patientDetailImporterThread.isAlive())
+			progressDto.setStatus(RpcStatusEnum.RUNNING);
+		else
+			progressDto.setStatus(status);
+		progressDto.setProgress(patientDetailImporter.getProcessedRecordsCount() + "/" + converter.getMaxRecords());
+		return progressDto;
 	}
 
 	@Override
 	public List<PatientDetailDTO> getProcessedRecords()
 	{
 		return patientDetailImporter.getProcessedRecords();
+	}
+
+	@Override
+	public List<String> getErrorRecords()
+	{
+		return errorRows;
 	}
 
 	private void startPatientDetailImporterThread()
@@ -92,11 +110,15 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 					patientDetailImporter.convertRecords();
 				} catch (Exception ex)
 				{
-					logger.error("Error encountered trying to convert excel rows to file contents." + ex.getMessage());
+					String errorMesssage = "Error encountered trying to convert excel rows to file contents." + ex.getMessage();
+					logger.error(errorMesssage);
+					errorRows.add(errorMesssage);
+					status = RpcStatusEnum.FAILURE;
 				}
 			}
 		};
-		new Thread(runnable).start();
+		patientDetailImporterThread = new Thread(runnable);
+		patientDetailImporterThread.start();
 	}
 
 	private void startExcelParserThread(final String path)
@@ -111,11 +133,15 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 					converter.readContentsAsCSV(path);
 				} catch (Exception ex)
 				{
-					logger.error("Error encountered trying to read the file contents." + ex.getMessage());
+					String errorMessage = "Error encountered trying to read the file contents." + ex.getMessage();
+					logger.error(errorMessage);
+					errorRows.add(errorMessage);
+					status = RpcStatusEnum.FAILURE;
 				}
 			}
 		};
-		new Thread(runnable).start();
+		excelConverterThread = new Thread(runnable);
+		excelConverterThread.start();
 	}
 
 }

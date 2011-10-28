@@ -117,7 +117,7 @@ public class ExcelReader
 		if (sheet.getPhysicalNumberOfRows() > 0)
 		{
 			lastRowNum = sheet.getLastRowNum();
-			for (int j = 0; j <= lastRowNum; j++)
+			for (int j = 1; j <= lastRowNum; j++)
 			{
 				row = sheet.getRow(j);
 				try
