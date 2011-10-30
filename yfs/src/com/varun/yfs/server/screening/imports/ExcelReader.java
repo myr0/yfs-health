@@ -122,7 +122,7 @@ public class ExcelReader
 				row = sheet.getRow(j);
 				try
 				{
-					Thread.currentThread().sleep(50);
+					Thread.sleep(50);
 				} catch (InterruptedException e)
 				{
 					logger.error("Thread interrupted while attempting to read excel rows.");

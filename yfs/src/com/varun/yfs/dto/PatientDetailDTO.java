@@ -258,7 +258,15 @@ public class PatientDetailDTO extends BaseModelData
 	@Override
 	public String toString()
 	{
-		return "PatientDetailDTO [id=" + id + ", deleted=" + deleted + ", name=" + name + ", age=" + age + ", sex=" + sex + ", standard=" + standard + ", height=" + height + ", weight=" + weight + ", address=" + address + ", contactNo=" + contactNo + ", findings=" + findings + ", treatment=" + treatment + ", referral1=" + referral1 + ", referral2=" + referral2 + ", referral3=" + referral3 + ", emergency=" + emergency + ", caseClosed=" + caseClosed + ", surgeryCase=" + surgeryCase + "]";
+		// return "id=" + id + ", deleted=" + deleted + ", name=" + name +
+		// ", age=" + age + ", sex=" + sex + ", standard=" + standard +
+		// ", height=" + height + ", weight=" + weight + ", address=" + address
+		// + ", contactNo=" + contactNo + ", findings=" + findings +
+		// ", treatment=" + treatment + ", referral1=" + referral1 +
+		// ", referral2=" + referral2 + ", referral3=" + referral3 +
+		// ", emergency=" + emergency + ", caseClosed=" + caseClosed +
+		// ", surgeryCase=" + surgeryCase;
+		return id + "," + deleted + "," + name + "," + age + "," + sex + "," + standard + "," + height + "," + weight + "," + address + "," + contactNo + "," + findings + "," + treatment + "," + referral1 + "," + referral2 + "," + referral3 + "," + emergency + "," + caseClosed + "," + surgeryCase;
 	}
 
 }

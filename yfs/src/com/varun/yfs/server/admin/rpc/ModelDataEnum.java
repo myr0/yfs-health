@@ -21,7 +21,6 @@ import com.varun.yfs.server.models.Locality;
 import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Town;
 import com.varun.yfs.server.models.Village;
-import com.varun.yfs.server.screening.imports.ExcelReader;
 
 public enum ModelDataEnum
 {

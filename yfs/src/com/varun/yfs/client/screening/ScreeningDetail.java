@@ -1,6 +1,7 @@
 package com.varun.yfs.client.screening;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,8 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
@@ -38,15 +41,17 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.IndexPage;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailService;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailServiceAsync;
+import com.varun.yfs.client.util.ExportService;
+import com.varun.yfs.client.util.ExportServiceAsync;
 import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.CityDTO;
 import com.varun.yfs.dto.CountryDTO;
@@ -66,8 +71,9 @@ import com.varun.yfs.dto.YesNoDTO;
 
 public class ScreeningDetail extends LayoutContainer
 {
-	private String headerText = "Default";
+	private String headerText = "Screening Detail";
 	private ScreeningDetailServiceAsync detailServiceAsync = GWT.create(ScreeningDetailService.class);
+	private ExportServiceAsync<PatientDetailDTO> exportServiceAsync = GWT.create(ExportService.class);
 
 	protected ContentPanel mainContainerPanel = new ContentPanel();
 	private final ComboBox<ModelData> country = new ComboBox<ModelData>();
@@ -88,7 +94,6 @@ public class ScreeningDetail extends LayoutContainer
 	private ListStore<PatientDetailDTO> editorGridStore;
 	private EditorGrid<PatientDetailDTO> editorGrid;
 	private String scrId;
-	final NumberFormat number = NumberFormat.getFormat("0.00");
 
 	public EditorGrid<PatientDetailDTO> getEditorGrid()
 	{
@@ -281,6 +286,8 @@ public class ScreeningDetail extends LayoutContainer
 		});
 		toolBar.add(add);
 
+		toolBar.add(new SeparatorToolItem());
+
 		Button remove = new Button("Remove", IconHelper.createPath(GWT.getModuleBaseURL() + "images/delete.png"));
 		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -299,6 +306,46 @@ public class ScreeningDetail extends LayoutContainer
 			}
 		});
 		toolBar.add(remove);
+		toolBar.add(new SeparatorToolItem());
+
+		final FormPanel formPanel = new FormPanel();
+		
+		final HiddenField<String> exportedFileName = new HiddenField<String>();
+		exportedFileName.setName("ExportedFilename");
+		formPanel.add(exportedFileName);
+		
+		Button export = new Button("Export", IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
+		export.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				List<PatientDetailDTO> models = editorGridStore.getModels();
+				exportServiceAsync.createExportFile(Collections.EMPTY_LIST, models,new AsyncCallback<String>()
+				{
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						
+					}
+
+					@Override
+					public void onSuccess(String result)
+					{
+						exportedFileName.setValue(result);
+						
+						String url = GWT.getModuleBaseURL();
+						url = url + "exportServlet";
+						
+						formPanel.setAction(url);
+						formPanel.submit();
+					}
+					
+				});
+
+			}
+		});
+		toolBar.add(export);
 
 		gridHolderPanel.setTopComponent(toolBar);
 
@@ -330,7 +377,8 @@ public class ScreeningDetail extends LayoutContainer
 		mainContainerPanel.add(gridHolderPanel, new FitData(5));
 		add(mainContainerPanel);
 		// mainContainerPanel.setSize("700px", "600px");
-
+		mainContainerPanel.add(formPanel);
+		formPanel.setVisible(false);
 	}
 
 	private void validateAndSave()
