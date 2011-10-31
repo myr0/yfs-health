@@ -2,12 +2,13 @@ package com.varun.yfs.client.util;
 
 import java.util.List;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("ExportService")
-public interface ExportService<E> extends RemoteService
+public interface ExportService extends RemoteService
 {
 	/**
 	 * Utility class for simplifying access to the instance of async service.
@@ -26,5 +27,5 @@ public interface ExportService<E> extends RemoteService
 		}
 	}
 
-	public String createExportFile(List<String> colHeaders, List<E> lstData);
+	public String createExportFile(List<String> colHeaders, List<? extends ModelData> lstData);
 }

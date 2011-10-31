@@ -88,7 +88,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ExportService</servlet-name>
-		<url-pattern>/yfs/exportServlet</url-pattern>
+		<url-pattern>/yfs/ExportService</url-pattern>
 	</servlet-mapping>
 
 

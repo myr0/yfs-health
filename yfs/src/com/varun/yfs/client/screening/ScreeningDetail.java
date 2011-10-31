@@ -1,7 +1,6 @@
 package com.varun.yfs.client.screening;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -73,7 +72,7 @@ public class ScreeningDetail extends LayoutContainer
 {
 	private String headerText = "Screening Detail";
 	private ScreeningDetailServiceAsync detailServiceAsync = GWT.create(ScreeningDetailService.class);
-	private ExportServiceAsync<PatientDetailDTO> exportServiceAsync = GWT.create(ExportService.class);
+	private ExportServiceAsync exportServiceAsync = GWT.create(ExportService.class);
 
 	protected ContentPanel mainContainerPanel = new ContentPanel();
 	private final ComboBox<ModelData> country = new ComboBox<ModelData>();
@@ -309,11 +308,11 @@ public class ScreeningDetail extends LayoutContainer
 		toolBar.add(new SeparatorToolItem());
 
 		final FormPanel formPanel = new FormPanel();
-		
+
 		final HiddenField<String> exportedFileName = new HiddenField<String>();
 		exportedFileName.setName("ExportedFilename");
 		formPanel.add(exportedFileName);
-		
+
 		Button export = new Button("Export", IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
 		export.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -321,26 +320,27 @@ public class ScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				List<PatientDetailDTO> models = editorGridStore.getModels();
-				exportServiceAsync.createExportFile(Collections.EMPTY_LIST, models,new AsyncCallback<String>()
+				exportServiceAsync.createExportFile(null, models, new AsyncCallback<String>()
 				{
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						
+						IndexPage.unmaskCenterComponent();
+						MessageBox.alert("Alert", "Error encountered while exporting." + caught.getMessage(), l);
 					}
 
 					@Override
 					public void onSuccess(String result)
 					{
 						exportedFileName.setValue(result);
-						
+
 						String url = GWT.getModuleBaseURL();
 						url = url + "exportServlet";
-						
+
 						formPanel.setAction(url);
 						formPanel.submit();
 					}
-					
+
 				});
 
 			}
