@@ -23,7 +23,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 /*based on this example : http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/ss/examples/ToCSV.java*/
 public class ExcelReader
 {
-	private static final String WORKSHEET_NAME = "Screening Detail";
+	public static final String WORKSHEET_NAME = "Screening Detail";
 
 	private static Logger logger = Logger.getLogger(ExcelReader.class);
 

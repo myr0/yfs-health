@@ -19,6 +19,16 @@ public class Util
 			return obj.toString();
 	}
 
+	public static String safeCsvString(Object obj)
+	{
+		if (obj == null)
+			return EMPTY;
+		else if (obj.toString().contains(","))
+			return "\"".concat(obj.toString()).concat("\"");
+		else
+			return obj.toString();
+	}
+
 	public static boolean isEmpty(String str)
 	{
 		if (str == null)

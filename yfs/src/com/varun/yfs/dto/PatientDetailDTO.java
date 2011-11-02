@@ -1,6 +1,7 @@
 package com.varun.yfs.dto;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.varun.yfs.client.util.Util;
 
 public class PatientDetailDTO extends BaseModelData
 {
@@ -266,7 +267,7 @@ public class PatientDetailDTO extends BaseModelData
 		// ", referral2=" + referral2 + ", referral3=" + referral3 +
 		// ", emergency=" + emergency + ", caseClosed=" + caseClosed +
 		// ", surgeryCase=" + surgeryCase;
-		return id + "," + deleted + "," + name + "," + age + "," + sex + "," + standard + "," + height + "," + weight + "," + address + "," + contactNo + "," + findings + "," + treatment + "," + referral1 + "," + referral2 + "," + referral3 + "," + emergency + "," + caseClosed + "," + surgeryCase;
+		return id + "," + name + "," + sex + "," + standard + "," + age + "," + address + "," + contactNo + "," + height + "," + weight + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + "," + Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + "," + Util.safeCsvString(referral3) + "," + Util.safeCsvString(emergency) + "," + Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed);
 	}
 
 }

@@ -319,8 +319,15 @@ public class ScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
+				List<String> headers = new ArrayList<String>();
+				List<ColumnConfig> columns = editorGrid.getColumnModel().getColumns();
+				columns = columns.subList(1, columns.size());
+				for (ColumnConfig columnConfig : columns)
+				{
+					headers.add(columnConfig.getHeader());
+				}
 				List<PatientDetailDTO> models = editorGridStore.getModels();
-				exportServiceAsync.createExportFile(null, models, new AsyncCallback<String>()
+				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
 					public void onFailure(Throwable caught)
@@ -509,15 +516,6 @@ public class ScreeningDetail extends LayoutContainer
 		nameColumn.setEditor(new CellEditor(textField));
 		configs.add(nameColumn);
 
-		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
-		NumberField numField = new NumberField();
-		numField.setAllowBlank(false);
-		numField.setMinLength(1);
-		numField.setMaxLength(3);
-		numField.setPropertyEditorType(Integer.class);
-		ageColumn.setEditor(new CellEditor(numField));
-		configs.add(ageColumn);
-
 		ColumnConfig sexColumn = new ColumnConfig("sex", "Sex", 50);
 		final SimpleComboBox<String> field = new SimpleComboBox<String>();
 		field.setTriggerAction(TriggerAction.ALL);
@@ -534,7 +532,7 @@ public class ScreeningDetail extends LayoutContainer
 				}
 				return field.findModel(value.toString());
 			}
-
+			
 			@Override
 			public Object postProcessValue(Object value)
 			{
@@ -547,7 +545,7 @@ public class ScreeningDetail extends LayoutContainer
 		};
 		sexColumn.setEditor(editor);
 		configs.add(sexColumn);
-
+		
 		ColumnConfig classColumn = new ColumnConfig("standard", "Standard", 100);
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
@@ -555,6 +553,31 @@ public class ScreeningDetail extends LayoutContainer
 		textField.setMaxLength(4);
 		classColumn.setEditor(new CellEditor(textField));
 		configs.add(classColumn);
+		
+		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
+		NumberField numField = new NumberField();
+		numField.setAllowBlank(false);
+		numField.setMinLength(1);
+		numField.setMaxLength(3);
+		numField.setPropertyEditorType(Integer.class);
+		ageColumn.setEditor(new CellEditor(numField));
+		configs.add(ageColumn);
+		
+		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(255);
+		addressColumn.setEditor(new CellEditor(textField));
+		configs.add(addressColumn);
+		
+		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(15);
+		contactNoColumn.setEditor(new CellEditor(textField));
+		configs.add(contactNoColumn);
 
 		ColumnConfig heightColumn = new ColumnConfig("height", "Height(cm)", 100);
 		textField = new TextField<String>();
@@ -571,22 +594,6 @@ public class ScreeningDetail extends LayoutContainer
 		textField.setMaxLength(3);
 		weightColumn.setEditor(new CellEditor(textField));
 		configs.add(weightColumn);
-
-		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(255);
-		addressColumn.setEditor(new CellEditor(textField));
-		configs.add(addressColumn);
-
-		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(15);
-		contactNoColumn.setEditor(new CellEditor(textField));
-		configs.add(contactNoColumn);
 
 		ColumnConfig findingsPColumn = new ColumnConfig("findings", "Findings", 100);
 		textField = new TextField<String>();
@@ -610,8 +617,8 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig medicines2Column = new ColumnConfig("referral2", "Referral 2", 100);
 		configs.add(medicines2Column);
 
-		ColumnConfig medicines3Column = new ColumnConfig("referral3", "Referral 3", 100);
-		configs.add(medicines3Column);
+//		ColumnConfig medicines3Column = new ColumnConfig("referral3", "Referral 3", 100);
+//		configs.add(medicines3Column);
 
 		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
 		final SimpleComboBox<String> yesNoDto = new SimpleComboBox<String>();
@@ -797,34 +804,34 @@ public class ScreeningDetail extends LayoutContainer
 				columnById.setEditor(editorReferral2);
 				fieldReferral2.add(lstReferrals);
 
-				columnById = editorGrid.getColumnModel().getColumnById("referral3");
-				final SimpleComboBox<String> fieldReferral3 = new SimpleComboBox<String>();
-				fieldReferral3.setEditable(false);
-				fieldReferral3.setTriggerAction(TriggerAction.ALL);
-				CellEditor editorReferral3 = new CellEditor(fieldReferral3)
-				{
-					@Override
-					public Object preProcessValue(Object value)
-					{
-						if (value == null)
-						{
-							return value;
-						}
-						return fieldReferral3.findModel(value.toString());
-					}
-
-					@Override
-					public Object postProcessValue(Object value)
-					{
-						if (value == null)
-						{
-							return value;
-						}
-						return ((ModelData) value).get("value");
-					}
-				};
-				columnById.setEditor(editorReferral3);
-				fieldReferral3.add(lstReferrals);
+//				columnById = editorGrid.getColumnModel().getColumnById("referral3");
+//				final SimpleComboBox<String> fieldReferral3 = new SimpleComboBox<String>();
+//				fieldReferral3.setEditable(false);
+//				fieldReferral3.setTriggerAction(TriggerAction.ALL);
+//				CellEditor editorReferral3 = new CellEditor(fieldReferral3)
+//				{
+//					@Override
+//					public Object preProcessValue(Object value)
+//					{
+//						if (value == null)
+//						{
+//							return value;
+//						}
+//						return fieldReferral3.findModel(value.toString());
+//					}
+//
+//					@Override
+//					public Object postProcessValue(Object value)
+//					{
+//						if (value == null)
+//						{
+//							return value;
+//						}
+//						return ((ModelData) value).get("value");
+//					}
+//				};
+//				columnById.setEditor(editorReferral3);
+//				fieldReferral3.add(lstReferrals);
 
 				ScreeningDetailDTO scrDto = modelData.get("data");
 				if (scrDto != null)
