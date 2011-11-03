@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -38,8 +39,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.RowNumberer;
-import com.extjs.gxt.ui.client.widget.grid.filters.GridFilters;
-import com.extjs.gxt.ui.client.widget.grid.filters.StringFilter;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -56,6 +55,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.IndexPage;
+import com.varun.yfs.client.screening.imports.ImportDetail;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailService;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailServiceAsync;
 import com.varun.yfs.client.util.ExportService;
@@ -321,17 +321,17 @@ public class ScreeningDetail extends LayoutContainer
 		final HiddenField<String> exportedFileName = new HiddenField<String>();
 		exportedFileName.setName("ExportedFilename");
 		formPanel.add(exportedFileName);
-		
+
 		toolBar.add(new FillToolItem());
-		
+
 		SplitButton splitItem = new SplitButton("");
 		splitItem.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
-		
+
 		Menu menu = new Menu();
 		splitItem.setMenu(menu);
 
 		toolBar.add(splitItem);
-		
+
 		MenuItem exportAll = new MenuItem("Export All", IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
@@ -372,7 +372,7 @@ public class ScreeningDetail extends LayoutContainer
 			}
 		});
 		menu.add(exportAll);
-		
+
 		MenuItem exportReferral = new MenuItem("Export Referrals", IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
 		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
@@ -386,7 +386,7 @@ public class ScreeningDetail extends LayoutContainer
 				{
 					headers.add(columnConfig.getHeader());
 				}
-				
+
 				StoreFilter<PatientDetailDTO> filterReferrals = new StoreFilter<PatientDetailDTO>()
 				{
 					@Override
@@ -396,9 +396,11 @@ public class ScreeningDetail extends LayoutContainer
 					}
 				};
 				editorGridStore.addFilter(filterReferrals);
-				
+
+				editorGridStore.filter("referral1");
+
 				List<PatientDetailDTO> models = editorGridStore.getModels();
-//				editorGridStore.applyFilters(property)
+				// editorGridStore.applyFilters(property)
 				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
@@ -425,6 +427,19 @@ public class ScreeningDetail extends LayoutContainer
 			}
 		});
 		menu.add(exportReferral);
+
+		Button importPatientDetail = new Button("Import", IconHelper.createPath(GWT.getModuleBaseURL() + "images/import.png"));
+		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				Dialog dialogImport = new Dialog();
+				dialogImport.add(new ImportDetail(), new FitData(5));
+				dialogImport.show();
+			}
+		});
+		toolBar.add(importPatientDetail);
 
 		gridHolderPanel.setTopComponent(toolBar);
 
@@ -604,7 +619,7 @@ public class ScreeningDetail extends LayoutContainer
 				}
 				return field.findModel(value.toString());
 			}
-			
+
 			@Override
 			public Object postProcessValue(Object value)
 			{
@@ -617,7 +632,7 @@ public class ScreeningDetail extends LayoutContainer
 		};
 		sexColumn.setEditor(editor);
 		configs.add(sexColumn);
-		
+
 		ColumnConfig classColumn = new ColumnConfig("standard", "Standard", 100);
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
@@ -625,7 +640,7 @@ public class ScreeningDetail extends LayoutContainer
 		textField.setMaxLength(4);
 		classColumn.setEditor(new CellEditor(textField));
 		configs.add(classColumn);
-		
+
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
 		NumberField numField = new NumberField();
 		numField.setAllowBlank(false);
@@ -634,7 +649,7 @@ public class ScreeningDetail extends LayoutContainer
 		numField.setPropertyEditorType(Integer.class);
 		ageColumn.setEditor(new CellEditor(numField));
 		configs.add(ageColumn);
-		
+
 		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
@@ -642,7 +657,7 @@ public class ScreeningDetail extends LayoutContainer
 		textField.setMaxLength(255);
 		addressColumn.setEditor(new CellEditor(textField));
 		configs.add(addressColumn);
-		
+
 		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
@@ -689,8 +704,9 @@ public class ScreeningDetail extends LayoutContainer
 		ColumnConfig medicines2Column = new ColumnConfig("referral2", "Referral 2", 100);
 		configs.add(medicines2Column);
 
-//		ColumnConfig medicines3Column = new ColumnConfig("referral3", "Referral 3", 100);
-//		configs.add(medicines3Column);
+		// ColumnConfig medicines3Column = new ColumnConfig("referral3",
+		// "Referral 3", 100);
+		// configs.add(medicines3Column);
 
 		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
 		final SimpleComboBox<String> yesNoDto = new SimpleComboBox<String>();
@@ -876,34 +892,36 @@ public class ScreeningDetail extends LayoutContainer
 				columnById.setEditor(editorReferral2);
 				fieldReferral2.add(lstReferrals);
 
-//				columnById = editorGrid.getColumnModel().getColumnById("referral3");
-//				final SimpleComboBox<String> fieldReferral3 = new SimpleComboBox<String>();
-//				fieldReferral3.setEditable(false);
-//				fieldReferral3.setTriggerAction(TriggerAction.ALL);
-//				CellEditor editorReferral3 = new CellEditor(fieldReferral3)
-//				{
-//					@Override
-//					public Object preProcessValue(Object value)
-//					{
-//						if (value == null)
-//						{
-//							return value;
-//						}
-//						return fieldReferral3.findModel(value.toString());
-//					}
-//
-//					@Override
-//					public Object postProcessValue(Object value)
-//					{
-//						if (value == null)
-//						{
-//							return value;
-//						}
-//						return ((ModelData) value).get("value");
-//					}
-//				};
-//				columnById.setEditor(editorReferral3);
-//				fieldReferral3.add(lstReferrals);
+				// columnById =
+				// editorGrid.getColumnModel().getColumnById("referral3");
+				// final SimpleComboBox<String> fieldReferral3 = new
+				// SimpleComboBox<String>();
+				// fieldReferral3.setEditable(false);
+				// fieldReferral3.setTriggerAction(TriggerAction.ALL);
+				// CellEditor editorReferral3 = new CellEditor(fieldReferral3)
+				// {
+				// @Override
+				// public Object preProcessValue(Object value)
+				// {
+				// if (value == null)
+				// {
+				// return value;
+				// }
+				// return fieldReferral3.findModel(value.toString());
+				// }
+				//
+				// @Override
+				// public Object postProcessValue(Object value)
+				// {
+				// if (value == null)
+				// {
+				// return value;
+				// }
+				// return ((ModelData) value).get("value");
+				// }
+				// };
+				// columnById.setEditor(editorReferral3);
+				// fieldReferral3.add(lstReferrals);
 
 				ScreeningDetailDTO scrDto = modelData.get("data");
 				if (scrDto != null)

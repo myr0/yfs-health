@@ -11,7 +11,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwtupload-0.6.3-compat.jar" sourcepath="C:/Documents and Settings/vtayur/.m2/repository/com/googlecode/gwtupload/gwtupload/0.6.3-compat/gwtupload-0.6.3-compat-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hsqldb.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javassist-3.9.0.GA.jar"/>
@@ -19,7 +18,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/poi-3.7.jar" sourcepath="C:/Users/Varun/.m2/repository/org/apache/poi/poi/3.7/poi-3.7-sources.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.5.8.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-simple-1.5.8.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/validation-api-1.0.0.GA.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-validator-4.2.0.Final.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-validator-annotation-processor-4.2.0.Final.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/hibernate-jpa-2.0-api-1.0.0.Final.jar"/>
@@ -30,5 +28,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/poi-ooxml-schemas-3.7-20101029.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/opencsv-2.3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwtupload-0.6.3-compat.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

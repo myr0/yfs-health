@@ -1,6 +1,5 @@
 package com.varun.yfs.client.screening.imports;
 
-import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
 import gwtupload.client.IUploader.UploadedInfo;
 import gwtupload.client.PreloadedImage;
@@ -20,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
+import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -98,7 +98,7 @@ public class ImportDetail extends LayoutContainer
 		mainContainerPanel.setScrollMode(Scroll.AUTOY);
 		mainContainerPanel.setLayout(new FormLayout());
 		mainContainerPanel.setButtonAlign(HorizontalAlignment.CENTER);
-		
+
 		add(mainContainerPanel);
 
 	}
@@ -113,7 +113,7 @@ public class ImportDetail extends LayoutContainer
 
 		public void onFinish(IUploader uploader)
 		{
-			if (uploader.getStatus() == Status.SUCCESS)
+			if (uploader.getStatus() == gwtupload.client.IUploadStatus.Status.SUCCESS)
 			{
 				new PreloadedImage(uploader.fileUrl(), showImage);
 
@@ -178,14 +178,13 @@ public class ImportDetail extends LayoutContainer
 
 									int curProcessed = Integer.parseInt(progress.split("/")[0]);
 									int totalProcessed = Integer.parseInt(progress.split("/")[1]);
-									
-									if(result.getStatus().equals(RpcStatusEnum.FAILURE))
+
+									if (result.getStatus().equals(RpcStatusEnum.FAILURE))
 									{
 										cancel();
 										box.close();
 										Info.display("Screening Detail Import", "Processing failed", "");
-									}
-									else if (curProcessed >= totalProcessed)
+									} else if (curProcessed >= totalProcessed)
 									{
 										cancel();
 										box.close();

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 
-public class UploadServlet extends UploadAction
+public class UploadServlet  extends UploadAction
 {
 
 	private static final long serialVersionUID = 1L;
