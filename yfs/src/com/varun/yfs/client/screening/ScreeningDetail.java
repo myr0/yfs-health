@@ -9,9 +9,12 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -19,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
@@ -34,12 +38,17 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.RowNumberer;
+import com.extjs.gxt.ui.client.widget.grid.filters.GridFilters;
+import com.extjs.gxt.ui.client.widget.grid.filters.StringFilter;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -312,12 +321,22 @@ public class ScreeningDetail extends LayoutContainer
 		final HiddenField<String> exportedFileName = new HiddenField<String>();
 		exportedFileName.setName("ExportedFilename");
 		formPanel.add(exportedFileName);
+		
+		toolBar.add(new FillToolItem());
+		
+		SplitButton splitItem = new SplitButton("");
+		splitItem.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
+		
+		Menu menu = new Menu();
+		splitItem.setMenu(menu);
 
-		Button export = new Button("Export", IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
-		export.addSelectionListener(new SelectionListener<ButtonEvent>()
+		toolBar.add(splitItem);
+		
+		MenuItem exportAll = new MenuItem("Export All", IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
+		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
-			public void componentSelected(ButtonEvent ce)
+			public void componentSelected(MenuEvent ce)
 			{
 				List<String> headers = new ArrayList<String>();
 				List<ColumnConfig> columns = editorGrid.getColumnModel().getColumns();
@@ -352,7 +371,60 @@ public class ScreeningDetail extends LayoutContainer
 
 			}
 		});
-		toolBar.add(export);
+		menu.add(exportAll);
+		
+		MenuItem exportReferral = new MenuItem("Export Referrals", IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
+		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
+		{
+			@Override
+			public void componentSelected(MenuEvent ce)
+			{
+				List<String> headers = new ArrayList<String>();
+				List<ColumnConfig> columns = editorGrid.getColumnModel().getColumns();
+				columns = columns.subList(1, columns.size());
+				for (ColumnConfig columnConfig : columns)
+				{
+					headers.add(columnConfig.getHeader());
+				}
+				
+				StoreFilter<PatientDetailDTO> filterReferrals = new StoreFilter<PatientDetailDTO>()
+				{
+					@Override
+					public boolean select(Store<PatientDetailDTO> store, PatientDetailDTO parent, PatientDetailDTO item, String property)
+					{
+						return false;
+					}
+				};
+				editorGridStore.addFilter(filterReferrals);
+				
+				List<PatientDetailDTO> models = editorGridStore.getModels();
+//				editorGridStore.applyFilters(property)
+				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
+				{
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						IndexPage.unmaskCenterComponent();
+						MessageBox.alert("Alert", "Error encountered while exporting." + caught.getMessage(), l);
+					}
+
+					@Override
+					public void onSuccess(String result)
+					{
+						exportedFileName.setValue(result);
+
+						String url = GWT.getModuleBaseURL();
+						url = url + "exportServlet";
+
+						formPanel.setAction(url);
+						formPanel.submit();
+					}
+
+				});
+
+			}
+		});
+		menu.add(exportReferral);
 
 		gridHolderPanel.setTopComponent(toolBar);
 
