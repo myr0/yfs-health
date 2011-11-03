@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 
-public class UploadServlet  extends UploadAction
+public class GwtUploadServlet  extends UploadAction
 {
 
 	private static final long serialVersionUID = 1L;
 
-	private static Logger logger = Logger.getLogger(UploadServlet.class);
+	private static Logger logger = Logger.getLogger(GwtUploadServlet.class);
 	private Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
 	private Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
 

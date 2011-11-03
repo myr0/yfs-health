@@ -29,11 +29,11 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>uploadServlet</servlet-name>
-		<servlet-class>com.varun.yfs.server.screening.imports.UploadServlet</servlet-class>
+		<servlet-name>gwtUploadServlet</servlet-name>
+		<servlet-class>com.varun.yfs.server.screening.imports.GwtUploadServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>uploadServlet</servlet-name>
+		<servlet-name>gwtUploadServlet</servlet-name>
 		<url-pattern>*.gupld</url-pattern>
 	</servlet-mapping>
 

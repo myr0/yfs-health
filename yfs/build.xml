@@ -9,7 +9,7 @@
 		</fileset>
 	</path>
 
-	<target name="default" depends="gwtc, buildwar,deploy">
+	<target name="default" depends="buildwar,deploy">
 	</target>
 
 	<target name="gwtc" description="GWT compile to JavaScript">
@@ -18,8 +18,6 @@
 				<pathelement location="${src.dir}" />
 				<path refid="compile.classpath" />
 			</classpath>
-			<arg line="-logLevel ALL" />
-			<jvmarg value="-Xmx1024M" />
 			<arg value="com.varun.yfs.client.Yfs" />
 		</java>
 	</target>
