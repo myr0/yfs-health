@@ -1,2 +1,0 @@
-serviceClass: com.varun.yfs.client.admin.AdminPageService
-path: F817CB30FE45A1DA2DF41601469F7304.gwt.rpc
