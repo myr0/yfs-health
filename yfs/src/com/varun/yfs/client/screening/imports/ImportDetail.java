@@ -39,6 +39,7 @@ public class ImportDetail extends LayoutContainer
 	private FlowPanel panelImages = new FlowPanel();
 	private EditorGrid<PatientDetailDTO> patientDetailGrid;
 	private Dialog dialogImport;
+	final MultiUploader defaultUploader = new MultiUploader();
 
 	public ImportDetail(EditorGrid<PatientDetailDTO> editorGrid, Dialog dialogImport)
 	{
@@ -60,16 +61,12 @@ public class ImportDetail extends LayoutContainer
 
 		setLayout(new FitLayout());
 
-		ContentPanel mainContainerPanel = new ContentPanel();
-		mainContainerPanel.setHeading("Import Screening Data");
-
 		LayoutContainer lcUploadComponent = new LayoutContainer();
 		lcUploadComponent.setLayout(new TableLayout(2));
 
 		LabelField lblFileImport = new LabelField("Select a file:");
-		lblFileImport.setWidth("120");
+		lblFileImport.setWidth("70");
 
-		MultiUploader defaultUploader = new MultiUploader();
 		defaultUploader.setValidExtensions("xls", "xlsx");
 		defaultUploader.addOnStartUploadHandler(new OnStartUploaderHandler()
 		{
@@ -77,6 +74,8 @@ public class ImportDetail extends LayoutContainer
 			public void onStart(IUploader uploader)
 			{
 				dialogImport.hide();
+				defaultUploader.clear();
+				defaultUploader.reset();
 			}
 		});
 		defaultUploader.setMaximumFiles(1);
@@ -109,6 +108,8 @@ public class ImportDetail extends LayoutContainer
 
 				IndexPage.maskCenterComponent("Please wait...");
 
+				defaultUploader.reset();
+				defaultUploader.clear();
 				dialogImport.hide();
 
 				startProcessing();
@@ -185,7 +186,8 @@ public class ImportDetail extends LayoutContainer
 				public void onFailure(Throwable caught)
 				{
 					IndexPage.unmaskCenterComponent();
-					Info.display("Import Failed", "Please try again", caught.getMessage());
+					patientDetailGrid.unmask();
+					MessageBox.info("Import Failed", "Please try again. Additional Details : " + caught.getMessage(), l);
 				}
 
 				private void updateProcessedRecords()
@@ -195,7 +197,8 @@ public class ImportDetail extends LayoutContainer
 						@Override
 						public void onFailure(Throwable caught)
 						{
-							MessageBox.info("Preview Failed", "Failed to retrieve records. " + caught.getMessage(), l);
+							MessageBox.info("Preview Failed", "Failed to retrieve records. Please retry the operation again. Additional Details: " + caught.getMessage(), l);
+							patientDetailGrid.unmask();
 							return;
 						}
 

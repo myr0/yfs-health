@@ -28,9 +28,9 @@ public class PatientDetailDTO extends BaseModelData
 	private String emergency;
 	private String caseClosed;
 	private String surgeryCase;
+
 	private YesNoDTO yesNo;
 	private GenderDTO gender;
-
 	private ReferralTypeDTO referral;
 
 	public PatientDetailDTO()
@@ -254,6 +254,16 @@ public class PatientDetailDTO extends BaseModelData
 	{
 		set("referral3", referral3);
 		this.referral3 = referral3;
+	}
+
+	public void setReferral(ReferralTypeDTO referral)
+	{
+		this.referral = referral;
+	}
+
+	public ReferralTypeDTO getReferral()
+	{
+		return referral;
 	}
 
 	@Override

@@ -31,15 +31,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Image;
 import com.varun.yfs.client.admin.common.AdministrationPage;
 import com.varun.yfs.client.admin.location.LocationAdministration;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.admin.users.UserAdministration;
+import com.varun.yfs.client.icons.YfsIconBundle;
 import com.varun.yfs.client.landing.LandingPage;
 import com.varun.yfs.client.reports.ReportPage;
 import com.varun.yfs.client.screening.ScreeningDetail;
-import com.varun.yfs.client.screening.imports.ImportDetail;
 import com.varun.yfs.client.util.Util;
 
 public class IndexPage extends LayoutContainer
@@ -327,7 +328,7 @@ public class IndexPage extends LayoutContainer
 
 		ToolBar toolbar = new ToolBar();
 		SplitButton splitItem = new SplitButton("");
-		splitItem.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/Home.png"));
+		splitItem.setIcon(AbstractImagePrototype.create(YfsIconBundle.INSTANCE.homeButtonIcon()));
 
 		Menu menu = new Menu();
 		splitItem.setMenu(menu);
@@ -335,8 +336,7 @@ public class IndexPage extends LayoutContainer
 		toolbar.add(splitItem);
 		toolbar.add(new SeparatorToolItem());
 
-
-		MenuItem newScreening = new MenuItem("New Screening", IconHelper.createPath(GWT.getModuleBaseURL() + "images/add.png", 16, 16));
+		MenuItem newScreening = new MenuItem("New Screening", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.addButtonIcon()));
 		newScreening.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -346,6 +346,7 @@ public class IndexPage extends LayoutContainer
 				layoutContainerCenter.removeAll();
 				layoutContainerCenter.setLayoutData(new FitData(15));
 
+				layoutContainerCenter.mask("Initializing ...");
 				final ScreeningDetail widget = new ScreeningDetail();
 				widget.initialize("New Screening", null);
 				layoutContainerCenter.add(widget);
@@ -355,43 +356,48 @@ public class IndexPage extends LayoutContainer
 		});
 		menu.add(newScreening);
 
-//		MenuItem referralButton = new MenuItem("New Referral", IconHelper.createPath(GWT.getModuleBaseURL() + "images/arrow_refresh.png", 16, 16));
-//		referralButton.addSelectionListener(new SelectionListener<MenuEvent>()
-//		{
-//			@Override
-//			public void componentSelected(MenuEvent ce)
-//			{
-//				layoutContainerCenter.removeAll();
-//				layoutContainerCenter.setLayoutData(new FitData(15));
-//				
-//				final ScreeningDetail widget = new ScreeningDetail();
-//				layoutContainerCenter.mask("Loading...");
-//				layoutContainerCenter.add(widget);
-//				widget.initialize("New Referral", null);
-//
-//				layoutContainerCenter.layout(true);
-//			}
-//		});
-//		menu.add(referralButton);
+		// MenuItem referralButton = new MenuItem("New Referral",
+		// IconHelper.createPath(GWT.getModuleBaseURL() +
+		// "images/arrow_refresh.png", 16, 16));
+		// referralButton.addSelectionListener(new
+		// SelectionListener<MenuEvent>()
+		// {
+		// @Override
+		// public void componentSelected(MenuEvent ce)
+		// {
+		// layoutContainerCenter.removeAll();
+		// layoutContainerCenter.setLayoutData(new FitData(15));
+		//
+		// final ScreeningDetail widget = new ScreeningDetail();
+		// layoutContainerCenter.mask("Loading...");
+		// layoutContainerCenter.add(widget);
+		// widget.initialize("New Referral", null);
+		//
+		// layoutContainerCenter.layout(true);
+		// }
+		// });
+		// menu.add(referralButton);
 
-//		MenuItem newImport = new MenuItem("Import", IconHelper.createPath(GWT.getModuleBaseURL() + "images/document_import.png", 16, 16));
-//		newImport.addSelectionListener(new SelectionListener<MenuEvent>()
-//		{
-//			@Override
-//			public void componentSelected(MenuEvent ce)
-//			{
-//				layoutContainerCenter.mask("Loading...");
-//				layoutContainerCenter.removeAll();
-//				layoutContainerCenter.setLayoutData(new FitData(15));
-//
-//				ImportDetail widget = new ImportDetail();
-//				widget.initialize("New Screening Import", null);
-//				layoutContainerCenter.add(widget);
-//
-//				layoutContainerCenter.layout(true);
-//			}
-//		});
-//		menu.add(newImport);
+		// MenuItem newImport = new MenuItem("Import",
+		// IconHelper.createPath(GWT.getModuleBaseURL() +
+		// "images/document_import.png", 16, 16));
+		// newImport.addSelectionListener(new SelectionListener<MenuEvent>()
+		// {
+		// @Override
+		// public void componentSelected(MenuEvent ce)
+		// {
+		// layoutContainerCenter.mask("Loading...");
+		// layoutContainerCenter.removeAll();
+		// layoutContainerCenter.setLayoutData(new FitData(15));
+		//
+		// ImportDetail widget = new ImportDetail();
+		// widget.initialize("New Screening Import", null);
+		// layoutContainerCenter.add(widget);
+		//
+		// layoutContainerCenter.layout(true);
+		// }
+		// });
+		// menu.add(newImport);
 
 		cpScreening.setTopComponent(toolbar);
 
@@ -440,14 +446,14 @@ public class IndexPage extends LayoutContainer
 				{
 					layoutContainerCenter.mask("Loading...");
 					layoutContainerCenter.removeAll();
-					
+
 					layoutContainerCenter.setLayoutData(new FitData(15));
-					
+
 					final ScreeningDetail widget = new ScreeningDetail();
 					layoutContainerCenter.add(widget);
 					String title = "Edit Screening " + selectedItem.get("name").toString();
 					widget.initialize(title, selectedItem.get("id").toString());
-					
+
 					layoutContainerCenter.layout(true);
 				}
 			}

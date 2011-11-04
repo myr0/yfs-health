@@ -15,7 +15,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreFilter;
-import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -53,7 +52,9 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.icons.YfsIconBundle;
 import com.varun.yfs.client.index.IndexPage;
 import com.varun.yfs.client.screening.imports.ImportDetail;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailService;
@@ -278,7 +279,7 @@ public class ScreeningDetail extends LayoutContainer
 		gridHolderPanel.setHeaderVisible(true);
 
 		ToolBar toolBar = new ToolBar();
-		Button add = new Button("Add", IconHelper.createPath(GWT.getModuleBaseURL() + "images/add.png"));
+		Button add = new Button("Add", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.addButtonIcon()));
 		add.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -296,7 +297,7 @@ public class ScreeningDetail extends LayoutContainer
 
 		toolBar.add(new SeparatorToolItem());
 
-		Button remove = new Button("Remove", IconHelper.createPath(GWT.getModuleBaseURL() + "images/delete.png"));
+		Button remove = new Button("Remove", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.deleteButtonIcon()));
 		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -325,14 +326,14 @@ public class ScreeningDetail extends LayoutContainer
 		toolBar.add(new FillToolItem());
 
 		SplitButton splitItem = new SplitButton("");
-		splitItem.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
+		splitItem.setIcon(AbstractImagePrototype.create(YfsIconBundle.INSTANCE.exportButtonIcon()));
 
 		Menu menu = new Menu();
 		splitItem.setMenu(menu);
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -373,7 +374,7 @@ public class ScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		MenuItem exportReferral = new MenuItem("Export Referrals", IconHelper.createPath(GWT.getModuleBaseURL() + "images/export.png"));
+		MenuItem exportReferral = new MenuItem("Export Referrals", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.exportButtonIcon()));
 		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -392,15 +393,21 @@ public class ScreeningDetail extends LayoutContainer
 					@Override
 					public boolean select(Store<PatientDetailDTO> store, PatientDetailDTO parent, PatientDetailDTO item, String property)
 					{
+						if (item.getReferral1() != null || item.getReferral2() != null)
+							return true;
+
+//						if (item.getReferral1().isEmpty() || item.getReferral2().isEmpty())
+//							return false;
+
+						// if (item.getReferral3() == null)
+						// return false;
 						return false;
 					}
 				};
 				editorGridStore.addFilter(filterReferrals);
-
-				editorGridStore.filter("referral1");
+				editorGridStore.applyFilters("referral1");
 
 				List<PatientDetailDTO> models = editorGridStore.getModels();
-				// editorGridStore.applyFilters(property)
 				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
@@ -420,6 +427,8 @@ public class ScreeningDetail extends LayoutContainer
 
 						formPanel.setAction(url);
 						formPanel.submit();
+
+						editorGridStore.clearFilters();
 					}
 
 				});
@@ -428,16 +437,16 @@ public class ScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportReferral);
 
-		Button importPatientDetail = new Button("Import", IconHelper.createPath(GWT.getModuleBaseURL() + "images/import.png"));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
 				Dialog dialogImport = new Dialog();
-				dialogImport.setTitle("Import Patient Detail");
-				dialogImport.setSize("400", "80");
-				dialogImport.add(new ImportDetail(editorGrid,dialogImport), new FitData(5));
+				dialogImport.setHeading("Import Patient Detail");
+				dialogImport.setWidth("400");
+				dialogImport.add(new ImportDetail(editorGrid, dialogImport), new FitData(5));
 				dialogImport.show();
 			}
 		});
