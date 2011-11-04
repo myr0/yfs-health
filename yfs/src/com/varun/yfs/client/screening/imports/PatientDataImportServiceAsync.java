@@ -9,7 +9,7 @@ import com.varun.yfs.dto.ProgressDTO;
 public interface PatientDataImportServiceAsync
 {
 
-	void startProcessing(String path, AsyncCallback<String> callback);
+	void startProcessing(String path, boolean readId, AsyncCallback<String> callback);
 
 	void getProgress(AsyncCallback<ProgressDTO> callback);
 

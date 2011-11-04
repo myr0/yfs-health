@@ -6,13 +6,14 @@ import gwtupload.client.MultiUploader;
 import gwtupload.client.PreloadedImage;
 import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -40,11 +41,13 @@ public class ImportDetail extends LayoutContainer
 	private EditorGrid<PatientDetailDTO> patientDetailGrid;
 	private Dialog dialogImport;
 	final MultiUploader defaultUploader = new MultiUploader();
+	final boolean appendMode;
 
-	public ImportDetail(EditorGrid<PatientDetailDTO> editorGrid, Dialog dialogImport)
+	public ImportDetail(EditorGrid<PatientDetailDTO> editorGrid, Dialog dialogImport, boolean appendMode)
 	{
 		this.patientDetailGrid = editorGrid;
 		this.dialogImport = dialogImport;
+		this.appendMode = appendMode;
 	}
 
 	protected final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
@@ -118,7 +121,7 @@ public class ImportDetail extends LayoutContainer
 
 		private void startProcessing()
 		{
-			patientDataImportService.startProcessing(uploadPath, new AsyncCallback<String>()
+			patientDataImportService.startProcessing(uploadPath, appendMode, new AsyncCallback<String>()
 			{
 				@Override
 				public void onSuccess(String result)
@@ -206,6 +209,19 @@ public class ImportDetail extends LayoutContainer
 						public void onSuccess(List<PatientDetailDTO> result)
 						{
 							ListStore<PatientDetailDTO> store = patientDetailGrid.getStore();
+							if (appendMode)
+							{
+								List<PatientDetailDTO> lstCurrentModels = store.getModels();
+								for (PatientDetailDTO patientDetailDTO : result)
+								{
+									if (lstCurrentModels.contains(patientDetailDTO))
+									{
+										lstCurrentModels.set(lstCurrentModels.indexOf(patientDetailDTO), patientDetailDTO);
+									}
+
+								}
+								result = lstCurrentModels;
+							}
 							store.removeAll();
 							store.add(result);
 							patientDetailGrid.unmask();

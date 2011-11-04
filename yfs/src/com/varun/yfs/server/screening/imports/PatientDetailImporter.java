@@ -32,7 +32,7 @@ public class PatientDetailImporter
 		this.errorRows = errorRows;
 	}
 
-	public void convertRecords()
+	public void convertRecords(boolean processIds)
 	{
 		logger.debug("Conversion to Patient Detail has Started");
 		while (true)
@@ -52,7 +52,7 @@ public class PatientDetailImporter
 				break;
 			}
 
-			convertToPatientDetailDTO(lstCols);
+			convertToPatientDetailDTO(lstCols, processIds);
 
 			if (this.patientDetails.size() > 0)
 				logger.debug("Current row processed: " + this.patientDetails.get(this.patientDetails.size() - 1));
@@ -69,7 +69,7 @@ public class PatientDetailImporter
 		return patientDetails;
 	}
 
-	private void convertToPatientDetailDTO(List<String> lstCols)
+	private void convertToPatientDetailDTO(List<String> lstCols, boolean processIds)
 	{
 		logger.debug(processedRowCount + "- starting conversion.");
 		errorString.trimToSize();
@@ -87,6 +87,10 @@ public class PatientDetailImporter
 		// patientDetailDTO.setReferral3(lstCols.get());
 
 		patientDetailDTO.setDeleted("N");
+
+		if (!lstCols.get(0).isEmpty() && processIds)
+			patientDetailDTO.setId(Long.parseLong(lstCols.get(0)));
+
 		patientDetailDTO.setName(lstCols.get(1));
 
 		String decodeSexColumn = decodeSexColumn(lstCols.get(2));

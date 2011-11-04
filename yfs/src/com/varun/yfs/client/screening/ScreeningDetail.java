@@ -396,8 +396,9 @@ public class ScreeningDetail extends LayoutContainer
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
 
-//						if (item.getReferral1().isEmpty() || item.getReferral2().isEmpty())
-//							return false;
+						// if (item.getReferral1().isEmpty() ||
+						// item.getReferral2().isEmpty())
+						// return false;
 
 						// if (item.getReferral3() == null)
 						// return false;
@@ -446,7 +447,10 @@ public class ScreeningDetail extends LayoutContainer
 				Dialog dialogImport = new Dialog();
 				dialogImport.setHeading("Import Patient Detail");
 				dialogImport.setWidth("400");
-				dialogImport.add(new ImportDetail(editorGrid, dialogImport), new FitData(5));
+				boolean processIds = false;
+				if (scrId != null)
+					processIds = true;
+				dialogImport.add(new ImportDetail(editorGrid, dialogImport, processIds), new FitData(5));
 				dialogImport.show();
 			}
 		});
@@ -970,7 +974,7 @@ public class ScreeningDetail extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.alert("Alert", "Error encountered while loading", l);
+				MessageBox.alert("Alert", "Error encountered while loading the screen. Please retry the operation. Additional Details: " + caught.getMessage(), l);
 			}
 		});
 

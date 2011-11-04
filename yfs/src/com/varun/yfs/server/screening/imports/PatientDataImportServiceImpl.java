@@ -34,7 +34,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	private RpcStatusEnum status = RpcStatusEnum.COMPLETED;
 
 	@Override
-	public String startProcessing(final String path)
+	public String startProcessing(final String path, boolean processIds)
 	{
 		converter.reinit();
 		patientDetailImporter.reinit();
@@ -68,7 +68,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 
 		logger.debug("Starting the parse/import threads");
 		startExcelParserThread(path);
-		startPatientDetailImporterThread();
+		startPatientDetailImporterThread(processIds);
 
 		return statusMessage;
 
@@ -97,7 +97,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 		return errorRows;
 	}
 
-	private void startPatientDetailImporterThread()
+	private void startPatientDetailImporterThread(final boolean processIds)
 	{
 		Runnable runnable;
 		runnable = new Runnable()
@@ -107,7 +107,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 			{
 				try
 				{
-					patientDetailImporter.convertRecords();
+					patientDetailImporter.convertRecords(processIds);
 				} catch (Exception ex)
 				{
 					String errorMesssage = "Error encountered trying to convert excel rows to file contents." + ex.getMessage();

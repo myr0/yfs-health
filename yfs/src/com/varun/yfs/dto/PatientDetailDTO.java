@@ -267,16 +267,34 @@ public class PatientDetailDTO extends BaseModelData
 	}
 
 	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PatientDetailDTO other = (PatientDetailDTO) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString()
 	{
-		// return "id=" + id + ", deleted=" + deleted + ", name=" + name +
-		// ", age=" + age + ", sex=" + sex + ", standard=" + standard +
-		// ", height=" + height + ", weight=" + weight + ", address=" + address
-		// + ", contactNo=" + contactNo + ", findings=" + findings +
-		// ", treatment=" + treatment + ", referral1=" + referral1 +
-		// ", referral2=" + referral2 + ", referral3=" + referral3 +
-		// ", emergency=" + emergency + ", caseClosed=" + caseClosed +
-		// ", surgeryCase=" + surgeryCase;
+		// don't touch the order - just append to the last -- fragile code -
+		// export will get screwed
 		return id + "," + name + "," + sex + "," + standard + "," + age + "," + address + "," + contactNo + "," + height + "," + weight + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + "," + Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + "," + Util.safeCsvString(referral3) + "," + Util.safeCsvString(emergency) + "," + Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed);
 	}
 

@@ -23,7 +23,7 @@ public interface PatientDataImportService extends RemoteService {
 		}
 	}
 	
-	public String startProcessing(String path);
+	String startProcessing(String path, boolean readId);
 	
 	public ProgressDTO getProgress();
 	
