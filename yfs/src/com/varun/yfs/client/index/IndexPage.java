@@ -355,43 +355,43 @@ public class IndexPage extends LayoutContainer
 		});
 		menu.add(newScreening);
 
-		MenuItem referralButton = new MenuItem("New Referral", IconHelper.createPath(GWT.getModuleBaseURL() + "images/arrow_refresh.png", 16, 16));
-		referralButton.addSelectionListener(new SelectionListener<MenuEvent>()
-		{
-			@Override
-			public void componentSelected(MenuEvent ce)
-			{
-				layoutContainerCenter.removeAll();
-				layoutContainerCenter.setLayoutData(new FitData(15));
-				
-				final ScreeningDetail widget = new ScreeningDetail();
-				layoutContainerCenter.mask("Loading...");
-				layoutContainerCenter.add(widget);
-				widget.initialize("New Referral", null);
+//		MenuItem referralButton = new MenuItem("New Referral", IconHelper.createPath(GWT.getModuleBaseURL() + "images/arrow_refresh.png", 16, 16));
+//		referralButton.addSelectionListener(new SelectionListener<MenuEvent>()
+//		{
+//			@Override
+//			public void componentSelected(MenuEvent ce)
+//			{
+//				layoutContainerCenter.removeAll();
+//				layoutContainerCenter.setLayoutData(new FitData(15));
+//				
+//				final ScreeningDetail widget = new ScreeningDetail();
+//				layoutContainerCenter.mask("Loading...");
+//				layoutContainerCenter.add(widget);
+//				widget.initialize("New Referral", null);
+//
+//				layoutContainerCenter.layout(true);
+//			}
+//		});
+//		menu.add(referralButton);
 
-				layoutContainerCenter.layout(true);
-			}
-		});
-		menu.add(referralButton);
-
-		MenuItem newImport = new MenuItem("Import", IconHelper.createPath(GWT.getModuleBaseURL() + "images/document_import.png", 16, 16));
-		newImport.addSelectionListener(new SelectionListener<MenuEvent>()
-		{
-			@Override
-			public void componentSelected(MenuEvent ce)
-			{
-				layoutContainerCenter.mask("Loading...");
-				layoutContainerCenter.removeAll();
-				layoutContainerCenter.setLayoutData(new FitData(15));
-
-				ImportDetail widget = new ImportDetail();
-				widget.initialize("New Screening Import", null);
-				layoutContainerCenter.add(widget);
-
-				layoutContainerCenter.layout(true);
-			}
-		});
-		menu.add(newImport);
+//		MenuItem newImport = new MenuItem("Import", IconHelper.createPath(GWT.getModuleBaseURL() + "images/document_import.png", 16, 16));
+//		newImport.addSelectionListener(new SelectionListener<MenuEvent>()
+//		{
+//			@Override
+//			public void componentSelected(MenuEvent ce)
+//			{
+//				layoutContainerCenter.mask("Loading...");
+//				layoutContainerCenter.removeAll();
+//				layoutContainerCenter.setLayoutData(new FitData(15));
+//
+//				ImportDetail widget = new ImportDetail();
+//				widget.initialize("New Screening Import", null);
+//				layoutContainerCenter.add(widget);
+//
+//				layoutContainerCenter.layout(true);
+//			}
+//		});
+//		menu.add(newImport);
 
 		cpScreening.setTopComponent(toolbar);
 

@@ -70,17 +70,20 @@ public class ExcelReader
 
 	public void validateFile(String filePath) throws FileNotFoundException, IOException, InvalidFormatException, IllegalArgumentException
 	{
+		if (filePath == null)
+			throw new IllegalArgumentException("The source for the Excel file(s) cannot be found.");
+
 		File source = new File(filePath);
 
 		if (!source.exists())
 		{
-			throw new IllegalArgumentException("The source for the Excel " + "file(s) cannot be found.");
+			throw new IllegalArgumentException("The source for the Excel file(s) cannot be found.");
 		}
 
 		if (source.isDirectory())
 		{
 			// filesList = source.listFiles(new ExcelFilenameFilter());
-			throw new IllegalArgumentException("The source for the Excel " + "file(s) seems to be a directory.");
+			throw new IllegalArgumentException("The source for the Excel file(s) seems to be a directory.");
 		}
 
 		FileInputStream fis = null;

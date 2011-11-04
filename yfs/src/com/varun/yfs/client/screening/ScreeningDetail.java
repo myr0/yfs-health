@@ -435,7 +435,9 @@ public class ScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				Dialog dialogImport = new Dialog();
-				dialogImport.add(new ImportDetail(), new FitData(5));
+				dialogImport.setTitle("Import Patient Detail");
+				dialogImport.setSize("400", "80");
+				dialogImport.add(new ImportDetail(editorGrid,dialogImport), new FitData(5));
 				dialogImport.show();
 			}
 		});

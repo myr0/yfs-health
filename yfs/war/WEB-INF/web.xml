@@ -19,18 +19,8 @@
 	</context-param>
 
 	<servlet>
-		<servlet-name>uploadServlet</servlet-name>
-		<!-- This is the default servlet, it puts files in session -->
-		<servlet-class>gwtupload.server.UploadServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>uploadServlet</servlet-name>
-		<url-pattern>*.gupld</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<servlet-name>gwtUploadServlet</servlet-name>
-		<servlet-class>com.varun.yfs.server.screening.imports.GwtUploadServlet</servlet-class>
+		<servlet-class>com.varun.yfs.server.screening.imports.UploadServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>gwtUploadServlet</servlet-name>
