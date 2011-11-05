@@ -11,7 +11,6 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -28,9 +27,11 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.icons.YfsImageBundle;
 
 public class AdministrationPage extends LayoutContainer
 {
@@ -44,7 +45,7 @@ public class AdministrationPage extends LayoutContainer
 	public AdministrationPage()
 	{
 	}
-	
+
 	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
@@ -77,13 +78,14 @@ public class AdministrationPage extends LayoutContainer
 		editorGrid.setSelectionModel(new GridSelectionModel<ModelData>());
 		editorGrid.setLoadMask(true);
 		editorGrid.mask("Loading...");
-		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.TWO);
+		editorGrid.setAutoWidth(true);
+		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 		editorGrid.setAutoExpandColumn("name");
 		gridPanel.add(editorGrid);
 
 		ToolBar toolBar = new ToolBar();
 		Button add = new Button("Add");
-		add.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/add.png", 16, 16));
+		add.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		add.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -99,7 +101,7 @@ public class AdministrationPage extends LayoutContainer
 		toolBar.add(add);
 
 		Button remove = new Button("Remove");
-		remove.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/delete.png", 16, 16));
+		remove.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
 		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -143,7 +145,7 @@ public class AdministrationPage extends LayoutContainer
 		}));
 
 		gridPanel.setHeight("500px");
-		gridPanel.setWidth("350px");
+		gridPanel.setWidth("500px");
 		lp.add(gridPanel, new FitData(5));
 
 		add(lp);
@@ -158,7 +160,7 @@ public class AdministrationPage extends LayoutContainer
 			public void onSuccess(RpcStatusEnum result)
 			{
 				reinitPage(curAdminEntity);
-				if(result.compareTo(RpcStatusEnum.FAILURE) == 0)
+				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
 				{
 					MessageBox.alert("Alert", "Error encountered while saving", l);
 				}
@@ -182,9 +184,10 @@ public class AdministrationPage extends LayoutContainer
 			@Override
 			public void onSuccess(List<ModelData> result)
 			{
-				editorGrid.getStore().removeAll();
-				editorGrid.getStore().add(result);
-				editorGrid.getStore().commitChanges();
+				ListStore<ModelData> store = editorGrid.getStore();
+				store.removeAll();
+				store.add(result);
+				store.commitChanges();
 				editorGrid.unmask();
 			}
 

@@ -6,24 +6,23 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.SplitButton;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
@@ -31,13 +30,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Image;
 import com.varun.yfs.client.admin.common.AdministrationPage;
 import com.varun.yfs.client.admin.location.LocationAdministration;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.admin.users.UserAdministration;
-import com.varun.yfs.client.icons.YfsIconBundle;
+import com.varun.yfs.client.help.HelpPage;
+import com.varun.yfs.client.icons.YfsImageBundle;
 import com.varun.yfs.client.landing.LandingPage;
 import com.varun.yfs.client.reports.ReportPage;
 import com.varun.yfs.client.screening.ScreeningDetail;
@@ -145,7 +144,7 @@ public class IndexPage extends LayoutContainer
 	private void buildWestLayout()
 	{
 		layoutContainerWest.setLayout(new AccordionLayout());
-		BorderLayoutData bldWest = new BorderLayoutData(LayoutRegion.WEST, 200.0f);
+		BorderLayoutData bldWest = new BorderLayoutData(LayoutRegion.WEST, 250.0f);
 		bldWest.setCollapsible(true);
 		bldWest.setSplit(true);
 		layoutContainerWest.setHeight("300");
@@ -241,7 +240,9 @@ public class IndexPage extends LayoutContainer
 					tree.getStore().add(modelData, false);
 					List<ModelData> object = (List<ModelData>) modelData.get("children");
 					if (object != null)
+					{
 						tree.getStore().add(modelData, object, false);
+					}
 				}
 				tree.setExpanded(result.get(0), true);
 			}
@@ -253,7 +254,7 @@ public class IndexPage extends LayoutContainer
 	{
 		final ContentPanel cpReports = new ContentPanel();
 		cpReports.setAnimCollapse(false);
-		cpReports.setHeading("Reports");
+		cpReports.setHeading("Reporting");
 		cpReports.setLayout(new FitLayout());
 		layoutContainerWest.add(cpReports);
 
@@ -322,25 +323,26 @@ public class IndexPage extends LayoutContainer
 	{
 		final ContentPanel cpScreening = new ContentPanel();
 		cpScreening.setAnimCollapse(false);
-		cpScreening.setHeading("Screening");
+		cpScreening.setHeading("Screening/Referrals");
 		cpScreening.setLayout(new FitLayout());
 		layoutContainerWest.add(cpScreening);
 
 		ToolBar toolbar = new ToolBar();
-		SplitButton splitItem = new SplitButton("");
-		splitItem.setIcon(AbstractImagePrototype.create(YfsIconBundle.INSTANCE.homeButtonIcon()));
+		// SplitButton splitItem = new SplitButton("");
+		// splitItem.setIcon(AbstractImagePrototype.create(YfsIconBundle.INSTANCE.homeButtonIcon()));
+		//
+		// Menu menu = new Menu();
+		// splitItem.setMenu(menu);
 
-		Menu menu = new Menu();
-		splitItem.setMenu(menu);
+		// toolbar.add(splitItem);
 
-		toolbar.add(splitItem);
+		Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		toolbar.add(newScreening);
 		toolbar.add(new SeparatorToolItem());
-
-		MenuItem newScreening = new MenuItem("New Screening", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.addButtonIcon()));
-		newScreening.addSelectionListener(new SelectionListener<MenuEvent>()
+		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
-			public void componentSelected(MenuEvent ce)
+			public void componentSelected(ButtonEvent ce)
 			{
 				layoutContainerCenter.mask("Loading...");
 				layoutContainerCenter.removeAll();
@@ -354,8 +356,20 @@ public class IndexPage extends LayoutContainer
 				layoutContainerCenter.layout(true);
 			}
 		});
-		menu.add(newScreening);
 
+		Button help = new Button("Help", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.helpButtonIcon()));
+		toolbar.add(help);
+		help.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				Dialog dialog = new Dialog();
+				dialog.setHeading("Help");
+				dialog.add(new HelpPage(), new FitData());
+				dialog.show();
+			}
+		});
 		// MenuItem referralButton = new MenuItem("New Referral",
 		// IconHelper.createPath(GWT.getModuleBaseURL() +
 		// "images/arrow_refresh.png", 16, 16));
@@ -431,6 +445,7 @@ public class IndexPage extends LayoutContainer
 		};
 		filter.setWidth("100");
 		filter.bind(screeningPanelStore);
+		toolbar.add(new SeparatorToolItem());
 		toolbar.add(filter);
 
 		reloadScreeningPanel(false);

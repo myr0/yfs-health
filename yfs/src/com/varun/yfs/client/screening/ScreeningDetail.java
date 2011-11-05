@@ -54,7 +54,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.common.RpcStatusEnum;
-import com.varun.yfs.client.icons.YfsIconBundle;
+import com.varun.yfs.client.icons.YfsImageBundle;
 import com.varun.yfs.client.index.IndexPage;
 import com.varun.yfs.client.screening.imports.ImportDetail;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailService;
@@ -152,14 +152,20 @@ public class ScreeningDetail extends LayoutContainer
 		country.setForceSelection(true);
 		country.setTriggerAction(TriggerAction.ALL);
 		country.setStore(new ListStore<ModelData>());
+		country.setAllowBlank(false);
+		// ComboBox<ModelData>.ComboBoxMessages titleMsgs = country.new
+		// ComboBoxMessages();
+		// titleMsgs.setInvalidText("Country is required");
+		// country.setMessages(titleMsgs);
 
-		state.setEditable(false);
 		cpPart1.add(state, new FormData("90%"));
+		state.setEditable(false);
 		state.setSize("150", "22");
 		state.setFieldLabel("State");
 		state.setDisplayField("stateName");
 		state.setTriggerAction(TriggerAction.ALL);
 		state.setStore(new ListStore<ModelData>());
+		state.setAllowBlank(false);
 
 		cpPart1.add(city, new FormData("90%"));
 		city.setSize("150", "22");
@@ -167,6 +173,7 @@ public class ScreeningDetail extends LayoutContainer
 		city.setDisplayField("cityName");
 		city.setTriggerAction(TriggerAction.ALL);
 		city.setStore(new ListStore<ModelData>());
+		city.setAllowBlank(false);
 
 		town.setFieldLabel("Town");
 		cpPart1.add(town, new FormData("90%"));
@@ -174,6 +181,7 @@ public class ScreeningDetail extends LayoutContainer
 		town.setDisplayField("townName");
 		town.setTriggerAction(TriggerAction.ALL);
 		town.setStore(new ListStore<ModelData>());
+		town.setAllowBlank(false);		
 
 		village.setFieldLabel("Village");
 		cpPart1.add(village, new FormData("90%"));
@@ -181,6 +189,7 @@ public class ScreeningDetail extends LayoutContainer
 		village.setDisplayField("villageName");
 		village.setTriggerAction(TriggerAction.ALL);
 		village.setStore(new ListStore<ModelData>());
+		village.setAllowBlank(false);
 
 		chapterName.setFieldLabel("Chapter Name");
 		cpPart1.add(chapterName, new FormData("90%"));
@@ -188,6 +197,7 @@ public class ScreeningDetail extends LayoutContainer
 		chapterName.setDisplayField("name");
 		chapterName.setTriggerAction(TriggerAction.ALL);
 		chapterName.setStore(new ListStore<ModelData>());
+		chapterName.setAllowBlank(false);
 
 		mainContainerPanel.add(cpMain);
 		cpPart1.setSize("33%", "280px");
@@ -201,9 +211,11 @@ public class ScreeningDetail extends LayoutContainer
 		locality.setTriggerAction(TriggerAction.ALL);
 		locality.setStore(new ListStore<ModelData>());
 		locality.setWidth("150");
+		locality.setAllowBlank(false);
 
 		cpPart2.add(screeningDate, new FormData("90%"));
 		screeningDate.setFieldLabel("Date");
+		screeningDate.setAllowBlank(false);
 		screeningDate.setAllowBlank(false);
 
 		cpPart2.add(processType, new FormData("90%"));
@@ -211,20 +223,24 @@ public class ScreeningDetail extends LayoutContainer
 		processType.setDisplayField("name");
 		processType.setTriggerAction(TriggerAction.ALL);
 		processType.setStore(new ListStore<ModelData>());
+		processType.setAllowBlank(false);
 
 		cpPart2.add(typeOfLocation, new FormData("90%"));
 		typeOfLocation.setFieldLabel("Type of Location");
 		typeOfLocation.setDisplayField("name");
 		typeOfLocation.setTriggerAction(TriggerAction.ALL);
 		typeOfLocation.setStore(new ListStore<ModelData>());
+		typeOfLocation.setAllowBlank(false);
 
 		cpPart2.add(address, new FormData("100% -240"));
 		address.setFieldLabel("Address");
 		address.setWidth("150");
+		address.setAllowBlank(false);
 
 		cpPart2.add(contactInformation, new FormData("90% -235"));
 		contactInformation.setFieldLabel("Contact Information");
 		contactInformation.setWidth("150");
+		contactInformation.setAllowBlank(false);
 
 		TableData td_cpPart2 = new TableData();
 		td_cpPart2.setPadding(5);
@@ -279,7 +295,7 @@ public class ScreeningDetail extends LayoutContainer
 		gridHolderPanel.setHeaderVisible(true);
 
 		ToolBar toolBar = new ToolBar();
-		Button add = new Button("Add", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.addButtonIcon()));
+		Button add = new Button("Add", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		add.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -297,7 +313,7 @@ public class ScreeningDetail extends LayoutContainer
 
 		toolBar.add(new SeparatorToolItem());
 
-		Button remove = new Button("Remove", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.deleteButtonIcon()));
+		Button remove = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
 		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -326,14 +342,14 @@ public class ScreeningDetail extends LayoutContainer
 		toolBar.add(new FillToolItem());
 
 		SplitButton splitItem = new SplitButton("");
-		splitItem.setIcon(AbstractImagePrototype.create(YfsIconBundle.INSTANCE.exportButtonIcon()));
+		splitItem.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 
 		Menu menu = new Menu();
 		splitItem.setMenu(menu);
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -374,7 +390,7 @@ public class ScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		MenuItem exportReferral = new MenuItem("Export Referrals", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportReferral = new MenuItem("Export Referrals", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -438,7 +454,7 @@ public class ScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportReferral);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsIconBundle.INSTANCE.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -504,66 +520,42 @@ public class ScreeningDetail extends LayoutContainer
 
 	private boolean validateFormEntry()
 	{
-		if (country.getSelection().isEmpty())
-		{
-			Info.display("New Screening", "You need to select a country to proceed.");
+		if (!country.validate())
 			return false;
-		}
-		if (state.getSelection().isEmpty())
-		{
-			Info.display("New Screening", "You need to select a state to proceed.");
+
+		if (!state.validate())
 			return false;
-		}
-		if (city.getSelection().isEmpty())
-		{
-			Info.display("New Screening", "You need to select a city to proceed.");
+
+		if (!city.validate())
 			return false;
-		}
-		if (town.getSelection().isEmpty())
-		{
-			Info.display("New Screening", "You need to select a town to proceed.");
+
+		if (!town.validate())
 			return false;
-		}
-		if (village.getSelection().isEmpty())
-		{
-			Info.display("New Screening", "You need to select a village to proceed.");
+
+		if (!village.validate())
 			return false;
-		}
-		if (chapterName.getSelection().isEmpty())
-		{
-			Info.display("New Screening", "You need to select a Chapter Name to proceed.");
+
+		if (!chapterName.validate())
 			return false;
-		}
-		if (locality.getSelection().isEmpty())
-		{
-			Info.display("New Screening", "You need to select a Locality to proceed.");
+
+		if (!locality.validate())
 			return false;
-		}
-		if (screeningDate.getValue() == null)
-		{
-			Info.display("New Screening", "You need to select a Screening-Date to proceed.");
+
+		if (!screeningDate.validate())
 			return false;
-		}
-		if (processType.getSelection().isEmpty())
-		{
-			Info.display("New Screening", "You need to select a Process Type to proceed.");
+
+		if (!processType.validate())
 			return false;
-		}
-		if (typeOfLocation.getSelection().isEmpty())
-		{
-			Info.display("New Screening", "You need to select a Type Of Location to proceed.");
+
+		if (!typeOfLocation.validate())
 			return false;
-		}
-		if (address != null && address.getValue().isEmpty())
-		{
-			Info.display("New Screening", "You need to enter the Address to proceed.");
+
+		if (!address.validate())
 			return false;
-		}
-		if (contactInformation != null && contactInformation.getValue().isEmpty())
-		{
-			Info.display("New Screening", "You need to enter the Contact Information to proceed.");
+
+		if (!contactInformation.validate())
 			return false;
-		}
+
 		return true;
 	}
 

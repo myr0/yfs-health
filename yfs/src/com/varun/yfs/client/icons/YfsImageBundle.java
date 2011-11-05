@@ -4,9 +4,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-public interface YfsIconBundle extends ClientBundle
+public interface YfsImageBundle extends ClientBundle
 {
-	public static final YfsIconBundle INSTANCE =  GWT.create(YfsIconBundle.class);
+	public static final YfsImageBundle INSTANCE =  GWT.create(YfsImageBundle.class);
 
 	@Source("add.png")
 	public ImageResource addButtonIcon();
@@ -31,4 +31,10 @@ public interface YfsIconBundle extends ClientBundle
 
 	@Source("import.png")
 	public ImageResource importButtonIcon();
+	
+	@Source("help.png")
+	public ImageResource helpButtonIcon();
+	
+	@Source("screeningHelp.png")
+	public ImageResource screeningHelpButtonImage();
 }

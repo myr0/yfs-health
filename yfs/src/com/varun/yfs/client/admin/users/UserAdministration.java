@@ -14,7 +14,6 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -35,9 +34,11 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.icons.YfsImageBundle;
 import com.varun.yfs.dto.LocalityDTO;
 import com.varun.yfs.dto.TownDTO;
 import com.varun.yfs.dto.VillageDTO;
@@ -91,13 +92,14 @@ public class UserAdministration extends LayoutContainer
 		mainPanel.add(gridPanel, td_gridPanel);
 
 		mainPanel.setScrollMode(Scroll.AUTOY);
-		mainPanel.setSize("600", "700");
+		// mainPanel.setSize("600", "700");
 
 		add(mainPanel, new FitData(5));
 
 		gridPanel.setLayout(new FitLayout());
 		gridPanel.setHeading(curAdminEntity);
-		gridPanel.setSize("350px", "350px");
+		// gridPanel.setSize("350px", "350px");
+		gridPanel.setHeight("350px");
 
 		ColumnConfig clmncnfgNewColumn = new ColumnConfig("name", "Name", 150);
 		configs.add(clmncnfgNewColumn);
@@ -108,7 +110,8 @@ public class UserAdministration extends LayoutContainer
 		editorGrid.setLoadMask(true);
 		editorGrid.setAutoExpandColumn("name");
 		editorGrid.mask("Loading...");
-		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.TWO);
+		editorGrid.setAutoWidth(true);
+		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 		gridPanel.add(editorGrid);
 
 		editorGrid.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<ModelData>>()
@@ -121,9 +124,9 @@ public class UserAdministration extends LayoutContainer
 				{
 					txtfldUsrName.clear();
 					txtfldPassword.clear();
-					lstfldLocality.getStore().getModels().clear();
-					lstfldVillages.getStore().getModels().clear();
-					lstfldTowns.getStore().getModels().clear();
+					lstfldLocality.getStore().removeAll();
+					lstfldVillages.getStore().removeAll();
+					lstfldTowns.getStore().removeAll();
 
 					ModelData modelData = selection.get(0);
 					txtfldUsrName.setValue(modelData.get("name").toString());
@@ -171,7 +174,7 @@ public class UserAdministration extends LayoutContainer
 		mainPanel.setTopComponent(toolBar);
 
 		Button add = new Button("Add");
-		add.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/add.png", 16, 16));
+		add.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		add.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -196,7 +199,7 @@ public class UserAdministration extends LayoutContainer
 		toolBar.add(add);
 
 		Button remove = new Button("Remove");
-		remove.setIcon(IconHelper.createPath(GWT.getModuleBaseURL() + "images/delete.png", 16, 16));
+		remove.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
 		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -353,6 +356,7 @@ public class UserAdministration extends LayoutContainer
 				editorGrid.getStore().add((List<ModelData>) currentModelData.get("users"));
 				editorGrid.getStore().commitChanges();
 				editorGrid.unmask();
+				editorGrid.setAutoWidth(true);
 			}
 
 			@Override
