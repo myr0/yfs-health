@@ -17,7 +17,6 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Restrictions;
 
-import com.varun.yfs.server.common.data.DataUtil;
 import com.varun.yfs.server.models.ChapterName;
 import com.varun.yfs.server.models.City;
 import com.varun.yfs.server.models.Country;
@@ -51,7 +50,7 @@ public class HibernateUtil
 			mapper = new DozerBeanMapper();
 
 			insertReferenceData();
-			
+
 			log.debug("The application has finished booting.The reference data insertion is complete.");
 
 		} catch (Throwable ex)
@@ -100,7 +99,7 @@ public class HibernateUtil
 		insertTypeOfLocation(session);
 		insertVolunteer(session);
 		insertUsers(session);
-		
+
 		insertReferralTypes(session);
 
 		transaction.commit();
@@ -219,10 +218,20 @@ public class HibernateUtil
 
 	private static void insertEntities(Session session)
 	{
-		List<String> subList = DataUtil.lstEntities.subList(1, DataUtil.lstEntities.size());
-		for (String entityName : subList)
-		{
-			session.save(new Entities(entityName));
-		}
+		session.save(new Entities("Chapter Name", "Screening"));
+		session.save(new Entities("Doctor", "Screening"));
+		session.save(new Entities("Process Type", "Screening"));
+		session.save(new Entities("Type Of Location", "Screening"));
+		session.save(new Entities("Volunteer", "Screening"));
+		session.save(new Entities("Referral Type", "Screening"));
+
+		session.save(new Entities("City", "Geographical"));
+		session.save(new Entities("Country", "Geographical"));
+		session.save(new Entities("Locality", "Geographical"));
+		session.save(new Entities("State", "Geographical"));
+		session.save(new Entities("Town", "Geographical"));
+		session.save(new Entities("Village", "Geographical"));
+
+		session.save(new Entities("Users", "Roles"));
 	}
 }

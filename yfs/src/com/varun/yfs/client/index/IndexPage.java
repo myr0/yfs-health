@@ -1,8 +1,13 @@
 package com.varun.yfs.client.index;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -14,8 +19,8 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
@@ -36,7 +41,7 @@ import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.admin.users.UserAdministration;
 import com.varun.yfs.client.help.HelpPage;
-import com.varun.yfs.client.icons.YfsImageBundle;
+import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.landing.LandingPage;
 import com.varun.yfs.client.reports.ReportPage;
 import com.varun.yfs.client.screening.ScreeningDetail;
@@ -230,19 +235,32 @@ public class IndexPage extends LayoutContainer
 				System.out.println(caught.getMessage());
 			}
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(List<ModelData> result)
 			{
+				final Map<String, List<ModelData>> mapGrpName2Model = new HashMap<String, List<ModelData>>();
 
 				for (ModelData modelData : result)
 				{
-					tree.getStore().add(modelData, false);
-					List<ModelData> object = (List<ModelData>) modelData.get("children");
-					if (object != null)
+					String key = modelData.get("groupName").toString();
+					if (mapGrpName2Model.containsKey(key))
 					{
-						tree.getStore().add(modelData, object, false);
+						mapGrpName2Model.get(key).add(modelData);
+					} else
+					{
+						List<ModelData> lst = new ArrayList<ModelData>();
+						lst.add(modelData);
+						mapGrpName2Model.put(key, lst);
 					}
+				}
+				for (String groupName : mapGrpName2Model.keySet())
+				{
+					ModelData rootNode = new BaseModelData();
+					rootNode.set("name", groupName);
+					rootNode.set("icon", "");
+					tree.getStore().add(rootNode, false);
+
+					tree.getStore().add(rootNode, mapGrpName2Model.get(groupName), false);
 				}
 				tree.setExpanded(result.get(0), true);
 			}
@@ -364,8 +382,11 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				Dialog dialog = new Dialog();
+				Window dialog = new Window();
 				dialog.setHeading("Help");
+				dialog.setSize("840", "600");
+				dialog.setScrollMode(Scroll.AUTO);
+				dialog.setLayout(new FitLayout());
 				dialog.add(new HelpPage(), new FitData());
 				dialog.show();
 			}
@@ -466,9 +487,18 @@ public class IndexPage extends LayoutContainer
 
 					final ScreeningDetail widget = new ScreeningDetail();
 					layoutContainerCenter.add(widget);
-					String title = "Edit Screening " + selectedItem.get("name").toString();
-					widget.initialize(title, selectedItem.get("id").toString());
-
+					
+					Object screeningDate = selectedItem.get("name");
+					Object screeningId = selectedItem.get("id");
+					
+					if (screeningDate != null && screeningId != null)
+					{
+						String title = "Edit Screening " + screeningDate.toString();
+						widget.initialize(title, screeningId.toString());
+					} else
+					{
+						widget.initialize("Screening Detail", null);
+					}
 					layoutContainerCenter.layout(true);
 				}
 			}

@@ -10,12 +10,20 @@ import javax.persistence.Id;
 @Entity
 public class Entities implements Serializable
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -9205170388180671156L;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "ENTITY_ID")
 	private long id;
+
+	@Column(nullable = false)
+	private String groupName;
+
+	@Column(nullable = false)
 	private String name;
+
+	@Column(nullable = false)
 	private String deleted;
 
 	public Entities()
@@ -23,15 +31,13 @@ public class Entities implements Serializable
 		setDeleted("N");
 	}
 
-	public Entities(String name)
+	public Entities(String name, String groupName)
 	{
 		setName(name);
+		setGroupName(groupName);
 		setDeleted("N");
 	}
 
-	@Id
-	@GeneratedValue
-	@Column(name = "ENTITY_ID")
 	public long getId()
 	{
 		return id;
@@ -42,7 +48,6 @@ public class Entities implements Serializable
 		this.id = id;
 	}
 
-	@Column(nullable = false)
 	public String getName()
 	{
 		return name;
@@ -53,7 +58,6 @@ public class Entities implements Serializable
 		this.name = name;
 	}
 
-	@Column(nullable = false)
 	public String getDeleted()
 	{
 		return deleted;
@@ -62,6 +66,16 @@ public class Entities implements Serializable
 	public void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
+	}
+
+	public void setGroupName(String groupName)
+	{
+		this.groupName = groupName;
+	}
+
+	public String getGroupName()
+	{
+		return groupName;
 	}
 
 	@Override
@@ -87,5 +101,4 @@ public class Entities implements Serializable
 			return false;
 		return true;
 	}
-
 }

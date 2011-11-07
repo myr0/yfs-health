@@ -54,7 +54,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.common.RpcStatusEnum;
-import com.varun.yfs.client.icons.YfsImageBundle;
+import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.index.IndexPage;
 import com.varun.yfs.client.screening.imports.ImportDetail;
 import com.varun.yfs.client.screening.rpc.ScreeningDetailService;

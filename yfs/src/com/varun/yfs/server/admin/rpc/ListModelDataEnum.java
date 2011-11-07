@@ -87,9 +87,9 @@ public enum ListModelDataEnum
 				rootNode.set("name", chapterNameDTO.getName());
 				rootNode.set("icon", "");
 				nodes.add(rootNode);
-				
+
 				List<ModelData> chapterNodes = new ArrayList<ModelData>();
-				rootNode.set("children",chapterNodes );
+				rootNode.set("children", chapterNodes);
 
 				List<ScreeningDetailDTO> lstScrDet = DataUtil.getScreeningDetail("ChapterName", "id", String.valueOf(chapterNameDTO.getId()));
 				for (ScreeningDetailDTO screeningDetailDTO : lstScrDet)
@@ -218,24 +218,9 @@ public enum ListModelDataEnum
 		@Override
 		public List<ModelData> getListStoreContents()
 		{
-			List<ModelData> arrayList = new ArrayList<ModelData>();
-			ModelData m1 = newItem("Entities", "");
-			arrayList.add(m1);
-
-			List<ModelData> child = new ArrayList<ModelData>();
-			m1.set("children", child);
-			child.addAll(DataUtil.<ModelData> getModelList("Entities"));
-
-			return arrayList;
+			return DataUtil.<ModelData> getModelList("Entities");
 		}
 
-		private ModelData newItem(String text, String iconStyle)
-		{
-			ModelData m = new BaseModelData();
-			m.set("name", text);
-			m.set("icon", iconStyle);
-			return m;
-		}
 	},
 	Entity
 	{

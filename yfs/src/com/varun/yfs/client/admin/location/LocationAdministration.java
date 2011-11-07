@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.common.RpcStatusEnum;
-import com.varun.yfs.client.icons.YfsImageBundle;
+import com.varun.yfs.client.images.YfsImageBundle;
 
 public class LocationAdministration extends LayoutContainer
 {
