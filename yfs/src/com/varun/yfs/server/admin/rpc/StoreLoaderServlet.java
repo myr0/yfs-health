@@ -3,6 +3,8 @@ package com.varun.yfs.server.admin.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -13,7 +15,7 @@ import com.varun.yfs.server.common.data.DataUtil;
 
 public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoader
 {
-
+	private static final Logger logger = Logger.getLogger(StoreLoaderServlet.class);
 	private static final long serialVersionUID = -3784282705749642889L;
 
 	@Override
@@ -26,6 +28,7 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		else
 			arrayList = ListModelDataEnum.valueOf(Util.stripSpace(className)).getListStoreContents();
 
+		logger.info("*************" + getThreadLocalRequest().getSession().getId());
 		return arrayList;
 	}
 
@@ -40,6 +43,7 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		{
 			status = RpcStatusEnum.FAILURE;
 		}
+		logger.info("*************" + getThreadLocalRequest().getSession().getId());
 		return status;
 	}
 
@@ -50,6 +54,8 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		ModelData modelStore = new BaseModelData();
 
 		modelStore = ModelDataEnum.valueOf(Util.stripSpace(entityName)).getStoreContents();
+
+		logger.info("*************" + getThreadLocalRequest().getSession().getId());
 
 		return modelStore;
 	}
@@ -66,6 +72,7 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 			ex.printStackTrace();
 			status = RpcStatusEnum.FAILURE;
 		}
+		logger.info("*************" + getThreadLocalRequest().getSession().getId());
 		return status;
 	}
 

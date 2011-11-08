@@ -80,6 +80,14 @@
 		<servlet-name>ExportService</servlet-name>
 		<url-pattern>/yfs/ExportService</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>LoginService</servlet-name>
+		<servlet-class>com.varun.yfs.server.login.LoginServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginService</servlet-name>
+		<url-pattern>/yfs/LoginService</url-pattern>
+	</servlet-mapping>
 
 
 </web-app>
