@@ -28,7 +28,7 @@ import com.varun.yfs.server.models.ReferralType;
 import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Town;
 import com.varun.yfs.server.models.TypeOfLocation;
-import com.varun.yfs.server.models.Users;
+import com.varun.yfs.server.models.User;
 import com.varun.yfs.server.models.Village;
 import com.varun.yfs.server.models.Volunteer;
 
@@ -125,11 +125,11 @@ public class HibernateUtil
 		criteria.add(Restrictions.eq("deleted", "N"));
 		List<Village> lstEntities = criteria.list();
 
-		Users users = new Users("Rama", "pass");
+		User users = new User("Rama", "pass");
 		users.setVillages(lstEntities);
 		session.save(users);
 
-		session.save(new Users("Krishna", "pass"));
+		session.save(new User("Krishna", "pass"));
 	}
 
 	private static void insertVolunteer(Session session)

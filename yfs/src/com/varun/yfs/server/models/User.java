@@ -18,7 +18,7 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "users")
-public class Users implements Serializable
+public class User implements Serializable
 {
 	private static final long serialVersionUID = 3137505216329922435L;
 
@@ -69,14 +69,14 @@ public class Users implements Serializable
 	@Column(nullable = false)
 	private String deleted;
 
-	public Users()
+	public User()
 	{
 		setName("Dummy");
 		setPassword("dummy123");
 		setDeleted("N");
 	}
 
-	public Users(String name, String pass)
+	public User(String name, String pass)
 	{
 		setName(name);
 		setPassword(pass);
@@ -171,7 +171,7 @@ public class Users implements Serializable
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Users other = (Users) obj;
+		User other = (User) obj;
 		if (!name.equalsIgnoreCase(other.name))
 			return false;
 		return true;

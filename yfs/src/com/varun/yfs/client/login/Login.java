@@ -40,7 +40,7 @@ public class Login extends LayoutContainer
 
 		Button btnLogin = new Button("Login");
 		btnLogin.setIconAlign(IconAlign.RIGHT);
-		frmpnlLogin.add(btnLogin, new FormData("100%"));
+		frmpnlLogin.add(btnLogin, new FormData("50%"));
 		btnLogin.setSize("100", "22");
 
 		btnLogin.addSelectionListener(new SelectionListener<ButtonEvent>()

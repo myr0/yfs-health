@@ -287,7 +287,7 @@ public class ScreeningDetail extends LayoutContainer
 		editorGrid.setLoadMask(true);
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
-		editorGrid.setHeight("310px");
+		editorGrid.setHeight("300px");
 		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 
 		final ContentPanel gridHolderPanel = new ContentPanel();
@@ -497,7 +497,7 @@ public class ScreeningDetail extends LayoutContainer
 
 		gridHolderPanel.setLayout(new FitLayout());
 		gridHolderPanel.add(editorGrid);
-		gridHolderPanel.setHeight("380");
+		gridHolderPanel.setHeight("350");
 
 		mainContainerPanel.add(gridHolderPanel, new FitData(5));
 		add(mainContainerPanel);

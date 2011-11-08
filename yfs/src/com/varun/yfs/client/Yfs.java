@@ -40,8 +40,14 @@ public class Yfs implements EntryPoint
 					displayLoginWindow();
 				} else
 				{
-					IndexPage w = new IndexPage(result.getName());
-					RootPanel.get().add(w);
+					if (result.getLoggedIn())
+					{
+						IndexPage w = new IndexPage(result.getName());
+						RootPanel.get().add(w);
+					} else
+					{
+						displayLoginWindow();
+					}
 				}
 			}
 

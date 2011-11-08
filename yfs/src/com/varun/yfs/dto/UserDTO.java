@@ -111,9 +111,20 @@ public class UserDTO extends BaseModelData
 	{
 		set("sessionId", id2);
 	}
-	
+
 	public String getSessionId()
 	{
 		return get("sessionId");
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null)
+			return false;
+		if (obj.getClass() != this.getClass())
+			return false;
+		UserDTO user = (UserDTO) obj;
+		return user.getName().equalsIgnoreCase(this.getName());
 	}
 }

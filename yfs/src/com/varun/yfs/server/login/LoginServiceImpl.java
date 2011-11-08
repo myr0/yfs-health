@@ -1,11 +1,14 @@
 package com.varun.yfs.server.login;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.login.LoginService;
 import com.varun.yfs.dto.UserDTO;
+import com.varun.yfs.server.common.data.DataUtil;
 
 public class LoginServiceImpl extends RemoteServiceServlet implements LoginService
 {
@@ -14,21 +17,21 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 	@Override
 	public UserDTO loginServer(String name, String password)
 	{
-		UserDTO user = new UserDTO(name, password);
-
 		if (name == null || password == null)
 			return null;
 
-		if (name.equals("guest") && password.equals("guest"))
-		{
-			user.setName("theGuest");
-			user.setLoggedIn(true);
-		}
+		List<UserDTO> modelList = DataUtil.<UserDTO> getModelList("User");
+		UserDTO user = new UserDTO(name, password);
+		int usrIdx = modelList.indexOf(user);
 
-		if (user.getLoggedIn())
+		if (usrIdx >= 0) // user-name exists
 		{
-			storeUserInSession(user);
-			user.setSessionId(this.getThreadLocalRequest().getSession().getId());
+			if (user.getPassword().equalsIgnoreCase(password))
+			{
+				user.setLoggedIn(true);
+				storeUserInSession(user);
+				user.setSessionId(this.getThreadLocalRequest().getSession().getId());
+			}
 		}
 
 		return user;

@@ -28,7 +28,6 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		else
 			arrayList = ListModelDataEnum.valueOf(Util.stripSpace(className)).getListStoreContents();
 
-		logger.info("*************" + getThreadLocalRequest().getSession().getId());
 		return arrayList;
 	}
 
@@ -43,7 +42,6 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		{
 			status = RpcStatusEnum.FAILURE;
 		}
-		logger.info("*************" + getThreadLocalRequest().getSession().getId());
 		return status;
 	}
 
@@ -54,8 +52,6 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		ModelData modelStore = new BaseModelData();
 
 		modelStore = ModelDataEnum.valueOf(Util.stripSpace(entityName)).getStoreContents();
-
-		logger.info("*************" + getThreadLocalRequest().getSession().getId());
 
 		return modelStore;
 	}
@@ -72,7 +68,6 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 			ex.printStackTrace();
 			status = RpcStatusEnum.FAILURE;
 		}
-		logger.info("*************" + getThreadLocalRequest().getSession().getId());
 		return status;
 	}
 

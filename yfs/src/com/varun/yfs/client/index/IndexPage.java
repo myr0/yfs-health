@@ -261,7 +261,6 @@ public class IndexPage extends LayoutContainer
 	private void buildAdministrationPanel()
 	{
 		final ContentPanel cpAdministration = new ContentPanel();
-		cpAdministration.setAnimCollapse(false);
 		cpAdministration.setHeading("Administration");
 		cpAdministration.setLayout(new FitLayout());
 		layoutContainerWest.add(cpAdministration);
@@ -366,7 +365,6 @@ public class IndexPage extends LayoutContainer
 	private void buildReportsPanel()
 	{
 		final ContentPanel cpReports = new ContentPanel();
-		cpReports.setAnimCollapse(false);
 		cpReports.setHeading("Reporting");
 		cpReports.setLayout(new FitLayout());
 		layoutContainerWest.add(cpReports);
