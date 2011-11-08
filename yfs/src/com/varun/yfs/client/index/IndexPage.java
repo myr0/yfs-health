@@ -28,6 +28,8 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
@@ -35,6 +37,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.varun.yfs.client.admin.common.AdministrationPage;
 import com.varun.yfs.client.admin.location.LocationAdministration;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
@@ -43,6 +46,8 @@ import com.varun.yfs.client.admin.users.UserAdministration;
 import com.varun.yfs.client.help.HelpPage;
 import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.landing.LandingPage;
+import com.varun.yfs.client.login.Login;
+import com.varun.yfs.client.login.LoginService;
 import com.varun.yfs.client.reports.ReportPage;
 import com.varun.yfs.client.screening.ScreeningDetail;
 import com.varun.yfs.client.util.Util;
@@ -50,20 +55,31 @@ import com.varun.yfs.client.util.Util;
 public class IndexPage extends LayoutContainer
 {
 	private static StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
-	private LayoutContainer layoutContainer;
+	private ContentPanel mainContentPanel;
 	private static LayoutContainer layoutContainerCenter;
 	private LayoutContainer layoutContainerEast;
 	private LayoutContainer layoutContainerSouth;
 	private LayoutContainer layoutContainerNorth;
 	private LayoutContainer layoutContainerWest;
 
+	private ContentPanel cpScreening;
+	private String userName;
+
 	private final static TreeStore<ModelData> screeningPanelStore = new TreeStore<ModelData>();
 	private final static TreePanel<ModelData> treeScreeningPanel = new TreePanel<ModelData>(screeningPanelStore);
 
 	public IndexPage()
 	{
+		this("Anonymous");
+	}
+
+	public IndexPage(String userLoginName)
+	{
 		setHeight("700");
-		layoutContainer = new LayoutContainer();
+		setLayout(new FitLayout());
+		this.userName = userLoginName;
+
+		mainContentPanel = new ContentPanel();
 		layoutContainerCenter = new LayoutContainer();
 		layoutContainerCenter.setBorders(true);
 		layoutContainerEast = new LayoutContainer();
@@ -92,7 +108,10 @@ public class IndexPage extends LayoutContainer
 	{
 		super.onRender(parent, index);
 
-		layoutContainer.setLayout(new BorderLayout());
+		mainContentPanel.setLayout(new BorderLayout());
+		mainContentPanel.setHeading("YFS Health Chapter");
+
+		buildToolBar();
 
 		buildCenterLayout();
 
@@ -104,16 +123,92 @@ public class IndexPage extends LayoutContainer
 
 		buildSouthLayout();
 
-		add(layoutContainer);
+		add(mainContentPanel, new FitData(5, 5, 5, 5));
+	}
+
+	private void buildToolBar()
+	{
+		ToolBar toolbar = new ToolBar();
+
+		Button home = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.homeButtonIcon()));
+		home.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				layoutContainerCenter.removeAll();
+				layoutContainerCenter.setLayoutData(new FitData(15));
+
+				cpScreening.expand();
+				layoutContainerCenter.add(new LandingPage());
+				layoutContainerCenter.layout(true);
+			}
+		});
+
+		Button help = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.helpButtonIcon()));
+		help.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				Window dialog = new Window();
+				dialog.setHeading("Help");
+				dialog.setSize("840", "600");
+				dialog.setScrollMode(Scroll.AUTO);
+				dialog.setLayout(new FitLayout());
+				dialog.add(new HelpPage(), new FitData());
+				dialog.show();
+			}
+		});
+
+		LabelToolItem userName = new LabelToolItem();
+		userName.setLabel("Welcome, " + this.userName);
+
+		Button logout = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exitButtonIcon()));
+		logout.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				LoginService.Util.getInstance().logout(new AsyncCallback<Void>()
+				{
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						Login w = new Login();
+						RootPanel.get().clear();
+						RootPanel.get().add(w);
+					}
+
+					@Override
+					public void onSuccess(Void result)
+					{
+						Login w = new Login();
+						RootPanel.get().clear();
+						RootPanel.get().add(w);
+					}
+				});
+			}
+		});
+
+		toolbar.add(home);
+		toolbar.add(new SeparatorToolItem());
+		toolbar.add(userName);
+		toolbar.add(new FillToolItem());
+		toolbar.add(help);
+		toolbar.add(new SeparatorToolItem());
+		toolbar.add(logout);
+
+		mainContentPanel.setTopComponent(toolbar);
 	}
 
 	private void buildCenterLayout()
 	{
 		layoutContainerCenter.setLayout(new FitLayout());
 
-		layoutContainer.add(layoutContainerCenter, new BorderLayoutData(LayoutRegion.CENTER));
-		layoutContainer.add(layoutContainerCenter);
-		layoutContainer.setHeight("670px");
+		mainContentPanel.add(layoutContainerCenter, new BorderLayoutData(LayoutRegion.CENTER));
+		mainContentPanel.add(layoutContainerCenter);
+		mainContentPanel.setHeight("670px");
 
 		layoutContainerCenter.add(new LandingPage());
 	}
@@ -123,7 +218,7 @@ public class IndexPage extends LayoutContainer
 		BorderLayoutData bldSouth = new BorderLayoutData(LayoutRegion.SOUTH);
 		bldSouth.setHidden(true);
 		bldSouth.setCollapsible(true);
-		layoutContainer.add(layoutContainerSouth, bldSouth);
+		mainContentPanel.add(layoutContainerSouth, bldSouth);
 		layoutContainerSouth.setBorders(true);
 	}
 
@@ -133,7 +228,7 @@ public class IndexPage extends LayoutContainer
 		bldEast.setHidden(true);
 		bldEast.setFloatable(false);
 		bldEast.setCollapsible(true);
-		layoutContainer.add(layoutContainerEast, bldEast);
+		mainContentPanel.add(layoutContainerEast, bldEast);
 		layoutContainerEast.setBorders(true);
 	}
 
@@ -142,7 +237,7 @@ public class IndexPage extends LayoutContainer
 		BorderLayoutData bldNorth = new BorderLayoutData(LayoutRegion.NORTH, 60.0f);
 		bldNorth.setHidden(true);
 		bldNorth.setCollapsible(true);
-		layoutContainer.add(layoutContainerNorth, bldNorth);
+		mainContentPanel.add(layoutContainerNorth, bldNorth);
 		layoutContainerNorth.setBorders(true);
 	}
 
@@ -154,7 +249,7 @@ public class IndexPage extends LayoutContainer
 		bldWest.setSplit(true);
 		layoutContainerWest.setHeight("300");
 		layoutContainerWest.setBorders(true);
-		layoutContainer.add(layoutContainerWest, bldWest);
+		mainContentPanel.add(layoutContainerWest, bldWest);
 
 		buildScreeningPanel();
 
@@ -339,24 +434,16 @@ public class IndexPage extends LayoutContainer
 
 	private void buildScreeningPanel()
 	{
-		final ContentPanel cpScreening = new ContentPanel();
-		cpScreening.setAnimCollapse(false);
+		cpScreening = new ContentPanel();
 		cpScreening.setHeading("Screening/Referrals");
 		cpScreening.setLayout(new FitLayout());
 		layoutContainerWest.add(cpScreening);
 
 		ToolBar toolbar = new ToolBar();
-		// SplitButton splitItem = new SplitButton("");
-		// splitItem.setIcon(AbstractImagePrototype.create(YfsIconBundle.INSTANCE.homeButtonIcon()));
-		//
-		// Menu menu = new Menu();
-		// splitItem.setMenu(menu);
-
-		// toolbar.add(splitItem);
+		cpScreening.setTopComponent(toolbar);
 
 		Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		toolbar.add(newScreening);
-		toolbar.add(new SeparatorToolItem());
 		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -374,67 +461,6 @@ public class IndexPage extends LayoutContainer
 				layoutContainerCenter.layout(true);
 			}
 		});
-
-		Button help = new Button("Help", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.helpButtonIcon()));
-		toolbar.add(help);
-		help.addSelectionListener(new SelectionListener<ButtonEvent>()
-		{
-			@Override
-			public void componentSelected(ButtonEvent ce)
-			{
-				Window dialog = new Window();
-				dialog.setHeading("Help");
-				dialog.setSize("840", "600");
-				dialog.setScrollMode(Scroll.AUTO);
-				dialog.setLayout(new FitLayout());
-				dialog.add(new HelpPage(), new FitData());
-				dialog.show();
-			}
-		});
-		// MenuItem referralButton = new MenuItem("New Referral",
-		// IconHelper.createPath(GWT.getModuleBaseURL() +
-		// "images/arrow_refresh.png", 16, 16));
-		// referralButton.addSelectionListener(new
-		// SelectionListener<MenuEvent>()
-		// {
-		// @Override
-		// public void componentSelected(MenuEvent ce)
-		// {
-		// layoutContainerCenter.removeAll();
-		// layoutContainerCenter.setLayoutData(new FitData(15));
-		//
-		// final ScreeningDetail widget = new ScreeningDetail();
-		// layoutContainerCenter.mask("Loading...");
-		// layoutContainerCenter.add(widget);
-		// widget.initialize("New Referral", null);
-		//
-		// layoutContainerCenter.layout(true);
-		// }
-		// });
-		// menu.add(referralButton);
-
-		// MenuItem newImport = new MenuItem("Import",
-		// IconHelper.createPath(GWT.getModuleBaseURL() +
-		// "images/document_import.png", 16, 16));
-		// newImport.addSelectionListener(new SelectionListener<MenuEvent>()
-		// {
-		// @Override
-		// public void componentSelected(MenuEvent ce)
-		// {
-		// layoutContainerCenter.mask("Loading...");
-		// layoutContainerCenter.removeAll();
-		// layoutContainerCenter.setLayoutData(new FitData(15));
-		//
-		// ImportDetail widget = new ImportDetail();
-		// widget.initialize("New Screening Import", null);
-		// layoutContainerCenter.add(widget);
-		//
-		// layoutContainerCenter.layout(true);
-		// }
-		// });
-		// menu.add(newImport);
-
-		cpScreening.setTopComponent(toolbar);
 
 		treeScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
 		{
@@ -487,10 +513,10 @@ public class IndexPage extends LayoutContainer
 
 					final ScreeningDetail widget = new ScreeningDetail();
 					layoutContainerCenter.add(widget);
-					
+
 					Object screeningDate = selectedItem.get("name");
 					Object screeningId = selectedItem.get("id");
-					
+
 					if (screeningDate != null && screeningId != null)
 					{
 						String title = "Edit Screening " + screeningDate.toString();

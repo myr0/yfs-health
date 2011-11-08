@@ -35,9 +35,13 @@ public interface YfsImageBundle extends ClientBundle
 	@Source("help.png")
 	public ImageResource helpButtonIcon();
 
+	@Source("exit.png")
+	public ImageResource exitButtonIcon();
+
 	@Source("screeningHelp.png")
 	public ImageResource screeningHelpButtonImage();
 
 	@Source("adminHelp.png")
 	public ImageResource adminHelpButtonImage();
+
 }

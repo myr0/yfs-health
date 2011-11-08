@@ -1,7 +1,75 @@
 package com.varun.yfs.server.login;
 
-import com.varun.yfs.client.login.LoginService;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-public class LoginServiceImpl extends RemoteServiceServlet implements LoginService {
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.varun.yfs.client.login.LoginService;
+import com.varun.yfs.dto.UserDTO;
+
+public class LoginServiceImpl extends RemoteServiceServlet implements LoginService
+{
+	private static final long serialVersionUID = 4456105400553118785L;
+
+	@Override
+	public UserDTO loginServer(String name, String password)
+	{
+		UserDTO user = new UserDTO(name, password);
+
+		if (name == null || password == null)
+			return null;
+
+		if (name.equals("guest") && password.equals("guest"))
+		{
+			user.setName("theGuest");
+			user.setLoggedIn(true);
+		}
+
+		if (user.getLoggedIn())
+		{
+			storeUserInSession(user);
+			user.setSessionId(this.getThreadLocalRequest().getSession().getId());
+		}
+
+		return user;
+	}
+
+	@Override
+	public UserDTO loginFromSessionServer()
+	{
+		return getUserAlreadyFromSession();
+	}
+
+	@Override
+	public void logout()
+	{
+		deleteUserFromSession();
+	}
+
+	private UserDTO getUserAlreadyFromSession()
+	{
+		UserDTO user = null;
+		HttpServletRequest httpServletRequest = this.getThreadLocalRequest();
+		HttpSession session = httpServletRequest.getSession();
+		Object userObj = session.getAttribute("user");
+		if (userObj != null && userObj instanceof UserDTO)
+		{
+			user = (UserDTO) userObj;
+		}
+		return user;
+	}
+
+	private void storeUserInSession(UserDTO user)
+	{
+		HttpServletRequest httpServletRequest = this.getThreadLocalRequest();
+		HttpSession session = httpServletRequest.getSession(true);
+		session.setAttribute("user", user);
+	}
+
+	private void deleteUserFromSession()
+	{
+		HttpServletRequest httpServletRequest = this.getThreadLocalRequest();
+		HttpSession session = httpServletRequest.getSession();
+		session.removeAttribute("user");
+	}
 }
