@@ -32,12 +32,12 @@ public class ChapterNameDTO extends BaseModelData
 
 	public String getName()
 	{
-		return get("name");
+		return get("chapterName");
 	}
 
 	public void setName(String name)
 	{
-		set("name", name);
+		set("chapterName", name);
 	}
 
 	public String getDeleted()
@@ -83,37 +83,37 @@ public class ChapterNameDTO extends BaseModelData
 	public void setCountry(CountryDTO country)
 	{
 		this.country = country;
-		set("country", country);
+		set("countryName", country.getName());
 	}
 
 	public void setState(StateDTO state)
 	{
 		this.state = state;
-		set("state", state);
+		set("stateName", state.getName());
 	}
 
 	public void setVillage(VillageDTO village)
 	{
 		this.village = village;
-		set("village", village);
+		set("villageName", village.getName());
 	}
 
 	public void setTown(TownDTO town)
 	{
 		this.town = town;
-		set("town", town);
+		set("townName", town.getName());
 	}
 
 	public void setCity(CityDTO city)
 	{
 		this.city = city;
-		set("city", city);
+		set("cityName", city.getName());
 	}
 
 	public void setLocality(LocalityDTO locality)
 	{
 		this.locality = locality;
-		set("locality", locality);
+		set("localityName", locality.getName());
 	}
 
 	@Override

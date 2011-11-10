@@ -167,7 +167,7 @@ public class ChapterName implements Serializable
 		if (getClass() != obj.getClass())
 			return false;
 		ChapterName other = (ChapterName) obj;
-		if (id != other.id)
+		if (!name.equalsIgnoreCase(other.name))
 			return false;
 		return true;
 	}

@@ -438,7 +438,7 @@ public enum ModelDataEnum
 			modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
 			modelData.set("parentStoreLocality", DataUtil.<ModelData> getModelList("Locality"));
 
-			modelData.set("configIds", Arrays.asList("name", "countryName", "stateName", "villageName", "townName", "cityName", "localityName"));
+			modelData.set("configIds", Arrays.asList("chapterName", "countryName", "stateName", "villageName", "townName", "cityName", "localityName"));
 			modelData.set("configCols", Arrays.asList("Chapter Name", "Country", "State", "Village", "Town", "City", "Locality"));
 			modelData.set("configType", Arrays.asList("Text", "combo", "combo", "combo", "combo", "combo", "combo"));
 			return modelData;
@@ -482,7 +482,7 @@ public enum ModelDataEnum
 
 					if (hibObject.getId() <= 0) // new chaptername object - find
 					{
-						hibObject.setName(modelData.get("name").toString());
+						hibObject.setName(modelData.get("chapterName").toString());
 						session.save(hibObject);
 					} else
 					{
@@ -524,7 +524,7 @@ public enum ModelDataEnum
 			modelData.set("data", list);
 			modelData.set("parentStoreChapter", DataUtil.<ModelData> getModelList("ChapterName"));
 
-			modelData.set("configIds", Arrays.asList("projectName", "name"));
+			modelData.set("configIds", Arrays.asList("projectName", "chapterName"));
 			modelData.set("configCols", Arrays.asList("Project Name", "Chapter"));
 			modelData.set("configType", Arrays.asList("Text", "combo"));
 			return modelData;
@@ -629,12 +629,12 @@ public enum ModelDataEnum
 		return false;
 	}
 
-	protected <E> E findParent(List<E> lstCountry, E country)
+	protected <E> E findParent(List<E> lst, E searchSeed)
 	{
-		int cntIndex = lstCountry.indexOf(country);
+		int cntIndex = lst.indexOf(searchSeed);
 		if (cntIndex < 0)
 			return null;
-		return lstCountry.get(cntIndex);
+		return lst.get(cntIndex);
 	}
 
 	// private static void updateParent(List<City> lstCities, Locality

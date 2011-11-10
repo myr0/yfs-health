@@ -47,12 +47,13 @@ public class ProjectDTO extends BaseModelData
 		set("deleted", deleted);
 	}
 
-	public void setChapterNameDto(ChapterNameDTO chapterNameDto)
+	public void setChapterName(ChapterNameDTO chapterNameDto)
 	{
+		set("chapterName",chapterNameDto.getName());
 		this.chapterNameDto = chapterNameDto;
 	}
 
-	public ChapterNameDTO getChapterNameDto()
+	public ChapterNameDTO getChapterName()
 	{
 		return chapterNameDto;
 	}
