@@ -18,6 +18,7 @@ import com.varun.yfs.server.models.ChapterName;
 import com.varun.yfs.server.models.City;
 import com.varun.yfs.server.models.Country;
 import com.varun.yfs.server.models.Locality;
+import com.varun.yfs.server.models.Project;
 import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Town;
 import com.varun.yfs.server.models.Village;
@@ -33,7 +34,7 @@ public enum ModelDataEnum
 
 			List<ModelData> list = DataUtil.<ModelData> getModelList("City");
 			modelData.set("data", list);
-			modelData.set("parentStore", DataUtil.<ModelData> getModelList("State"));
+			modelData.set("parentStoreState", DataUtil.<ModelData> getModelList("State"));
 
 			modelData.set("configIds", Arrays.asList("cityName", "stateName"));
 			modelData.set("configCols", Arrays.asList("City", "State"));
@@ -162,7 +163,7 @@ public enum ModelDataEnum
 
 			List<ModelData> list = DataUtil.<ModelData> getModelList("Locality");
 			modelData.set("data", list);
-			modelData.set("parentStore", DataUtil.<ModelData> getModelList("City"));
+			modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
 
 			modelData.set("configIds", Arrays.asList("localityName", "cityName"));
 			modelData.set("configCols", Arrays.asList("Locality", "City"));
@@ -227,7 +228,7 @@ public enum ModelDataEnum
 
 			List<ModelData> list = DataUtil.<ModelData> getModelList("State");
 			modelData.set("data", list);
-			modelData.set("parentStore", DataUtil.<ModelData> getModelList("Country"));
+			modelData.set("parentStoreCountry", DataUtil.<ModelData> getModelList("Country"));
 
 			modelData.set("configIds", Arrays.asList("stateName", "countryName"));
 			modelData.set("configCols", Arrays.asList("State", "Country"));
@@ -289,7 +290,7 @@ public enum ModelDataEnum
 
 			List<ModelData> list = DataUtil.<ModelData> getModelList("Town");
 			modelData.set("data", list);
-			modelData.set("parentStore", DataUtil.<ModelData> getModelList("State"));
+			modelData.set("parentStoreState", DataUtil.<ModelData> getModelList("State"));
 
 			modelData.set("configIds", Arrays.asList("townName", "stateName"));
 			modelData.set("configCols", Arrays.asList("Town", "State"));
@@ -354,7 +355,7 @@ public enum ModelDataEnum
 
 			List<ModelData> list = DataUtil.<ModelData> getModelList("Village");
 			modelData.set("data", list);
-			modelData.set("parentStore", DataUtil.<ModelData> getModelList("State"));
+			modelData.set("parentStoreState", DataUtil.<ModelData> getModelList("State"));
 
 			modelData.set("configIds", Arrays.asList("villageName", "stateName"));
 			modelData.set("configCols", Arrays.asList("Village", "State"));
@@ -366,15 +367,15 @@ public enum ModelDataEnum
 		public String saveModel(ModelData model)
 		{
 			String status = "Failed";
+			Session session = HibernateUtil.getSessionFactory().openSession();
+			Transaction transact = session.beginTransaction();
 			try
 			{
 				List<State> lstStates = DataUtil.<State> getRawList("State");
 				List<ModelData> lstModels = model.get("data");
 
-				Session session = HibernateUtil.getSessionFactory().openSession();
 				Mapper dozerMapper = HibernateUtil.getDozerMapper();
 
-				Transaction transact = session.beginTransaction();
 
 				for (ModelData modelData : lstModels)
 				{
@@ -398,6 +399,11 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
+				if (session != null)
+				{
+					transact.rollback();
+					session.close();
+				}
 				logger.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
@@ -441,6 +447,8 @@ public enum ModelDataEnum
 		@Override
 		public String saveModel(ModelData model)
 		{
+			Session session = HibernateUtil.getSessionFactory().openSession();
+			Transaction transact = session.beginTransaction();
 			String status = "Failed";
 			try
 			{
@@ -453,10 +461,7 @@ public enum ModelDataEnum
 
 				List<ModelData> lstModels = model.get("data");
 
-				Session session = HibernateUtil.getSessionFactory().openSession();
 				Mapper dozerMapper = HibernateUtil.getDozerMapper();
-
-				Transaction transact = session.beginTransaction();
 
 				for (ModelData modelData : lstModels)
 				{
@@ -477,7 +482,7 @@ public enum ModelDataEnum
 
 					if (hibObject.getId() <= 0) // new chaptername object - find
 					{
-						hibObject.setName(modelData.get("chapterName").toString());
+						hibObject.setName(modelData.get("name").toString());
 						session.save(hibObject);
 					} else
 					{
@@ -491,6 +496,82 @@ public enum ModelDataEnum
 			} catch (HibernateException ex)
 			{
 				logger.error("Encountered error saving the model." + ex.getMessage());
+				if (session != null)
+				{
+					transact.rollback();
+					session.close();
+				}
+			}
+			return status;
+		}
+
+	},
+	Project
+	{
+
+		@Override
+		public List<ModelData> getListStoreContents()
+		{
+			return DataUtil.getModelList("Project");
+		}
+
+		@Override
+		public ModelData getStoreContents()
+		{
+			ModelData modelData = new BaseModelData();
+
+			List<ModelData> list = DataUtil.<ModelData> getModelList("Project");
+			modelData.set("data", list);
+			modelData.set("parentStoreChapter", DataUtil.<ModelData> getModelList("ChapterName"));
+
+			modelData.set("configIds", Arrays.asList("projectName", "name"));
+			modelData.set("configCols", Arrays.asList("Project Name", "Chapter"));
+			modelData.set("configType", Arrays.asList("Text", "combo"));
+			return modelData;
+		}
+
+		@Override
+		public String saveModel(ModelData model)
+		{
+			String status = "Failed";
+			Session session = HibernateUtil.getSessionFactory().openSession();
+			Transaction transact = session.beginTransaction();
+			try
+			{
+				List<ChapterName> lstChapterName = DataUtil.<ChapterName> getRawList("ChapterName");
+				List<ModelData> lstModels = model.get("data");
+
+				Mapper dozerMapper = HibernateUtil.getDozerMapper();
+
+
+				for (ModelData modelData : lstModels)
+				{
+					Project hibObject = dozerMapper.map(modelData, Project.class);
+					String chapterName = Util.safeToString(modelData.get("chapterName"));
+
+					hibObject.setChapterName(findParent(lstChapterName, new ChapterName(chapterName)));
+
+					if (hibObject.getId() <= 0) // new project object - find
+					{
+						hibObject.setName(modelData.get("projectName").toString());
+						session.save(hibObject);
+					} else
+					{
+						session.saveOrUpdate(hibObject);
+					}
+				}
+				transact.commit();
+				session.flush();
+				session.close();
+				status = "Success";
+			} catch (HibernateException ex)
+			{
+				logger.error("Encountered error saving the model." + ex.getMessage());
+				if (session != null)
+				{
+					transact.rollback();
+					session.close();
+				}
 			}
 			return status;
 		}
@@ -503,7 +584,7 @@ public enum ModelDataEnum
 		public ModelData getStoreContents()
 		{
 			ModelData modelData = new BaseModelData();
-			List<ModelData> modelList = DataUtil.<ModelData> getModelList("Users");
+			List<ModelData> modelList = DataUtil.<ModelData> getModelList("User");
 			List<ModelData> lstLocalities = DataUtil.<ModelData> getModelList("Locality");
 			List<ModelData> lstTown = DataUtil.<ModelData> getModelList("Town");
 			List<ModelData> lstVillage = DataUtil.<ModelData> getModelList("Village");
@@ -534,7 +615,7 @@ public enum ModelDataEnum
 		@Override
 		public List<ModelData> getListStoreContents()
 		{
-			return DataUtil.getModelList("Users");
+			return DataUtil.getModelList("User");
 		}
 	};
 

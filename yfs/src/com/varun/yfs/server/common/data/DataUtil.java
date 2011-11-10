@@ -30,7 +30,7 @@ import com.varun.yfs.server.models.ScreeningDetail;
 
 public class DataUtil
 {
-	public static final List<String> lstEntities = Arrays.asList(new String[] { "Entities", "Chapter Name", "City", "Country", "Doctor", "Locality", "Process Type", "State", "Town", "Type Of Location", "Village", "Volunteer", "User", "Referral Type" });
+	public static final List<String> lstEntities = Arrays.asList(new String[] { "Entities", "Chapter Name", "City", "Country", "Doctor", "Locality", "Process Type", "State", "Town", "Type Of Location", "Village", "Volunteer", "User", "Referral Type", "Project" });
 	@SuppressWarnings("rawtypes")
 	private static Map<String, Class> nameToHibernateModelClass = new HashMap<String, Class>();
 	@SuppressWarnings("rawtypes")

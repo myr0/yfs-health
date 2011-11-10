@@ -98,8 +98,11 @@ public class LocationAdministration extends LayoutContainer
 				ColumnModel columnModel = editorGrid.getColumnModel();
 
 				plant.set(columnModel.getColumn(0).getId(), "Type here...");
-				if (columnModel.getColumnCount() > 1 && comboModels.size() > 0)
-					plant.set(columnModel.getColumn(1).getId(), comboModels.get(0));
+//				if (columnModel.getColumnCount() > 1 && comboModels.size() > 0)
+//				{
+//					ColumnConfig column = columnModel.getColumn(1);
+////					plant.set(column.getId(), comboModels.get(0));
+//				}
 
 				editorGrid.stopEditing();
 				editorGrid.getStore().add(plant);

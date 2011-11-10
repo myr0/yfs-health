@@ -140,14 +140,24 @@ public class HibernateUtil
 
 	private static void insertTypeOfLocation(Session session)
 	{
-		session.save(new TypeOfLocation("School"));
-		session.save(new TypeOfLocation("College"));
+		session.save(new TypeOfLocation("Urban School"));
+		session.save(new TypeOfLocation("Rural School"));
+		session.save(new TypeOfLocation("Centre for Children"));
+		session.save(new TypeOfLocation("Slum"));
+		session.save(new TypeOfLocation("Rural area"));
+		session.save(new TypeOfLocation("Centre for Adults"));
+		session.save(new TypeOfLocation("Clinic"));
+		session.save(new TypeOfLocation("Other"));
 	}
 
 	private static void insertProcessType(Session session)
 	{
-		session.save(new ProcessType("Normal"));
-		session.save(new ProcessType("Standard"));
+		session.save(new ProcessType("Volunteer screening (general)"));
+		session.save(new ProcessType("Volunteer screening (eye)"));
+		session.save(new ProcessType("Medical screening (comprehensive)"));
+		session.save(new ProcessType("Medical screening (general)"));
+		session.save(new ProcessType("Medical screening (eye)"));
+		session.save(new ProcessType("Specialist screening"));
 	}
 
 	private static void insertDoctor(Session session)
@@ -218,11 +228,12 @@ public class HibernateUtil
 
 	private static void insertEntities(Session session)
 	{
-		session.save(new Entities("Chapter Name", "Screening"));
 		session.save(new Entities("Doctor", "Screening"));
+		session.save(new Entities("Volunteer", "Screening"));
+		session.save(new Entities("Chapter Name", "Screening"));
+		session.save(new Entities("Project", "Screening"));
 		session.save(new Entities("Process Type", "Screening"));
 		session.save(new Entities("Type Of Location", "Screening"));
-		session.save(new Entities("Volunteer", "Screening"));
 		session.save(new Entities("Referral Type", "Screening"));
 
 		session.save(new Entities("City", "Geographical"));

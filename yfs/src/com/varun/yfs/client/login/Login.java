@@ -24,7 +24,7 @@ public class Login extends LayoutContainer
 	public Login()
 	{
 		setLayout(new CenterLayout());
-		setSize("600", "600");
+		setSize("300", "300");
 
 		FormPanel frmpnlLogin = new FormPanel();
 		frmpnlLogin.setHeading("Login");

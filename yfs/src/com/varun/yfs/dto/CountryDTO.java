@@ -45,12 +45,14 @@ public class CountryDTO extends BaseModelData
 	{
 		set("deleted", deleted);
 	}
-	
-	public Set<StateDTO> getStates() {
+
+	public Set<StateDTO> getStates()
+	{
 		return states;
 	}
 
-	public void setStates(Set<StateDTO> states) {
+	public void setStates(Set<StateDTO> states)
+	{
 		this.states = states;
 	}
 
@@ -58,6 +60,8 @@ public class CountryDTO extends BaseModelData
 	public boolean equals(Object obj)
 	{
 		String countryName = null;
+		if (obj == null)
+			return false;
 		if (obj.getClass() != this.getClass())
 		{
 			countryName = ((ModelData) obj).get("countryName");
