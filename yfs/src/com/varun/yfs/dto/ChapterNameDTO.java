@@ -6,8 +6,6 @@ public class ChapterNameDTO extends BaseModelData
 {
 	private static final long serialVersionUID = 6280337431842932388L;
 	private long id;
-	private String name;
-	private String deleted;
 	private CountryDTO country;
 	private StateDTO state;
 	private VillageDTO village;

@@ -6,8 +6,6 @@ public class ProjectDTO extends BaseModelData
 {
 	private static final long serialVersionUID = 6280337431842932388L;
 	private long id;
-	private String name;
-	private String deleted;
 
 	private ChapterNameDTO chapterNameDto;
 
@@ -33,7 +31,6 @@ public class ProjectDTO extends BaseModelData
 
 	public void setName(String name)
 	{
-		this.name = name;
 		set("projectName", name);
 	}
 

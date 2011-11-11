@@ -376,7 +376,6 @@ public enum ModelDataEnum
 
 				Mapper dozerMapper = HibernateUtil.getDozerMapper();
 
-
 				for (ModelData modelData : lstModels)
 				{
 					Village hibObject = dozerMapper.map(modelData, Village.class);
@@ -543,7 +542,6 @@ public enum ModelDataEnum
 
 				Mapper dozerMapper = HibernateUtil.getDozerMapper();
 
-
 				for (ModelData modelData : lstModels)
 				{
 					Project hibObject = dozerMapper.map(modelData, Project.class);
@@ -586,14 +584,12 @@ public enum ModelDataEnum
 		{
 			ModelData modelData = new BaseModelData();
 			List<ModelData> modelList = DataUtil.<ModelData> getModelList("User");
-			List<ModelData> lstLocalities = DataUtil.<ModelData> getModelList("Locality");
-			List<ModelData> lstTown = DataUtil.<ModelData> getModelList("Town");
-			List<ModelData> lstVillage = DataUtil.<ModelData> getModelList("Village");
+			List<ModelData> lstChapterNames = DataUtil.<ModelData> getModelList("ChapterName");
+			List<ModelData> lstProjects = DataUtil.<ModelData> getModelList("Project");
 
 			modelData.set("users", modelList);
-			modelData.set("lstLocalities", lstLocalities);
-			modelData.set("lstTown", lstTown);
-			modelData.set("lstVillage", lstVillage);
+			modelData.set("lstChapterNames", lstChapterNames);
+			modelData.set("lstProjects", lstProjects);
 			return modelData;
 		}
 

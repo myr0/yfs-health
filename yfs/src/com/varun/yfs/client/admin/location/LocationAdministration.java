@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -98,11 +99,12 @@ public class LocationAdministration extends LayoutContainer
 				ColumnModel columnModel = editorGrid.getColumnModel();
 
 				plant.set(columnModel.getColumn(0).getId(), "Type here...");
-//				if (columnModel.getColumnCount() > 1 && comboModels.size() > 0)
-//				{
-//					ColumnConfig column = columnModel.getColumn(1);
-////					plant.set(column.getId(), comboModels.get(0));
-//				}
+				// if (columnModel.getColumnCount() > 1 && comboModels.size() >
+				// 0)
+				// {
+				// ColumnConfig column = columnModel.getColumn(1);
+				// // plant.set(column.getId(), comboModels.get(0));
+				// }
 
 				editorGrid.stopEditing();
 				editorGrid.getStore().add(plant);
@@ -198,12 +200,38 @@ public class LocationAdministration extends LayoutContainer
 					} else if (lstconfigType.get(i).equalsIgnoreCase("combo"))
 					{
 						comboModels = (List<ModelData>) result.get("parentStore" + lstconfigCols.get(i));
-						ComboBox<ModelData> field = new ComboBox<ModelData>();
-						field.setStore(new ListStore<ModelData>());
-						field.setDisplayField(lstConfigsId.get(i));
-						field.getStore().add(comboModels);
+						List<String> lstValues = new ArrayList<String>();
+						for (ModelData modelData : comboModels)
+						{
+							lstValues.add(modelData.toString());
+						}
+						final SimpleComboBox<String> field = new SimpleComboBox<String>();
+//						field.setDisplayField(lstConfigsId.get(i));
 						field.setTriggerAction(TriggerAction.ALL);
-						clmncnfg.setEditor(new CellEditor(field));
+						CellEditor editor = new CellEditor(field)
+						{
+							@Override
+							public Object preProcessValue(Object value)
+							{
+								if (value == null)
+								{
+									return value;
+								}
+								return field.findModel(value.toString());
+							}
+
+							@Override
+							public Object postProcessValue(Object value)
+							{
+								if (value == null)
+								{
+									return value;
+								}
+								return ((ModelData) value).get("value");
+							}
+						};
+						field.add(lstValues);
+						clmncnfg.setEditor(editor);
 						editorGrid.setAutoExpandColumn(lstConfigsId.get(i));
 					}
 				}

@@ -39,10 +39,10 @@ public class User implements Serializable
 	// insertable = true)
 	// @Fetch(FetchMode.SELECT)
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_Locality", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "localityId") })
+	@JoinTable(name = "User_ChapterName", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "chapterNameId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
-	private List<Locality> localities ;
+	private List<ChapterName> chapterNames;
 
 	// @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST,
 	// CascadeType.MERGE })
@@ -50,21 +50,22 @@ public class User implements Serializable
 	// insertable = true)
 	// @Fetch(FetchMode.SELECT)
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_Village", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "villageId") })
+	@JoinTable(name = "User_Project", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "projectId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
-	private List<Village> villages ;
+	private List<Project> projects;
 
 	// @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST,
 	// CascadeType.MERGE })
 	// @JoinColumn(name = "townId", nullable = true, updatable = true,
 	// insertable = true)
 	// @Fetch(FetchMode.SELECT)
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_Town", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "townId") })
-	@Column(nullable = true)
-	@Fetch(FetchMode.SELECT)
-	private List<Town> towns ;
+	// @ManyToMany(cascade = CascadeType.ALL)
+	// @JoinTable(name = "User_Town", joinColumns = { @JoinColumn(name =
+	// "userId") }, inverseJoinColumns = { @JoinColumn(name = "townId") })
+	// @Column(nullable = true)
+	// @Fetch(FetchMode.SELECT)
+	// private List<Town> towns ;
 
 	@Column(nullable = false)
 	private String deleted;
@@ -123,35 +124,35 @@ public class User implements Serializable
 		return password;
 	}
 
-	public void setLocalities(List<Locality> localities)
+	public void setChapterNames(List<ChapterName> chapterName)
 	{
-		this.localities = localities;
+		this.chapterNames = chapterName;
 	}
 
-	public List<Locality> getLocalities()
+	public List<ChapterName> getChapterNames()
 	{
-		return localities;
+		return chapterNames;
 	}
 
-	public void setVillages(List<Village> villages)
+	public void setProjects(List<Project> project)
 	{
-		this.villages = villages;
+		this.projects = project;
 	}
 
-	public List<Village> getVillages()
+	public List<Project> getProjects()
 	{
-		return villages;
+		return projects;
 	}
 
-	public void setTowns(List<Town> towns)
-	{
-		this.towns = towns;
-	}
-
-	public List<Town> getTowns()
-	{
-		return towns;
-	}
+//	public void setTowns(List<Town> towns)
+//	{
+//		this.towns = towns;
+//	}
+//
+//	public List<Town> getTowns()
+//	{
+//		return towns;
+//	}
 
 	@Override
 	public int hashCode()

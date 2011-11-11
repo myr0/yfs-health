@@ -24,6 +24,7 @@ import com.varun.yfs.server.models.Doctor;
 import com.varun.yfs.server.models.Entities;
 import com.varun.yfs.server.models.Locality;
 import com.varun.yfs.server.models.ProcessType;
+import com.varun.yfs.server.models.Project;
 import com.varun.yfs.server.models.ReferralType;
 import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Town;
@@ -123,10 +124,10 @@ public class HibernateUtil
 	{
 		Criteria criteria = session.createCriteria(Village.class);
 		criteria.add(Restrictions.eq("deleted", "N"));
-		List<Village> lstEntities = criteria.list();
+		List<Project> lstEntities = criteria.list();
 
 		User users = new User("Rama", "pass");
-		users.setVillages(lstEntities);
+//		users.setProjects(lstEntities);
 		session.save(users);
 
 		session.save(new User("Krishna", "pass"));
@@ -196,6 +197,8 @@ public class HibernateUtil
 
 		session.save(state1);
 		session.save(state2);
+		session.save(new State("Tamil Nadu", country));
+		session.save(new State("Maharastra", country));
 		session.flush();
 
 		session.save(city);
@@ -222,8 +225,14 @@ public class HibernateUtil
 
 	private static void insertChapterNames(Session session)
 	{
-		session.save(new ChapterName("B'lore"));
+		session.save(new ChapterName("Bangalore"));
+		session.save(new ChapterName("Hyderabad"));
+		session.save(new ChapterName("Pune"));
+		session.save(new ChapterName("Bhopal"));
+		session.save(new ChapterName("Mumbai"));
 		session.save(new ChapterName("Mysore"));
+		session.save(new ChapterName("Shivamogga"));
+		session.save(new ChapterName("Coimbatore"));
 	}
 
 	private static void insertEntities(Session session)

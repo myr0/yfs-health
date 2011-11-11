@@ -8,9 +8,8 @@ public class UserDTO extends BaseModelData
 {
 	private static final long serialVersionUID = 3196402615838002153L;
 	private long id;
-	private List<LocalityDTO> localities;
-	private List<VillageDTO> villages;
-	private List<TownDTO> towns;
+	private List<ChapterNameDTO> chapterNames;
+	private List<ProjectDTO> projects;
 
 	public UserDTO()
 	{
@@ -54,38 +53,38 @@ public class UserDTO extends BaseModelData
 		set("password", password);
 	}
 
-	public void setLocalities(List<LocalityDTO> localities)
+	public void setChapterNames(List<ChapterNameDTO> chapterNames)
 	{
-		set("localities", localities);
-		this.localities = localities;
+		set("chapterNames", chapterNames);
+		this.chapterNames = chapterNames;
 	}
 
-	public List<LocalityDTO> getLocalities()
+	public List<ChapterNameDTO> getChapterNames()
 	{
-		return this.localities;
+		return this.chapterNames;
 	}
 
-	public void setVillages(List<VillageDTO> villages)
+	public void setProjects(List<ProjectDTO> villages)
 	{
-		set("villages", villages);
-		this.villages = villages;
+		set("projects", villages);
+		this.projects = villages;
 	}
 
-	public List<VillageDTO> getVillages()
+	public List<ProjectDTO> getProjects()
 	{
-		return this.villages;
+		return this.projects;
 	}
 
-	public void setTowns(List<TownDTO> towns)
-	{
-		set("towns", towns);
-		this.towns = towns;
-	}
-
-	public List<TownDTO> getTowns()
-	{
-		return this.towns;
-	}
+	// public void setTowns(List<TownDTO> towns)
+	// {
+	// set("towns", towns);
+	// this.towns = towns;
+	// }
+	//
+	// public List<TownDTO> getTowns()
+	// {
+	// return this.towns;
+	// }
 
 	public String getDeleted()
 	{
