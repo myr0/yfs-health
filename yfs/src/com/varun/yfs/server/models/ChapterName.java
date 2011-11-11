@@ -8,38 +8,59 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 
 @Entity
 public class ChapterName implements Serializable
 {
 	private static final long serialVersionUID = -6293347565863506025L;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "chapterNameId")
 	private long id;
+
+	@Column(nullable = false)
 	private String name;
+
+	@Column(nullable = false)
 	private String deleted;
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinColumn(name = "countryId", nullable = true, updatable = true, insertable = true)
+	@ManyToOne(cascade = { CascadeType.ALL })
+	// @JoinColumn(name = "countryId", nullable = true, updatable = true,
+	// insertable = true)
+	@JoinTable(name = "Chapter_Country", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "countryId"))
 	private Country country;
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinColumn(name = "stateId", nullable = true, updatable = true, insertable = true)
+	@ManyToOne(cascade = { CascadeType.ALL })
+	// @JoinColumn(name = "stateId", nullable = true, updatable = true,
+	// insertable = true)
+	@JoinTable(name = "Chapter_State", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "stateId"))
 	private State state;
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinColumn(name = "villageId", nullable = true, updatable = true, insertable = true)
+	@ManyToOne(cascade = { CascadeType.ALL })
+	// @JoinColumn(name = "villageId", nullable = true, updatable = true,
+	// insertable = true)
+	@JoinTable(name = "Chapter_Village", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "villageId"))
 	private Village village;
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinColumn(name = "townId", nullable = true, updatable = true, insertable = true)
+	@ManyToOne(cascade = { CascadeType.ALL })
+	// @JoinColumn(name = "townId", nullable = true, updatable = true,
+	// insertable = true)
+	@JoinTable(name = "Chapter_Town", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "townId"))
 	private Town town;
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinColumn(name = "cityId", nullable = true, updatable = true, insertable = true)
+	@ManyToOne(cascade = { CascadeType.ALL })
+	// @JoinColumn(name = "cityId", nullable = true, updatable = true,
+	// insertable = true)
+	@JoinTable(name = "Chapter_City", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "cityId"))
 	private City city;
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinColumn(name = "localityId", nullable = true, updatable = true, insertable = true)
+	@ManyToOne(cascade = { CascadeType.ALL })
+	// @JoinColumn(name = "localityId", nullable = true, updatable = true,
+	// insertable = true)
+	@JoinTable(name = "Chapter_Locality", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "localityId"))
 	private Locality locality;
 
 	public ChapterName()
@@ -53,9 +74,6 @@ public class ChapterName implements Serializable
 		setDeleted("N");
 	}
 
-	@Id
-	@GeneratedValue
-	@Column(name = "chapterNameId")
 	public long getId()
 	{
 		return id;
@@ -66,7 +84,6 @@ public class ChapterName implements Serializable
 		this.id = id;
 	}
 
-	@Column(nullable = false)
 	public String getName()
 	{
 		return name;
@@ -77,7 +94,6 @@ public class ChapterName implements Serializable
 		this.name = name;
 	}
 
-	@Column(nullable = false)
 	public String getDeleted()
 	{
 		return deleted;

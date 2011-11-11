@@ -28,7 +28,7 @@ public class ProjectDTO extends BaseModelData
 
 	public String getName()
 	{
-		return this.name;
+		return get("projectName");
 	}
 
 	public void setName(String name)
@@ -49,7 +49,7 @@ public class ProjectDTO extends BaseModelData
 
 	public void setChapterName(ChapterNameDTO chapterNameDto)
 	{
-		set("chapterName",chapterNameDto.getName());
+		set("chapterName", chapterNameDto.getName());
 		this.chapterNameDto = chapterNameDto;
 	}
 

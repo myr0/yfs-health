@@ -8,18 +8,29 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 
 @Entity
 public class Project implements Serializable
 {
 	private static final long serialVersionUID = -6293347565863506025L;
+
+	@Id
+	@GeneratedValue
+	@Column(name = "projectId")
 	private long id;
+
+	@Column(nullable = false)
 	private String name;
+	
+	@Column(nullable = false)
 	private String deleted;
 
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true)
+	@ManyToOne(cascade = { CascadeType.ALL })
+	// @JoinColumn(name = "chapterNameId", nullable = true, updatable = true,
+	// insertable = true)
+	@JoinTable(name = "Project_Chapter", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "chapterNameId"))
 	private ChapterName chapterName;
 
 	public Project()
@@ -33,9 +44,6 @@ public class Project implements Serializable
 		setDeleted("N");
 	}
 
-	@Id
-	@GeneratedValue
-	@Column(name = "projectId")
 	public long getId()
 	{
 		return id;
@@ -46,7 +54,7 @@ public class Project implements Serializable
 		this.id = id;
 	}
 
-	@Column(nullable = false)
+	
 	public String getName()
 	{
 		return name;
@@ -57,7 +65,6 @@ public class Project implements Serializable
 		this.name = name;
 	}
 
-	@Column(nullable = false)
 	public String getDeleted()
 	{
 		return deleted;

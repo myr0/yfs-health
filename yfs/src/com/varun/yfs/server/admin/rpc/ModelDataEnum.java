@@ -557,6 +557,7 @@ public enum ModelDataEnum
 						session.save(hibObject);
 					} else
 					{
+						hibObject.setName(modelData.get("projectName").toString());
 						session.saveOrUpdate(hibObject);
 					}
 				}
