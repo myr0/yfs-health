@@ -71,10 +71,4 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		return status;
 	}
 
-	@Override
-	public RpcStatusEnum saveModel(String entityName, List<ModelData> lstModels)
-	{
-		return null;
-	}
-
 }

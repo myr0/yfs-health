@@ -30,6 +30,7 @@ public class UserDTO extends BaseModelData
 
 	public void setId(long id)
 	{
+		set("id", id);
 		this.id = id;
 	}
 

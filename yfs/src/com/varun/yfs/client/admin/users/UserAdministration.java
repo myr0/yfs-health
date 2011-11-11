@@ -300,10 +300,9 @@ public class UserAdministration extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				userDetailsViewHolder.setVisible(false);
+				List<ModelData> models = editorGrid.getStore().getModels();
 
 				ModelData modelData = new BaseModelData();
-
-				List<ModelData> models = editorGrid.getStore().getModels();
 				models.add(modelData);
 
 				modelData.set("name", txtfldUsrName.getValue());
@@ -322,7 +321,7 @@ public class UserAdministration extends LayoutContainer
 	{
 		ModelData modelData = new BaseModelData();
 		modelData.set("users", lstModels);
-		storeLoader.saveModel(curAdminEntity, lstModels, new AsyncCallback<RpcStatusEnum>()
+		storeLoader.saveModel(curAdminEntity, modelData, new AsyncCallback<RpcStatusEnum>()
 		{
 			@Override
 			public void onSuccess(RpcStatusEnum result)

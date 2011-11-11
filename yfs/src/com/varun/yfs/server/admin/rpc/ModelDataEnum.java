@@ -599,8 +599,16 @@ public enum ModelDataEnum
 			String status = "Failed";
 			try
 			{
-				List<ModelData> modelList = model.get("users");
-				DataUtil.<ModelData> saveListStore(Util.stripSpace("Users"), modelList);
+//				List<ModelData> modelList = model.get("users");
+//				for (ModelData modelData : modelList)
+//				{
+//					modelData.get("id");
+//					modelData.get("name");
+//					modelData.get("password");
+//					modelData.get("chapterNames");
+//					modelData.get("projects");
+//				}
+				DataUtil.saveUserDetail(model);
 				status = "Success";
 			} catch (HibernateException ex)
 			{

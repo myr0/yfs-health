@@ -72,8 +72,6 @@ public class User implements Serializable
 
 	public User()
 	{
-		setName("Dummy");
-		setPassword("dummy123");
 		setDeleted("N");
 	}
 

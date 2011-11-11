@@ -27,6 +27,7 @@ import com.varun.yfs.dto.ScreeningDetailDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.PatientDetail;
 import com.varun.yfs.server.models.ScreeningDetail;
+import com.varun.yfs.server.models.User;
 
 public class DataUtil
 {
@@ -243,6 +244,41 @@ public class DataUtil
 			session.close();
 		}
 		return dtoObject;
+	}
+
+	public static void saveUserDetail(ModelData model)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Mapper dozerMapper = HibernateUtil.getDozerMapper();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+
+			List<ModelData> modelList = model.get("users");
+			for (ModelData modelData : modelList)
+			{
+				User usrObj = dozerMapper.map(model, User.class);
+				String id = modelData.get("id");
+				if (id == null)
+				{
+					session.save(usrObj);
+				} else
+				{
+					usrObj.setId(Long.parseLong(id));
+					session.saveOrUpdate(usrObj);
+				}
+			}
+			trans.commit();
+			session.flush();
+		} catch (HibernateException ex)
+		{
+			trans.rollback();
+			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			throw ex;
+		} finally
+		{
+			session.close();
+		}
 	}
 
 	private static void extractPatientDetailData(Session session, ScreeningDetailDTO screeningDetailDto, ScreeningDetail scrDetHibObj)
