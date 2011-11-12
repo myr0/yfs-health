@@ -2,7 +2,6 @@ package com.varun.yfs.server.common;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -24,7 +23,6 @@ import com.varun.yfs.server.models.Doctor;
 import com.varun.yfs.server.models.Entities;
 import com.varun.yfs.server.models.Locality;
 import com.varun.yfs.server.models.ProcessType;
-import com.varun.yfs.server.models.Project;
 import com.varun.yfs.server.models.ReferralType;
 import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Town;
@@ -124,7 +122,7 @@ public class HibernateUtil
 	{
 		Criteria criteria = session.createCriteria(Village.class);
 		criteria.add(Restrictions.eq("deleted", "N"));
-		List<Project> lstEntities = criteria.list();
+//		List<Project> lstEntities = criteria.list();
 
 		User users = new User("Rama", "pass");
 //		users.setProjects(lstEntities);

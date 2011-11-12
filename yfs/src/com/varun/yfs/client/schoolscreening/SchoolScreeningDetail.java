@@ -78,7 +78,7 @@ import com.varun.yfs.dto.VillageDTO;
 import com.varun.yfs.dto.VolunteerDTO;
 import com.varun.yfs.dto.YesNoDTO;
 
-public class ScreeningDetail extends LayoutContainer
+public class SchoolScreeningDetail extends LayoutContainer
 {
 	private String headerText = "Screening Detail";
 	private ScreeningDetailServiceAsync detailServiceAsync = GWT.create(ScreeningDetailService.class);
@@ -114,7 +114,7 @@ public class ScreeningDetail extends LayoutContainer
 		this.editorGrid = editorGrid;
 	}
 
-	public ScreeningDetail()
+	public SchoolScreeningDetail()
 	{
 	}
 

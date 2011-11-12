@@ -49,7 +49,7 @@ import com.varun.yfs.client.landing.LandingPage;
 import com.varun.yfs.client.login.Login;
 import com.varun.yfs.client.login.LoginService;
 import com.varun.yfs.client.reports.ReportPage;
-import com.varun.yfs.client.schoolscreening.ScreeningDetail;
+import com.varun.yfs.client.schoolscreening.SchoolScreeningDetail;
 import com.varun.yfs.client.util.Util;
 
 public class IndexPage extends LayoutContainer
@@ -452,7 +452,7 @@ public class IndexPage extends LayoutContainer
 				layoutContainerCenter.setLayoutData(new FitData(15));
 
 				layoutContainerCenter.mask("Initializing ...");
-				final ScreeningDetail widget = new ScreeningDetail();
+				final SchoolScreeningDetail widget = new SchoolScreeningDetail();
 				widget.initialize("New Screening", null);
 				layoutContainerCenter.add(widget);
 
@@ -509,7 +509,7 @@ public class IndexPage extends LayoutContainer
 
 					layoutContainerCenter.setLayoutData(new FitData(15));
 
-					final ScreeningDetail widget = new ScreeningDetail();
+					final SchoolScreeningDetail widget = new SchoolScreeningDetail();
 					layoutContainerCenter.add(widget);
 
 					Object screeningDate = selectedItem.get("name");
