@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.CampScreeningDetailDTO;
 import com.varun.yfs.dto.ClinicDTO;
+import com.varun.yfs.dto.ClinicScreeningDetailDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.PatientDetail;
@@ -394,5 +395,15 @@ public class DataUtil
 			}
 			session.flush();
 		}
+	}
+
+	public static void saveScreeningDetail(CampScreeningDetailDTO modelData)
+	{
+		
+	}
+
+	public static void saveScreeningDetail(ClinicScreeningDetailDTO modelData)
+	{
+		
 	}
 }
