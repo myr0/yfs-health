@@ -1,4 +1,4 @@
-package com.varun.yfs.client.screening.rpc;
+package com.varun.yfs.client.schoolscreening.rpc;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.client.rpc.AsyncCallback;

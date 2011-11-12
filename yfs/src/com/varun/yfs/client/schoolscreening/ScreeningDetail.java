@@ -1,4 +1,4 @@
-package com.varun.yfs.client.screening;
+package com.varun.yfs.client.schoolscreening;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,9 +56,9 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.index.IndexPage;
-import com.varun.yfs.client.screening.imports.ImportDetail;
-import com.varun.yfs.client.screening.rpc.ScreeningDetailService;
-import com.varun.yfs.client.screening.rpc.ScreeningDetailServiceAsync;
+import com.varun.yfs.client.schoolscreening.imports.ImportDetail;
+import com.varun.yfs.client.schoolscreening.rpc.ScreeningDetailService;
+import com.varun.yfs.client.schoolscreening.rpc.ScreeningDetailServiceAsync;
 import com.varun.yfs.client.util.ExportService;
 import com.varun.yfs.client.util.ExportServiceAsync;
 import com.varun.yfs.dto.ChapterNameDTO;

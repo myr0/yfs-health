@@ -1,4 +1,4 @@
-package com.varun.yfs.server.screening.rpc;
+package com.varun.yfs.server.schoolscreening.rpc;
 
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
-import com.varun.yfs.client.screening.rpc.ScreeningDetailService;
+import com.varun.yfs.client.schoolscreening.rpc.ScreeningDetailService;
 import com.varun.yfs.dto.ScreeningDetailDTO;
 import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
 import com.varun.yfs.server.common.data.DataUtil;

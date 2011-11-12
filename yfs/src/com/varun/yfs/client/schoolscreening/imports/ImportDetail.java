@@ -1,4 +1,4 @@
-package com.varun.yfs.client.screening.imports;
+package com.varun.yfs.client.schoolscreening.imports;
 
 import gwtupload.client.IUploader;
 import gwtupload.client.IUploader.OnStartUploaderHandler;

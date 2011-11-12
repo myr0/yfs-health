@@ -49,7 +49,7 @@ import com.varun.yfs.client.landing.LandingPage;
 import com.varun.yfs.client.login.Login;
 import com.varun.yfs.client.login.LoginService;
 import com.varun.yfs.client.reports.ReportPage;
-import com.varun.yfs.client.screening.ScreeningDetail;
+import com.varun.yfs.client.schoolscreening.ScreeningDetail;
 import com.varun.yfs.client.util.Util;
 
 public class IndexPage extends LayoutContainer

@@ -1,4 +1,4 @@
-package com.varun.yfs.client.screening.imports;
+package com.varun.yfs.client.schoolscreening.imports;
 
 import java.util.List;
 
