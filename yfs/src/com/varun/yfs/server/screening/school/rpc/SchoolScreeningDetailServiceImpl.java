@@ -1,22 +1,21 @@
-package com.varun.yfs.server.schoolscreening.rpc;
+package com.varun.yfs.server.screening.school.rpc;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
-import com.varun.yfs.client.schoolscreening.rpc.ScreeningDetailService;
-import com.varun.yfs.dto.ScreeningDetailDTO;
+import com.varun.yfs.client.screening.school.rpc.SchoolScreeningDetailService;
+import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
 import com.varun.yfs.server.common.data.DataUtil;
 
-public class ScreeningDetailServiceServlet extends RemoteServiceServlet implements ScreeningDetailService
+public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet implements SchoolScreeningDetailService
 {
-	private static Logger logger = LoggerFactory.getLogger(ScreeningDetailServiceServlet.class);
+	private static Logger logger = Logger.getLogger(SchoolScreeningDetailServiceImpl.class);
 	private static final long serialVersionUID = 4397970043413666183L;
 	
 	@Override
@@ -25,7 +24,7 @@ public class ScreeningDetailServiceServlet extends RemoteServiceServlet implemen
 		ModelData modelData = new BaseModelData();
 		if (scrId != null)
 		{
-			ScreeningDetailDTO scrDto = DataUtil.getScreeningDetail(Long.valueOf(scrId));
+			SchoolScreeningDetailDTO scrDto = DataUtil.getScreeningDetail(Long.valueOf(scrId));
 			modelData.set("data", scrDto);
 		}
 
@@ -47,7 +46,7 @@ public class ScreeningDetailServiceServlet extends RemoteServiceServlet implemen
 	}
 
 	@Override
-	public RpcStatusEnum saveModel(String scrId, ScreeningDetailDTO modelData)
+	public RpcStatusEnum saveModel(String scrId, SchoolScreeningDetailDTO modelData)
 	{
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try

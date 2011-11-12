@@ -38,12 +38,30 @@
 
 
 	<servlet>
-		<servlet-name>screeningDetailService</servlet-name>
-		<servlet-class>com.varun.yfs.server.screening.rpc.ScreeningDetailServiceServlet</servlet-class>
+		<servlet-name>campScreeningDetailService</servlet-name>
+		<servlet-class>com.varun.yfs.server.screening.camp.rpc.CampScreeningDetailServiceServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>screeningDetailService</servlet-name>
-		<url-pattern>/yfs/screeningDetailService</url-pattern>
+		<servlet-name>campScreeningDetailService</servlet-name>
+		<url-pattern>/yfs/campScreeningDetailService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>clinicScreeningDetailService</servlet-name>
+		<servlet-class>com.varun.yfs.server.screening.school.rpc.ClinicScreeningDetailServiceServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>clinicScreeningDetailService</servlet-name>
+		<url-pattern>/yfs/clinicScreeningDetailService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>schoolScreeningDetailService</servlet-name>
+		<servlet-class>com.varun.yfs.server.screening.school.rpc.SchoolScreeningDetailServiceServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>schoolScreeningDetailService</servlet-name>
+		<url-pattern>/yfs/schoolScreeningDetailService</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

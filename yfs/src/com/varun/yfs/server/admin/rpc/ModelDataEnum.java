@@ -576,6 +576,71 @@ public enum ModelDataEnum
 		}
 
 	},
+
+	Clinic
+	{
+		@Override
+		public ModelData getStoreContents()
+		{
+			ModelData modelData = new BaseModelData();
+
+			List<ModelData> list = DataUtil.<ModelData> getModelList("Clinic");
+			modelData.set("data", list);
+			modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
+
+			modelData.set("configIds", Arrays.asList("clinicName", "cityName"));
+			modelData.set("configCols", Arrays.asList("Clinic Name", "City"));
+			modelData.set("configType", Arrays.asList("Text", "combo"));
+			return modelData;
+		}
+
+		@Override
+		public String saveModel(ModelData model)
+		{
+			String status = "Failed";
+			try
+			{
+				List<City> lstCities = DataUtil.<City> getRawList("City");
+				List<ModelData> lstModels = model.get("data");
+
+				Session session = HibernateUtil.getSessionFactory().openSession();
+				Mapper dozerMapper = HibernateUtil.getDozerMapper();
+
+				Transaction transact = session.beginTransaction();
+
+				for (ModelData modelData : lstModels)
+				{
+					Locality hibObject = dozerMapper.map(modelData, Locality.class);
+
+					String cityName = modelData.get("cityName").toString();
+					hibObject.setCity(findParent(lstCities, new City(cityName)));
+
+					if (hibObject.getId() <= 0) // new state - find the parent
+					{
+						hibObject.setName(modelData.get("clinicName").toString());
+						session.save(hibObject);
+					} else
+					{
+						session.saveOrUpdate(hibObject);
+					}
+				}
+				transact.commit();
+				session.flush();
+				session.close();
+				status = "Success";
+			} catch (HibernateException ex)
+			{
+				logger.error("Encountered error saving the model." + ex.getMessage());
+			}
+			return status;
+		}
+
+		@Override
+		public List<ModelData> getListStoreContents()
+		{
+			return DataUtil.getModelList("Clinic");
+		}
+	},
 	Users
 	{
 

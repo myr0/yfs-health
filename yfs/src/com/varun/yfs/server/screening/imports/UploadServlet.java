@@ -1,4 +1,4 @@
-package com.varun.yfs.server.schoolscreening.imports;
+package com.varun.yfs.server.screening.imports;
 
 import gwtupload.server.UploadAction;
 import gwtupload.server.exceptions.UploadActionException;

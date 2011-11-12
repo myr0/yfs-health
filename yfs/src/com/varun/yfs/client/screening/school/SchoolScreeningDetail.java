@@ -1,4 +1,4 @@
-package com.varun.yfs.client.schoolscreening;
+package com.varun.yfs.client.screening.school;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,9 +56,9 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.index.IndexPage;
-import com.varun.yfs.client.schoolscreening.imports.ImportDetail;
-import com.varun.yfs.client.schoolscreening.rpc.ScreeningDetailService;
-import com.varun.yfs.client.schoolscreening.rpc.ScreeningDetailServiceAsync;
+import com.varun.yfs.client.screening.imports.ImportDetail;
+import com.varun.yfs.client.screening.school.rpc.SchoolScreeningDetailService;
+import com.varun.yfs.client.screening.school.rpc.SchoolScreeningDetailServiceAsync;
 import com.varun.yfs.client.util.ExportService;
 import com.varun.yfs.client.util.ExportServiceAsync;
 import com.varun.yfs.dto.ChapterNameDTO;
@@ -70,7 +70,7 @@ import com.varun.yfs.dto.LocalityDTO;
 import com.varun.yfs.dto.PatientDetailDTO;
 import com.varun.yfs.dto.ProcessTypeDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
-import com.varun.yfs.dto.ScreeningDetailDTO;
+import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.dto.StateDTO;
 import com.varun.yfs.dto.TownDTO;
 import com.varun.yfs.dto.TypeOfLocationDTO;
@@ -81,7 +81,7 @@ import com.varun.yfs.dto.YesNoDTO;
 public class SchoolScreeningDetail extends LayoutContainer
 {
 	private String headerText = "Screening Detail";
-	private ScreeningDetailServiceAsync detailServiceAsync = GWT.create(ScreeningDetailService.class);
+	private SchoolScreeningDetailServiceAsync detailServiceAsync = GWT.create(SchoolScreeningDetailService.class);
 	private ExportServiceAsync exportServiceAsync = GWT.create(ExportService.class);
 
 	protected ContentPanel mainContainerPanel = new ContentPanel();
@@ -514,7 +514,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 			return;
 		}
 
-		ScreeningDetailDTO modelData = extractFormData();
+		SchoolScreeningDetailDTO modelData = extractFormData();
 		savePage(modelData);
 	}
 
@@ -559,10 +559,10 @@ public class SchoolScreeningDetail extends LayoutContainer
 		return true;
 	}
 
-	private ScreeningDetailDTO extractFormData()
+	private SchoolScreeningDetailDTO extractFormData()
 	{
 		IndexPage.maskCenterComponent("Saving...");
-		ScreeningDetailDTO modelData = new ScreeningDetailDTO();
+		SchoolScreeningDetailDTO modelData = new SchoolScreeningDetailDTO();
 		modelData.setCountry((CountryDTO) country.getSelection().get(0));
 		modelData.setState((StateDTO) state.getSelection().get(0));
 		modelData.setCity((CityDTO) city.getSelection().get(0));
@@ -930,7 +930,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 				// columnById.setEditor(editorReferral3);
 				// fieldReferral3.add(lstReferrals);
 
-				ScreeningDetailDTO scrDto = modelData.get("data");
+				SchoolScreeningDetailDTO scrDto = modelData.get("data");
 				if (scrDto != null)
 				{
 					address.setValue(scrDto.getAddress());
@@ -972,7 +972,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 	}
 
-	private void savePage(ScreeningDetailDTO model)
+	private void savePage(SchoolScreeningDetailDTO model)
 	{
 		detailServiceAsync.saveModel(this.scrId, model, new AsyncCallback<RpcStatusEnum>()
 		{

@@ -32,6 +32,7 @@
 		<mapping class="com.varun.yfs.server.models.YesNoEnum" />
 		<mapping class="com.varun.yfs.server.models.ReferralType" />
 		<mapping class="com.varun.yfs.server.models.Project" />
+		<mapping class="com.varun.yfs.server.models.Clinic" />
 
 	</session-factory>
 </hibernate-configuration>

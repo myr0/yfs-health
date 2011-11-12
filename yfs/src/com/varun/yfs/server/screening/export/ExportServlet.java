@@ -1,4 +1,4 @@
-package com.varun.yfs.server.schoolscreening.export;
+package com.varun.yfs.server.screening.export;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;

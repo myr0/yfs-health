@@ -6,8 +6,11 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.varun.yfs.dto.CampScreeningDetailDTO;
 import com.varun.yfs.dto.ChapterNameDTO;
-import com.varun.yfs.dto.ScreeningDetailDTO;
+import com.varun.yfs.dto.CityDTO;
+import com.varun.yfs.dto.ClinicDTO;
+import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.server.common.data.DataUtil;
 
 public enum ListModelDataEnum
@@ -73,7 +76,7 @@ public enum ListModelDataEnum
 			return DataUtil.getModelList("Volunteer");
 		}
 	},
-	ScreeningLocations
+	SchoolScreeningLocations
 	{
 		@Override
 		public List<ModelData> getListStoreContents()
@@ -91,8 +94,8 @@ public enum ListModelDataEnum
 				List<ModelData> chapterNodes = new ArrayList<ModelData>();
 				rootNode.set("children", chapterNodes);
 
-				List<ScreeningDetailDTO> lstScrDet = DataUtil.getScreeningDetail("ChapterName", "id", String.valueOf(chapterNameDTO.getId()));
-				for (ScreeningDetailDTO screeningDetailDTO : lstScrDet)
+				List<SchoolScreeningDetailDTO> lstScrDet = DataUtil.getSchoolScreeningDetail("ChapterName", "id", String.valueOf(chapterNameDTO.getId()));
+				for (SchoolScreeningDetailDTO screeningDetailDTO : lstScrDet)
 				{
 					ModelData scrNode = new BaseModelData();
 					scrNode.set("name", screeningDetailDTO.toString());
@@ -102,84 +105,74 @@ public enum ListModelDataEnum
 				}
 			}
 
-			// List<CountryDTO> rootNodes = DataUtil.<CountryDTO>
-			// getModelList("Country");
-			//
-			// for (CountryDTO country : rootNodes)
-			// {
-			// ModelData rootNode = new BaseModelData();
-			// rootNode.set("name", country.getName());
-			// rootNode.set("icon", "");
-			// nodes.add(rootNode);
-			//
-			// Set<StateDTO> states = country.getStates();
-			//
-			// List<ModelData> countrysChild = new ArrayList<ModelData>();
-			// rootNode.set("children", countrysChild);
-			// for (StateDTO stateDTO : states)
-			// {
-			// ModelData stateNode = new BaseModelData();
-			// stateNode.set("name", stateDTO.getName());
-			// stateNode.set("icon", "");
-			// countrysChild.add(stateNode);
-			//
-			// List<ModelData> statesChild = new ArrayList<ModelData>();
-			// stateNode.set("children", statesChild);
-			//
-			// List<ScreeningDetailDTO> lstScreeningDet;
-			//
-			// Set<VillageDTO> villages = stateDTO.getVillages();
-			// for (VillageDTO villageDTO : villages)
-			// {
-			// ModelData villageNode = new BaseModelData();
-			// villageNode.set("name", villageDTO.getName());
-			// villageNode.set("icon", "");
-			// statesChild.add(villageNode);
-			//
-			// lstScreeningDet = new ArrayList<ScreeningDetailDTO>();
-			// villageNode.set("children", lstScreeningDet);
-			// List<ScreeningDetailDTO> screeningDetail =
-			// DataUtil.getScreeningDetail("Village", "id",
-			// String.valueOf(villageDTO.getId()));
-			// lstScreeningDet.addAll(screeningDetail);
-			// }
-			//
-			// Set<TownDTO> towns = stateDTO.getTowns();
-			// for (TownDTO townDTO : towns)
-			// {
-			// ModelData townNode = new BaseModelData();
-			// townNode.set("name", townDTO.getName());
-			// townNode.set("icon", "");
-			// statesChild.add(townNode);
-			//
-			// lstScreeningDet = new ArrayList<ScreeningDetailDTO>();
-			// townNode.set("children", lstScreeningDet);
-			// List<ScreeningDetailDTO> screeningDetail =
-			// DataUtil.getScreeningDetail("Town","id",
-			// String.valueOf(townDTO.getId()));
-			// lstScreeningDet.addAll(screeningDetail);
-			// }
-			//
-			// Set<CityDTO> cities = stateDTO.getCities();
-			// for (CityDTO cityDTO : cities)
-			// {
-			// ModelData cityNode = new BaseModelData();
-			// cityNode.set("name", cityDTO.getName());
-			// cityNode.set("icon", "");
-			// statesChild.add(cityNode);
-			//
-			// lstScreeningDet = new ArrayList<ScreeningDetailDTO>();
-			// cityNode.set("children", lstScreeningDet);
-			// List<ScreeningDetailDTO> screeningDetail =
-			// DataUtil.getScreeningDetail("City","id",
-			// String.valueOf(cityDTO.getId()));
-			// lstScreeningDet.addAll(screeningDetail);
-			// }
-			// }
-			// }
 			return nodes;
 		}
 	},
+	ClinicScreeningLocations
+	{
+		@Override
+		public List<ModelData> getListStoreContents()
+		{
+			List<ModelData> nodes = new ArrayList<ModelData>();
+
+			List<CityDTO> rootNodes = DataUtil.<CityDTO> getModelList("City");
+			for (CityDTO cityDTO : rootNodes)
+			{
+				ModelData rootNode = new BaseModelData();
+				rootNode.set("name", cityDTO.getName());
+				rootNode.set("icon", "");
+				nodes.add(rootNode);
+
+				List<ModelData> chapterNodes = new ArrayList<ModelData>();
+				rootNode.set("children", chapterNodes);
+
+				List<ClinicDTO> lstScrDet = DataUtil.getClinics("City", "id", String.valueOf(cityDTO.getId()));
+				for (ClinicDTO clinicDTO : lstScrDet)
+				{
+					ModelData scrNode = new BaseModelData();
+					scrNode.set("name", clinicDTO.toString());
+					scrNode.set("id", String.valueOf(clinicDTO.getId()));
+					scrNode.set("icon", "");
+					chapterNodes.add(scrNode);
+				}
+			}
+
+			return nodes;
+		}
+	},
+	CampScreeningLocations
+	{
+		@Override
+		public List<ModelData> getListStoreContents()
+		{
+			List<ModelData> nodes = new ArrayList<ModelData>();
+
+			List<ChapterNameDTO> rootNodes = DataUtil.<ChapterNameDTO> getModelList("ChapterName");
+			for (ChapterNameDTO chapterNameDTO : rootNodes)
+			{
+				ModelData rootNode = new BaseModelData();
+				rootNode.set("name", chapterNameDTO.getName());
+				rootNode.set("icon", "");
+				nodes.add(rootNode);
+
+				List<ModelData> chapterNodes = new ArrayList<ModelData>();
+				rootNode.set("children", chapterNodes);
+
+				List<CampScreeningDetailDTO> lstScrDet = DataUtil.getCampScreeningDetail("ChapterName", "id", String.valueOf(chapterNameDTO.getId()));
+				for (CampScreeningDetailDTO screeningDetailDTO : lstScrDet)
+				{
+					ModelData scrNode = new BaseModelData();
+					scrNode.set("name", screeningDetailDTO.toString());
+					scrNode.set("id", String.valueOf(screeningDetailDTO.getId()));
+					scrNode.set("icon", "");
+					chapterNodes.add(scrNode);
+				}
+			}
+
+			return nodes;
+		}
+	},
+
 	Reports
 	{
 		@Override

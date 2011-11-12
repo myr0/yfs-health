@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class ScreeningDetailDTO extends BaseModelData
+public class ClinicScreeningDetailDTO extends BaseModelData
 {
 	private static final long serialVersionUID = 7504451639139702860L;
 
@@ -26,12 +26,12 @@ public class ScreeningDetailDTO extends BaseModelData
 	private List<DoctorDTO> lstDoctors;
 	private List<PatientDetailDTO> lstPatientDetails;
 
-	public ScreeningDetailDTO()
+	public ClinicScreeningDetailDTO()
 	{
 		setDeleted("N");
 	}
 
-	public ScreeningDetailDTO(String name)
+	public ClinicScreeningDetailDTO(String name)
 	{
 		setDeleted("N");
 	}

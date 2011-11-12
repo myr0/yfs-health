@@ -49,7 +49,9 @@ import com.varun.yfs.client.landing.LandingPage;
 import com.varun.yfs.client.login.Login;
 import com.varun.yfs.client.login.LoginService;
 import com.varun.yfs.client.reports.ReportPage;
-import com.varun.yfs.client.schoolscreening.SchoolScreeningDetail;
+import com.varun.yfs.client.screening.camp.CampScreeningDetail;
+import com.varun.yfs.client.screening.clinic.ClinicScreeningDetail;
+import com.varun.yfs.client.screening.school.SchoolScreeningDetail;
 import com.varun.yfs.client.util.Util;
 
 public class IndexPage extends LayoutContainer
@@ -62,11 +64,19 @@ public class IndexPage extends LayoutContainer
 	private LayoutContainer layoutContainerNorth;
 	private LayoutContainer layoutContainerWest;
 
-	private ContentPanel cpScreening;
-	private String userName;
+	private ContentPanel cpSchoolScreening;
+	private final static TreeStore<ModelData> schoolScreeningPanelStore = new TreeStore<ModelData>();
+	private final static TreePanel<ModelData> treeSchoolScreeningPanel = new TreePanel<ModelData>(schoolScreeningPanelStore);
 
-	private final static TreeStore<ModelData> screeningPanelStore = new TreeStore<ModelData>();
-	private final static TreePanel<ModelData> treeScreeningPanel = new TreePanel<ModelData>(screeningPanelStore);
+	private static ContentPanel cpClinicScreening;
+	private final static TreeStore<ModelData> clinicScreeningPanelStore = new TreeStore<ModelData>();
+	private final static TreePanel<ModelData> treeClinicScreeningPanel = new TreePanel<ModelData>(clinicScreeningPanelStore);
+
+	private ContentPanel cpCampScreening;
+	private final static TreeStore<ModelData> campScreeningPanelStore = new TreeStore<ModelData>();
+	private final static TreePanel<ModelData> treeCampScreeningPanel = new TreePanel<ModelData>(campScreeningPanelStore);
+
+	private String userName;
 
 	public IndexPage()
 	{
@@ -139,7 +149,7 @@ public class IndexPage extends LayoutContainer
 				layoutContainerCenter.removeAll();
 				layoutContainerCenter.setLayoutData(new FitData(15));
 
-				cpScreening.expand();
+				cpSchoolScreening.expand();
 				layoutContainerCenter.add(new LandingPage());
 				layoutContainerCenter.layout(true);
 			}
@@ -251,7 +261,9 @@ public class IndexPage extends LayoutContainer
 		layoutContainerWest.setBorders(true);
 		mainContentPanel.add(layoutContainerWest, bldWest);
 
-		buildScreeningPanel();
+		buildSchoolScreeningPanel();
+		buildCampScreeningPanel();
+		buildClinicScreeningPanel();
 
 		buildReportsPanel();
 
@@ -430,15 +442,218 @@ public class IndexPage extends LayoutContainer
 		cpReports.add(tree);
 	}
 
-	private void buildScreeningPanel()
+	private void buildClinicScreeningPanel()
 	{
-		cpScreening = new ContentPanel();
-		cpScreening.setHeading("Screening/Referrals");
-		cpScreening.setLayout(new FitLayout());
-		layoutContainerWest.add(cpScreening);
+
+		cpClinicScreening = new ContentPanel();
+		cpClinicScreening.setHeading("Clinic Screening & Referrals");
+		cpClinicScreening.setLayout(new FitLayout());
+		layoutContainerWest.add(cpClinicScreening);
 
 		ToolBar toolbar = new ToolBar();
-		cpScreening.setTopComponent(toolbar);
+		cpClinicScreening.setTopComponent(toolbar);
+
+		Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		toolbar.add(newScreening);
+		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				layoutContainerCenter.mask("Loading...");
+				layoutContainerCenter.removeAll();
+				layoutContainerCenter.setLayoutData(new FitData(15));
+
+				layoutContainerCenter.mask("Initializing ...");
+				final ClinicScreeningDetail widget = new ClinicScreeningDetail();
+				widget.initialize("New Screening", null);
+				layoutContainerCenter.add(widget);
+
+				layoutContainerCenter.layout(true);
+			}
+		});
+
+		treeClinicScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
+		{
+			public AbstractImagePrototype getIcon(ModelData model)
+			{
+				if (model.get("icon") != null)
+				{
+					return IconHelper.createStyle((String) model.get("icon"));
+				} else
+				{
+					return null;
+				}
+			}
+		});
+		treeClinicScreeningPanel.setDisplayProperty("name");
+		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
+		{
+			@Override
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
+			{
+				String name = record.get("name");
+				name = name.toLowerCase();
+				if (name.startsWith(filter.toLowerCase()))
+				{
+					return true;
+				}
+				return false;
+			}
+		};
+		filter.setWidth("100");
+		filter.bind(clinicScreeningPanelStore);
+		toolbar.add(new SeparatorToolItem());
+		toolbar.add(filter);
+
+		reloadScreeningPanel(false);
+
+		treeClinicScreeningPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
+		{
+			@Override
+			public void handleEvent(BaseEvent be)
+			{
+				ModelData selectedItem = treeClinicScreeningPanel.getSelectionModel().getSelectedItem();
+				boolean isLeaf = treeClinicScreeningPanel.isLeaf(selectedItem);
+				if (!cpClinicScreening.isCollapsed() && isLeaf)
+				{
+					layoutContainerCenter.mask("Loading...");
+					layoutContainerCenter.removeAll();
+
+					layoutContainerCenter.setLayoutData(new FitData(15));
+
+					final ClinicScreeningDetail widget = new ClinicScreeningDetail();
+					layoutContainerCenter.add(widget);
+
+					Object screeningDate = selectedItem.get("name");
+					Object screeningId = selectedItem.get("id");
+
+					if (screeningDate != null && screeningId != null)
+					{
+						String title = "Edit Screening " + screeningDate.toString();
+						widget.initialize(title, screeningId.toString());
+					} else
+					{
+						widget.initialize("Screening Detail", null);
+					}
+					layoutContainerCenter.layout(true);
+				}
+			}
+		});
+
+		cpClinicScreening.add(treeClinicScreeningPanel);
+	}
+
+	private void buildCampScreeningPanel()
+	{
+		cpCampScreening = new ContentPanel();
+		cpCampScreening.setHeading("Medical Camp Screening & Referrals");
+		cpCampScreening.setLayout(new FitLayout());
+		layoutContainerWest.add(cpCampScreening);
+
+		ToolBar toolbar = new ToolBar();
+		cpCampScreening.setTopComponent(toolbar);
+
+		Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		toolbar.add(newScreening);
+		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				layoutContainerCenter.mask("Loading...");
+				layoutContainerCenter.removeAll();
+				layoutContainerCenter.setLayoutData(new FitData(15));
+
+				layoutContainerCenter.mask("Initializing ...");
+				final CampScreeningDetail widget = new CampScreeningDetail();
+				widget.initialize("New Screening", null);
+				layoutContainerCenter.add(widget);
+
+				layoutContainerCenter.layout(true);
+			}
+		});
+
+		treeCampScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
+		{
+			public AbstractImagePrototype getIcon(ModelData model)
+			{
+				if (model.get("icon") != null)
+				{
+					return IconHelper.createStyle((String) model.get("icon"));
+				} else
+				{
+					return null;
+				}
+			}
+		});
+		treeCampScreeningPanel.setDisplayProperty("name");
+		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
+		{
+			@Override
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
+			{
+				String name = record.get("name");
+				name = name.toLowerCase();
+				if (name.startsWith(filter.toLowerCase()))
+				{
+					return true;
+				}
+				return false;
+			}
+		};
+		filter.setWidth("100");
+		filter.bind(campScreeningPanelStore);
+		toolbar.add(new SeparatorToolItem());
+		toolbar.add(filter);
+
+		reloadScreeningPanel(false);
+
+		treeCampScreeningPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
+		{
+			@Override
+			public void handleEvent(BaseEvent be)
+			{
+				ModelData selectedItem = treeCampScreeningPanel.getSelectionModel().getSelectedItem();
+				boolean isLeaf = treeCampScreeningPanel.isLeaf(selectedItem);
+				if (!cpCampScreening.isCollapsed() && isLeaf)
+				{
+					layoutContainerCenter.mask("Loading...");
+					layoutContainerCenter.removeAll();
+
+					layoutContainerCenter.setLayoutData(new FitData(15));
+
+					final CampScreeningDetail widget = new CampScreeningDetail();
+					layoutContainerCenter.add(widget);
+
+					Object screeningDate = selectedItem.get("name");
+					Object screeningId = selectedItem.get("id");
+
+					if (screeningDate != null && screeningId != null)
+					{
+						String title = "Edit Screening " + screeningDate.toString();
+						widget.initialize(title, screeningId.toString());
+					} else
+					{
+						widget.initialize("Screening Detail", null);
+					}
+					layoutContainerCenter.layout(true);
+				}
+			}
+		});
+
+		cpCampScreening.add(treeCampScreeningPanel);
+	}
+
+	private void buildSchoolScreeningPanel()
+	{
+		cpSchoolScreening = new ContentPanel();
+		cpSchoolScreening.setHeading("School Screening & Referrals");
+		cpSchoolScreening.setLayout(new FitLayout());
+		layoutContainerWest.add(cpSchoolScreening);
+
+		ToolBar toolbar = new ToolBar();
+		cpSchoolScreening.setTopComponent(toolbar);
 
 		Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		toolbar.add(newScreening);
@@ -460,7 +675,7 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		treeScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
+		treeSchoolScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
 		{
 			public AbstractImagePrototype getIcon(ModelData model)
 			{
@@ -473,7 +688,7 @@ public class IndexPage extends LayoutContainer
 				}
 			}
 		});
-		treeScreeningPanel.setDisplayProperty("name");
+		treeSchoolScreeningPanel.setDisplayProperty("name");
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
@@ -489,20 +704,20 @@ public class IndexPage extends LayoutContainer
 			}
 		};
 		filter.setWidth("100");
-		filter.bind(screeningPanelStore);
+		filter.bind(schoolScreeningPanelStore);
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(filter);
 
 		reloadScreeningPanel(false);
 
-		treeScreeningPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
+		treeSchoolScreeningPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
 		{
 			@Override
 			public void handleEvent(BaseEvent be)
 			{
-				ModelData selectedItem = treeScreeningPanel.getSelectionModel().getSelectedItem();
-				boolean isLeaf = treeScreeningPanel.isLeaf(selectedItem);
-				if (!cpScreening.isCollapsed() && isLeaf)
+				ModelData selectedItem = treeSchoolScreeningPanel.getSelectionModel().getSelectedItem();
+				boolean isLeaf = treeSchoolScreeningPanel.isLeaf(selectedItem);
+				if (!cpSchoolScreening.isCollapsed() && isLeaf)
 				{
 					layoutContainerCenter.mask("Loading...");
 					layoutContainerCenter.removeAll();
@@ -528,17 +743,20 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		cpScreening.add(treeScreeningPanel);
+		cpSchoolScreening.add(treeSchoolScreeningPanel);
 	}
 
 	private static void reloadScreeningPanel(boolean forceRemoveAll)
 	{
 		if (forceRemoveAll)
-			treeScreeningPanel.getStore().removeAll();
-
-		storeLoader.getListStore(MainPanelEnum.ScreeningLocations.name(), new AsyncCallback<List<ModelData>>()
 		{
+			treeSchoolScreeningPanel.getStore().removeAll();
+			treeCampScreeningPanel.getStore().removeAll();
+			treeClinicScreeningPanel.getStore().removeAll();
+		}
 
+		storeLoader.getListStore(MainPanelEnum.SchoolScreeningLocations.name(), new AsyncCallback<List<ModelData>>()
+		{
 			@Override
 			public void onFailure(Throwable caught)
 			{
@@ -552,11 +770,61 @@ public class IndexPage extends LayoutContainer
 
 				for (ModelData modelData : result)
 				{
-					treeScreeningPanel.getStore().add(modelData, true); // chapter-name
+					treeSchoolScreeningPanel.getStore().add(modelData, true); // chapter-name
 					List<ModelData> children = (List<ModelData>) modelData.get("children"); // screening
 					if (children != null)
 					{
-						treeScreeningPanel.getStore().add(modelData, children, true);
+						treeSchoolScreeningPanel.getStore().add(modelData, children, true);
+					}
+				}
+			}
+		});
+
+		storeLoader.getListStore(MainPanelEnum.ClinicScreeningLocations.name(), new AsyncCallback<List<ModelData>>()
+		{
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				System.out.println(caught.getMessage());
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void onSuccess(List<ModelData> result)
+			{
+
+				for (ModelData modelData : result)
+				{
+					treeClinicScreeningPanel.getStore().add(modelData, true); // chapter-name
+					List<ModelData> children = (List<ModelData>) modelData.get("children"); // screening
+					if (children != null)
+					{
+						treeClinicScreeningPanel.getStore().add(modelData, children, true);
+					}
+				}
+			}
+		});
+
+		storeLoader.getListStore(MainPanelEnum.CampScreeningLocations.name(), new AsyncCallback<List<ModelData>>()
+		{
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				System.out.println(caught.getMessage());
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void onSuccess(List<ModelData> result)
+			{
+
+				for (ModelData modelData : result)
+				{
+					treeCampScreeningPanel.getStore().add(modelData, true); // chapter-name
+					List<ModelData> children = (List<ModelData>) modelData.get("children"); // screening
+					if (children != null)
+					{
+						treeCampScreeningPanel.getStore().add(modelData, children, true);
 					}
 				}
 			}

@@ -1,4 +1,4 @@
-package com.varun.yfs.server.schoolscreening.imports;
+package com.varun.yfs.server.screening.imports;
 
 import java.util.ArrayList;
 import java.util.Collections;

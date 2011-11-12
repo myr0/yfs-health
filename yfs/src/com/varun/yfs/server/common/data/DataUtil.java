@@ -23,7 +23,9 @@ import org.slf4j.LoggerFactory;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.util.Util;
-import com.varun.yfs.dto.ScreeningDetailDTO;
+import com.varun.yfs.dto.CampScreeningDetailDTO;
+import com.varun.yfs.dto.ClinicDTO;
+import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.PatientDetail;
 import com.varun.yfs.server.models.ScreeningDetail;
@@ -31,7 +33,7 @@ import com.varun.yfs.server.models.User;
 
 public class DataUtil
 {
-	public static final List<String> lstEntities = Arrays.asList(new String[] { "Entities", "Chapter Name", "City", "Country", "Doctor", "Locality", "Process Type", "State", "Town", "Type Of Location", "Village", "Volunteer", "User", "Referral Type", "Project" });
+	public static final List<String> lstEntities = Arrays.asList(new String[] { "Entities", "Chapter Name", "City", "Country", "Doctor", "Locality", "Process Type", "State", "Town", "Type Of Location", "Village", "Volunteer", "User", "Referral Type", "Project", "Clinic" });
 	@SuppressWarnings("rawtypes")
 	private static Map<String, Class> nameToHibernateModelClass = new HashMap<String, Class>();
 	@SuppressWarnings("rawtypes")
@@ -159,7 +161,7 @@ public class DataUtil
 		session.close();
 	}
 
-	public static void saveScreeningDetail(ScreeningDetailDTO screeningDetailDto)
+	public static void saveScreeningDetail(SchoolScreeningDetailDTO screeningDetailDto)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Mapper dozerMapper = HibernateUtil.getDozerMapper();
@@ -189,19 +191,19 @@ public class DataUtil
 			session.close();
 		}
 	}
-
-	public static List<ScreeningDetailDTO> getScreeningDetail(String joinTableName, String propertyName, String value)
+	
+	public static List<CampScreeningDetailDTO> getCampScreeningDetail(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Query filter = session.createQuery("select sd from ScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
-		List<ScreeningDetailDTO> lstScreening = new ArrayList<ScreeningDetailDTO>();
+		List<CampScreeningDetailDTO> lstScreening = new ArrayList<CampScreeningDetailDTO>();
 		try
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
 			Calendar cal = Calendar.getInstance();
 			for (Object entity : filter.list())
 			{
-				ScreeningDetailDTO dtoObject = (ScreeningDetailDTO) dozerMapper.map(entity, ScreeningDetailDTO.class);
+				CampScreeningDetailDTO dtoObject = (CampScreeningDetailDTO) dozerMapper.map(entity, CampScreeningDetailDTO.class);
 				cal.setTimeInMillis(Long.parseLong(dtoObject.getScreeningDate()));
 				dtoObject.set("name", DateFormat.getDateInstance(DateFormat.SHORT).format(cal.getTime()));
 				lstScreening.add(dtoObject);
@@ -218,10 +220,38 @@ public class DataUtil
 		return lstScreening;
 	}
 
-	public static ScreeningDetailDTO getScreeningDetail(long scrId)
+	public static List<SchoolScreeningDetailDTO> getSchoolScreeningDetail(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		ScreeningDetailDTO dtoObject = null;
+		Query filter = session.createQuery("select sd from ScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
+		List<SchoolScreeningDetailDTO> lstScreening = new ArrayList<SchoolScreeningDetailDTO>();
+		try
+		{
+			Mapper dozerMapper = HibernateUtil.getDozerMapper();
+			Calendar cal = Calendar.getInstance();
+			for (Object entity : filter.list())
+			{
+				SchoolScreeningDetailDTO dtoObject = (SchoolScreeningDetailDTO) dozerMapper.map(entity, SchoolScreeningDetailDTO.class);
+				cal.setTimeInMillis(Long.parseLong(dtoObject.getScreeningDate()));
+				dtoObject.set("name", DateFormat.getDateInstance(DateFormat.SHORT).format(cal.getTime()));
+				lstScreening.add(dtoObject);
+			}
+
+		} catch (HibernateException ex)
+		{
+			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			throw ex;
+		} finally
+		{
+			session.close();
+		}
+		return lstScreening;
+	}
+
+	public static SchoolScreeningDetailDTO getScreeningDetail(long scrId)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		SchoolScreeningDetailDTO dtoObject = null;
 
 		Criteria filter = session.createCriteria(ScreeningDetail.class);
 		filter.add(Restrictions.eq("id", scrId)).add(Restrictions.eq("deleted", "N"));
@@ -233,7 +263,7 @@ public class DataUtil
 			screeningDetail.getDoctors();
 			screeningDetail.getVolunteers();
 			screeningDetail.getPatientDetails();
-			dtoObject = (ScreeningDetailDTO) dozerMapper.map(screeningDetail, ScreeningDetailDTO.class);
+			dtoObject = (SchoolScreeningDetailDTO) dozerMapper.map(screeningDetail, SchoolScreeningDetailDTO.class);
 
 		} catch (HibernateException ex)
 		{
@@ -279,8 +309,35 @@ public class DataUtil
 			session.close();
 		}
 	}
+	
+	public static List<ClinicDTO> getClinics(String joinTableName, String propertyName, String value)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Query filter = session.createQuery("select sd from Clinic sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
+		List<ClinicDTO> lstClinics = new ArrayList<ClinicDTO>();
+		try
+		{
+			Mapper dozerMapper = HibernateUtil.getDozerMapper();
+			for (Object entity : filter.list())
+			{
+				ClinicDTO dtoObject = (ClinicDTO) dozerMapper.map(entity, ClinicDTO.class);
+				dtoObject.set("name", dtoObject.getName());
+				lstClinics.add(dtoObject);
+			}
 
-	private static void extractPatientDetailData(Session session, ScreeningDetailDTO screeningDetailDto, ScreeningDetail scrDetHibObj)
+		} catch (HibernateException ex)
+		{
+			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			throw ex;
+		} finally
+		{
+			session.close();
+		}
+		return lstClinics;
+	}
+
+
+	private static void extractPatientDetailData(Session session, SchoolScreeningDetailDTO screeningDetailDto, ScreeningDetail scrDetHibObj)
 	{
 		int index = 0;
 		for (ModelData modelData : screeningDetailDto.getPatientDetails())
