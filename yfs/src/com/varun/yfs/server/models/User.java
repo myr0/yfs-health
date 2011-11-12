@@ -33,6 +33,9 @@ public class User implements Serializable
 	@Column(nullable = false)
 	private String password;
 
+	@Column(nullable = true)
+	private String role;
+
 	// @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST,
 	// CascadeType.MERGE })
 	// @JoinColumn(name = "localityId", nullable = true, updatable = true,
@@ -142,15 +145,25 @@ public class User implements Serializable
 		return projects;
 	}
 
-//	public void setTowns(List<Town> towns)
-//	{
-//		this.towns = towns;
-//	}
-//
-//	public List<Town> getTowns()
-//	{
-//		return towns;
-//	}
+	// public void setTowns(List<Town> towns)
+	// {
+	// this.towns = towns;
+	// }
+	//
+	// public List<Town> getTowns()
+	// {
+	// return towns;
+	// }
+
+	public void setRole(String role)
+	{
+		this.role = role;
+	}
+
+	public String getRole()
+	{
+		return role;
+	}
 
 	@Override
 	public int hashCode()

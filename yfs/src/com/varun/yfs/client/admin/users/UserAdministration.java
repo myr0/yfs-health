@@ -41,26 +41,25 @@ import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.dto.ChapterNameDTO;
-import com.varun.yfs.dto.LocalityDTO;
 import com.varun.yfs.dto.ProjectDTO;
-import com.varun.yfs.dto.TownDTO;
-import com.varun.yfs.dto.VillageDTO;
+import com.varun.yfs.dto.UserDTO;
 
 public class UserAdministration extends LayoutContainer
 {
 	private final StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
-	private EditorGrid<ModelData> editorGrid;
+	private EditorGrid<UserDTO> editorGrid;
 	private final ContentPanel gridPanel = new ContentPanel();
 
 	private final ContentPanel userDetailsViewHolder = new ContentPanel();
 	private final TextField<String> txtfldUsrName = new TextField<String>();
 	private final TextField<String> txtfldPassword = new TextField<String>();
+	private SimpleComboBox<String> userRole = new SimpleComboBox<String>();
 	private final CheckBoxListView<ChapterNameDTO> lstfldChapterNames = new CheckBoxListView<ChapterNameDTO>();
 	private final CheckBoxListView<ProjectDTO> lstfldProjects = new CheckBoxListView<ProjectDTO>();
-//	private final CheckBoxListView<TownDTO> lstfldTowns = new CheckBoxListView<TownDTO>();
 
 	private String curAdminEntity = "Default";
 	private ModelData currentModelData = new BaseModelData();
+	private boolean isAdd;
 
 	public UserAdministration()
 	{
@@ -92,16 +91,14 @@ public class UserAdministration extends LayoutContainer
 		TableData td_gridPanel = new TableData();
 		td_gridPanel.setRowspan(2);
 		mainPanel.add(gridPanel, td_gridPanel);
-
 		mainPanel.setScrollMode(Scroll.AUTOY);
-		// mainPanel.setSize("600", "700");
+		mainPanel.setHeight("700");
 
 		add(mainPanel, new FitData(5));
-		mainPanel.setHeight("700");
 
 		gridPanel.setLayout(new FitLayout());
 		gridPanel.setHeading(curAdminEntity);
-		gridPanel.setHeight("550px");
+		gridPanel.setSize("250px", "550px");
 
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		ColumnConfig clmncnfgNewColumn = new ColumnConfig("name", "Name", 150);
@@ -109,9 +106,9 @@ public class UserAdministration extends LayoutContainer
 
 		ListStore<ModelData> editorGridStore = new ListStore<ModelData>();
 
-		editorGrid = new EditorGrid<ModelData>(editorGridStore, new ColumnModel(configs));
-		editorGrid.setBorders(true);
-		editorGrid.setSelectionModel(new GridSelectionModel<ModelData>());
+		editorGrid = new EditorGrid<UserDTO>(editorGridStore, new ColumnModel(configs));
+		editorGrid.setHideHeaders(true);
+		editorGrid.setSelectionModel(new GridSelectionModel<UserDTO>());
 		editorGrid.setLoadMask(true);
 		editorGrid.setAutoExpandColumn("name");
 		editorGrid.mask("Loading...");
@@ -131,23 +128,19 @@ public class UserAdministration extends LayoutContainer
 					txtfldPassword.clear();
 					lstfldChapterNames.getStore().removeAll();
 					lstfldProjects.getStore().removeAll();
-//					lstfldTowns.getStore().removeAll();
 
 					ModelData modelData = selection.get(0);
 					txtfldUsrName.setValue(modelData.get("name").toString());
 					txtfldPassword.setValue(modelData.get("password").toString());
-
 					lstfldChapterNames.getStore().add((List<ChapterNameDTO>) currentModelData.get("lstChapterNames"));
 					lstfldProjects.getStore().add((List<ProjectDTO>) currentModelData.get("lstProjects"));
-//					lstfldTowns.getStore().add((List<TownDTO>) currentModelData.get("lstTown"));
+					userRole.findModel(modelData.get("role").toString());
 
 					updateSelections((List<ModelData>) modelData.get("chapterNames"), lstfldChapterNames);
 					updateSelections((List<ModelData>) modelData.get("projects"), lstfldProjects);
-//					updateSelections((List<ModelData>) modelData.get("towns"), lstfldTowns);
 
 					lstfldChapterNames.refresh();
 					lstfldProjects.refresh();
-//					lstfldTowns.refresh();
 
 					userDetailsViewHolder.setVisible(true);
 					userDetailsViewHolder.focus();
@@ -183,15 +176,14 @@ public class UserAdministration extends LayoutContainer
 				txtfldPassword.clear();
 				lstfldChapterNames.getStore().getModels().clear();
 				lstfldProjects.getStore().getModels().clear();
-//				lstfldTowns.getStore().getModels().clear();
 
 				lstfldChapterNames.refresh();
 				lstfldProjects.refresh();
-//				lstfldTowns.refresh();
 
 				userDetailsViewHolder.setVisible(true);
 				userDetailsViewHolder.focus();
 
+				isAdd = true;
 			}
 		});
 		toolBar.add(add);
@@ -204,11 +196,11 @@ public class UserAdministration extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGrid.stopEditing();
-				ModelData selectedItem = editorGrid.getSelectionModel().getSelectedItem();
+				UserDTO selectedItem = editorGrid.getSelectionModel().getSelectedItem();
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
-					List<ModelData> lstModels = editorGrid.getStore().getModels();
+					List<UserDTO> lstModels = editorGrid.getStore().getModels();
 					editorGrid.getStore().remove(selectedItem);
 					editorGrid.mask("Removing Entry...");
 					savePage(lstModels);
@@ -236,44 +228,34 @@ public class UserAdministration extends LayoutContainer
 		txtfldPassword.setMaxLength(255);
 		txtfldPassword.setFieldLabel("Password");
 		frmpanelUserBasic.add(txtfldPassword, new FormData("80%"));
-		frmpanelUserBasic.setSize("250px", "100px");
 
-		SimpleComboBox<String> smplcmbxNewSimplecombobox = new SimpleComboBox<String>();
-		frmpanelUserBasic.add(smplcmbxNewSimplecombobox, new FormData("80%"));
-		smplcmbxNewSimplecombobox.setFieldLabel("Role");
+		frmpanelUserBasic.add(userRole, new FormData("80%"));
+		userRole.setFieldLabel("Role");
+		userRole.add("Administrator");
+		userRole.add("Administrator - Chapter");
+		userRole.add("Area Co-Ordinator");
 
 		userDetailsViewHolder.add(frmpanelUserBasic, new FitData(5));
+		lstfldChapterNames.setBorders(true);
 
 		lstfldChapterNames.setStore(new ListStore<ChapterNameDTO>());
 		lstfldChapterNames.setDisplayProperty("chapterName");
-		lstfldChapterNames.setSize("350px", "100px");
-		final ContentPanel cPanelLocality = new ContentPanel();
-		cPanelLocality.setScrollMode(Scroll.AUTOY);
-		cPanelLocality.setSize("250px", "100px");
-		cPanelLocality.setHeading("Select Chapters");
-		cPanelLocality.add(lstfldChapterNames);
+		lstfldChapterNames.setHeight("150px");
+		lstfldChapterNames.setStyleAttribute("overflow-y", "scroll");
+		final ContentPanel cPanelChapterNames = new ContentPanel();
+		cPanelChapterNames.setHeading("Select Chapters");
+		cPanelChapterNames.add(lstfldChapterNames);
 
-		userDetailsViewHolder.add(cPanelLocality, new FitData(5));
+		userDetailsViewHolder.add(cPanelChapterNames, new FitData(5));
 
 		lstfldProjects.setStore(new ListStore<ProjectDTO>());
-		lstfldProjects.setSize("350px", "100px");
+		lstfldProjects.setHeight("150px");
 		lstfldProjects.setDisplayProperty("projectName");
-		final ContentPanel cPanelVillage = new ContentPanel();
-		cPanelVillage.setScrollMode(Scroll.AUTOY);
-		cPanelVillage.setHeading("Select Projects");
-		cPanelVillage.setSize("250px", "100px");
-		cPanelVillage.add(lstfldProjects);
-		userDetailsViewHolder.add(cPanelVillage, new FitData(5));
-
-//		lstfldTowns.setStore(new ListStore<TownDTO>());
-//		lstfldTowns.setDisplayProperty("townName");
-//		lstfldTowns.setSize("350px", "100px");
-//		final ContentPanel cPanelTown = new ContentPanel();
-//		cPanelTown.setScrollMode(Scroll.AUTOY);
-//		cPanelTown.setSize("250px", "100px");
-//		cPanelTown.setHeading("Select Town");
-//		cPanelTown.add(lstfldTowns);
-//		userDetailsViewHolder.add(cPanelTown, new FitData(5));
+		lstfldProjects.setStyleAttribute("overflow-y", "scroll");
+		final ContentPanel cPanelProjects = new ContentPanel();
+		cPanelProjects.setHeading("Select Projects");
+		cPanelProjects.add(lstfldProjects);
+		userDetailsViewHolder.add(cPanelProjects, new FitData(5));
 
 		TableData td_lstViewHolder = new TableData();
 		td_lstViewHolder.setHorizontalAlign(HorizontalAlignment.LEFT);
@@ -281,7 +263,7 @@ public class UserAdministration extends LayoutContainer
 		td_lstViewHolder.setPadding(5);
 		td_lstViewHolder.setMargin(5);
 		mainPanel.add(userDetailsViewHolder, td_lstViewHolder);
-		userDetailsViewHolder.setHeight("550px");
+		userDetailsViewHolder.setSize("300px", "550px");
 
 		userDetailsViewHolder.setButtonAlign(HorizontalAlignment.CENTER);
 		userDetailsViewHolder.addButton(new Button("Reset", new SelectionListener<ButtonEvent>()
@@ -300,24 +282,35 @@ public class UserAdministration extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				userDetailsViewHolder.setVisible(false);
-				List<ModelData> models = editorGrid.getStore().getModels();
+				List<UserDTO> models = editorGrid.getStore().getModels();
 
-				ModelData modelData = new BaseModelData();
-				models.add(modelData);
-
-				modelData.set("name", txtfldUsrName.getValue());
-				modelData.set("password", txtfldPassword.getValue());
-				modelData.set("chapterNames", lstfldChapterNames.getChecked());
-				modelData.set("projects", lstfldProjects.getChecked());
-//				modelData.set("towns", lstfldTowns.getChecked());
-
+				if (isAdd)
+				{
+					UserDTO modelData = new UserDTO();
+					models.add(modelData);
+					modelData.setName(txtfldUsrName.getValue());
+					modelData.setPassword(txtfldPassword.getValue());
+					modelData.setChapterNames(lstfldChapterNames.getChecked());
+					modelData.setProjects(lstfldProjects.getChecked());
+					modelData.setRole(userRole.getSimpleValue());
+				} else
+				{
+					UserDTO modelData = editorGrid.getSelectionModel().getSelectedItem();
+					if (modelData != null)
+					{
+						modelData.setName(txtfldUsrName.getValue());
+						modelData.setPassword(txtfldPassword.getValue());
+						modelData.setChapterNames(lstfldChapterNames.getChecked());
+						modelData.setProjects(lstfldProjects.getChecked());
+						modelData.setRole(userRole.getSimpleValue());
+					}
+				}
 				savePage(models);
 			}
 		}));
-
 	}
 
-	public void savePage(final List<ModelData> lstModels)
+	public void savePage(final List<UserDTO> lstModels)
 	{
 		ModelData modelData = new BaseModelData();
 		modelData.set("users", lstModels);
@@ -354,7 +347,7 @@ public class UserAdministration extends LayoutContainer
 			{
 				currentModelData = result;
 				editorGrid.getStore().removeAll();
-				editorGrid.getStore().add((List<ModelData>) currentModelData.get("users"));
+				editorGrid.getStore().add((List<UserDTO>) currentModelData.get("users"));
 				editorGrid.getStore().commitChanges();
 				editorGrid.unmask();
 				editorGrid.setAutoWidth(true);

@@ -115,6 +115,20 @@ public class ChapterNameDTO extends BaseModelData
 	}
 
 	@Override
+	public boolean equals(Object arg0)
+	{
+		if (arg0 == null)
+			return false;
+		if (arg0.getClass() != this.getClass())
+			return false;
+
+		ChapterNameDTO chap = (ChapterNameDTO) arg0;
+		if (chap.getName() == null)
+			return false;
+		return chap.getName().equalsIgnoreCase(this.getName());
+	}
+
+	@Override
 	public String toString()
 	{
 		return getName();

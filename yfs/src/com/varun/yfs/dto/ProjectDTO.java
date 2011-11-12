@@ -55,4 +55,24 @@ public class ProjectDTO extends BaseModelData
 		return chapterNameDto;
 	}
 
+	@Override
+	public String toString()
+	{
+		return getName();
+	}
+
+	@Override
+	public boolean equals(Object arg0)
+	{
+		if (arg0 == null)
+			return false;
+		if (arg0.getClass() != this.getClass())
+			return false;
+
+		ProjectDTO chap = (ProjectDTO) arg0;
+		if (chap.getName() == null)
+			return false;
+		return chap.getName().equalsIgnoreCase(this.getName());
+	}
+
 }

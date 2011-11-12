@@ -76,17 +76,6 @@ public class UserDTO extends BaseModelData
 		return this.projects;
 	}
 
-	// public void setTowns(List<TownDTO> towns)
-	// {
-	// set("towns", towns);
-	// this.towns = towns;
-	// }
-	//
-	// public List<TownDTO> getTowns()
-	// {
-	// return this.towns;
-	// }
-
 	public String getDeleted()
 	{
 		return get("deleted");
@@ -115,6 +104,16 @@ public class UserDTO extends BaseModelData
 	public String getSessionId()
 	{
 		return get("sessionId");
+	}
+
+	public void setRole(String role)
+	{
+		set("role", role);
+	}
+
+	public String getRole()
+	{
+		return get("role");
 	}
 
 	@Override

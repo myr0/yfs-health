@@ -253,18 +253,17 @@ public class DataUtil
 		Transaction trans = session.beginTransaction();
 		try
 		{
-
 			List<ModelData> modelList = model.get("users");
 			for (ModelData modelData : modelList)
 			{
-				User usrObj = dozerMapper.map(model, User.class);
-				String id = modelData.get("id");
+				User usrObj = dozerMapper.map(modelData, User.class);
+				Long id = modelData.get("id");
 				if (id == null)
 				{
 					session.save(usrObj);
 				} else
 				{
-					usrObj.setId(Long.parseLong(id));
+					usrObj.setId(id);
 					session.saveOrUpdate(usrObj);
 				}
 			}
