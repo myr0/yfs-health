@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -13,6 +14,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreFilter;
+import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
@@ -21,10 +23,13 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -34,6 +39,10 @@ import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.RowNumberer;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -52,10 +61,21 @@ import com.varun.yfs.client.screening.export.ExportService;
 import com.varun.yfs.client.screening.export.ExportServiceAsync;
 import com.varun.yfs.client.screening.imports.ImportDetail;
 import com.varun.yfs.client.screening.imports.ImportType;
+import com.varun.yfs.dto.ChapterNameDTO;
+import com.varun.yfs.dto.CityDTO;
 import com.varun.yfs.dto.ClinicPatientDetailDTO;
 import com.varun.yfs.dto.ClinicScreeningDetailDTO;
+import com.varun.yfs.dto.CountryDTO;
+import com.varun.yfs.dto.DoctorDTO;
 import com.varun.yfs.dto.GenderDTO;
+import com.varun.yfs.dto.LocalityDTO;
+import com.varun.yfs.dto.ProcessTypeDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
+import com.varun.yfs.dto.StateDTO;
+import com.varun.yfs.dto.TownDTO;
+import com.varun.yfs.dto.TypeOfLocationDTO;
+import com.varun.yfs.dto.VillageDTO;
+import com.varun.yfs.dto.VolunteerDTO;
 import com.varun.yfs.dto.YesNoDTO;
 
 public class ClinicScreeningDetail extends LayoutContainer
@@ -65,7 +85,21 @@ public class ClinicScreeningDetail extends LayoutContainer
 	private ExportServiceAsync exportServiceAsync = GWT.create(ExportService.class);
 
 	protected ContentPanel mainContainerPanel = new ContentPanel();
-
+	private final ComboBox<ModelData> country = new ComboBox<ModelData>();
+	private final ComboBox<ModelData> state = new ComboBox<ModelData>();
+	private final ComboBox<ModelData> city = new ComboBox<ModelData>();
+	private final ComboBox<ModelData> town = new ComboBox<ModelData>();
+	private final ComboBox<ModelData> village = new ComboBox<ModelData>();
+	private final ComboBox<ModelData> chapterName = new ComboBox<ModelData>();
+	private final ComboBox<ModelData> locality = new ComboBox<ModelData>();
+	private final ComboBox<ModelData> processType = new ComboBox<ModelData>();
+	private final ComboBox<ModelData> typeOfLocation = new ComboBox<ModelData>();
+	private final CheckBoxListView<VolunteerDTO> volunteers = new CheckBoxListView<VolunteerDTO>();
+	private final CheckBoxListView<DoctorDTO> doctors = new CheckBoxListView<DoctorDTO>();
+	private final TextArea address = new TextArea();
+	private final TextArea contactInformation = new TextArea();
+	private final DateField screeningDate = new DateField();
+	
 	private ListStore<ClinicPatientDetailDTO> editorGridStore;
 	private EditorGrid<ClinicPatientDetailDTO> editorGrid;
 	private String scrId;
@@ -102,6 +136,145 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		mainContainerPanel.setHeading(headerText);
 
+		LayoutContainer cpMain = new LayoutContainer();
+		cpMain.setLayout(new TableLayout(3));
+
+		LayoutContainer cpPart1 = new LayoutContainer();
+		cpPart1.setLayout(new FormLayout());
+		TableData td_cpPart1 = new TableData();
+		td_cpPart1.setPadding(5);
+		cpMain.add(cpPart1, td_cpPart1);
+
+		country.setEditable(false);
+		cpPart1.add(country, new FormData("90%"));
+		country.setSize("150", "22");
+		country.setFieldLabel("Country");
+		country.setDisplayField("countryName");
+		country.setForceSelection(true);
+		country.setTriggerAction(TriggerAction.ALL);
+		country.setStore(new ListStore<ModelData>());
+		country.setAllowBlank(false);
+
+		cpPart1.add(state, new FormData("90%"));
+		state.setEditable(false);
+		state.setSize("150", "22");
+		state.setFieldLabel("State");
+		state.setDisplayField("stateName");
+		state.setTriggerAction(TriggerAction.ALL);
+		state.setStore(new ListStore<ModelData>());
+		state.setAllowBlank(false);
+
+		cpPart1.add(city, new FormData("90%"));
+		city.setSize("150", "22");
+		city.setFieldLabel("City");
+		city.setDisplayField("cityName");
+		city.setTriggerAction(TriggerAction.ALL);
+		city.setStore(new ListStore<ModelData>());
+		city.setAllowBlank(false);
+
+		town.setFieldLabel("Town");
+		cpPart1.add(town, new FormData("90%"));
+		town.setSize("150", "22");
+		town.setDisplayField("townName");
+		town.setTriggerAction(TriggerAction.ALL);
+		town.setStore(new ListStore<ModelData>());
+		town.setAllowBlank(false);
+
+		village.setFieldLabel("Village");
+		cpPart1.add(village, new FormData("90%"));
+		village.setSize("150", "22");
+		village.setDisplayField("villageName");
+		village.setTriggerAction(TriggerAction.ALL);
+		village.setStore(new ListStore<ModelData>());
+		village.setAllowBlank(false);
+
+		chapterName.setFieldLabel("Chapter Name");
+		cpPart1.add(chapterName, new FormData("90%"));
+		chapterName.setSize("150", "22");
+		chapterName.setDisplayField("chapterName");
+		chapterName.setTriggerAction(TriggerAction.ALL);
+		chapterName.setStore(new ListStore<ModelData>());
+		chapterName.setAllowBlank(false);
+
+		mainContainerPanel.add(cpMain);
+		cpPart1.setSize("33%", "280px");
+
+		LayoutContainer cpPart2 = new LayoutContainer();
+		cpPart2.setLayout(new FormLayout());
+		cpPart2.setSize("33%", "280px");
+		cpPart2.add(locality, new FormData("100%"));
+		locality.setFieldLabel("Locality");
+		locality.setDisplayField("localityName");
+		locality.setTriggerAction(TriggerAction.ALL);
+		locality.setStore(new ListStore<ModelData>());
+		locality.setWidth("150");
+		locality.setAllowBlank(false);
+
+		cpPart2.add(screeningDate, new FormData("90%"));
+		screeningDate.setFieldLabel("Date");
+		screeningDate.setAllowBlank(false);
+		screeningDate.setAllowBlank(false);
+
+		cpPart2.add(processType, new FormData("90%"));
+		processType.setFieldLabel("Process Type");
+		processType.setDisplayField("name");
+		processType.setTriggerAction(TriggerAction.ALL);
+		processType.setStore(new ListStore<ModelData>());
+		processType.setAllowBlank(false);
+
+		cpPart2.add(typeOfLocation, new FormData("90%"));
+		typeOfLocation.setFieldLabel("Type of Location");
+		typeOfLocation.setDisplayField("name");
+		typeOfLocation.setTriggerAction(TriggerAction.ALL);
+		typeOfLocation.setStore(new ListStore<ModelData>());
+		typeOfLocation.setAllowBlank(false);
+
+		cpPart2.add(address, new FormData("100% -240"));
+		address.setFieldLabel("Address");
+		address.setWidth("150");
+		address.setAllowBlank(false);
+
+		cpPart2.add(contactInformation, new FormData("90% -235"));
+		contactInformation.setFieldLabel("Contact Information");
+		contactInformation.setWidth("150");
+		contactInformation.setAllowBlank(false);
+
+		TableData td_cpPart2 = new TableData();
+		td_cpPart2.setPadding(5);
+		cpMain.add(cpPart2, td_cpPart2);
+		cpMain.setHeight("35%");
+
+		LayoutContainer cpPart3 = new LayoutContainer();
+		TableData td_cpPart3 = new TableData();
+		td_cpPart3.setPadding(5);
+
+		final ContentPanel cPanelDoctors = new ContentPanel();
+		cPanelDoctors.setScrollMode(Scroll.AUTOY);
+		cPanelDoctors.setHeading("Select Doctors");
+		cPanelDoctors.setSize("150", "90");
+		cPanelDoctors.add(doctors);
+		cPanelDoctors.setBodyBorder(false);
+		cPanelDoctors.setFrame(false);
+		cPanelDoctors.setBorders(false);
+		cpPart3.add(cPanelDoctors);
+		doctors.setStore(new ListStore<DoctorDTO>());
+		doctors.setDisplayProperty("name");
+
+		final ContentPanel cPanelVolunteers = new ContentPanel();
+		cPanelVolunteers.setScrollMode(Scroll.AUTOY);
+		cPanelVolunteers.setHeading("Select Volunteers");
+		cPanelVolunteers.setSize("150", "90");
+		cPanelVolunteers.add(volunteers);
+		cPanelVolunteers.setBodyBorder(false);
+		cPanelVolunteers.setFrame(false);
+		cPanelVolunteers.setBorders(false);
+		cpPart3.add(cPanelVolunteers);
+		volunteers.setStore(new ListStore<VolunteerDTO>());
+		volunteers.setDisplayProperty("name");
+
+		cpMain.add(cpPart3, td_cpPart3);
+		cpPart3.setSize("33%", "280");
+		
 		editorGridStore = new ListStore<ClinicPatientDetailDTO>();
 		ColumnModel columnModel = getColumnModel();
 		editorGrid = new EditorGrid<ClinicPatientDetailDTO>(editorGridStore, columnModel);
@@ -236,12 +409,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
 
-						// if (item.getReferral1().isEmpty() ||
-						// item.getReferral2().isEmpty())
-						// return false;
-
-						// if (item.getReferral3() == null)
-						// return false;
 						return false;
 					}
 				};
@@ -345,7 +512,41 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 	private boolean validateFormEntry()
 	{
+		if (!country.validate())
+			return false;
 
+		if (!state.validate())
+			return false;
+
+		if (!city.validate())
+			return false;
+
+		if (!town.validate())
+			return false;
+
+		if (!village.validate())
+			return false;
+
+		if (!chapterName.validate())
+			return false;
+
+		if (!locality.validate())
+			return false;
+
+		if (!screeningDate.validate())
+			return false;
+
+		if (!processType.validate())
+			return false;
+
+		if (!typeOfLocation.validate())
+			return false;
+
+		if (!address.validate())
+			return false;
+
+		if (!contactInformation.validate())
+			return false;
 		return true;
 	}
 
@@ -353,6 +554,21 @@ public class ClinicScreeningDetail extends LayoutContainer
 	{
 		IndexPage.maskCenterComponent("Saving...");
 		ClinicScreeningDetailDTO modelData = new ClinicScreeningDetailDTO();
+		modelData.setCountry((CountryDTO) country.getSelection().get(0));
+		modelData.setState((StateDTO) state.getSelection().get(0));
+		modelData.setCity((CityDTO) city.getSelection().get(0));
+		modelData.setTown((TownDTO) town.getSelection().get(0));
+		modelData.setVillage((VillageDTO) village.getSelection().get(0));
+		modelData.setLocality((LocalityDTO) locality.getSelection().get(0));
+
+		modelData.setChapterName((ChapterNameDTO) chapterName.getSelection().get(0));
+		modelData.setProcessType((ProcessTypeDTO) processType.getSelection().get(0));
+		modelData.setTypeOfLocation((TypeOfLocationDTO) typeOfLocation.getSelection().get(0));
+		modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
+		modelData.setContactInformation(contactInformation.getValue());
+		modelData.setAddress(address.getValue());
+		modelData.setVolunteers(volunteers.getChecked());
+		modelData.setDoctors(doctors.getChecked());
 
 		editorGrid.stopEditing();
 		editorGridStore.commitChanges();
@@ -595,6 +811,19 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void onSuccess(ModelData modelData)
 			{
 				clearStores();
+				
+				country.getStore().add((List<ModelData>) modelData.get("lstCountry"));
+				state.getStore().add((List<ModelData>) modelData.get("lstState"));
+				city.getStore().add((List<ModelData>) modelData.get("lstCity"));
+				town.getStore().add((List<ModelData>) modelData.get("lstTown"));
+				village.getStore().add((List<ModelData>) modelData.get("lstVillage"));
+				locality.getStore().add((List<ModelData>) modelData.get("lstLocality"));
+
+				chapterName.getStore().add((List<ModelData>) modelData.get("lstChapterName"));
+				processType.getStore().add((List<ModelData>) modelData.get("lstProcessType"));
+				typeOfLocation.getStore().add((List<ModelData>) modelData.get("lstTypeOfLocation"));
+				volunteers.getStore().add((List<VolunteerDTO>) modelData.get("lstVolunteers"));
+				doctors.getStore().add((List<DoctorDTO>) modelData.get("lstDoctors"));
 
 				List<ReferralTypeDTO> lst = (List<ReferralTypeDTO>) modelData.get("lstReferralTypes");
 				List<String> lstReferrals = new ArrayList<String>(lst.size());

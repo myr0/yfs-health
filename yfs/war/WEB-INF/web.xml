@@ -83,7 +83,7 @@
 
 	<servlet>
 		<servlet-name>ExportService</servlet-name>
-		<servlet-class>com.varun.yfs.server.util.ExportServiceImpl</servlet-class>
+		<servlet-class>com.varun.yfs.server.screening.export.ExportServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ExportService</servlet-name>

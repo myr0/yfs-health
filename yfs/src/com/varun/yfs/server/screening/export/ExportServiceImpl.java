@@ -1,4 +1,4 @@
-package com.varun.yfs.server.util;
+package com.varun.yfs.server.screening.export;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,9 +9,13 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -40,6 +44,12 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 		{
 			myCell = myRow.createCell(cellNum++);
 			myCell.setCellValue(header);
+
+			CellStyle style = myWorkBook.createCellStyle();
+			style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			myCell.setCellStyle(style);
+			mySheet.autoSizeColumn(cellNum);
 		}
 
 		CSVReader reader;
@@ -76,6 +86,7 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 		{
 			e.printStackTrace();
 		}
+
 		return fileName;
 	}
 }

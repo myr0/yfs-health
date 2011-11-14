@@ -72,7 +72,6 @@ import com.varun.yfs.dto.GenderDTO;
 import com.varun.yfs.dto.LocalityDTO;
 import com.varun.yfs.dto.ProcessTypeDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
-import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.StateDTO;
 import com.varun.yfs.dto.TownDTO;
 import com.varun.yfs.dto.TypeOfLocationDTO;

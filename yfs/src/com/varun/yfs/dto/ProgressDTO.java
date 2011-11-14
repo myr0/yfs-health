@@ -15,12 +15,13 @@ public class ProgressDTO extends BaseModelData
 
 	public RpcStatusEnum getStatus()
 	{
-		return get("status");
+		return status;
 	}
 
 	public void setStatus(RpcStatusEnum status)
 	{
 		set("status", status);
+		this.status = status;
 	}
 
 	public String getProgress()
