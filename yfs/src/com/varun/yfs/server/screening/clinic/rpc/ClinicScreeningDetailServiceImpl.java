@@ -18,7 +18,7 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 {
 	private static Logger logger = Logger.getLogger(ClinicScreeningDetailServiceImpl.class);
 	private static final long serialVersionUID = 4397970043413666183L;
-	
+
 	@Override
 	public ModelData getModel(String scrId)
 	{
@@ -54,7 +54,7 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		{
 			if (scrId != null)
 				modelData.set("id", scrId);
-			
+
 			DataUtil.saveScreeningDetail(modelData);
 		} catch (HibernateException ex)
 		{

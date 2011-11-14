@@ -36,10 +36,9 @@
 		<url-pattern>/yfs/storeloader</url-pattern>
 	</servlet-mapping>
 
-
 	<servlet>
 		<servlet-name>campScreeningDetailService</servlet-name>
-		<servlet-class>com.varun.yfs.server.screening.camp.rpc.CampScreeningDetailServiceServlet</servlet-class>
+		<servlet-class>com.varun.yfs.server.screening.camp.rpc.CampScreeningDetailServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>campScreeningDetailService</servlet-name>
@@ -48,7 +47,7 @@
 
 	<servlet>
 		<servlet-name>clinicScreeningDetailService</servlet-name>
-		<servlet-class>com.varun.yfs.server.screening.school.rpc.ClinicScreeningDetailServiceServlet</servlet-class>
+		<servlet-class>com.varun.yfs.server.screening.clinic.rpc.ClinicScreeningDetailServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>clinicScreeningDetailService</servlet-name>
@@ -57,7 +56,7 @@
 
 	<servlet>
 		<servlet-name>schoolScreeningDetailService</servlet-name>
-		<servlet-class>com.varun.yfs.server.screening.school.rpc.SchoolScreeningDetailServiceServlet</servlet-class>
+		<servlet-class>com.varun.yfs.server.screening.school.rpc.SchoolScreeningDetailServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>schoolScreeningDetailService</servlet-name>
@@ -82,14 +81,6 @@
 		<url-pattern>/yfs/exportServlet</url-pattern>
 	</servlet-mapping>
 
-	<listener>
-		<listener-class>com.varun.yfs.server.startup.StatusReportContextListener</listener-class>
-	</listener>
-
-	<!-- Default page to serve -->
-	<welcome-file-list>
-		<welcome-file>Yfs.html</welcome-file>
-	</welcome-file-list>
 	<servlet>
 		<servlet-name>ExportService</servlet-name>
 		<servlet-class>com.varun.yfs.server.util.ExportServiceImpl</servlet-class>
@@ -98,6 +89,7 @@
 		<servlet-name>ExportService</servlet-name>
 		<url-pattern>/yfs/ExportService</url-pattern>
 	</servlet-mapping>
+
 	<servlet>
 		<servlet-name>LoginService</servlet-name>
 		<servlet-class>com.varun.yfs.server.login.LoginServiceImpl</servlet-class>
@@ -107,5 +99,13 @@
 		<url-pattern>/yfs/LoginService</url-pattern>
 	</servlet-mapping>
 
+	<listener>
+		<listener-class>com.varun.yfs.server.startup.StatusReportContextListener</listener-class>
+	</listener>
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>Yfs.html</welcome-file>
+	</welcome-file-list>
 
 </web-app>

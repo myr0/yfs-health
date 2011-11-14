@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.varun.yfs.dto.GenderDTO;
-import com.varun.yfs.dto.PatientDetailDTO;
+import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
 import com.varun.yfs.dto.YesNoDTO;
 import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
@@ -22,7 +22,7 @@ public class PatientDetailImporter
 	private int processedRowCount;
 	private ArrayBlockingQueue<List<String>> excelRows;
 	private List<String> errorRows;
-	private List<PatientDetailDTO> patientDetails = new ArrayList<PatientDetailDTO>();
+	private List<SchoolPatientDetailDTO> patientDetails = new ArrayList<SchoolPatientDetailDTO>();
 	private List<ReferralTypeDTO> referralTypes = DataUtil.getModelList(ListModelDataEnum.ReferralType.name());
 	private StringBuilder errorString = new StringBuilder();
 
@@ -64,7 +64,7 @@ public class PatientDetailImporter
 		return processedRowCount;
 	}
 
-	public List<PatientDetailDTO> getProcessedRecords()
+	public List<SchoolPatientDetailDTO> getProcessedRecords()
 	{
 		return patientDetails;
 	}
@@ -82,7 +82,7 @@ public class PatientDetailImporter
 
 		int startErrorCount = errorRows.size();
 
-		PatientDetailDTO patientDetailDTO = new PatientDetailDTO();
+		SchoolPatientDetailDTO patientDetailDTO = new SchoolPatientDetailDTO();
 		// patientDetailDTO.setCaseClosed(lstCols.get(4));
 		// patientDetailDTO.setReferral3(lstCols.get());
 

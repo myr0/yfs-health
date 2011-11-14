@@ -53,7 +53,7 @@ import com.varun.yfs.client.util.ExportService;
 import com.varun.yfs.client.util.ExportServiceAsync;
 import com.varun.yfs.dto.ClinicScreeningDetailDTO;
 import com.varun.yfs.dto.GenderDTO;
-import com.varun.yfs.dto.PatientDetailDTO;
+import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.dto.YesNoDTO;
@@ -66,16 +66,16 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 	protected ContentPanel mainContainerPanel = new ContentPanel();
 
-	private ListStore<PatientDetailDTO> editorGridStore;
-	private EditorGrid<PatientDetailDTO> editorGrid;
+	private ListStore<SchoolPatientDetailDTO> editorGridStore;
+	private EditorGrid<SchoolPatientDetailDTO> editorGrid;
 	private String scrId;
 
-	public EditorGrid<PatientDetailDTO> getEditorGrid()
+	public EditorGrid<SchoolPatientDetailDTO> getEditorGrid()
 	{
 		return editorGrid;
 	}
 
-	public void setEditorGrid(EditorGrid<PatientDetailDTO> editorGrid)
+	public void setEditorGrid(EditorGrid<SchoolPatientDetailDTO> editorGrid)
 	{
 		this.editorGrid = editorGrid;
 	}
@@ -102,12 +102,12 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		mainContainerPanel.setHeading(headerText);
 
-		editorGridStore = new ListStore<PatientDetailDTO>();
+		editorGridStore = new ListStore<SchoolPatientDetailDTO>();
 		ColumnModel columnModel = getColumnModel();
-		editorGrid = new EditorGrid<PatientDetailDTO>(editorGridStore, columnModel);
+		editorGrid = new EditorGrid<SchoolPatientDetailDTO>(editorGridStore, columnModel);
 		// editorGrid.reconfigure(editorGridStore, columnModel);
 		editorGrid.setBorders(true);
-		editorGrid.setSelectionModel(new GridSelectionModel<PatientDetailDTO>());
+		editorGrid.setSelectionModel(new GridSelectionModel<SchoolPatientDetailDTO>());
 		editorGrid.setLoadMask(true);
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
@@ -126,7 +126,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGrid.unmask();
-				PatientDetailDTO patientDetail = new PatientDetailDTO();
+				SchoolPatientDetailDTO patientDetail = new SchoolPatientDetailDTO();
 				patientDetail.setDeleted("N");
 				editorGrid.stopEditing();
 				editorGridStore.insert(patientDetail, 0);
@@ -144,7 +144,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGrid.stopEditing();
-				PatientDetailDTO selectedItem = editorGrid.getSelectionModel().getSelectedItem();
+				SchoolPatientDetailDTO selectedItem = editorGrid.getSelectionModel().getSelectedItem();
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
@@ -186,7 +186,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				{
 					headers.add(columnConfig.getHeader());
 				}
-				List<PatientDetailDTO> models = editorGridStore.getModels();
+				List<SchoolPatientDetailDTO> models = editorGridStore.getModels();
 				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
@@ -228,10 +228,10 @@ public class ClinicScreeningDetail extends LayoutContainer
 					headers.add(columnConfig.getHeader());
 				}
 
-				StoreFilter<PatientDetailDTO> filterReferrals = new StoreFilter<PatientDetailDTO>()
+				StoreFilter<SchoolPatientDetailDTO> filterReferrals = new StoreFilter<SchoolPatientDetailDTO>()
 				{
 					@Override
-					public boolean select(Store<PatientDetailDTO> store, PatientDetailDTO parent, PatientDetailDTO item, String property)
+					public boolean select(Store<SchoolPatientDetailDTO> store, SchoolPatientDetailDTO parent, SchoolPatientDetailDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
@@ -248,7 +248,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				editorGridStore.addFilter(filterReferrals);
 				editorGridStore.applyFilters("referral1");
 
-				List<PatientDetailDTO> models = editorGridStore.getModels();
+				List<SchoolPatientDetailDTO> models = editorGridStore.getModels();
 				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
@@ -356,7 +356,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		editorGrid.stopEditing();
 		editorGridStore.commitChanges();
-		List<PatientDetailDTO> models = editorGridStore.getModels();
+		List<SchoolPatientDetailDTO> models = editorGridStore.getModels();
 		modelData.setPatientDetails(models);
 		return modelData;
 	}
@@ -696,7 +696,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				if (scrDto != null)
 				{
 					editorGridStore.removeAll();
-					List<PatientDetailDTO> patientDetails = scrDto.getPatientDetails();
+					List<SchoolPatientDetailDTO> patientDetails = scrDto.getPatientDetails();
 					editorGridStore.add(patientDetails);
 				}
 				IndexPage.unmaskCenterComponent();

@@ -15,24 +15,29 @@
 		<property name="hibernate.id.new_generator_mappings">true</property>
 
 		<mapping class="com.varun.yfs.server.models.Entities" />
-		<mapping class="com.varun.yfs.server.models.ScreeningDetail" />
-		<mapping class="com.varun.yfs.server.models.PatientDetail" />
-		<mapping class="com.varun.yfs.server.models.ChapterName" />
+		
 		<mapping class="com.varun.yfs.server.models.City" />
 		<mapping class="com.varun.yfs.server.models.Country" />
-		<mapping class="com.varun.yfs.server.models.Doctor" />
 		<mapping class="com.varun.yfs.server.models.Locality" />
-		<mapping class="com.varun.yfs.server.models.ProcessType" />
 		<mapping class="com.varun.yfs.server.models.State" />
 		<mapping class="com.varun.yfs.server.models.Town" />
-		<mapping class="com.varun.yfs.server.models.TypeOfLocation" />
 		<mapping class="com.varun.yfs.server.models.Village" />
+		
+		<mapping class="com.varun.yfs.server.models.ChapterName" />
+		<mapping class="com.varun.yfs.server.models.Doctor" />
+		<mapping class="com.varun.yfs.server.models.Clinic" />
+		<mapping class="com.varun.yfs.server.models.ProcessType" />
+		<mapping class="com.varun.yfs.server.models.TypeOfLocation" />
 		<mapping class="com.varun.yfs.server.models.Volunteer" />
-		<mapping class="com.varun.yfs.server.models.User" />
-		<mapping class="com.varun.yfs.server.models.YesNoEnum" />
 		<mapping class="com.varun.yfs.server.models.ReferralType" />
 		<mapping class="com.varun.yfs.server.models.Project" />
-		<mapping class="com.varun.yfs.server.models.Clinic" />
+		
+		<mapping class="com.varun.yfs.server.models.SchoolScreeningDetail" />
+		<mapping class="com.varun.yfs.server.models.SchoolPatientDetail" />
+
+		<mapping class="com.varun.yfs.server.models.CampScreeningDetail" />
+		<mapping class="com.varun.yfs.server.models.CampPatientDetail" />
+		<mapping class="com.varun.yfs.server.models.User" />
 
 	</session-factory>
 </hibernate-configuration>

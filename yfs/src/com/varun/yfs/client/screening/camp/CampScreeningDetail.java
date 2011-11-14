@@ -68,7 +68,7 @@ import com.varun.yfs.dto.CountryDTO;
 import com.varun.yfs.dto.DoctorDTO;
 import com.varun.yfs.dto.GenderDTO;
 import com.varun.yfs.dto.LocalityDTO;
-import com.varun.yfs.dto.PatientDetailDTO;
+import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ProcessTypeDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
 import com.varun.yfs.dto.StateDTO;
@@ -100,16 +100,16 @@ public class CampScreeningDetail extends LayoutContainer
 	private final TextArea contactInformation = new TextArea();
 	private final DateField screeningDate = new DateField();
 
-	private ListStore<PatientDetailDTO> editorGridStore;
-	private EditorGrid<PatientDetailDTO> editorGrid;
+	private ListStore<SchoolPatientDetailDTO> editorGridStore;
+	private EditorGrid<SchoolPatientDetailDTO> editorGrid;
 	private String scrId;
 
-	public EditorGrid<PatientDetailDTO> getEditorGrid()
+	public EditorGrid<SchoolPatientDetailDTO> getEditorGrid()
 	{
 		return editorGrid;
 	}
 
-	public void setEditorGrid(EditorGrid<PatientDetailDTO> editorGrid)
+	public void setEditorGrid(EditorGrid<SchoolPatientDetailDTO> editorGrid)
 	{
 		this.editorGrid = editorGrid;
 	}
@@ -153,10 +153,6 @@ public class CampScreeningDetail extends LayoutContainer
 		country.setTriggerAction(TriggerAction.ALL);
 		country.setStore(new ListStore<ModelData>());
 		country.setAllowBlank(false);
-		// ComboBox<ModelData>.ComboBoxMessages titleMsgs = country.new
-		// ComboBoxMessages();
-		// titleMsgs.setInvalidText("Country is required");
-		// country.setMessages(titleMsgs);
 
 		cpPart1.add(state, new FormData("90%"));
 		state.setEditable(false);
@@ -194,7 +190,7 @@ public class CampScreeningDetail extends LayoutContainer
 		chapterName.setFieldLabel("Chapter Name");
 		cpPart1.add(chapterName, new FormData("90%"));
 		chapterName.setSize("150", "22");
-		chapterName.setDisplayField("name");
+		chapterName.setDisplayField("chapterName");
 		chapterName.setTriggerAction(TriggerAction.ALL);
 		chapterName.setStore(new ListStore<ModelData>());
 		chapterName.setAllowBlank(false);
@@ -278,12 +274,12 @@ public class CampScreeningDetail extends LayoutContainer
 		cpMain.add(cpPart3, td_cpPart3);
 		cpPart3.setSize("33%", "280");
 
-		editorGridStore = new ListStore<PatientDetailDTO>();
+		editorGridStore = new ListStore<SchoolPatientDetailDTO>();
 		ColumnModel columnModel = getColumnModel();
-		editorGrid = new EditorGrid<PatientDetailDTO>(editorGridStore, columnModel);
+		editorGrid = new EditorGrid<SchoolPatientDetailDTO>(editorGridStore, columnModel);
 		// editorGrid.reconfigure(editorGridStore, columnModel);
 		editorGrid.setBorders(true);
-		editorGrid.setSelectionModel(new GridSelectionModel<PatientDetailDTO>());
+		editorGrid.setSelectionModel(new GridSelectionModel<SchoolPatientDetailDTO>());
 		editorGrid.setLoadMask(true);
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
@@ -302,7 +298,7 @@ public class CampScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGrid.unmask();
-				PatientDetailDTO patientDetail = new PatientDetailDTO();
+				SchoolPatientDetailDTO patientDetail = new SchoolPatientDetailDTO();
 				patientDetail.setDeleted("N");
 				editorGrid.stopEditing();
 				editorGridStore.insert(patientDetail, 0);
@@ -320,7 +316,7 @@ public class CampScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGrid.stopEditing();
-				PatientDetailDTO selectedItem = editorGrid.getSelectionModel().getSelectedItem();
+				SchoolPatientDetailDTO selectedItem = editorGrid.getSelectionModel().getSelectedItem();
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
@@ -362,7 +358,7 @@ public class CampScreeningDetail extends LayoutContainer
 				{
 					headers.add(columnConfig.getHeader());
 				}
-				List<PatientDetailDTO> models = editorGridStore.getModels();
+				List<SchoolPatientDetailDTO> models = editorGridStore.getModels();
 				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
@@ -404,27 +400,21 @@ public class CampScreeningDetail extends LayoutContainer
 					headers.add(columnConfig.getHeader());
 				}
 
-				StoreFilter<PatientDetailDTO> filterReferrals = new StoreFilter<PatientDetailDTO>()
+				StoreFilter<SchoolPatientDetailDTO> filterReferrals = new StoreFilter<SchoolPatientDetailDTO>()
 				{
 					@Override
-					public boolean select(Store<PatientDetailDTO> store, PatientDetailDTO parent, PatientDetailDTO item, String property)
+					public boolean select(Store<SchoolPatientDetailDTO> store, SchoolPatientDetailDTO parent, SchoolPatientDetailDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
 
-						// if (item.getReferral1().isEmpty() ||
-						// item.getReferral2().isEmpty())
-						// return false;
-
-						// if (item.getReferral3() == null)
-						// return false;
 						return false;
 					}
 				};
 				editorGridStore.addFilter(filterReferrals);
 				editorGridStore.applyFilters("referral1");
 
-				List<PatientDetailDTO> models = editorGridStore.getModels();
+				List<SchoolPatientDetailDTO> models = editorGridStore.getModels();
 				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
@@ -581,7 +571,7 @@ public class CampScreeningDetail extends LayoutContainer
 
 		editorGrid.stopEditing();
 		editorGridStore.commitChanges();
-		List<PatientDetailDTO> models = editorGridStore.getModels();
+		List<SchoolPatientDetailDTO> models = editorGridStore.getModels();
 		modelData.setPatientDetails(models);
 		return modelData;
 	}
@@ -934,7 +924,7 @@ public class CampScreeningDetail extends LayoutContainer
 					}
 
 					editorGridStore.removeAll();
-					List<PatientDetailDTO> patientDetails = scrDto.getPatientDetails();
+					List<SchoolPatientDetailDTO> patientDetails = scrDto.getPatientDetails();
 					editorGridStore.add(patientDetails);
 				}
 				IndexPage.unmaskCenterComponent();

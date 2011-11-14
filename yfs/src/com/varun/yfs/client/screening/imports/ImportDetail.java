@@ -28,7 +28,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.IndexPage;
-import com.varun.yfs.dto.PatientDetailDTO;
+import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ProgressDTO;
 
 public class ImportDetail extends LayoutContainer
@@ -36,12 +36,12 @@ public class ImportDetail extends LayoutContainer
 	private static final PatientDataImportServiceAsync patientDataImportService = PatientDataImportService.Util.getInstance();
 	private String uploadPath;
 	private FlowPanel panelImages = new FlowPanel();
-	private EditorGrid<PatientDetailDTO> patientDetailGrid;
+	private EditorGrid<SchoolPatientDetailDTO> patientDetailGrid;
 	private Dialog dialogImport;
 	final MultiUploader defaultUploader = new MultiUploader();
 	final boolean appendMode;
 
-	public ImportDetail(EditorGrid<PatientDetailDTO> editorGrid, Dialog dialogImport, boolean appendMode)
+	public ImportDetail(EditorGrid<SchoolPatientDetailDTO> editorGrid, Dialog dialogImport, boolean appendMode)
 	{
 		this.patientDetailGrid = editorGrid;
 		this.dialogImport = dialogImport;
@@ -193,7 +193,7 @@ public class ImportDetail extends LayoutContainer
 
 				private void updateProcessedRecords()
 				{
-					patientDataImportService.getProcessedRecords(new AsyncCallback<List<PatientDetailDTO>>()
+					patientDataImportService.getProcessedRecords(new AsyncCallback<List<SchoolPatientDetailDTO>>()
 					{
 						@Override
 						public void onFailure(Throwable caught)
@@ -204,13 +204,13 @@ public class ImportDetail extends LayoutContainer
 						}
 
 						@Override
-						public void onSuccess(List<PatientDetailDTO> result)
+						public void onSuccess(List<SchoolPatientDetailDTO> result)
 						{
-							ListStore<PatientDetailDTO> store = patientDetailGrid.getStore();
+							ListStore<SchoolPatientDetailDTO> store = patientDetailGrid.getStore();
 							if (appendMode)
 							{
-								List<PatientDetailDTO> lstCurrentModels = store.getModels();
-								for (PatientDetailDTO patientDetailDTO : result)
+								List<SchoolPatientDetailDTO> lstCurrentModels = store.getModels();
+								for (SchoolPatientDetailDTO patientDetailDTO : result)
 								{
 									if (lstCurrentModels.contains(patientDetailDTO))
 									{

@@ -100,7 +100,7 @@ public class IndexPage extends LayoutContainer
 
 	public static void reinitScreeningPanel()
 	{
-		reloadScreeningPanel(true);
+		refreshIndexPanel(true);
 	}
 
 	public static void maskCenterComponent(String message)
@@ -262,12 +262,16 @@ public class IndexPage extends LayoutContainer
 		mainContentPanel.add(layoutContainerWest, bldWest);
 
 		buildSchoolScreeningPanel();
+
 		buildCampScreeningPanel();
+
 		buildClinicScreeningPanel();
 
 		buildReportsPanel();
 
 		buildAdministrationPanel();
+
+		refreshIndexPanel(false);
 	}
 
 	private void buildAdministrationPanel()
@@ -368,7 +372,10 @@ public class IndexPage extends LayoutContainer
 
 					tree.getStore().add(rootNode, mapGrpName2Model.get(groupName), false);
 				}
-				tree.setExpanded(result.get(0), true);
+				for (ModelData modelData : result)
+				{
+					tree.setExpanded(modelData, true);
+				}
 			}
 		});
 		cpAdministration.add(tree);
@@ -444,9 +451,8 @@ public class IndexPage extends LayoutContainer
 
 	private void buildClinicScreeningPanel()
 	{
-
 		cpClinicScreening = new ContentPanel();
-		cpClinicScreening.setHeading("Clinic Screening & Referrals");
+		cpClinicScreening.setHeading("Clinic Screening");
 		cpClinicScreening.setLayout(new FitLayout());
 		layoutContainerWest.add(cpClinicScreening);
 
@@ -506,8 +512,6 @@ public class IndexPage extends LayoutContainer
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(filter);
 
-		reloadScreeningPanel(false);
-
 		treeClinicScreeningPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
 		{
 			@Override
@@ -547,7 +551,7 @@ public class IndexPage extends LayoutContainer
 	private void buildCampScreeningPanel()
 	{
 		cpCampScreening = new ContentPanel();
-		cpCampScreening.setHeading("Medical Camp Screening & Referrals");
+		cpCampScreening.setHeading("Medical Camp Screening");
 		cpCampScreening.setLayout(new FitLayout());
 		layoutContainerWest.add(cpCampScreening);
 
@@ -607,8 +611,6 @@ public class IndexPage extends LayoutContainer
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(filter);
 
-		reloadScreeningPanel(false);
-
 		treeCampScreeningPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
 		{
 			@Override
@@ -648,7 +650,7 @@ public class IndexPage extends LayoutContainer
 	private void buildSchoolScreeningPanel()
 	{
 		cpSchoolScreening = new ContentPanel();
-		cpSchoolScreening.setHeading("School Screening & Referrals");
+		cpSchoolScreening.setHeading("School Screening");
 		cpSchoolScreening.setLayout(new FitLayout());
 		layoutContainerWest.add(cpSchoolScreening);
 
@@ -662,7 +664,6 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				layoutContainerCenter.mask("Loading...");
 				layoutContainerCenter.removeAll();
 				layoutContainerCenter.setLayoutData(new FitData(15));
 
@@ -708,8 +709,6 @@ public class IndexPage extends LayoutContainer
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(filter);
 
-		reloadScreeningPanel(false);
-
 		treeSchoolScreeningPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
 		{
 			@Override
@@ -746,7 +745,7 @@ public class IndexPage extends LayoutContainer
 		cpSchoolScreening.add(treeSchoolScreeningPanel);
 	}
 
-	private static void reloadScreeningPanel(boolean forceRemoveAll)
+	private static void refreshIndexPanel(boolean forceRemoveAll)
 	{
 		if (forceRemoveAll)
 		{

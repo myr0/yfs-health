@@ -25,7 +25,7 @@ public class CampScreeningDetailServiceImpl extends RemoteServiceServlet impleme
 		ModelData modelData = new BaseModelData();
 		if (scrId != null)
 		{
-			SchoolScreeningDetailDTO scrDto = DataUtil.getScreeningDetail(Long.valueOf(scrId));
+			CampScreeningDetailDTO scrDto = DataUtil.getCampScreeningDetail(Long.valueOf(scrId));
 			modelData.set("data", scrDto);
 		}
 
@@ -55,7 +55,7 @@ public class CampScreeningDetailServiceImpl extends RemoteServiceServlet impleme
 			if (scrId != null)
 				modelData.set("id", scrId);
 
-			DataUtil.saveScreeningDetail(modelData);
+			DataUtil.saveCampScreeningDetail(modelData);
 		} catch (HibernateException ex)
 		{
 			logger.error("Encountered error trying to save the model." + ex.getCause());

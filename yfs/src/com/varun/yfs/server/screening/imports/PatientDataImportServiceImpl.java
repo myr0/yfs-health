@@ -13,7 +13,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.screening.imports.PatientDataImportService;
-import com.varun.yfs.dto.PatientDetailDTO;
+import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ProgressDTO;
 
 public class PatientDataImportServiceImpl extends RemoteServiceServlet implements PatientDataImportService
@@ -86,7 +86,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	}
 
 	@Override
-	public List<PatientDetailDTO> getProcessedRecords()
+	public List<SchoolPatientDetailDTO> getProcessedRecords()
 	{
 		return patientDetailImporter.getProcessedRecords();
 	}

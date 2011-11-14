@@ -3,7 +3,7 @@ package com.varun.yfs.dto;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.varun.yfs.client.util.Util;
 
-public class PatientDetailDTO extends BaseModelData
+public class CampPatientDetailDTO extends BaseModelData
 {
 	private static final long serialVersionUID = 8343184437177073237L;
 
@@ -13,7 +13,7 @@ public class PatientDetailDTO extends BaseModelData
 	private String name;
 	private String age;
 	private String sex;
-	private String standard;
+	private String occupation;
 	private String height;
 	private String weight;
 	private String address;
@@ -29,11 +29,13 @@ public class PatientDetailDTO extends BaseModelData
 	private String caseClosed;
 	private String surgeryCase;
 
+	private String bloodPressure;
+
 	private YesNoDTO yesNo;
 	private GenderDTO gender;
 	private ReferralTypeDTO referral;
 
-	public PatientDetailDTO()
+	public CampPatientDetailDTO()
 	{
 		setDeleted("N");
 	}
@@ -93,15 +95,15 @@ public class PatientDetailDTO extends BaseModelData
 		this.sex = sex;
 	}
 
-	public String getStandard()
+	public String getOccupation()
 	{
-		return standard;
+		return occupation;
 	}
 
-	public void setStandard(String standard)
+	public void setOccupation(String occupation)
 	{
-		set("standard", standard);
-		this.standard = standard;
+		set("occupation", occupation);
+		this.occupation = occupation;
 	}
 
 	public String getHeight()
@@ -266,6 +268,17 @@ public class PatientDetailDTO extends BaseModelData
 		return referral;
 	}
 
+	public void setBloodPressure(String bloodPressure)
+	{
+		set("bloodPressure", bloodPressure);
+		this.bloodPressure = bloodPressure;
+	}
+
+	public String getBloodPressure()
+	{
+		return bloodPressure;
+	}
+
 	@Override
 	public int hashCode()
 	{
@@ -284,7 +297,7 @@ public class PatientDetailDTO extends BaseModelData
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		PatientDetailDTO other = (PatientDetailDTO) obj;
+		CampPatientDetailDTO other = (CampPatientDetailDTO) obj;
 		if (id != other.id)
 			return false;
 		return true;
@@ -295,7 +308,7 @@ public class PatientDetailDTO extends BaseModelData
 	{
 		// don't touch the order - just append to the last -- fragile code -
 		// export will get screwed
-		return id + "," + name + "," + sex + "," + standard + "," + age + "," + address + "," + contactNo + "," + height + "," + weight + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + "," + Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + "," + Util.safeCsvString(referral3) + "," + Util.safeCsvString(emergency) + "," + Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed);
+		return id + "," + name + "," + sex + "," + occupation + "," + age + "," + address + "," + contactNo + "," + height + "," + weight + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + "," + Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + "," + Util.safeCsvString(referral3) + "," + Util.safeCsvString(emergency) + "," + Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed);
 	}
 
 }

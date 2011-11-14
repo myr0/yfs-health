@@ -91,15 +91,31 @@ public class HibernateUtil
 		Transaction transaction = session.beginTransaction();
 
 		insertEntities(session);
-		insertChapterNames(session);
+		log.info("Initial load of Entities completed");
+
 		insertCountry(session);
-		insertDoctor(session);
-		insertProcessType(session);
-		insertTypeOfLocation(session);
-		insertVolunteer(session);
+		log.info("Initial load of Geographical Data completed");
+
+		insertChapterNames(session);
+		log.info("Initial load of Chapter Names completed");
+
 		insertUsers(session);
+		log.info("Initial load of Users completed");
+
+		insertDoctor(session);
+		log.info("Initial load of Doctors completed");
+
+		insertProcessType(session);
+		log.info("Initial load of Process Types completed");
+
+		insertTypeOfLocation(session);
+		log.info("Initial load of TypeOfLocation completed");
+
+		insertVolunteer(session);
+		log.info("Initial load of Volunteer completed");
 
 		insertReferralTypes(session);
+		log.info("Initial load of ReferralTypes completed");
 
 		transaction.commit();
 		session.close();
@@ -116,25 +132,29 @@ public class HibernateUtil
 		session.save(new ReferralType("ENT"));
 		session.save(new ReferralType("Dental"));
 		session.save(new ReferralType("Orthopaedic"));
+		session.flush();
 	}
 
 	private static void insertUsers(Session session)
 	{
 		Criteria criteria = session.createCriteria(Village.class);
 		criteria.add(Restrictions.eq("deleted", "N"));
-//		List<Project> lstEntities = criteria.list();
+		// List<Project> lstEntities = criteria.list();
 
 		User users = new User("Rama", "pass");
-//		users.setProjects(lstEntities);
+		// users.setProjects(lstEntities);
 		session.save(users);
 
 		session.save(new User("Krishna", "pass"));
+
+		session.flush();
 	}
 
 	private static void insertVolunteer(Session session)
 	{
 		session.save(new Volunteer("Rama"));
 		session.save(new Volunteer("Krishna"));
+		session.flush();
 	}
 
 	private static void insertTypeOfLocation(Session session)
@@ -147,6 +167,7 @@ public class HibernateUtil
 		session.save(new TypeOfLocation("Centre for Adults"));
 		session.save(new TypeOfLocation("Clinic"));
 		session.save(new TypeOfLocation("Other"));
+		session.flush();
 	}
 
 	private static void insertProcessType(Session session)
@@ -157,12 +178,12 @@ public class HibernateUtil
 		session.save(new ProcessType("Medical screening (general)"));
 		session.save(new ProcessType("Medical screening (eye)"));
 		session.save(new ProcessType("Specialist screening"));
+		session.flush();
 	}
 
 	private static void insertDoctor(Session session)
 	{
 		session.save(new Doctor("Rama"));
-		session.flush();
 		session.save(new Doctor("Krishna"));
 		session.flush();
 	}
@@ -231,17 +252,19 @@ public class HibernateUtil
 		session.save(new ChapterName("Mysore"));
 		session.save(new ChapterName("Shivamogga"));
 		session.save(new ChapterName("Coimbatore"));
+		session.flush();
 	}
 
 	private static void insertEntities(Session session)
 	{
-		session.save(new Entities("Doctor", "Screening"));
-		session.save(new Entities("Volunteer", "Screening"));
-		session.save(new Entities("Chapter Name", "Screening"));
-		session.save(new Entities("Project", "Screening"));
-		session.save(new Entities("Process Type", "Screening"));
-		session.save(new Entities("Type Of Location", "Screening"));
-		session.save(new Entities("Referral Type", "Screening"));
+		session.save(new Entities("Doctor", "General Screening"));
+		session.save(new Entities("Volunteer", "General Screening"));
+		session.save(new Entities("Chapter Name", "General Screening"));
+
+		session.save(new Entities("Project", "School Screening"));
+		session.save(new Entities("Process Type", "School Screening"));
+		session.save(new Entities("Type Of Location", "School Screening"));
+		session.save(new Entities("Referral Type", "School Screening"));
 
 		session.save(new Entities("City", "Geographical"));
 		session.save(new Entities("Country", "Geographical"));
@@ -250,6 +273,10 @@ public class HibernateUtil
 		session.save(new Entities("Town", "Geographical"));
 		session.save(new Entities("Village", "Geographical"));
 
+		session.save(new Entities("Clinic", "Clinic Screening"));
+
 		session.save(new Entities("Users", "Roles"));
+
+		session.flush();
 	}
 }

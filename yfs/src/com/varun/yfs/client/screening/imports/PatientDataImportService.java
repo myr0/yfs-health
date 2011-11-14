@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.varun.yfs.dto.PatientDetailDTO;
+import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ProgressDTO;
 
 @RemoteServiceRelativePath("PatientDataImportService")
@@ -27,7 +27,7 @@ public interface PatientDataImportService extends RemoteService {
 	
 	public ProgressDTO getProgress();
 	
-	public List<PatientDetailDTO> getProcessedRecords();
+	public List<SchoolPatientDetailDTO> getProcessedRecords();
 	
 	public List<String> getErrorRecords();
 	

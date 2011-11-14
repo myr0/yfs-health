@@ -30,37 +30,37 @@ public class ChapterName implements Serializable
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "countryId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_Country", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "countryId"))
+	@JoinTable(name = "Chapter_Country", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "countryId", nullable = true, updatable = true, insertable = true))
 	private Country country;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "stateId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_State", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "stateId"))
+	@JoinTable(name = "Chapter_State", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "stateId", nullable = true, updatable = true, insertable = true))
 	private State state;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "villageId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_Village", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "villageId"))
+	@JoinTable(name = "Chapter_Village", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "villageId", nullable = true, updatable = true, insertable = true))
 	private Village village;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "townId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_Town", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "townId"))
+	@JoinTable(name = "Chapter_Town", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "townId", nullable = true, updatable = true, insertable = true))
 	private Town town;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "cityId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_City", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "cityId"))
+	@JoinTable(name = "Chapter_City", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "cityId", nullable = true, updatable = true, insertable = true))
 	private City city;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "localityId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_Locality", joinColumns = @JoinColumn(name = "chapterNameId"), inverseJoinColumns = @JoinColumn(name = "localityId"))
+	@JoinTable(name = "Chapter_Locality", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "localityId", nullable = true, updatable = true, insertable = true))
 	private Locality locality;
 
 	public ChapterName()

@@ -28,8 +28,10 @@ import com.varun.yfs.dto.ClinicDTO;
 import com.varun.yfs.dto.ClinicScreeningDetailDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.server.common.HibernateUtil;
-import com.varun.yfs.server.models.PatientDetail;
-import com.varun.yfs.server.models.ScreeningDetail;
+import com.varun.yfs.server.models.CampPatientDetail;
+import com.varun.yfs.server.models.CampScreeningDetail;
+import com.varun.yfs.server.models.SchoolPatientDetail;
+import com.varun.yfs.server.models.SchoolScreeningDetail;
 import com.varun.yfs.server.models.User;
 
 public class DataUtil
@@ -162,14 +164,14 @@ public class DataUtil
 		session.close();
 	}
 
-	public static void saveScreeningDetail(SchoolScreeningDetailDTO screeningDetailDto)
+	public static void saveCampScreeningDetail(CampScreeningDetailDTO screeningDetailDto)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Mapper dozerMapper = HibernateUtil.getDozerMapper();
 		Transaction trans = session.beginTransaction();
 		try
 		{
-			ScreeningDetail scrDetHibObj = dozerMapper.map(screeningDetailDto, ScreeningDetail.class);
+			CampScreeningDetail scrDetHibObj = dozerMapper.map(screeningDetailDto, CampScreeningDetail.class);
 			String id = screeningDetailDto.get("id");
 			extractPatientDetailData(session, screeningDetailDto, scrDetHibObj);
 			if (id == null)
@@ -192,11 +194,70 @@ public class DataUtil
 			session.close();
 		}
 	}
-	
+
+	public static void saveScreeningDetail(SchoolScreeningDetailDTO screeningDetailDto)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Mapper dozerMapper = HibernateUtil.getDozerMapper();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			SchoolScreeningDetail scrDetHibObj = dozerMapper.map(screeningDetailDto, SchoolScreeningDetail.class);
+			String id = screeningDetailDto.get("id");
+			extractPatientDetailData(session, screeningDetailDto, scrDetHibObj);
+			if (id == null)
+			{
+				session.save(scrDetHibObj);
+			} else
+			{
+				scrDetHibObj.setId(Long.parseLong(id));
+				session.saveOrUpdate(scrDetHibObj);
+			}
+			trans.commit();
+			session.flush();
+		} catch (HibernateException ex)
+		{
+			trans.rollback();
+			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			throw ex;
+		} finally
+		{
+			session.close();
+		}
+	}
+
+	public static CampScreeningDetailDTO getCampScreeningDetail(long scrId)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		CampScreeningDetailDTO dtoObject = null;
+
+		Criteria filter = session.createCriteria(CampScreeningDetail.class);
+		filter.add(Restrictions.eq("id", scrId)).add(Restrictions.eq("deleted", "N"));
+		filter.createCriteria("lstPatientDetails").add(Restrictions.eq("deleted", "N"));
+		try
+		{
+			Mapper dozerMapper = HibernateUtil.getDozerMapper();
+			CampScreeningDetail screeningDetail = (CampScreeningDetail) filter.uniqueResult();
+			screeningDetail.getDoctors();
+			screeningDetail.getVolunteers();
+			screeningDetail.getPatientDetails();
+			dtoObject = (CampScreeningDetailDTO) dozerMapper.map(screeningDetail, CampScreeningDetailDTO.class);
+
+		} catch (HibernateException ex)
+		{
+			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			throw ex;
+		} finally
+		{
+			session.close();
+		}
+		return dtoObject;
+	}
+
 	public static List<CampScreeningDetailDTO> getCampScreeningDetail(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from ScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
+		Query filter = session.createQuery("select sd from CampScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
 		List<CampScreeningDetailDTO> lstScreening = new ArrayList<CampScreeningDetailDTO>();
 		try
 		{
@@ -224,7 +285,7 @@ public class DataUtil
 	public static List<SchoolScreeningDetailDTO> getSchoolScreeningDetail(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from ScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
+		Query filter = session.createQuery("select sd from SchoolScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
 		List<SchoolScreeningDetailDTO> lstScreening = new ArrayList<SchoolScreeningDetailDTO>();
 		try
 		{
@@ -254,13 +315,13 @@ public class DataUtil
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		SchoolScreeningDetailDTO dtoObject = null;
 
-		Criteria filter = session.createCriteria(ScreeningDetail.class);
+		Criteria filter = session.createCriteria(SchoolScreeningDetail.class);
 		filter.add(Restrictions.eq("id", scrId)).add(Restrictions.eq("deleted", "N"));
 		filter.createCriteria("lstPatientDetails").add(Restrictions.eq("deleted", "N"));
 		try
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
-			ScreeningDetail screeningDetail = (ScreeningDetail) filter.uniqueResult();
+			SchoolScreeningDetail screeningDetail = (SchoolScreeningDetail) filter.uniqueResult();
 			screeningDetail.getDoctors();
 			screeningDetail.getVolunteers();
 			screeningDetail.getPatientDetails();
@@ -310,7 +371,7 @@ public class DataUtil
 			session.close();
 		}
 	}
-	
+
 	public static List<ClinicDTO> getClinics(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -337,13 +398,72 @@ public class DataUtil
 		return lstClinics;
 	}
 
-
-	private static void extractPatientDetailData(Session session, SchoolScreeningDetailDTO screeningDetailDto, ScreeningDetail scrDetHibObj)
+	private static void extractPatientDetailData(Session session, CampScreeningDetailDTO screeningDetailDto, CampScreeningDetail scrDetHibObj)
 	{
 		int index = 0;
 		for (ModelData modelData : screeningDetailDto.getPatientDetails())
 		{
-			PatientDetail patientDetail = scrDetHibObj.getPatientDetails().get(index++);
+			CampPatientDetail patientDetail = scrDetHibObj.getPatientDetails().get(index++);
+
+			patientDetail.setName(Util.safeToString(modelData.get("name")));
+			patientDetail.setAge(Util.safeToString(modelData.get("age")));
+
+			Object object = modelData.get("sex");
+			if (object != null)
+				patientDetail.setSex(object.toString());
+
+			patientDetail.setOccupation(Util.safeToString(modelData.get("occupation")));
+			patientDetail.setHeight(Util.safeToString(modelData.get("height")));
+			patientDetail.setWeight(Util.safeToString(modelData.get("weight")));
+			patientDetail.setAddress(Util.safeToString(modelData.get("address")));
+			patientDetail.setContactNo(Util.safeToString(modelData.get("contactNo")));
+			patientDetail.setDeleted(modelData.get("deleted").toString());
+			patientDetail.setBloodPressure(Util.safeToString(modelData.get("bloodPressure")));
+
+			patientDetail.setFindings(Util.safeToString(modelData.get("findings")));
+			patientDetail.setTreatment(Util.safeToString(modelData.get("treatment")));
+
+			object = modelData.get("referral1");
+			if (object != null)
+				patientDetail.setReferral1(object.toString());
+
+			object = modelData.get("referral2");
+			if (object != null)
+				patientDetail.setReferral2(object.toString());
+
+			object = modelData.get("referral3");
+			if (object != null)
+				patientDetail.setReferral3(object.toString());
+
+			object = modelData.get("emergency");
+			if (object != null)
+				patientDetail.setEmergency(object.toString());
+
+			object = modelData.get("caseClosed");
+			if (object != null)
+				patientDetail.setCaseClosed(object.toString());
+
+			object = modelData.get("surgeryCase");
+			if (object != null)
+				patientDetail.setSurgeryCase(object.toString());
+
+			if (patientDetail.getId() > 0)
+			{
+				session.saveOrUpdate(patientDetail);
+			} else
+			{
+				session.save(patientDetail);
+			}
+			session.flush();
+		}
+	}
+
+	private static void extractPatientDetailData(Session session, SchoolScreeningDetailDTO screeningDetailDto, SchoolScreeningDetail scrDetHibObj)
+	{
+		int index = 0;
+		for (ModelData modelData : screeningDetailDto.getPatientDetails())
+		{
+			SchoolPatientDetail patientDetail = scrDetHibObj.getPatientDetails().get(index++);
 
 			patientDetail.setName(Util.safeToString(modelData.get("name")));
 			patientDetail.setAge(Util.safeToString(modelData.get("age")));
@@ -397,13 +517,14 @@ public class DataUtil
 		}
 	}
 
-	public static void saveScreeningDetail(CampScreeningDetailDTO modelData)
-	{
-		
-	}
-
 	public static void saveScreeningDetail(ClinicScreeningDetailDTO modelData)
 	{
-		
+
 	}
+
+	// public static void saveScreeningDetail(ClinicScreeningDetailDTO
+	// modelData)
+	// {
+	//
+	// }
 }

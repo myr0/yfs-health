@@ -9,13 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "patientDetail")
-public class PatientDetail implements Serializable
+@Table(name = "clinicPatientDetail")
+public class ClinicPatientDetail implements Serializable
 {
 	private static final long serialVersionUID = 8343184437177073237L;
 	@Id
 	@GeneratedValue
-	@Column(name = "patientDetailId")
+	@Column(name = "clinicPatientDetailId")
 	private long id;
 
 	@Column(nullable = false)
@@ -69,7 +69,7 @@ public class PatientDetail implements Serializable
 	@Column(nullable = true)
 	private String surgeryCase;
 
-	public PatientDetail()
+	public ClinicPatientDetail()
 	{
 		setDeleted("N");
 	}

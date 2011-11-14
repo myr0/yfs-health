@@ -17,14 +17,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "screeningDetail")
-public class ScreeningDetail implements Serializable
+@Table(name = "campScreeningDetail")
+public class CampScreeningDetail implements Serializable
 {
 	private static final long serialVersionUID = 7504451639139702860L;
 
 	@Id
 	@GeneratedValue
-	@Column(name = "screeningDetailId")
+	@Column(name = "campScreeningDetailId")
 	private long id;
 
 	@Column(nullable = false)
@@ -82,15 +82,15 @@ public class ScreeningDetail implements Serializable
 	private List<Doctor> lstDoctors;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name="ScrDet_PatDet")
-	private List<PatientDetail> lstPatientDetails;
+	@JoinTable(name="CamScrDet_PatDet")
+	private List<CampPatientDetail> lstPatientDetails;
 
-	public ScreeningDetail()
+	public CampScreeningDetail()
 	{
 		setDeleted("N");
 	}
 
-	public ScreeningDetail(String name)
+	public CampScreeningDetail(String name)
 	{
 		setDeleted("N");
 	}
@@ -255,12 +255,12 @@ public class ScreeningDetail implements Serializable
 		this.contactInformation = contactInformation;
 	}
 
-	public void setPatientDetails(List<PatientDetail> setPatientDetails)
+	public void setPatientDetails(List<CampPatientDetail> setPatientDetails)
 	{
 		this.lstPatientDetails = setPatientDetails;
 	}
 
-	public List<PatientDetail> getPatientDetails()
+	public List<CampPatientDetail> getPatientDetails()
 	{
 		return lstPatientDetails;
 	}
