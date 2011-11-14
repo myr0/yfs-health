@@ -643,7 +643,7 @@ public class CampScreeningDetail extends LayoutContainer
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
 		textField.setMinLength(2);
-		textField.setMaxLength(4);
+		textField.setMaxLength(50);
 		occupationColumn.setEditor(new CellEditor(textField));
 		configs.add(occupationColumn);
 
@@ -679,11 +679,11 @@ public class CampScreeningDetail extends LayoutContainer
 		weightColumn.setEditor(new CellEditor(textField));
 		configs.add(weightColumn);
 		
-		ColumnConfig bpColumn = new ColumnConfig("bp", "Blood Pressure", 100);
+		ColumnConfig bpColumn = new ColumnConfig("bloodPressure", "Blood Pressure", 100);
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
-		textField.setMinLength(1);
-		textField.setMaxLength(3);
+		textField.setMinLength(7);
+		textField.setMaxLength(7);
 		bpColumn.setEditor(new CellEditor(textField));
 		configs.add(bpColumn);
 
