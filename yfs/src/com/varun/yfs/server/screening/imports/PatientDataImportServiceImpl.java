@@ -10,10 +10,11 @@ import java.util.concurrent.ArrayBlockingQueue;
 import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.screening.imports.ImportType;
 import com.varun.yfs.client.screening.imports.PatientDataImportService;
-import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ProgressDTO;
 
 public class PatientDataImportServiceImpl extends RemoteServiceServlet implements PatientDataImportService
@@ -24,7 +25,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	private final ArrayBlockingQueue<List<String>> excelRows = new ArrayBlockingQueue<List<String>>(1000);
 	private final List<String> errorRows = Collections.synchronizedList(new ArrayList<String>(1000));
 
-	private final ExcelReader converter = new ExcelReader(excelRows, errorRows);
+	private final ExcelReader excelConverter = new ExcelReader(excelRows, errorRows);
 	private Thread excelConverterThread;
 
 	private final PatientDetailImporter patientDetailImporter = new PatientDetailImporter(excelRows, errorRows);
@@ -34,16 +35,15 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	private RpcStatusEnum status = RpcStatusEnum.COMPLETED;
 
 	@Override
-	public String startProcessing(final String path, boolean processIds)
+	public String startProcessing(ImportType importType, final String path, boolean processIds)
 	{
-		converter.reinit();
-		patientDetailImporter.reinit();
-		excelRows.clear();
-		errorRows.clear();
+		patientDetailImporter.setImportType(importType);
+		reinit();
+
 		String statusMessage = RpcStatusEnum.SUCCESS.name();
 		try
 		{
-			converter.validateFile(path);
+			excelConverter.validateFile(path);
 		} catch (FileNotFoundException e)
 		{
 			statusMessage = "The uploaded file was not found. Please retry again.";
@@ -81,12 +81,12 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 			progressDto.setStatus(RpcStatusEnum.RUNNING);
 		else
 			progressDto.setStatus(status);
-		progressDto.setProgress(patientDetailImporter.getProcessedRecordsCount() + "/" + converter.getMaxRecords());
+		progressDto.setProgress(patientDetailImporter.getProcessedRecordsCount() + "/" + excelConverter.getMaxRecords());
 		return progressDto;
 	}
 
 	@Override
-	public List<SchoolPatientDetailDTO> getProcessedRecords()
+	public List<? extends BaseModelData> getProcessedRecords()
 	{
 		return patientDetailImporter.getProcessedRecords();
 	}
@@ -130,7 +130,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 			{
 				try
 				{
-					converter.readContentsAsCSV(path);
+					excelConverter.readContentsAsCSV(path);
 				} catch (Exception ex)
 				{
 					String errorMessage = "Error encountered trying to read the file contents." + ex.getMessage();
@@ -142,6 +142,14 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 		};
 		excelConverterThread = new Thread(runnable);
 		excelConverterThread.start();
+	}
+
+	private void reinit()
+	{
+		excelConverter.reinit();
+		patientDetailImporter.reinit();
+		excelRows.clear();
+		errorRows.clear();
 	}
 
 }

@@ -8,6 +8,7 @@ import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
 
 import java.util.List;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -28,7 +29,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.IndexPage;
-import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ProgressDTO;
 
 public class ImportDetail extends LayoutContainer
@@ -36,16 +36,19 @@ public class ImportDetail extends LayoutContainer
 	private static final PatientDataImportServiceAsync patientDataImportService = PatientDataImportService.Util.getInstance();
 	private String uploadPath;
 	private FlowPanel panelImages = new FlowPanel();
-	private EditorGrid<SchoolPatientDetailDTO> patientDetailGrid;
+	private EditorGrid patientDetailGrid;
 	private Dialog dialogImport;
 	final MultiUploader defaultUploader = new MultiUploader();
 	final boolean appendMode;
 
-	public ImportDetail(EditorGrid<SchoolPatientDetailDTO> editorGrid, Dialog dialogImport, boolean appendMode)
+	final ImportType importType;
+
+	public ImportDetail(ImportType type, EditorGrid editorGrid, Dialog dialogImport, boolean appendMode)
 	{
 		this.patientDetailGrid = editorGrid;
 		this.dialogImport = dialogImport;
 		this.appendMode = appendMode;
+		this.importType = type;
 	}
 
 	protected final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
@@ -119,7 +122,7 @@ public class ImportDetail extends LayoutContainer
 
 		private void startProcessing()
 		{
-			patientDataImportService.startProcessing(uploadPath, appendMode, new AsyncCallback<String>()
+			patientDataImportService.startProcessing(importType, uploadPath, appendMode, new AsyncCallback<String>()
 			{
 				@Override
 				public void onSuccess(String result)
@@ -193,7 +196,7 @@ public class ImportDetail extends LayoutContainer
 
 				private void updateProcessedRecords()
 				{
-					patientDataImportService.getProcessedRecords(new AsyncCallback<List<SchoolPatientDetailDTO>>()
+					patientDataImportService.getProcessedRecords(new AsyncCallback<List<? extends BaseModelData>>()
 					{
 						@Override
 						public void onFailure(Throwable caught)
@@ -203,18 +206,19 @@ public class ImportDetail extends LayoutContainer
 							return;
 						}
 
+						@SuppressWarnings({ "rawtypes", "unchecked" })
 						@Override
-						public void onSuccess(List<SchoolPatientDetailDTO> result)
+						public void onSuccess(List<? extends BaseModelData> result)
 						{
-							ListStore<SchoolPatientDetailDTO> store = patientDetailGrid.getStore();
+							ListStore store = patientDetailGrid.getStore();
 							if (appendMode)
 							{
-								List<SchoolPatientDetailDTO> lstCurrentModels = store.getModels();
-								for (SchoolPatientDetailDTO patientDetailDTO : result)
+								List lstCurrentModels = store.getModels();
+								for (BaseModelData modelData : result)
 								{
-									if (lstCurrentModels.contains(patientDetailDTO))
+									if (lstCurrentModels.contains(modelData))
 									{
-										lstCurrentModels.set(lstCurrentModels.indexOf(patientDetailDTO), patientDetailDTO);
+										lstCurrentModels.set(lstCurrentModels.indexOf(modelData), modelData);
 									}
 
 								}

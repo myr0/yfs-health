@@ -56,11 +56,12 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.index.IndexPage;
+import com.varun.yfs.client.screening.export.ExportService;
+import com.varun.yfs.client.screening.export.ExportServiceAsync;
 import com.varun.yfs.client.screening.imports.ImportDetail;
+import com.varun.yfs.client.screening.imports.ImportType;
 import com.varun.yfs.client.screening.school.rpc.SchoolScreeningDetailService;
 import com.varun.yfs.client.screening.school.rpc.SchoolScreeningDetailServiceAsync;
-import com.varun.yfs.client.util.ExportService;
-import com.varun.yfs.client.util.ExportServiceAsync;
 import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.CityDTO;
 import com.varun.yfs.dto.CountryDTO;
@@ -181,7 +182,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		town.setDisplayField("townName");
 		town.setTriggerAction(TriggerAction.ALL);
 		town.setStore(new ListStore<ModelData>());
-		town.setAllowBlank(false);		
+		town.setAllowBlank(false);
 
 		village.setFieldLabel("Village");
 		cpPart1.add(village, new FormData("90%"));
@@ -466,7 +467,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(editorGrid, dialogImport, processIds), new FitData(5));
+				dialogImport.add(new ImportDetail(ImportType.SCHOOL, editorGrid, dialogImport, processIds), new FitData(5));
 				dialogImport.show();
 			}
 		});

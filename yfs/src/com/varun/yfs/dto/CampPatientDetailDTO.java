@@ -18,6 +18,7 @@ public class CampPatientDetailDTO extends BaseModelData
 	private String weight;
 	private String address;
 	private String contactNo;
+	private String bloodPressure;
 
 	private String findings;
 	private String treatment;
@@ -28,8 +29,6 @@ public class CampPatientDetailDTO extends BaseModelData
 	private String emergency;
 	private String caseClosed;
 	private String surgeryCase;
-
-	private String bloodPressure;
 
 	private YesNoDTO yesNo;
 	private GenderDTO gender;
@@ -308,7 +307,7 @@ public class CampPatientDetailDTO extends BaseModelData
 	{
 		// don't touch the order - just append to the last -- fragile code -
 		// export will get screwed
-		return id + "," + name + "," + sex + "," + occupation + "," + age + "," + address + "," + contactNo + "," + height + "," + weight + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + "," + Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + "," + Util.safeCsvString(referral3) + "," + Util.safeCsvString(emergency) + "," + Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed);
+		return id + "," + name + "," + sex + "," + occupation + "," + age + "," + address + "," + contactNo + "," + height + "," + weight + "," + bloodPressure + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + "," + Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + "," + Util.safeCsvString(referral3) + "," + Util.safeCsvString(emergency) + "," + Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed);
 	}
 
 }

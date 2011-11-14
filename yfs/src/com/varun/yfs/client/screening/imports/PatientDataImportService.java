@@ -2,10 +2,10 @@ package com.varun.yfs.client.screening.imports;
 
 import java.util.List;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ProgressDTO;
 
 @RemoteServiceRelativePath("PatientDataImportService")
@@ -23,11 +23,11 @@ public interface PatientDataImportService extends RemoteService {
 		}
 	}
 	
-	String startProcessing(String path, boolean readId);
+	String startProcessing(ImportType type, String path, boolean readId);
 	
 	public ProgressDTO getProgress();
 	
-	public List<SchoolPatientDetailDTO> getProcessedRecords();
+	public List<? extends BaseModelData> getProcessedRecords();
 	
 	public List<String> getErrorRecords();
 	

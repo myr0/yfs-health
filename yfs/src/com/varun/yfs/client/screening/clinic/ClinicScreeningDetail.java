@@ -48,14 +48,14 @@ import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.index.IndexPage;
 import com.varun.yfs.client.screening.clinic.rpc.ClinicScreeningDetailService;
 import com.varun.yfs.client.screening.clinic.rpc.ClinicScreeningDetailServiceAsync;
+import com.varun.yfs.client.screening.export.ExportService;
+import com.varun.yfs.client.screening.export.ExportServiceAsync;
 import com.varun.yfs.client.screening.imports.ImportDetail;
-import com.varun.yfs.client.util.ExportService;
-import com.varun.yfs.client.util.ExportServiceAsync;
+import com.varun.yfs.client.screening.imports.ImportType;
+import com.varun.yfs.dto.ClinicPatientDetailDTO;
 import com.varun.yfs.dto.ClinicScreeningDetailDTO;
 import com.varun.yfs.dto.GenderDTO;
-import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
-import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.dto.YesNoDTO;
 
 public class ClinicScreeningDetail extends LayoutContainer
@@ -66,16 +66,16 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 	protected ContentPanel mainContainerPanel = new ContentPanel();
 
-	private ListStore<SchoolPatientDetailDTO> editorGridStore;
-	private EditorGrid<SchoolPatientDetailDTO> editorGrid;
+	private ListStore<ClinicPatientDetailDTO> editorGridStore;
+	private EditorGrid<ClinicPatientDetailDTO> editorGrid;
 	private String scrId;
 
-	public EditorGrid<SchoolPatientDetailDTO> getEditorGrid()
+	public EditorGrid<ClinicPatientDetailDTO> getEditorGrid()
 	{
 		return editorGrid;
 	}
 
-	public void setEditorGrid(EditorGrid<SchoolPatientDetailDTO> editorGrid)
+	public void setEditorGrid(EditorGrid<ClinicPatientDetailDTO> editorGrid)
 	{
 		this.editorGrid = editorGrid;
 	}
@@ -102,12 +102,12 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		mainContainerPanel.setHeading(headerText);
 
-		editorGridStore = new ListStore<SchoolPatientDetailDTO>();
+		editorGridStore = new ListStore<ClinicPatientDetailDTO>();
 		ColumnModel columnModel = getColumnModel();
-		editorGrid = new EditorGrid<SchoolPatientDetailDTO>(editorGridStore, columnModel);
+		editorGrid = new EditorGrid<ClinicPatientDetailDTO>(editorGridStore, columnModel);
 		// editorGrid.reconfigure(editorGridStore, columnModel);
 		editorGrid.setBorders(true);
-		editorGrid.setSelectionModel(new GridSelectionModel<SchoolPatientDetailDTO>());
+		editorGrid.setSelectionModel(new GridSelectionModel<ClinicPatientDetailDTO>());
 		editorGrid.setLoadMask(true);
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
@@ -126,7 +126,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGrid.unmask();
-				SchoolPatientDetailDTO patientDetail = new SchoolPatientDetailDTO();
+				ClinicPatientDetailDTO patientDetail = new ClinicPatientDetailDTO();
 				patientDetail.setDeleted("N");
 				editorGrid.stopEditing();
 				editorGridStore.insert(patientDetail, 0);
@@ -144,7 +144,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGrid.stopEditing();
-				SchoolPatientDetailDTO selectedItem = editorGrid.getSelectionModel().getSelectedItem();
+				ClinicPatientDetailDTO selectedItem = editorGrid.getSelectionModel().getSelectedItem();
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
@@ -186,7 +186,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				{
 					headers.add(columnConfig.getHeader());
 				}
-				List<SchoolPatientDetailDTO> models = editorGridStore.getModels();
+				List<ClinicPatientDetailDTO> models = editorGridStore.getModels();
 				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
@@ -228,10 +228,10 @@ public class ClinicScreeningDetail extends LayoutContainer
 					headers.add(columnConfig.getHeader());
 				}
 
-				StoreFilter<SchoolPatientDetailDTO> filterReferrals = new StoreFilter<SchoolPatientDetailDTO>()
+				StoreFilter<ClinicPatientDetailDTO> filterReferrals = new StoreFilter<ClinicPatientDetailDTO>()
 				{
 					@Override
-					public boolean select(Store<SchoolPatientDetailDTO> store, SchoolPatientDetailDTO parent, SchoolPatientDetailDTO item, String property)
+					public boolean select(Store<ClinicPatientDetailDTO> store, ClinicPatientDetailDTO parent, ClinicPatientDetailDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
@@ -248,7 +248,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				editorGridStore.addFilter(filterReferrals);
 				editorGridStore.applyFilters("referral1");
 
-				List<SchoolPatientDetailDTO> models = editorGridStore.getModels();
+				List<ClinicPatientDetailDTO> models = editorGridStore.getModels();
 				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
@@ -290,7 +290,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(editorGrid, dialogImport, processIds), new FitData(5));
+				dialogImport.add(new ImportDetail(ImportType.CLINIC, editorGrid, dialogImport, processIds), new FitData(5));
 				dialogImport.show();
 			}
 		});
@@ -345,7 +345,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 	private boolean validateFormEntry()
 	{
-		
+
 		return true;
 	}
 
@@ -356,7 +356,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		editorGrid.stopEditing();
 		editorGridStore.commitChanges();
-		List<SchoolPatientDetailDTO> models = editorGridStore.getModels();
+		List<ClinicPatientDetailDTO> models = editorGridStore.getModels();
 		modelData.setPatientDetails(models);
 		return modelData;
 	}
@@ -692,11 +692,11 @@ public class ClinicScreeningDetail extends LayoutContainer
 				// columnById.setEditor(editorReferral3);
 				// fieldReferral3.add(lstReferrals);
 
-				SchoolScreeningDetailDTO scrDto = modelData.get("data");
+				ClinicScreeningDetailDTO scrDto = modelData.get("data");
 				if (scrDto != null)
 				{
 					editorGridStore.removeAll();
-					List<SchoolPatientDetailDTO> patientDetails = scrDto.getPatientDetails();
+					List<ClinicPatientDetailDTO> patientDetails = scrDto.getPatientDetails();
 					editorGridStore.add(patientDetails);
 				}
 				IndexPage.unmaskCenterComponent();

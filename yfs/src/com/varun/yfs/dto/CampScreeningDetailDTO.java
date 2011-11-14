@@ -24,7 +24,7 @@ public class CampScreeningDetailDTO extends BaseModelData
 	private TypeOfLocationDTO typeOfLocation;
 	private List<VolunteerDTO> lstVolunteers;
 	private List<DoctorDTO> lstDoctors;
-	private List<SchoolPatientDetailDTO> lstPatientDetails;
+	private List<CampPatientDetailDTO> lstPatientDetails;
 
 	public CampScreeningDetailDTO()
 	{
@@ -212,13 +212,13 @@ public class CampScreeningDetailDTO extends BaseModelData
 		this.contactInformation = contactInformation;
 	}
 
-	public void setPatientDetails(List<SchoolPatientDetailDTO> lstPatientDetails)
+	public void setPatientDetails(List<CampPatientDetailDTO> lstPatientDetails)
 	{
 		set("lstPatientDetails", lstPatientDetails);
 		this.lstPatientDetails = lstPatientDetails;
 	}
 
-	public List<SchoolPatientDetailDTO> getPatientDetails()
+	public List<CampPatientDetailDTO> getPatientDetails()
 	{
 		return lstPatientDetails;
 	}

@@ -17,7 +17,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.varun.yfs.client.util.ExportService;
+import com.varun.yfs.client.screening.export.ExportService;
 import com.varun.yfs.server.screening.imports.ExcelReader;
 
 public class ExportServiceImpl extends RemoteServiceServlet implements ExportService
