@@ -46,6 +46,13 @@ public class Clinic implements Serializable
 		setName(name);
 		setDeleted("N");
 	}
+	
+	public Clinic(String name, City city)
+	{
+		setName(name);
+		setDeleted("N");
+		setCity(city);
+	}
 
 	public long getId()
 	{

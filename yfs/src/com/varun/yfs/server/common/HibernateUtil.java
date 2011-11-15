@@ -18,6 +18,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.varun.yfs.server.models.ChapterName;
 import com.varun.yfs.server.models.City;
+import com.varun.yfs.server.models.Clinic;
 import com.varun.yfs.server.models.Country;
 import com.varun.yfs.server.models.Doctor;
 import com.varun.yfs.server.models.Entities;
@@ -94,7 +95,7 @@ public class HibernateUtil
 		log.info("Initial load of Entities completed");
 
 		insertCountry(session);
-		log.info("Initial load of Geographical Data completed");
+		log.info("Initial load of Geographical Data / Clinic completed");
 
 		insertChapterNames(session);
 		log.info("Initial load of Chapter Names completed");
@@ -116,6 +117,7 @@ public class HibernateUtil
 
 		insertReferralTypes(session);
 		log.info("Initial load of ReferralTypes completed");
+		
 
 		transaction.commit();
 		session.close();
@@ -180,6 +182,11 @@ public class HibernateUtil
 		session.save(new ProcessType("Specialist screening"));
 		session.flush();
 	}
+	
+	private static void insertClinic(Session session,City city)
+	{
+		
+	}
 
 	private static void insertDoctor(Session session)
 	{
@@ -239,6 +246,10 @@ public class HibernateUtil
 
 		country.setStates(lstStates);
 		session.saveOrUpdate(country);
+		session.flush();
+		
+		
+		session.save(new Clinic("Sanjivini Free clinic", city));
 		session.flush();
 	}
 
