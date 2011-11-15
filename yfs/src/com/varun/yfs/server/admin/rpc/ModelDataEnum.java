@@ -16,6 +16,7 @@ import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.common.data.DataUtil;
 import com.varun.yfs.server.models.ChapterName;
 import com.varun.yfs.server.models.City;
+import com.varun.yfs.server.models.Clinic;
 import com.varun.yfs.server.models.Country;
 import com.varun.yfs.server.models.Locality;
 import com.varun.yfs.server.models.Project;
@@ -610,7 +611,7 @@ public enum ModelDataEnum
 
 				for (ModelData modelData : lstModels)
 				{
-					Locality hibObject = dozerMapper.map(modelData, Locality.class);
+					Clinic hibObject = dozerMapper.map(modelData, Clinic.class);
 
 					String cityName = modelData.get("cityName").toString();
 					hibObject.setCity(findParent(lstCities, new City(cityName)));
