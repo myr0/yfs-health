@@ -342,6 +342,34 @@ public class DataUtil
 		return lstScreening;
 	}
 
+	public static ClinicScreeningDetailDTO getClinicScreeningDetail(Long scrId)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		ClinicScreeningDetailDTO dtoObject = null;
+
+		Criteria filter = session.createCriteria(ClinicScreeningDetail.class);
+		filter.add(Restrictions.eq("id", scrId)).add(Restrictions.eq("deleted", "N"));
+		filter.createCriteria("lstPatientDetails").add(Restrictions.eq("deleted", "N"));
+		try
+		{
+			Mapper dozerMapper = HibernateUtil.getDozerMapper();
+			ClinicScreeningDetail screeningDetail = (ClinicScreeningDetail) filter.uniqueResult();
+			screeningDetail.getDoctors();
+			screeningDetail.getVolunteers();
+			screeningDetail.getPatientDetails();
+			dtoObject = (ClinicScreeningDetailDTO) dozerMapper.map(screeningDetail, ClinicScreeningDetailDTO.class);
+
+		} catch (HibernateException ex)
+		{
+			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			throw ex;
+		} finally
+		{
+			session.close();
+		}
+		return dtoObject;
+	}
+
 	public static SchoolScreeningDetailDTO getScreeningDetail(long scrId)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();

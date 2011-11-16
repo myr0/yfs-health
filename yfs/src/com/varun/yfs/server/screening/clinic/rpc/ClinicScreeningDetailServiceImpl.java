@@ -25,7 +25,7 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		ModelData modelData = new BaseModelData();
 		if (scrId != null)
 		{
-			SchoolScreeningDetailDTO scrDto = DataUtil.getScreeningDetail(Long.valueOf(scrId));
+			ClinicScreeningDetailDTO scrDto = DataUtil.getClinicScreeningDetail(Long.valueOf(scrId));
 			modelData.set("data", scrDto);
 		}
 
