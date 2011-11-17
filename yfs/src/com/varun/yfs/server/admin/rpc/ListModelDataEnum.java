@@ -179,21 +179,24 @@ public enum ListModelDataEnum
 		public List<ModelData> getListStoreContents()
 		{
 			List<ModelData> arrayList = new ArrayList<ModelData>();
-			ModelData m1 = newItem("Reports By Category", "");
+			ModelData m1 = newItem("Reports", "");
 			arrayList.add(m1);
 
 			List<ModelData> child = new ArrayList<ModelData>();
 			m1.set("children", child);
-			child.add(newItem("Report 1", ""));
-			child.add(newItem("Report 2", ""));
+			child.add(newItem("School Health Program", ""));
+			child.add(newItem("Clinic", ""));
+			child.add(newItem("Medical Camp", ""));
+			child.add(newItem("Events", ""));
+			child.add(newItem("Overall", ""));
 
-			m1 = newItem("Summary Reports", "");
-			arrayList.add(m1);
-
-			child = new ArrayList<ModelData>();
-			m1.set("children", child);
-			child.add(newItem("Report 1", ""));
-			child.add(newItem("Report 2", ""));
+			// m1 = newItem("Summary Reports", "");
+			// arrayList.add(m1);
+			//
+			// child = new ArrayList<ModelData>();
+			// m1.set("children", child);
+			// child.add(newItem("Report 1", ""));
+			// child.add(newItem("Report 2", ""));
 
 			return arrayList;
 		}
