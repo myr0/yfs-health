@@ -48,7 +48,11 @@ import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.landing.LandingPage;
 import com.varun.yfs.client.login.Login;
 import com.varun.yfs.client.login.LoginService;
-import com.varun.yfs.client.reports.ReportPage;
+import com.varun.yfs.client.reports.ClinicScreeningReport;
+import com.varun.yfs.client.reports.EventsReport;
+import com.varun.yfs.client.reports.MedicalCampProgramReport;
+import com.varun.yfs.client.reports.OverallReport;
+import com.varun.yfs.client.reports.SchoolHealthProgramReport;
 import com.varun.yfs.client.screening.camp.CampScreeningDetail;
 import com.varun.yfs.client.screening.clinic.ClinicScreeningDetail;
 import com.varun.yfs.client.screening.school.SchoolScreeningDetail;
@@ -412,12 +416,29 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void handleEvent(BaseEvent be)
 			{
-				boolean isLeaf = tree.isLeaf(tree.getSelectionModel().getSelectedItem());
+				ModelData selectedItem = tree.getSelectionModel().getSelectedItem();
+				boolean isLeaf = tree.isLeaf(selectedItem);
 				if (!cpReports.isCollapsed() && isLeaf)
 				{
 					layoutContainerCenter.removeAll();
 					layoutContainerCenter.setLayoutData(new FitData(15));
-					layoutContainerCenter.add(new ReportPage());
+					String reportName = selectedItem.get("name");
+					if (reportName.equalsIgnoreCase("School Health Program"))
+					{
+						layoutContainerCenter.add(new SchoolHealthProgramReport());
+					} else if (reportName.equalsIgnoreCase("Medical Camp"))
+					{
+						layoutContainerCenter.add(new MedicalCampProgramReport());
+					} else if (reportName.equalsIgnoreCase("Clinic"))
+					{
+						layoutContainerCenter.add(new ClinicScreeningReport());
+					} else if (reportName.equalsIgnoreCase("Events"))
+					{
+						layoutContainerCenter.add(new EventsReport());
+					} else if (reportName.equalsIgnoreCase("Overall"))
+					{
+						layoutContainerCenter.add(new OverallReport());
+					}
 					layoutContainerCenter.layout(true);
 				}
 			}

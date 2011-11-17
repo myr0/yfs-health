@@ -27,15 +27,14 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.HeaderGroupConfig;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.user.client.Element;
 
-public class MedicalCampProgramReport extends LayoutContainer
+public class ClinicScreeningReport extends LayoutContainer
 {
-	public MedicalCampProgramReport()
+	public ClinicScreeningReport()
 	{
 		setHeight("700");
 	}
@@ -140,71 +139,54 @@ public class MedicalCampProgramReport extends LayoutContainer
 		add(layoutContainer);
 
 		FormPanel lcReportingParams = new FormPanel();
-		lcReportingParams.setHeading("Medical Health Program Report");
+		lcReportingParams.setHeading("Clinic Screening Report");
 		lcReportingParams.setSize("500", "700");
 
 		lcReportingParams.add(chart, new FormData("60%"));
 		chart.setSize("80%", "150px");
 
-		LabelField lblfldLocations = new LabelField("Location(s) :");
-		lcReportingParams.add(lblfldLocations, new FormData("100%"));
-
 		LabelField lblfldTotalScreened = new LabelField("Total Number Screened:");
 		lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
+
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgStatusOfTreatments = new ColumnConfig("statusOfTreatments", "Status Of Treatments", 150);
-		configs.add(clmncnfgStatusOfTreatments);
+		ColumnConfig clmncnfgNewColumn = new ColumnConfig("surgeryCases", "Surgery Cases", 150);
+		configs.add(clmncnfgNewColumn);
 
-		ColumnConfig clmncnfgSurgery = new ColumnConfig("surgery", "Surgery", 150);
-		configs.add(clmncnfgSurgery);
+		ColumnConfig clmncnfgTypeOfSurgery = new ColumnConfig("typeOfSurgery", "Type Of Surgery", 150);
+		configs.add(clmncnfgTypeOfSurgery);
 
-		ColumnConfig clmncnfgNonSurgery = new ColumnConfig("nonSurgery", "Non-Surgery", 150);
-		configs.add(clmncnfgNonSurgery);
+		ColumnConfig clmncnfgClosedCases = new ColumnConfig("closedCases", "Closed Cases", 150);
+		configs.add(clmncnfgClosedCases);
+
+		ColumnConfig clmncnfgPendingCases = new ColumnConfig("pendingCases", "Pending Cases", 150);
+		configs.add(clmncnfgPendingCases);
 
 		ColumnConfig clmncnfgTotal = new ColumnConfig("total", "Total", 150);
 		configs.add(clmncnfgTotal);
 
-		Grid<ModelData> gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
-		gridStatusOfTreatment.setHeight("150");
-		gridStatusOfTreatment.setBorders(true);
+		Grid<ModelData> gridSurgeryCases = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		gridSurgeryCases.setHeight("150");
+		gridSurgeryCases.setBorders(true);
 
 		List<ColumnConfig> configsBreakupOfTreatments = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgBreakupOfTreatment = new ColumnConfig("breakUpOfTreatment", "Breakup of Treatments", 150);
-		configsBreakupOfTreatments.add(clmncnfgBreakupOfTreatment);
+		ColumnConfig clmncnfgNewColumn_4 = new ColumnConfig("nonSurgicalCases", "Non-Surgical Cases", 150);
+		configsBreakupOfTreatments.add(clmncnfgNewColumn_4);
 
-		ColumnConfig clmncnfgScreened = new ColumnConfig("screened", "Screened", 150);
-		configsBreakupOfTreatments.add(clmncnfgScreened);
+		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("noOfCases", "No. Of Cases", 150);
+		configsBreakupOfTreatments.add(clmncnfgNewColumn_5);
 
-		ColumnConfig clmncnfgReferred = new ColumnConfig("referredSurgical", "Referred", 150);
-		configsBreakupOfTreatments.add(clmncnfgReferred);
-		ColumnConfig clmncnfgCasesClosed = new ColumnConfig("casesClosedSurgical", "Cases Closed", 150);
-		configsBreakupOfTreatments.add(clmncnfgCasesClosed);
-		ColumnConfig clmncnfgPending = new ColumnConfig("pendingSurgical", "Pending", 150);
-		configsBreakupOfTreatments.add(clmncnfgPending);
-
-		clmncnfgReferred = new ColumnConfig("referredNonSurgical", "Referred", 150);
-		configsBreakupOfTreatments.add(clmncnfgReferred);
-		clmncnfgCasesClosed = new ColumnConfig("casesClosedNonSurgical", "Cases Closed", 150);
-		configsBreakupOfTreatments.add(clmncnfgCasesClosed);
-		clmncnfgPending = new ColumnConfig("pendingNonSurgical", "Pending", 150);
-		configsBreakupOfTreatments.add(clmncnfgPending);
-
-		ColumnModel cmBreakupOfTreatments = new ColumnModel(configsBreakupOfTreatments);
-		cmBreakupOfTreatments.addHeaderGroup(0, 0, new HeaderGroupConfig("Surgical", 2, 4));
-		cmBreakupOfTreatments.addHeaderGroup(0, 0, new HeaderGroupConfig("Non-Surgical", 5, 7));
-
-		Grid<ModelData> gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), cmBreakupOfTreatments);
-		gridBreakupOfTreatments.setBorders(true);
+		Grid<ModelData> gridNonSurgeryCases = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
+		gridNonSurgeryCases.setBorders(true);
 
 		FormData fd_gridStatusOfTreatment = new FormData("100%");
 		fd_gridStatusOfTreatment.setMargins(new Margins(0, 0, 5, 0));
-		lcReportingParams.add(gridStatusOfTreatment, fd_gridStatusOfTreatment);
+		lcReportingParams.add(gridSurgeryCases, fd_gridStatusOfTreatment);
 		FormData fd_gridBreakupOfTreatments = new FormData("100%");
 		fd_gridBreakupOfTreatments.setMargins(new Margins(0, 0, 5, 0));
-		lcReportingParams.add(gridBreakupOfTreatments, fd_gridBreakupOfTreatments);
-		gridBreakupOfTreatments.setHeight("150");
+		lcReportingParams.add(gridNonSurgeryCases, fd_gridBreakupOfTreatments);
+		gridNonSurgeryCases.setHeight("150");
 
 		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);

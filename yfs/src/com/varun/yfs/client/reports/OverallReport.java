@@ -15,7 +15,6 @@ import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
 import com.extjs.gxt.charts.client.model.charts.LineChart;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.ChangeEvent;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PropertyChangeEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -27,15 +26,14 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.HeaderGroupConfig;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.user.client.Element;
 
-public class MedicalCampProgramReport extends LayoutContainer
+public class OverallReport extends LayoutContainer
 {
-	public MedicalCampProgramReport()
+	public OverallReport()
 	{
 		setHeight("700");
 	}
@@ -128,10 +126,10 @@ public class MedicalCampProgramReport extends LayoutContainer
 		frmpnlToDate.add(dtfldToDate, new FormData("100%"));
 
 		layoutContainer.add(frmpnlToDate);
-
+		
 		LayoutContainer frmpnlRefresh = new LayoutContainer();
 		frmpnlRefresh.setLayout(new FormLayout());
-
+		
 		Button btnRefresh = new Button("Refresh");
 		frmpnlRefresh.add(btnRefresh, new FormData("100%"));
 		layoutContainer.add(frmpnlRefresh);
@@ -153,49 +151,31 @@ public class MedicalCampProgramReport extends LayoutContainer
 		lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgStatusOfTreatments = new ColumnConfig("statusOfTreatments", "Status Of Treatments", 150);
-		configs.add(clmncnfgStatusOfTreatments);
+		ColumnConfig clmncnfgNewColumn = new ColumnConfig("id", "Status Of Treatments", 150);
+		configs.add(clmncnfgNewColumn);
 
-		ColumnConfig clmncnfgSurgery = new ColumnConfig("surgery", "Surgery", 150);
-		configs.add(clmncnfgSurgery);
+		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("id", "Surgery", 150);
+		configs.add(clmncnfgNewColumn_1);
 
-		ColumnConfig clmncnfgNonSurgery = new ColumnConfig("nonSurgery", "Non-Surgery", 150);
-		configs.add(clmncnfgNonSurgery);
+		ColumnConfig clmncnfgNewColumn_2 = new ColumnConfig("id", "Non-Surgery", 150);
+		configs.add(clmncnfgNewColumn_2);
 
-		ColumnConfig clmncnfgTotal = new ColumnConfig("total", "Total", 150);
-		configs.add(clmncnfgTotal);
+		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("id", "Total", 150);
+		configs.add(clmncnfgNewColumn_3);
 
-		Grid<ModelData> gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		Grid gridStatusOfTreatment = new Grid(new ListStore(), new ColumnModel(configs));
 		gridStatusOfTreatment.setHeight("150");
 		gridStatusOfTreatment.setBorders(true);
-
+		
 		List<ColumnConfig> configsBreakupOfTreatments = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgBreakupOfTreatment = new ColumnConfig("breakUpOfTreatment", "Breakup of Treatments", 150);
-		configsBreakupOfTreatments.add(clmncnfgBreakupOfTreatment);
+		ColumnConfig clmncnfgNewColumn_4 = new ColumnConfig("id", "Breakup of Treatments", 150);
+		configsBreakupOfTreatments.add(clmncnfgNewColumn_4);
 
-		ColumnConfig clmncnfgScreened = new ColumnConfig("screened", "Screened", 150);
-		configsBreakupOfTreatments.add(clmncnfgScreened);
+		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("id", "Total", 150);
+		configsBreakupOfTreatments.add(clmncnfgNewColumn_5);
 
-		ColumnConfig clmncnfgReferred = new ColumnConfig("referredSurgical", "Referred", 150);
-		configsBreakupOfTreatments.add(clmncnfgReferred);
-		ColumnConfig clmncnfgCasesClosed = new ColumnConfig("casesClosedSurgical", "Cases Closed", 150);
-		configsBreakupOfTreatments.add(clmncnfgCasesClosed);
-		ColumnConfig clmncnfgPending = new ColumnConfig("pendingSurgical", "Pending", 150);
-		configsBreakupOfTreatments.add(clmncnfgPending);
-
-		clmncnfgReferred = new ColumnConfig("referredNonSurgical", "Referred", 150);
-		configsBreakupOfTreatments.add(clmncnfgReferred);
-		clmncnfgCasesClosed = new ColumnConfig("casesClosedNonSurgical", "Cases Closed", 150);
-		configsBreakupOfTreatments.add(clmncnfgCasesClosed);
-		clmncnfgPending = new ColumnConfig("pendingNonSurgical", "Pending", 150);
-		configsBreakupOfTreatments.add(clmncnfgPending);
-
-		ColumnModel cmBreakupOfTreatments = new ColumnModel(configsBreakupOfTreatments);
-		cmBreakupOfTreatments.addHeaderGroup(0, 0, new HeaderGroupConfig("Surgical", 2, 4));
-		cmBreakupOfTreatments.addHeaderGroup(0, 0, new HeaderGroupConfig("Non-Surgical", 5, 7));
-
-		Grid<ModelData> gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), cmBreakupOfTreatments);
+		Grid gridBreakupOfTreatments = new Grid(new ListStore(), new ColumnModel(configsBreakupOfTreatments));
 		gridBreakupOfTreatments.setBorders(true);
 
 		FormData fd_gridStatusOfTreatment = new FormData("100%");
@@ -205,8 +185,8 @@ public class MedicalCampProgramReport extends LayoutContainer
 		fd_gridBreakupOfTreatments.setMargins(new Margins(0, 0, 5, 0));
 		lcReportingParams.add(gridBreakupOfTreatments, fd_gridBreakupOfTreatments);
 		gridBreakupOfTreatments.setHeight("150");
-
-		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
+		
+		lcReportingParams.setLayoutData(new Margins(5,5,5,5));
 		add(lcReportingParams);
 
 	}

@@ -23,19 +23,17 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.HeaderGroupConfig;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.user.client.Element;
 
-public class MedicalCampProgramReport extends LayoutContainer
+public class EventsReport extends LayoutContainer
 {
-	public MedicalCampProgramReport()
+	public EventsReport()
 	{
 		setHeight("700");
 	}
@@ -143,68 +141,49 @@ public class MedicalCampProgramReport extends LayoutContainer
 		lcReportingParams.setHeading("Medical Health Program Report");
 		lcReportingParams.setSize("500", "700");
 
-		lcReportingParams.add(chart, new FormData("60%"));
-		chart.setSize("80%", "150px");
+		// lcReportingParams.add(chart, new FormData("60%"));
+		// chart.setSize("80%", "150px");
+		//
+		// LabelField lblfldLocations = new LabelField("Location(s) :");
+		// lcReportingParams.add(lblfldLocations, new FormData("100%"));
+		//
+		// LabelField lblfldTotalScreened = new
+		// LabelField("Total Number Screened:");
+		// lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
 
-		LabelField lblfldLocations = new LabelField("Location(s) :");
-		lcReportingParams.add(lblfldLocations, new FormData("100%"));
-
-		LabelField lblfldTotalScreened = new LabelField("Total Number Screened:");
-		lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgStatusOfTreatments = new ColumnConfig("statusOfTreatments", "Status Of Treatments", 150);
-		configs.add(clmncnfgStatusOfTreatments);
+		ColumnConfig clmncnfgNewColumn = new ColumnConfig("date", "Date", 150);
+		configs.add(clmncnfgNewColumn);
 
-		ColumnConfig clmncnfgSurgery = new ColumnConfig("surgery", "Surgery", 150);
-		configs.add(clmncnfgSurgery);
+		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("eventType", "Event Type", 150);
+		configs.add(clmncnfgNewColumn_1);
 
-		ColumnConfig clmncnfgNonSurgery = new ColumnConfig("nonSurgery", "Non-Surgery", 150);
-		configs.add(clmncnfgNonSurgery);
+		ColumnConfig clmncnfgNewColumn_2 = new ColumnConfig("eventLocation", "Event Location", 150);
+		configs.add(clmncnfgNewColumn_2);
 
-		ColumnConfig clmncnfgTotal = new ColumnConfig("total", "Total", 150);
-		configs.add(clmncnfgTotal);
+		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("noScreened", "Number Screened", 150);
+		configs.add(clmncnfgNewColumn_3);
 
-		Grid<ModelData> gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
-		gridStatusOfTreatment.setHeight("150");
-		gridStatusOfTreatment.setBorders(true);
+		ColumnConfig clmncnfgNewColumn_4 = new ColumnConfig("noRequiringTreatment", "Requiring Treatment", 150);
+		configs.add(clmncnfgNewColumn_4);
 
-		List<ColumnConfig> configsBreakupOfTreatments = new ArrayList<ColumnConfig>();
+		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("noTreated", "Number Treated", 150);
+		configs.add(clmncnfgNewColumn_5);
 
-		ColumnConfig clmncnfgBreakupOfTreatment = new ColumnConfig("breakUpOfTreatment", "Breakup of Treatments", 150);
-		configsBreakupOfTreatments.add(clmncnfgBreakupOfTreatment);
+		ColumnConfig clmncnfgNewColumn_6 = new ColumnConfig("volunteers", "Volunteers", 150);
+		configs.add(clmncnfgNewColumn_6);
 
-		ColumnConfig clmncnfgScreened = new ColumnConfig("screened", "Screened", 150);
-		configsBreakupOfTreatments.add(clmncnfgScreened);
+		ColumnConfig clmncnfgNewColumn_7 = new ColumnConfig("medicalTeam", "Medical Team", 150);
+		configs.add(clmncnfgNewColumn_7);
 
-		ColumnConfig clmncnfgReferred = new ColumnConfig("referredSurgical", "Referred", 150);
-		configsBreakupOfTreatments.add(clmncnfgReferred);
-		ColumnConfig clmncnfgCasesClosed = new ColumnConfig("casesClosedSurgical", "Cases Closed", 150);
-		configsBreakupOfTreatments.add(clmncnfgCasesClosed);
-		ColumnConfig clmncnfgPending = new ColumnConfig("pendingSurgical", "Pending", 150);
-		configsBreakupOfTreatments.add(clmncnfgPending);
-
-		clmncnfgReferred = new ColumnConfig("referredNonSurgical", "Referred", 150);
-		configsBreakupOfTreatments.add(clmncnfgReferred);
-		clmncnfgCasesClosed = new ColumnConfig("casesClosedNonSurgical", "Cases Closed", 150);
-		configsBreakupOfTreatments.add(clmncnfgCasesClosed);
-		clmncnfgPending = new ColumnConfig("pendingNonSurgical", "Pending", 150);
-		configsBreakupOfTreatments.add(clmncnfgPending);
-
-		ColumnModel cmBreakupOfTreatments = new ColumnModel(configsBreakupOfTreatments);
-		cmBreakupOfTreatments.addHeaderGroup(0, 0, new HeaderGroupConfig("Surgical", 2, 4));
-		cmBreakupOfTreatments.addHeaderGroup(0, 0, new HeaderGroupConfig("Non-Surgical", 5, 7));
-
-		Grid<ModelData> gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), cmBreakupOfTreatments);
-		gridBreakupOfTreatments.setBorders(true);
+		Grid<ModelData> gridEvents = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		gridEvents.setHeight("150");
+		gridEvents.setBorders(true);
 
 		FormData fd_gridStatusOfTreatment = new FormData("100%");
 		fd_gridStatusOfTreatment.setMargins(new Margins(0, 0, 5, 0));
-		lcReportingParams.add(gridStatusOfTreatment, fd_gridStatusOfTreatment);
-		FormData fd_gridBreakupOfTreatments = new FormData("100%");
-		fd_gridBreakupOfTreatments.setMargins(new Margins(0, 0, 5, 0));
-		lcReportingParams.add(gridBreakupOfTreatments, fd_gridBreakupOfTreatments);
-		gridBreakupOfTreatments.setHeight("150");
+		lcReportingParams.add(gridEvents, fd_gridStatusOfTreatment);
 
 		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);
