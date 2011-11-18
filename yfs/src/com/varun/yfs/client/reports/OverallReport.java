@@ -13,9 +13,7 @@ import com.extjs.gxt.charts.client.model.ScaleProvider;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
 import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
 import com.extjs.gxt.charts.client.model.charts.LineChart;
-import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.data.ChangeEvent;
-import com.extjs.gxt.ui.client.data.PropertyChangeEvent;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -126,10 +124,10 @@ public class OverallReport extends LayoutContainer
 		frmpnlToDate.add(dtfldToDate, new FormData("100%"));
 
 		layoutContainer.add(frmpnlToDate);
-		
+
 		LayoutContainer frmpnlRefresh = new LayoutContainer();
 		frmpnlRefresh.setLayout(new FormLayout());
-		
+
 		Button btnRefresh = new Button("Refresh");
 		frmpnlRefresh.add(btnRefresh, new FormData("100%"));
 		layoutContainer.add(frmpnlRefresh);
@@ -163,10 +161,10 @@ public class OverallReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("id", "Total", 150);
 		configs.add(clmncnfgNewColumn_3);
 
-		Grid gridStatusOfTreatment = new Grid(new ListStore(), new ColumnModel(configs));
+		Grid<ModelData> gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
 		gridStatusOfTreatment.setHeight("150");
 		gridStatusOfTreatment.setBorders(true);
-		
+
 		List<ColumnConfig> configsBreakupOfTreatments = new ArrayList<ColumnConfig>();
 
 		ColumnConfig clmncnfgNewColumn_4 = new ColumnConfig("id", "Breakup of Treatments", 150);
@@ -175,7 +173,7 @@ public class OverallReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("id", "Total", 150);
 		configsBreakupOfTreatments.add(clmncnfgNewColumn_5);
 
-		Grid gridBreakupOfTreatments = new Grid(new ListStore(), new ColumnModel(configsBreakupOfTreatments));
+		Grid<ModelData> gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
 		gridBreakupOfTreatments.setBorders(true);
 
 		FormData fd_gridStatusOfTreatment = new FormData("100%");
@@ -185,85 +183,9 @@ public class OverallReport extends LayoutContainer
 		fd_gridBreakupOfTreatments.setMargins(new Margins(0, 0, 5, 0));
 		lcReportingParams.add(gridBreakupOfTreatments, fd_gridBreakupOfTreatments);
 		gridBreakupOfTreatments.setHeight("150");
-		
-		lcReportingParams.setLayoutData(new Margins(5,5,5,5));
+
+		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);
 
-	}
-}
-
-class TeamSales extends BaseModel
-{
-
-	private static final long serialVersionUID = 2103699184769341265L;
-
-	public TeamSales(String month, int a, int b, int c)
-	{
-		setMonth(month);
-		setAlphaSales(a);
-		setBetaSales(b);
-		setGammaSales(c);
-		setAvgSales();
-	}
-
-	public int getAlphaSales()
-	{
-		return (Integer) get("alphasales");
-	}
-
-	public int getBetaSales()
-	{
-		return (Integer) get("betasales");
-	}
-
-	public int getGammaSales()
-	{
-		return (Integer) get("gammasales");
-	}
-
-	public String getMonth()
-	{
-		return (String) get("month");
-	}
-
-	@Override
-	public void notify(ChangeEvent evt)
-	{
-		super.notify(evt);
-
-		PropertyChangeEvent e = (PropertyChangeEvent) evt;
-		if (!e.getName().equals("avgsales"))
-		{
-			setAvgSales();
-		}
-	}
-
-	public void setAlphaSales(int sales)
-	{
-		set("alphasales", sales);
-	}
-
-	public void setAvgSales()
-	{
-		if (get("alphasales") != null && get("gammasales") != null && get("betasales") != null)
-		{
-			double avg = (getAlphaSales() + getBetaSales() + getGammaSales()) / 3.0;
-			set("avgsales", avg);
-		}
-	}
-
-	public void setBetaSales(int sales)
-	{
-		set("betasales", sales);
-	}
-
-	public void setGammaSales(int sales)
-	{
-		set("gammasales", sales);
-	}
-
-	public void setMonth(String month)
-	{
-		set("month", month);
 	}
 }

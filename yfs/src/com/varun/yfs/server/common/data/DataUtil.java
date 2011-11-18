@@ -270,10 +270,13 @@ public class DataUtil
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
 			CampScreeningDetail screeningDetail = (CampScreeningDetail) filter.uniqueResult();
-			screeningDetail.getDoctors();
-			screeningDetail.getVolunteers();
-			screeningDetail.getPatientDetails();
-			dtoObject = (CampScreeningDetailDTO) dozerMapper.map(screeningDetail, CampScreeningDetailDTO.class);
+			if (screeningDetail != null)
+			{
+				screeningDetail.getDoctors();
+				screeningDetail.getVolunteers();
+				screeningDetail.getPatientDetails();
+				dtoObject = (CampScreeningDetailDTO) dozerMapper.map(screeningDetail, CampScreeningDetailDTO.class);
+			}
 
 		} catch (HibernateException ex)
 		{
@@ -354,10 +357,13 @@ public class DataUtil
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
 			ClinicScreeningDetail screeningDetail = (ClinicScreeningDetail) filter.uniqueResult();
-			screeningDetail.getDoctors();
-			screeningDetail.getVolunteers();
-			screeningDetail.getPatientDetails();
-			dtoObject = (ClinicScreeningDetailDTO) dozerMapper.map(screeningDetail, ClinicScreeningDetailDTO.class);
+			if (screeningDetail != null)
+			{
+				screeningDetail.getDoctors();
+				screeningDetail.getVolunteers();
+				screeningDetail.getPatientDetails();
+				dtoObject = (ClinicScreeningDetailDTO) dozerMapper.map(screeningDetail, ClinicScreeningDetailDTO.class);
+			}
 
 		} catch (HibernateException ex)
 		{
@@ -382,10 +388,13 @@ public class DataUtil
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
 			SchoolScreeningDetail screeningDetail = (SchoolScreeningDetail) filter.uniqueResult();
-			screeningDetail.getDoctors();
-			screeningDetail.getVolunteers();
-			screeningDetail.getPatientDetails();
-			dtoObject = (SchoolScreeningDetailDTO) dozerMapper.map(screeningDetail, SchoolScreeningDetailDTO.class);
+			if (screeningDetail != null)
+			{
+				screeningDetail.getDoctors();
+				screeningDetail.getVolunteers();
+				screeningDetail.getPatientDetails();
+				dtoObject = (SchoolScreeningDetailDTO) dozerMapper.map(screeningDetail, SchoolScreeningDetailDTO.class);
+			}
 
 		} catch (HibernateException ex)
 		{
