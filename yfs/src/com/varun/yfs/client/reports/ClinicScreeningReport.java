@@ -13,10 +13,14 @@ import com.extjs.gxt.charts.client.model.ScaleProvider;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
 import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
 import com.extjs.gxt.charts.client.model.charts.LineChart;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -26,11 +30,25 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.varun.yfs.client.admin.rpc.StoreLoader;
+import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 
 public class ClinicScreeningReport extends LayoutContainer
 {
+	private StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
+
+	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
+	{
+		public void handleEvent(MessageBoxEvent ce)
+		{
+		}
+	};
+
 	public ClinicScreeningReport()
 	{
 		setHeight("700");
@@ -67,7 +85,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		String url = "open-flash-chart.swf";
 		final Chart chart = new Chart(url);
 
-		ChartModel model = new ChartModel("Project progress report", "font-size: 14px; font-family: Verdana; text-align: center;");
+		ChartModel model = new ChartModel("Report", "font-size: 14px; font-family: Verdana; text-align: center;");
 		model.setBackgroundColour("fefefe");
 		model.setLegend(new Legend(Position.TOP, true));
 		model.setScaleProvider(ScaleProvider.ROUNDED_NEAREST_SCALE_PROVIDER);
@@ -113,7 +131,10 @@ public class ClinicScreeningReport extends LayoutContainer
 		frmpnlFromDate.setLayout(new FormLayout());
 		frmpnlFromDate.add(dtfldFromDate, new FormData("100%"));
 
-		layoutContainer.add(frmpnlFromDate);
+		TableData td_frmpnlFromDate = new TableData();
+		td_frmpnlFromDate.setPadding(5);
+		td_frmpnlFromDate.setMargin(5);
+		layoutContainer.add(frmpnlFromDate, td_frmpnlFromDate);
 
 		DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
@@ -121,31 +142,38 @@ public class ClinicScreeningReport extends LayoutContainer
 		frmpnlToDate.setLayout(new FormLayout());
 		frmpnlToDate.add(dtfldToDate, new FormData("100%"));
 
-		layoutContainer.add(frmpnlToDate);
+		TableData td_frmpnlToDate = new TableData();
+		td_frmpnlToDate.setPadding(5);
+		td_frmpnlToDate.setMargin(5);
+		layoutContainer.add(frmpnlToDate, td_frmpnlToDate);
 
 		LayoutContainer frmpnlRefresh = new LayoutContainer();
 		frmpnlRefresh.setLayout(new FormLayout());
 
 		Button btnRefresh = new Button("Refresh");
 		frmpnlRefresh.add(btnRefresh, new FormData("100%"));
-		layoutContainer.add(frmpnlRefresh);
+		TableData td_frmpnlRefresh = new TableData();
+		td_frmpnlRefresh.setPadding(5);
+		td_frmpnlRefresh.setMargin(5);
+		layoutContainer.add(frmpnlRefresh, td_frmpnlRefresh);
 		frmpnlRefresh.setBorders(true);
 
+		chart.setHeight("300");
 		add(layoutContainer);
+		add(chart);
+		layout(true);
+		setScrollMode(Scroll.AUTOY);
 
 		FormPanel lcReportingParams = new FormPanel();
-		lcReportingParams.setHeading("Clinic Screening Report");
-		lcReportingParams.setSize("500", "700");
-
-		lcReportingParams.add(chart);
-		chart.setSize("300", "300");
+		lcReportingParams.setHeaderVisible(false);
+		lcReportingParams.setSize("", "700");
 
 		LabelField lblfldTotalScreened = new LabelField("Total Number Screened:");
 		lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
 
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgNewColumn = new ColumnConfig("surgeryCases", "Surgery Cases", 150);
+		ColumnConfig clmncnfgNewColumn = new ColumnConfig("name", "Surgery Cases", 150);
 		configs.add(clmncnfgNewColumn);
 
 		ColumnConfig clmncnfgTypeOfSurgery = new ColumnConfig("typeOfSurgery", "Type Of Surgery", 150);
@@ -160,7 +188,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		ColumnConfig clmncnfgTotal = new ColumnConfig("total", "Total", 150);
 		configs.add(clmncnfgTotal);
 
-		Grid<ModelData> gridSurgeryCases = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		final Grid<ModelData> gridSurgeryCases = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
 		gridSurgeryCases.setHeight("150");
 		gridSurgeryCases.setBorders(true);
 
@@ -172,7 +200,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("noOfCases", "No. Of Cases", 150);
 		configsBreakupOfTreatments.add(clmncnfgNewColumn_5);
 
-		Grid<ModelData> gridNonSurgeryCases = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
+		final Grid<ModelData> gridNonSurgeryCases = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
 		gridNonSurgeryCases.setBorders(true);
 
 		FormData fd_gridStatusOfTreatment = new FormData("100%");
@@ -186,7 +214,21 @@ public class ClinicScreeningReport extends LayoutContainer
 		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);
 
+		storeLoader.getListStore("ReferralType", new AsyncCallback<List<ModelData>>()
+		{
+			@Override
+			public void onSuccess(List<ModelData> result)
+			{
+				gridSurgeryCases.getStore().add(result);
+				gridNonSurgeryCases.getStore().add(result);
+			}
+
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				MessageBox.alert("Alert", "Error encountered while loading", l);
+			}
+		});
+
 	}
 }
-
-

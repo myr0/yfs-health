@@ -463,6 +463,7 @@ public class IndexPage extends LayoutContainer
 					Object object = modelData.get("children");
 					if (object != null)
 						tree.getStore().add(modelData, (List<ModelData>) object, false);
+					tree.setExpanded(modelData, true);
 				}
 			}
 		});

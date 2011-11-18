@@ -13,10 +13,14 @@ import com.extjs.gxt.charts.client.model.ScaleProvider;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
 import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
 import com.extjs.gxt.charts.client.model.charts.LineChart;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -27,11 +31,24 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.HeaderGroupConfig;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.varun.yfs.client.admin.rpc.StoreLoader;
+import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 
 public class MedicalCampProgramReport extends LayoutContainer
 {
+	private StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
+	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
+	{
+		public void handleEvent(MessageBoxEvent ce)
+		{
+		}
+	};
+
 	public MedicalCampProgramReport()
 	{
 		setHeight("700");
@@ -42,7 +59,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 	{
 
 		super.onRender(parent, index);
-
+		setScrollMode(Scroll.AUTOY);
 		final ListStore<TeamSales> store = new ListStore<TeamSales>();
 		TeamSales tmSales = new TeamSales("Requirement Analysis", 0, 10, 20);
 		store.add(tmSales);
@@ -67,8 +84,6 @@ public class MedicalCampProgramReport extends LayoutContainer
 
 		String url = "open-flash-chart.swf";
 		final Chart chart = new Chart(url);
-		chart.setSwfHeight("40%");
-		chart.setSwfWidth("40%");
 
 		ChartModel model = new ChartModel("Project progress report", "font-size: 14px; font-family: Verdana; text-align: center;");
 		model.setBackgroundColour("fefefe");
@@ -116,7 +131,10 @@ public class MedicalCampProgramReport extends LayoutContainer
 		frmpnlFromDate.setLayout(new FormLayout());
 		frmpnlFromDate.add(dtfldFromDate, new FormData("100%"));
 
-		layoutContainer.add(frmpnlFromDate);
+		TableData td_frmpnlFromDate = new TableData();
+		td_frmpnlFromDate.setPadding(5);
+		td_frmpnlFromDate.setMargin(5);
+		layoutContainer.add(frmpnlFromDate, td_frmpnlFromDate);
 
 		DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
@@ -124,24 +142,31 @@ public class MedicalCampProgramReport extends LayoutContainer
 		frmpnlToDate.setLayout(new FormLayout());
 		frmpnlToDate.add(dtfldToDate, new FormData("100%"));
 
-		layoutContainer.add(frmpnlToDate);
+		TableData td_frmpnlToDate = new TableData();
+		td_frmpnlToDate.setPadding(5);
+		td_frmpnlToDate.setMargin(5);
+		layoutContainer.add(frmpnlToDate, td_frmpnlToDate);
 
 		LayoutContainer frmpnlRefresh = new LayoutContainer();
 		frmpnlRefresh.setLayout(new FormLayout());
 
 		Button btnRefresh = new Button("Refresh");
 		frmpnlRefresh.add(btnRefresh, new FormData("100%"));
-		layoutContainer.add(frmpnlRefresh);
+		TableData td_frmpnlRefresh = new TableData();
+		td_frmpnlRefresh.setPadding(5);
+		td_frmpnlRefresh.setMargin(5);
+		layoutContainer.add(frmpnlRefresh, td_frmpnlRefresh);
 		frmpnlRefresh.setBorders(true);
 
 		add(layoutContainer);
 
 		FormPanel lcReportingParams = new FormPanel();
+		lcReportingParams.setHeaderVisible(false);
 		lcReportingParams.setHeading("Medical Health Program Report");
-		lcReportingParams.setSize("500", "700");
+		lcReportingParams.setSize("", "700");
 
-		lcReportingParams.add(chart, new FormData("60%"));
-		chart.setSize("80%", "150px");
+		lcReportingParams.add(chart, new FormData(""));
+		chart.setSize("", "200px");
 
 		LabelField lblfldLocations = new LabelField("Location(s) :");
 		lcReportingParams.add(lblfldLocations, new FormData("100%"));
@@ -150,7 +175,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 		lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgStatusOfTreatments = new ColumnConfig("statusOfTreatments", "Status Of Treatments", 150);
+		ColumnConfig clmncnfgStatusOfTreatments = new ColumnConfig("name", "Status Of Treatments", 150);
 		configs.add(clmncnfgStatusOfTreatments);
 
 		ColumnConfig clmncnfgSurgery = new ColumnConfig("surgery", "Surgery", 150);
@@ -192,7 +217,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 		cmBreakupOfTreatments.addHeaderGroup(0, 0, new HeaderGroupConfig("Surgical", 2, 4));
 		cmBreakupOfTreatments.addHeaderGroup(0, 0, new HeaderGroupConfig("Non-Surgical", 5, 7));
 
-		Grid<ModelData> gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), cmBreakupOfTreatments);
+		final Grid<ModelData> gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), cmBreakupOfTreatments);
 		gridBreakupOfTreatments.setBorders(true);
 
 		FormData fd_gridStatusOfTreatment = new FormData("100%");
@@ -206,6 +231,20 @@ public class MedicalCampProgramReport extends LayoutContainer
 		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);
 
+		storeLoader.getListStore("ReferralType", new AsyncCallback<List<ModelData>>()
+		{
+			@Override
+			public void onSuccess(List<ModelData> result)
+			{
+				gridBreakupOfTreatments.getStore().add(result);
+			}
+
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				MessageBox.alert("Alert", "Error encountered while loading", l);
+			}
+		});
+
 	}
 }
-
