@@ -15,13 +15,15 @@ import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
 import com.extjs.gxt.charts.client.model.charts.LineChart;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -36,12 +38,13 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.varun.yfs.client.admin.rpc.StoreLoader;
-import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
+import com.varun.yfs.client.reports.rpc.ReportDetailService;
+import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
+import com.varun.yfs.client.reports.rpc.ReportType;
 
 public class SchoolHealthProgramReport extends LayoutContainer
 {
-	private StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
+	private ReportDetailServiceAsync reportDetailService = GWT.create(ReportDetailService.class);
 	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
@@ -125,7 +128,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		LayoutContainer layoutContainer = new LayoutContainer();
 		layoutContainer.setLayout(new TableLayout(3));
 
-		DateField dtfldFromDate = new DateField();
+		final DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
 		LayoutContainer frmpnlFromDate = new LayoutContainer();
 		frmpnlFromDate.setLayout(new FormLayout());
@@ -136,7 +139,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		td_frmpnlFromDate.setMargin(5);
 		layoutContainer.add(frmpnlFromDate, td_frmpnlFromDate);
 
-		DateField dtfldToDate = new DateField();
+		final DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
 		LayoutContainer frmpnlToDate = new LayoutContainer();
 		frmpnlToDate.setLayout(new FormLayout());
@@ -158,6 +161,28 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		td_frmpnlRefresh.setMargin(5);
 		layoutContainer.add(frmpnlRefresh, td_frmpnlRefresh);
 		frmpnlRefresh.setBorders(true);
+		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				ModelData model = new BaseModelData();
+				model.set("dateFrom", dtfldFromDate.getValue());
+				model.set("dateTo", dtfldToDate.getValue());
+				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
+				{
+					@Override
+					public void onSuccess(ModelData result)
+					{
+					}
+
+					@Override
+					public void onFailure(Throwable caught)
+					{
+					}
+				});
+			}
+		});
 
 		add(layoutContainer);
 
@@ -233,20 +258,21 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);
 
-		storeLoader.getListStore("ReferralType", new AsyncCallback<List<ModelData>>()
-		{
-			@Override
-			public void onSuccess(List<ModelData> result)
-			{
-				gridBreakupOfTreatments.getStore().add(result);
-			}
-
-			@Override
-			public void onFailure(Throwable caught)
-			{
-				MessageBox.alert("Alert", "Error encountered while loading", l);
-			}
-		});
+		// storeLoader.getListStore("ReferralType", new
+		// AsyncCallback<List<ModelData>>()
+		// {
+		// @Override
+		// public void onSuccess(List<ModelData> result)
+		// {
+		// gridBreakupOfTreatments.getStore().add(result);
+		// }
+		//
+		// @Override
+		// public void onFailure(Throwable caught)
+		// {
+		// MessageBox.alert("Alert", "Error encountered while loading", l);
+		// }
+		// });
 
 	}
 }

@@ -107,5 +107,13 @@
 	<welcome-file-list>
 		<welcome-file>Yfs.html</welcome-file>
 	</welcome-file-list>
+	<servlet>
+		<servlet-name>ReportDetailService</servlet-name>
+		<servlet-class>com.varun.yfs.server.reports.rpc.ReportDetailServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReportDetailService</servlet-name>
+		<url-pattern>/yfs/ReportDetailService</url-pattern>
+	</servlet-mapping>
 
 </web-app>

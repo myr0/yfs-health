@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.varun.yfs.client.reports.rpc.ReportType;
 import com.varun.yfs.dto.CampScreeningDetailDTO;
 import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.CityDTO;
@@ -184,11 +185,11 @@ public enum ListModelDataEnum
 
 			List<ModelData> child = new ArrayList<ModelData>();
 			m1.set("children", child);
-			child.add(newItem("School Health Program", ""));
-			child.add(newItem("Clinic", ""));
-			child.add(newItem("Medical Camp", ""));
-			child.add(newItem("Events", ""));
-			child.add(newItem("Overall", ""));
+			child.add(newItem(ReportType.School.getValue(), ""));
+			child.add(newItem(ReportType.Medical.getValue(), ""));
+			child.add(newItem(ReportType.Clinic.getValue(), ""));
+			child.add(newItem(ReportType.Events.getValue(), ""));
+			child.add(newItem(ReportType.Events.getValue(), ""));
 
 			// m1 = newItem("Summary Reports", "");
 			// arrayList.add(m1);
