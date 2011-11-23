@@ -82,8 +82,8 @@ public class ClinicScreeningDetail implements Serializable
 	private List<Doctor> lstDoctors;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name="CamScrDet_PatDet")
-	private List<CampPatientDetail> lstPatientDetails;
+	@JoinTable(name="ClinicScrDet_PatDet", joinColumns = { @JoinColumn(name = "clinicId") }, inverseJoinColumns = { @JoinColumn(name = "patId") })
+	private List<ClinicPatientDetail> lstPatientDetails;
 
 	public ClinicScreeningDetail()
 	{
@@ -255,12 +255,12 @@ public class ClinicScreeningDetail implements Serializable
 		this.contactInformation = contactInformation;
 	}
 
-	public void setPatientDetails(List<CampPatientDetail> setPatientDetails)
+	public void setPatientDetails(List<ClinicPatientDetail> setPatientDetails)
 	{
 		this.lstPatientDetails = setPatientDetails;
 	}
 
-	public List<CampPatientDetail> getPatientDetails()
+	public List<ClinicPatientDetail> getPatientDetails()
 	{
 		return lstPatientDetails;
 	}

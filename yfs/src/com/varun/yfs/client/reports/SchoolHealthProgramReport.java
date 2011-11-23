@@ -167,8 +167,8 @@ public class SchoolHealthProgramReport extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				ModelData model = new BaseModelData();
-				model.set("dateFrom", dtfldFromDate.getValue());
-				model.set("dateTo", dtfldToDate.getValue());
+				model.set("dateFrom", dtfldFromDate.getValue().getTime());
+				model.set("dateTo", dtfldToDate.getValue().getTime());
 				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
 				{
 					@Override

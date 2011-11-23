@@ -82,7 +82,7 @@ public class CampScreeningDetail implements Serializable
 	private List<Doctor> lstDoctors;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name="CamScrDet_PatDet")
+	@JoinTable(name="CampScrDet_PatDet", joinColumns = { @JoinColumn(name = "campId") }, inverseJoinColumns = { @JoinColumn(name = "patId") })
 	private List<CampPatientDetail> lstPatientDetails;
 
 	public CampScreeningDetail()

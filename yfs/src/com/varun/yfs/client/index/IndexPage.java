@@ -423,7 +423,7 @@ public class IndexPage extends LayoutContainer
 					layoutContainerCenter.removeAll();
 					layoutContainerCenter.setLayoutData(new FitData(15));
 					String reportName = selectedItem.get("name");
-					if (reportName.equalsIgnoreCase("School Health Program"))
+					if (reportName.equalsIgnoreCase("School Health"))
 					{
 						layoutContainerCenter.add(new SchoolHealthProgramReport());
 					} else if (reportName.equalsIgnoreCase("Medical Camp"))

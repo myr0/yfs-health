@@ -30,48 +30,48 @@ public class SchoolScreeningDetail implements Serializable
 	@Column(nullable = false)
 	private String deleted;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "countryId", nullable = true, updatable = true, insertable = true)
 	private Country country;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "stateId", nullable = true, updatable = true, insertable = true)
 	private State state;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "cityId", nullable = true, updatable = true, insertable = true)
 	private City city;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "townId", nullable = true, updatable = true, insertable = true)
 	private Town town;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "villageId", nullable = true, updatable = true, insertable = true)
 	private Village village;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true)
 	private ChapterName chapterName;
 
 	@Column(nullable = true)
 	private String address;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "localityId", nullable = true, updatable = true, insertable = true)
 	private Locality locality;
 
 	@Column(nullable = true)
 	private String screeningDate;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "processTypeId", nullable = true, updatable = true, insertable = true)
 	private ProcessType processType;
 
 	@Column(nullable = true)
 	private String contactInformation;
 
-	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "typeOfLocationId", nullable = true, updatable = true, insertable = true)
 	private TypeOfLocation typeOfLocation;
 
@@ -82,7 +82,7 @@ public class SchoolScreeningDetail implements Serializable
 	private List<Doctor> lstDoctors;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name="ScrDet_PatDet")
+	@JoinTable(name = "SchoolScrDet_PatDet", joinColumns = { @JoinColumn(name = "schId") }, inverseJoinColumns = { @JoinColumn(name = "patId") })
 	private List<SchoolPatientDetail> lstPatientDetails;
 
 	public SchoolScreeningDetail()

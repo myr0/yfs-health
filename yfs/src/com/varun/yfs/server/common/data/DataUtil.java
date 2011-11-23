@@ -30,6 +30,7 @@ import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.CampPatientDetail;
 import com.varun.yfs.server.models.CampScreeningDetail;
+import com.varun.yfs.server.models.ClinicPatientDetail;
 import com.varun.yfs.server.models.ClinicScreeningDetail;
 import com.varun.yfs.server.models.SchoolPatientDetail;
 import com.varun.yfs.server.models.SchoolScreeningDetail;
@@ -467,6 +468,25 @@ public class DataUtil
 		return lstClinics;
 	}
 
+	public static Object executeQuery(String string)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Query filter = session.createSQLQuery(string);
+		Object obj;
+		try
+		{
+			obj = filter.list();
+		} catch (HibernateException ex)
+		{
+			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			throw ex;
+		} finally
+		{
+			session.close();
+		}
+		return obj;
+	}
+
 	private static void extractPatientDetailData(Session session, CampScreeningDetailDTO screeningDetailDto, CampScreeningDetail scrDetHibObj)
 	{
 		int index = 0;
@@ -532,7 +552,7 @@ public class DataUtil
 		int index = 0;
 		for (ModelData modelData : screeningDetailDto.getPatientDetails())
 		{
-			CampPatientDetail patientDetail = scrDetHibObj.getPatientDetails().get(index++);
+			ClinicPatientDetail patientDetail = scrDetHibObj.getPatientDetails().get(index++);
 
 			patientDetail.setName(Util.safeToString(modelData.get("name")));
 			patientDetail.setAge(Util.safeToString(modelData.get("age")));
@@ -541,13 +561,13 @@ public class DataUtil
 			if (object != null)
 				patientDetail.setSex(object.toString());
 
-			patientDetail.setOccupation(Util.safeToString(modelData.get("occupation")));
+//			patientDetail.setOccupation(Util.safeToString(modelData.get("occupation")));
 			patientDetail.setHeight(Util.safeToString(modelData.get("height")));
 			patientDetail.setWeight(Util.safeToString(modelData.get("weight")));
 			patientDetail.setAddress(Util.safeToString(modelData.get("address")));
 			patientDetail.setContactNo(Util.safeToString(modelData.get("contactNo")));
 			patientDetail.setDeleted(modelData.get("deleted").toString());
-			patientDetail.setBloodPressure(Util.safeToString(modelData.get("bloodPressure")));
+//			patientDetail.setBloodPressure(Util.safeToString(modelData.get("bloodPressure")));
 
 			patientDetail.setFindings(Util.safeToString(modelData.get("findings")));
 			patientDetail.setTreatment(Util.safeToString(modelData.get("treatment")));
