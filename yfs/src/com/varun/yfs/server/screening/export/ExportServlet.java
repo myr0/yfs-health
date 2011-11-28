@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 public class ExportServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 7669055084009277659L;
-	private static Logger logger = Logger.getLogger(ExportServlet.class);
+	private static final Logger LOGGER = Logger.getLogger(ExportServlet.class);
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
@@ -31,11 +31,11 @@ public class ExportServlet extends HttpServlet
 			while (iStream.read(arg0) != -1)
 				response.getOutputStream().write(arg0);
 
-			logger.debug("Finished streaming file contents: " + fileName);
+			LOGGER.debug("Finished streaming file contents: " + fileName);
 
 		} catch (Exception e)
 		{
-			logger.error("Exception in Excel Sample Servlet: " + e.getMessage());
+			LOGGER.error("Exception in Excel Sample Servlet: " + e.getMessage());
 			throw new ServletException("Exception in Excel Sample Servlet", e);
 		} finally
 		{

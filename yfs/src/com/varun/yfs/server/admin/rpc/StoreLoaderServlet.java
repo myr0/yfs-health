@@ -15,7 +15,6 @@ import com.varun.yfs.server.common.data.DataUtil;
 
 public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoader
 {
-	private static final Logger logger = Logger.getLogger(StoreLoaderServlet.class);
 	private static final long serialVersionUID = -3784282705749642889L;
 
 	@Override

@@ -38,17 +38,17 @@ import com.varun.yfs.server.models.User;
 
 public class DataUtil
 {
-	public static final List<String> lstEntities = Arrays.asList(new String[] { "Entities", "Chapter Name", "City", "Country", "Doctor", "Locality", "Process Type", "State", "Town", "Type Of Location", "Village", "Volunteer", "User", "Referral Type", "Project", "Clinic" });
+	public static final List<String> ENTITIES = Arrays.asList(new String[] { "Entities", "Chapter Name", "City", "Country", "Doctor", "Locality", "Process Type", "State", "Town", "Type Of Location", "Village", "Volunteer", "User", "Referral Type", "Project", "Clinic" });
 	@SuppressWarnings("rawtypes")
 	private static Map<String, Class> nameToHibernateModelClass = new HashMap<String, Class>();
 	@SuppressWarnings("rawtypes")
 	private static Map<String, Class> nameToDtoClass = new HashMap<String, Class>();
 
-	private static Logger logger = LoggerFactory.getLogger(DataUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataUtil.class);
 
 	static
 	{
-		for (String entityName : lstEntities)
+		for (String entityName : ENTITIES)
 		{
 			String className = entityName.replaceAll(" ", "");
 			try
@@ -57,7 +57,7 @@ public class DataUtil
 				nameToDtoClass.put(className, Class.forName("com.varun.yfs.dto." + className + "DTO"));
 			} catch (ClassNotFoundException e)
 			{
-				logger.error("Encountered error loading specified class instance: " + e.getCause());
+				LOGGER.error("Encountered error loading specified class instance: " + e.getCause());
 			}
 		}
 	}
@@ -75,7 +75,7 @@ public class DataUtil
 			session.close();
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error retrieving objects: " + ex.getCause());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getCause());
 			throw ex;
 		}
 		return lstEntities;
@@ -103,7 +103,7 @@ public class DataUtil
 			session.close();
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error retrieving objects: " + ex.getCause());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getCause());
 			throw ex;
 		}
 		return lstDtoObjects;
@@ -143,22 +143,22 @@ public class DataUtil
 
 			} catch (SecurityException ex)
 			{
-				logger.error("Security Violation: " + ex.getCause());
+				LOGGER.error("Security Violation: " + ex.getCause());
 				throw ex;
 			} catch (NoSuchMethodException ex)
 			{
-				logger.error("No such method exists: " + ex.getCause());
+				LOGGER.error("No such method exists: " + ex.getCause());
 				ex.printStackTrace();
 			} catch (IllegalArgumentException ex)
 			{
-				logger.error("Inappropriate argument passed: " + ex.getCause());
+				LOGGER.error("Inappropriate argument passed: " + ex.getCause());
 				throw ex;
 			} catch (IllegalAccessException ex2)
 			{
-				logger.error("Illegal access trying to invoke a method: " + ex2.getCause());
+				LOGGER.error("Illegal access trying to invoke a method: " + ex2.getCause());
 			} catch (InvocationTargetException ex)
 			{
-				logger.error("Unable to create a class instance: " + ex.getCause());
+				LOGGER.error("Unable to create a class instance: " + ex.getCause());
 			}
 			session.saveOrUpdate(hibObject);
 		}
@@ -189,7 +189,7 @@ public class DataUtil
 		} catch (HibernateException ex)
 		{
 			trans.rollback();
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{
@@ -220,7 +220,7 @@ public class DataUtil
 		} catch (HibernateException ex)
 		{
 			trans.rollback();
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{
@@ -251,7 +251,7 @@ public class DataUtil
 		} catch (HibernateException ex)
 		{
 			trans.rollback();
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{
@@ -281,7 +281,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{
@@ -309,7 +309,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{
@@ -337,7 +337,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{
@@ -368,7 +368,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{
@@ -399,7 +399,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{
@@ -434,7 +434,7 @@ public class DataUtil
 		} catch (HibernateException ex)
 		{
 			trans.rollback();
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{
@@ -459,7 +459,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{
@@ -478,7 +478,7 @@ public class DataUtil
 			obj = filter.list();
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
 			throw ex;
 		} finally
 		{

@@ -8,7 +8,7 @@ import com.varun.yfs.dto.CampPatientDetailDTO;
 
 public class CampPatientDataExtractor extends SchoolPatientDataExtractor
 {
-	private static Logger logger = Logger.getLogger(CampPatientDataExtractor.class);
+	private static  final Logger LOGGER = Logger.getLogger(CampPatientDataExtractor.class);
 
 	public CampPatientDataExtractor(List<String> errorRows)
 	{
@@ -18,12 +18,12 @@ public class CampPatientDataExtractor extends SchoolPatientDataExtractor
 	@Override
 	public void convertToPatientDetailDTO(List<String> lstCols, boolean processIds)
 	{
-		logger.debug(processedRowCount + "- starting conversion.");
+		LOGGER.debug(processedRowCount + "- starting conversion.");
 		errorString.trimToSize();
 
 		if (lstCols.size() < 14)
 		{
-			logger.debug(processedRowCount + " -record conversion aborted. Insufficient columns in record.");
+			LOGGER.debug(processedRowCount + " -record conversion aborted. Insufficient columns in record.");
 			processedRowCount += 1;
 			return;
 		}
@@ -72,7 +72,7 @@ public class CampPatientDataExtractor extends SchoolPatientDataExtractor
 		if (startErrorCount == endErrorCount)
 			lstPatientDetails.add(patientDetailDTO);
 
-		logger.debug(processedRowCount + " -record conversion completed :" + (startErrorCount == endErrorCount));
+		LOGGER.debug(processedRowCount + " -record conversion completed :" + (startErrorCount == endErrorCount));
 
 		errorRows.add(processedRowCount + " - " + errorString.toString());
 		processedRowCount += 1;

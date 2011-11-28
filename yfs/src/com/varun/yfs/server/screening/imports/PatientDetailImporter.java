@@ -14,7 +14,7 @@ import com.varun.yfs.server.screening.imports.extraction.SchoolPatientDataExtrac
 
 public class PatientDetailImporter
 {
-	private static Logger logger = Logger.getLogger(PatientDetailImporter.class);
+	private static  final Logger LOGGER = Logger.getLogger(PatientDetailImporter.class);
 
 	private ArrayBlockingQueue<List<String>> excelRows;
 	private List<String> errorRows;
@@ -30,7 +30,7 @@ public class PatientDetailImporter
 
 	public void convertRecords(boolean processIds)
 	{
-		logger.debug("Conversion to Patient Detail has Started");
+		LOGGER.debug("Conversion to Patient Detail has Started");
 		List<String> lstCols = null;
 		while (true)
 		{
@@ -44,14 +44,14 @@ public class PatientDetailImporter
 
 			if (lstCols.equals(Collections.EMPTY_LIST))
 			{
-				logger.debug("Conversion to Patient Detail Completed.");
+				LOGGER.debug("Conversion to Patient Detail Completed.");
 				break;
 			}
 
 			extractor.convertToPatientDetailDTO(lstCols, processIds);
 
 			if (extractor.getPatientData().size() > 0)
-				logger.debug("Current row processed: " + extractor.getPatientData().get(extractor.getPatientData().size() - 1));
+				LOGGER.debug("Current row processed: " + extractor.getPatientData().get(extractor.getPatientData().size() - 1));
 		}
 	}
 

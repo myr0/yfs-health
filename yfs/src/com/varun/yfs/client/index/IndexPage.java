@@ -14,12 +14,14 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
@@ -69,18 +71,25 @@ public class IndexPage extends LayoutContainer
 	private LayoutContainer layoutContainerWest;
 
 	private ContentPanel cpSchoolScreening;
-	private final static TreeStore<ModelData> schoolScreeningPanelStore = new TreeStore<ModelData>();
-	private final static TreePanel<ModelData> treeSchoolScreeningPanel = new TreePanel<ModelData>(schoolScreeningPanelStore);
+	private static TreeStore<ModelData> schoolScreeningPanelStore = new TreeStore<ModelData>();
+	private static TreePanel<ModelData> treeSchoolScreeningPanel = new TreePanel<ModelData>(schoolScreeningPanelStore);
 
 	private static ContentPanel cpClinicScreening;
-	private final static TreeStore<ModelData> clinicScreeningPanelStore = new TreeStore<ModelData>();
-	private final static TreePanel<ModelData> treeClinicScreeningPanel = new TreePanel<ModelData>(clinicScreeningPanelStore);
+	private static TreeStore<ModelData> clinicScreeningPanelStore = new TreeStore<ModelData>();
+	private static TreePanel<ModelData> treeClinicScreeningPanel = new TreePanel<ModelData>(clinicScreeningPanelStore);
 
 	private ContentPanel cpCampScreening;
-	private final static TreeStore<ModelData> campScreeningPanelStore = new TreeStore<ModelData>();
-	private final static TreePanel<ModelData> treeCampScreeningPanel = new TreePanel<ModelData>(campScreeningPanelStore);
+	private static TreeStore<ModelData> campScreeningPanelStore = new TreeStore<ModelData>();
+	private static TreePanel<ModelData> treeCampScreeningPanel = new TreePanel<ModelData>(campScreeningPanelStore);
 
 	private String userName;
+
+	protected final static Listener<MessageBoxEvent> dummyListener = new Listener<MessageBoxEvent>()
+	{
+		public void handleEvent(MessageBoxEvent ce)
+		{
+		}
+	};
 
 	public IndexPage()
 	{
@@ -346,7 +355,8 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				System.out.println(caught.getMessage());
+				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(), dummyListener);
+				// System.out.println(caught.getMessage());
 			}
 
 			@Override
@@ -402,10 +412,8 @@ public class IndexPage extends LayoutContainer
 				if (model.get("icon") != null)
 				{
 					return IconHelper.createStyle((String) model.get("icon"));
-				} else
-				{
-					return null;
 				}
+				return null;
 			}
 
 		});
@@ -450,7 +458,8 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				System.out.println(caught.getMessage());
+//				System.out.println(caught.getMessage());
+				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(), dummyListener);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -781,7 +790,8 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				System.out.println(caught.getMessage());
+//				System.out.println(caught.getMessage());
+				MessageBox.info("Error", "Error Encountered while loading School Screening Panel" + caught.getMessage(), dummyListener);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -806,7 +816,8 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				System.out.println(caught.getMessage());
+				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(), dummyListener);
+//				System.out.println(caught.getMessage());
 			}
 
 			@SuppressWarnings("unchecked")
@@ -831,7 +842,8 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				System.out.println(caught.getMessage());
+				MessageBox.info("Error", "Error Encountered while loading Camp Panel" + caught.getMessage(), dummyListener);
+//				System.out.println(caught.getMessage());
 			}
 
 			@SuppressWarnings("unchecked")

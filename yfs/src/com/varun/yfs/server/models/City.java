@@ -58,7 +58,7 @@ public class City implements Serializable
 		return cityName;
 	}
 
-	public void setName(String name)
+	public final void setName(String name)
 	{
 		this.cityName = name;
 	}
@@ -69,7 +69,7 @@ public class City implements Serializable
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}
@@ -91,13 +91,13 @@ public class City implements Serializable
 	{
 		this.locality = locality;
 	}
-	
+
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "city")
 	public Set<Locality> getLocality()
 	{
 		return locality;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{

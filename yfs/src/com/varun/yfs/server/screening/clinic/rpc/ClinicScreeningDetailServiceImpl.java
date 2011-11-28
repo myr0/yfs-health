@@ -10,13 +10,12 @@ import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.screening.clinic.rpc.ClinicScreeningDetailService;
 import com.varun.yfs.dto.ClinicScreeningDetailDTO;
-import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
 import com.varun.yfs.server.common.data.DataUtil;
 
 public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet implements ClinicScreeningDetailService
 {
-	private static Logger logger = Logger.getLogger(ClinicScreeningDetailServiceImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(ClinicScreeningDetailServiceImpl.class);
 	private static final long serialVersionUID = 4397970043413666183L;
 
 	@Override
@@ -58,7 +57,7 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 			DataUtil.saveScreeningDetail(modelData);
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error trying to save the model." + ex.getCause());
+			LOGGER.error("Encountered error trying to save the model." + ex.getCause());
 			status = RpcStatusEnum.FAILURE;
 		}
 		return status;

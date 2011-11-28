@@ -11,7 +11,7 @@ import com.varun.yfs.server.common.data.DataUtil;
 
 public abstract class AbstractPatientDataExtractor
 {
-	private static Logger logger = Logger.getLogger(AbstractPatientDataExtractor.class);
+	private static  final Logger LOGGER = Logger.getLogger(AbstractPatientDataExtractor.class);
 
 	protected List<ReferralTypeDTO> referralTypes = DataUtil.getModelList(ListModelDataEnum.ReferralType.name());
 	protected List lstPatientDetails = new ArrayList();

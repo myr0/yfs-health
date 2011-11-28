@@ -9,8 +9,7 @@ import com.varun.yfs.server.common.data.DataUtil;
 
 public class ReportDetailServiceImpl extends RemoteServiceServlet implements ReportDetailService
 {
-
-	private static final long serialVersionUID = 4564920713040175887L;
+	private static final long serialVersionUID = -8632087746514887014L;
 
 	@Override
 	public ModelData getModel(ReportType report, ModelData params)
@@ -30,10 +29,11 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 
 		} else if (ReportType.School.equals(report))
 		{
-			String fromDate = model.get("dateFrom");
-			String toDate = model.get("dateTo");
+			Long fromDate = params.get("dateFrom");
+			Long toDate = params.get("dateTo");
 
-			model.set("locationsList", 	DataUtil.executeQuery(""));
+			model.set("locationsCount", DataUtil.executeQuery("select count(*) from schoolscreeningdetail sd join locality ld on sd.schoolscreeningdetailid = ld.localityid"));
+			model.set("locationsList", DataUtil.executeQuery("select ld.* from schoolscreeningdetail sd join locality ld on sd.schoolscreeningdetailid = ld.localityid"));
 		}
 
 		return null;

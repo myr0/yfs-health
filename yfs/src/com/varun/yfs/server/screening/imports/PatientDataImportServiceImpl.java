@@ -20,7 +20,7 @@ import com.varun.yfs.dto.ProgressDTO;
 public class PatientDataImportServiceImpl extends RemoteServiceServlet implements PatientDataImportService
 {
 	private static final long serialVersionUID = 152574210934616316L;
-	private static Logger logger = Logger.getLogger(PatientDataImportServiceImpl.class);
+	private static  final Logger LOGGER = Logger.getLogger(PatientDataImportServiceImpl.class);
 
 	private final ArrayBlockingQueue<List<String>> excelRows = new ArrayBlockingQueue<List<String>>(1000);
 	private final List<String> errorRows = Collections.synchronizedList(new ArrayList<String>(1000));
@@ -47,26 +47,26 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 		} catch (FileNotFoundException e)
 		{
 			statusMessage = "The uploaded file was not found. Please retry again.";
-			logger.error(statusMessage + e.getMessage());
+			LOGGER.error(statusMessage + e.getMessage());
 			return statusMessage;
 		} catch (InvalidFormatException e)
 		{
 			statusMessage = "The uploaded file is invalid. Please save the file again as xls/xlsx and retry.";
-			logger.error(statusMessage + e.getMessage());
+			LOGGER.error(statusMessage + e.getMessage());
 			return statusMessage;
 		} catch (IllegalArgumentException e)
 		{
 			statusMessage = "The uploaded file doesn't follow the set template. Please retry the import using the specified template." + e.getMessage();
-			logger.error(statusMessage + e.getMessage());
+			LOGGER.error(statusMessage + e.getMessage());
 			return statusMessage;
 		} catch (IOException e)
 		{
 			statusMessage = "Internal Error has occured that prevents the file from being read/accessed. Details :" + e.getMessage();
-			logger.error(statusMessage + e.getMessage());
+			LOGGER.error(statusMessage + e.getMessage());
 			return statusMessage;
 		}
 
-		logger.debug("Starting the parse/import threads");
+		LOGGER.debug("Starting the parse/import threads");
 		startExcelParserThread(path);
 		startPatientDetailImporterThread(processIds);
 
@@ -111,7 +111,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 				} catch (Exception ex)
 				{
 					String errorMesssage = "Error encountered trying to convert excel rows to file contents." + ex.getMessage();
-					logger.error(errorMesssage);
+					LOGGER.error(errorMesssage);
 					errorRows.add(errorMesssage);
 					status = RpcStatusEnum.FAILURE;
 				}
@@ -134,7 +134,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 				} catch (Exception ex)
 				{
 					String errorMessage = "Error encountered trying to read the file contents." + ex.getMessage();
-					logger.error(errorMessage);
+					LOGGER.error(errorMessage);
 					errorRows.add(errorMessage);
 					status = RpcStatusEnum.FAILURE;
 				}

@@ -15,7 +15,7 @@ import com.varun.yfs.server.common.data.DataUtil;
 
 public class CampScreeningDetailServiceImpl extends RemoteServiceServlet implements CampScreeningDetailService
 {
-	private static Logger logger = Logger.getLogger(CampScreeningDetailServiceImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(CampScreeningDetailServiceImpl.class);
 	private static final long serialVersionUID = 4397970043413666183L;
 
 	@Override
@@ -57,7 +57,7 @@ public class CampScreeningDetailServiceImpl extends RemoteServiceServlet impleme
 			DataUtil.saveScreeningDetail(modelData);
 		} catch (HibernateException ex)
 		{
-			logger.error("Encountered error trying to save the model." + ex.getCause());
+			LOGGER.error("Encountered error trying to save the model." + ex.getCause());
 			status = RpcStatusEnum.FAILURE;
 		}
 		return status;

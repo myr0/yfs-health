@@ -17,7 +17,7 @@ public class UploadServlet extends UploadAction
 
 	private static final long serialVersionUID = 1L;
 
-	private static Logger logger = Logger.getLogger(UploadServlet.class);
+	private static  final Logger LOGGER = Logger.getLogger(UploadServlet.class);
 	private Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
 	private Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
 
@@ -34,7 +34,7 @@ public class UploadServlet extends UploadAction
 					File file = File.createTempFile(item.getName(), "");
 					item.write(file);
 
-					logger.debug("Writing the file to temporary folder." + file.getAbsolutePath());
+					LOGGER.debug("Writing the file to temporary folder." + file.getAbsolutePath());
 
 					receivedFiles.put(item.getFieldName(), file);
 					receivedContentTypes.put(item.getFieldName(), item.getContentType());
@@ -43,7 +43,7 @@ public class UploadServlet extends UploadAction
 
 				} catch (Exception e)
 				{
-					logger.error("Encountered an error while uploading the file. Action aborted: " + e.getMessage());
+					LOGGER.error("Encountered an error while uploading the file. Action aborted: " + e.getMessage());
 					throw new UploadActionException(e);
 				}
 			}

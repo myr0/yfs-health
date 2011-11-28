@@ -110,7 +110,7 @@ public class CampScreeningDetail implements Serializable
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final  void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}

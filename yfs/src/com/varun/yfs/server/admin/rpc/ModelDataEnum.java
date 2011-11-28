@@ -84,7 +84,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				logger.error("Encountered error saving the model." + ex.getMessage());
+				LOGGER.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -143,7 +143,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				logger.error("Encountered error saving the model." + ex.getMessage());
+				LOGGER.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -208,7 +208,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				logger.error("Encountered error saving the model." + ex.getMessage());
+				LOGGER.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -271,7 +271,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				logger.error("Encountered error saving the model." + ex.getMessage());
+				LOGGER.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -335,7 +335,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				logger.error("Encountered error saving the model." + ex.getMessage());
+				LOGGER.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -404,7 +404,7 @@ public enum ModelDataEnum
 					transact.rollback();
 					session.close();
 				}
-				logger.error("Encountered error saving the model." + ex.getMessage());
+				LOGGER.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -495,7 +495,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				logger.error("Encountered error saving the model." + ex.getMessage());
+				LOGGER.error("Encountered error saving the model." + ex.getMessage());
 				if (session != null)
 				{
 					transact.rollback();
@@ -566,7 +566,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				logger.error("Encountered error saving the model." + ex.getMessage());
+				LOGGER.error("Encountered error saving the model." + ex.getMessage());
 				if (session != null)
 				{
 					transact.rollback();
@@ -631,7 +631,7 @@ public enum ModelDataEnum
 				status = "Success";
 			} catch (HibernateException ex)
 			{
-				logger.error("Encountered error saving the model." + ex.getMessage());
+				LOGGER.error("Encountered error saving the model." + ex.getMessage());
 			}
 			return status;
 		}
@@ -740,6 +740,6 @@ public enum ModelDataEnum
 
 	abstract public String saveModel(ModelData model);
 
-	private static Logger logger = Logger.getLogger(ModelDataEnum.class);
+	private static final Logger LOGGER = Logger.getLogger(ModelDataEnum.class);
 
 }

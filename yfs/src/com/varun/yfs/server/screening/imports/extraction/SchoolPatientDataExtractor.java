@@ -12,7 +12,7 @@ import com.varun.yfs.dto.YesNoDTO;
 
 public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 {
-	private static Logger logger = Logger.getLogger(SchoolPatientDataExtractor.class);
+	private static final  Logger LOGGER = Logger.getLogger(SchoolPatientDataExtractor.class);
 
 	public SchoolPatientDataExtractor(List<String> errorRows)
 	{
@@ -22,12 +22,12 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 	@Override
 	public void convertToPatientDetailDTO(List<String> lstCols, boolean processIds)
 	{
-		logger.debug(processedRowCount + "- starting conversion.");
+		LOGGER.debug(processedRowCount + "- starting conversion.");
 		errorString.trimToSize();
 
 		if (lstCols.size() < 14)
 		{
-			logger.debug(processedRowCount + " -record conversion aborted. Insufficient columns in record.");
+			LOGGER.debug(processedRowCount + " -record conversion aborted. Insufficient columns in record.");
 			processedRowCount += 1;
 			return;
 		}
@@ -74,7 +74,7 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 		if (startErrorCount == endErrorCount)
 			lstPatientDetails.add(patientDetailDTO);
 
-		logger.debug(processedRowCount + " -record conversion completed :" + (startErrorCount == endErrorCount));
+		LOGGER.debug(processedRowCount + " -record conversion completed :" + (startErrorCount == endErrorCount));
 
 		errorRows.add(processedRowCount + " - " + errorString.toString());
 		processedRowCount += 1;
@@ -101,7 +101,7 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 				return yesNoDTO1.toString();
 		}
 		String errorMessage = " Unable to decode. No matching value for " + string + " found in database.";
-		logger.debug("Decode for Emergency/Surgery Column failed. " + errorMessage);
+		LOGGER.debug("Decode for Emergency/Surgery Column failed. " + errorMessage);
 		errorString.append(errorMessage);
 		return null;
 	}
@@ -123,7 +123,7 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 			}
 		}
 		String errorMessage = " Unable to decode. No matching value for " + string + " found in database.";
-		logger.debug("Decode for Referral Column failed. " + errorMessage);
+		LOGGER.debug("Decode for Referral Column failed. " + errorMessage);
 		errorString.append(errorMessage);
 		return null;
 	}
@@ -143,7 +143,7 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 				return gender1.toString();
 		}
 		String errorMessage = " Unable to decode. No matching value for " + string + " found in database.";
-		logger.debug("Decode for Sex Column failed. " + errorMessage);
+		LOGGER.debug("Decode for Sex Column failed. " + errorMessage);
 		errorString.append(errorMessage);
 		return null;
 	}

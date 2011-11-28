@@ -54,7 +54,7 @@ public class ClinicPatientDetailDTO extends BaseModelData
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		set("deleted", deleted);
 		this.deleted = deleted;

@@ -39,7 +39,7 @@ public class UserDTO extends BaseModelData
 		return get("name");
 	}
 
-	public void setName(String name)
+	public final void setName(String name)
 	{
 		set("name", name);
 	}
@@ -49,7 +49,7 @@ public class UserDTO extends BaseModelData
 		return get("password");
 	}
 
-	public void setPassword(String password)
+	public final void setPassword(String password)
 	{
 		set("password", password);
 	}
@@ -86,7 +86,7 @@ public class UserDTO extends BaseModelData
 		set("deleted", deleted);
 	}
 
-	public void setLoggedIn(boolean loggedIn)
+	public final void setLoggedIn(boolean loggedIn)
 	{
 		set("loggedIn", loggedIn);
 	}

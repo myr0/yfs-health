@@ -9,11 +9,9 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
@@ -27,7 +25,7 @@ import com.varun.yfs.server.screening.imports.ExcelReader;
 public class ExportServiceImpl extends RemoteServiceServlet implements ExportService
 {
 	private static final long serialVersionUID = -2853390238324491312L;
-	private static Logger logger = Logger.getLogger(ExportServiceImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(ExportServiceImpl.class);
 
 	@Override
 	public String createExportFile(List<String> colHeaders, List<? extends ModelData> lstData)
@@ -81,7 +79,7 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 			FileOutputStream out = new FileOutputStream(fileName);
 			myWorkBook.write(out);
 			out.close();
-			logger.debug("Created export file at location =" + fileName);
+			LOGGER.debug("Created export file at location =" + fileName);
 		} catch (Exception e)
 		{
 			e.printStackTrace();

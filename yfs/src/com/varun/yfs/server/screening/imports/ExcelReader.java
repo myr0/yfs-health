@@ -25,7 +25,7 @@ public class ExcelReader
 {
 	public static final String WORKSHEET_NAME = "Screening Detail";
 
-	private static Logger logger = Logger.getLogger(ExcelReader.class);
+	private static  final Logger LOGGER = Logger.getLogger(ExcelReader.class);
 
 	private Workbook workbook = null;
 	private DataFormatter formatter = null;
@@ -89,7 +89,7 @@ public class ExcelReader
 		FileInputStream fis = null;
 		try
 		{
-			logger.debug("Opening workbook [" + source.getName() + "]");
+			LOGGER.debug("Opening workbook [" + source.getName() + "]");
 
 			fis = new FileInputStream(source);
 
@@ -115,7 +115,7 @@ public class ExcelReader
 	{
 		Row row = null;
 
-		logger.debug("Converting files contents to CSV string");
+		LOGGER.debug("Converting files contents to CSV string");
 
 		if (sheet.getPhysicalNumberOfRows() > 0)
 		{
@@ -128,7 +128,7 @@ public class ExcelReader
 					Thread.sleep(50);
 				} catch (InterruptedException e)
 				{
-					logger.error("Thread interrupted while attempting to read excel rows.");
+					LOGGER.error("Thread interrupted while attempting to read excel rows.");
 					e.printStackTrace();
 				}
 				this.rowToCSV(row);
@@ -136,7 +136,7 @@ public class ExcelReader
 				if (j == lastRowNum)
 				{
 					this.excelRows.add(Collections.EMPTY_LIST);
-					logger.debug("Excel Reader encountered EOF.");
+					LOGGER.debug("Excel Reader encountered EOF.");
 				}
 			}
 		}
@@ -179,7 +179,7 @@ public class ExcelReader
 			processedRowCount++;
 		} catch (InterruptedException e)
 		{
-			logger.error("Thread interrupted while attempting to put in the excel rows to the pipe.");
+			LOGGER.error("Thread interrupted while attempting to put in the excel rows to the pipe.");
 			e.printStackTrace();
 		}
 	}

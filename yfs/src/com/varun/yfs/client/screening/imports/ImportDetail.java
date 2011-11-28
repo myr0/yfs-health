@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -33,7 +34,7 @@ import com.varun.yfs.dto.ProgressDTO;
 
 public class ImportDetail extends LayoutContainer
 {
-	private static final PatientDataImportServiceAsync patientDataImportService = PatientDataImportService.Util.getInstance();
+	private final PatientDataImportServiceAsync patientDataImportService = PatientDataImportService.Util.getInstance();
 	private String uploadPath;
 	private FlowPanel panelImages = new FlowPanel();
 	private EditorGrid patientDetailGrid;
@@ -99,7 +100,7 @@ public class ImportDetail extends LayoutContainer
 		IndexPage.unmaskCenterComponent();
 	}
 
-	private IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler()
+	private final IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler()
 	{
 
 		public void onFinish(IUploader uploader)
@@ -107,7 +108,7 @@ public class ImportDetail extends LayoutContainer
 			if (uploader.getStatus() == gwtupload.client.IUploadStatus.Status.SUCCESS)
 			{
 				new PreloadedImage(uploader.fileUrl(), showImage);
-				System.out.println(uploader.getServerResponse());
+				GWT.log(uploader.getServerResponse());
 				uploadPath = uploader.getServerInfo().message;
 
 				IndexPage.maskCenterComponent("Please wait...");
@@ -210,6 +211,7 @@ public class ImportDetail extends LayoutContainer
 						@Override
 						public void onSuccess(List<? extends BaseModelData> result)
 						{
+							List<? extends BaseModelData> resultTemp = result;
 							ListStore store = patientDetailGrid.getStore();
 							if (appendMode)
 							{
@@ -222,10 +224,10 @@ public class ImportDetail extends LayoutContainer
 									}
 
 								}
-								result = lstCurrentModels;
+								resultTemp = lstCurrentModels;
 							}
 							store.removeAll();
-							store.add(result);
+							store.add(resultTemp);
 							patientDetailGrid.unmask();
 						}
 
@@ -235,7 +237,7 @@ public class ImportDetail extends LayoutContainer
 		}
 	};
 
-	private OnLoadPreloadedImageHandler showImage = new OnLoadPreloadedImageHandler()
+	private final OnLoadPreloadedImageHandler showImage = new OnLoadPreloadedImageHandler()
 	{
 		public void onLoad(PreloadedImage image)
 		{

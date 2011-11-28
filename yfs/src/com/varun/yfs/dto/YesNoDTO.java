@@ -26,7 +26,7 @@ public class YesNoDTO extends BaseModelData
 		return get("name");
 	}
 
-	public void setName(String name)
+	public final void setName(String name)
 	{
 		set("name", name);
 	}
