@@ -68,9 +68,9 @@ import com.varun.yfs.dto.CountryDTO;
 import com.varun.yfs.dto.DoctorDTO;
 import com.varun.yfs.dto.GenderDTO;
 import com.varun.yfs.dto.LocalityDTO;
-import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.ProcessTypeDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
+import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.dto.StateDTO;
 import com.varun.yfs.dto.TownDTO;
@@ -716,7 +716,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		// "Referral 3", 100);
 		// configs.add(medicines3Column);
 
-		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
+		ColumnConfig medicines = new ColumnConfig("medicines", "Medicines", 100);
 		final SimpleComboBox<String> yesNoDto = new SimpleComboBox<String>();
 		yesNoDto.setTriggerAction(TriggerAction.ALL);
 		yesNoDto.setForceSelection(true);
@@ -731,6 +731,36 @@ public class SchoolScreeningDetail extends LayoutContainer
 					return value;
 				}
 				return yesNoDto.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		medicines.setEditor(editor);
+		configs.add(medicines);
+
+		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
+		final SimpleComboBox<String> yesNoDtoEmergency = new SimpleComboBox<String>();
+		yesNoDtoEmergency.setTriggerAction(TriggerAction.ALL);
+		yesNoDtoEmergency.setForceSelection(true);
+		yesNoDtoEmergency.add(YesNoDTO.getStringValues());
+		editor = new CellEditor(yesNoDtoEmergency)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoEmergency.findModel(value.toString());
 			}
 
 			@Override
@@ -805,6 +835,14 @@ public class SchoolScreeningDetail extends LayoutContainer
 		};
 		caseClosed.setEditor(editor);
 		configs.add(caseClosed);
+
+		ColumnConfig referralUpdates = new ColumnConfig("referralUpdates", "Referral Updates", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(4096);
+		referralUpdates.setEditor(new CellEditor(textField));
+		configs.add(referralUpdates);
 
 		return configs;
 	}

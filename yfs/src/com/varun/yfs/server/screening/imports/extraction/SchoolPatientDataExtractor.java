@@ -8,11 +8,10 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.varun.yfs.dto.GenderDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
 import com.varun.yfs.dto.SchoolPatientDetailDTO;
-import com.varun.yfs.dto.YesNoDTO;
 
 public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 {
-	private static final  Logger LOGGER = Logger.getLogger(SchoolPatientDataExtractor.class);
+	private static final Logger LOGGER = Logger.getLogger(SchoolPatientDataExtractor.class);
 
 	public SchoolPatientDataExtractor(List<String> errorRows)
 	{
@@ -52,6 +51,7 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 		patientDetailDTO.setAge(lstCols.get(4));
 		patientDetailDTO.setAddress(lstCols.get(5));
 		patientDetailDTO.setContactNo(lstCols.get(6));
+
 		patientDetailDTO.setHeight(lstCols.get(7));
 		patientDetailDTO.setWeight(lstCols.get(8));
 		patientDetailDTO.setFindings(lstCols.get(9));
@@ -62,15 +62,20 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 
 		String decodeReferral2 = decodeReferral(lstCols.get(12));
 		patientDetailDTO.setReferral2(decodeReferral2);
-		
-		String decodeMedicines = decodeEmergency(lstCols.get(13));
+
+		String decodeMedicines = decodeYesNo(lstCols.get(13));
 		patientDetailDTO.setMedicines(decodeMedicines);
 
-		String decodeEmergency = decodeEmergency(lstCols.get(14));
+		String decodeEmergency = decodeYesNo(lstCols.get(14));
 		patientDetailDTO.setEmergency(decodeEmergency);
 
-		String decodeSurgery = decodeSurgery(lstCols.get(15));
+		String decodeSurgery = decodeYesNo(lstCols.get(15));
 		patientDetailDTO.setSurgeryCase(decodeSurgery);
+
+		String decodeCaseClosed = decodeYesNo(lstCols.get(16));
+		patientDetailDTO.setCaseClosed(decodeCaseClosed);
+
+		patientDetailDTO.setReferralUpdates(lstCols.get(17));
 
 		int endErrorCount = errorRows.size();
 
@@ -82,31 +87,6 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 		errorRows.add(processedRowCount + " - " + errorString.toString());
 		processedRowCount += 1;
 
-	}
-
-	protected String decodeSurgery(String string)
-	{
-		return decodeEmergency(string);
-	}
-
-	protected String decodeEmergency(String string)
-	{
-		if (string == null)
-			return null;
-		if (string.isEmpty())
-			return null;
-
-		String emergency = string.toLowerCase();
-		ListStore<YesNoDTO> yesNoDTO = YesNoDTO.getValues();
-		for (YesNoDTO yesNoDTO1 : yesNoDTO.getModels())
-		{
-			if (yesNoDTO1.toString().toLowerCase().equalsIgnoreCase(emergency))
-				return yesNoDTO1.toString();
-		}
-		String errorMessage = " Unable to decode. No matching value for " + string + " found in database.";
-		LOGGER.debug("Decode for Emergency/Surgery Column failed. " + errorMessage);
-		errorString.append(errorMessage);
-		return null;
 	}
 
 	protected String decodeReferral(String string)

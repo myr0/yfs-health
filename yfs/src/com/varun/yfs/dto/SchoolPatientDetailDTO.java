@@ -34,6 +34,7 @@ public class SchoolPatientDetailDTO extends BaseModelData
 	private ReferralTypeDTO referral;
 
 	private String medicines;
+	private String referralUpdates;
 
 	public SchoolPatientDetailDTO()
 	{
@@ -279,6 +280,17 @@ public class SchoolPatientDetailDTO extends BaseModelData
 		return medicines;
 	}
 
+	public void setReferralUpdates(String referralUpdates)
+	{
+		set("referralUpdates", referralUpdates);
+		this.referralUpdates = referralUpdates;
+	}
+
+	public String getReferralUpdates()
+	{
+		return referralUpdates;
+	}
+
 	@Override
 	public int hashCode()
 	{
@@ -308,7 +320,7 @@ public class SchoolPatientDetailDTO extends BaseModelData
 	{
 		// don't touch the order - just append to the last -- fragile code -
 		// export will get screwed
-		return id + "," + name + "," + sex + "," + standard + "," + age + "," + address + "," + contactNo + "," + height + "," + weight + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + "," + Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + "," + Util.safeCsvString(referral3) + "," + Util.safeCsvString(emergency) + "," + Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed);
+		return id + "," + name + "," + sex + "," + standard + "," + age + "," + address + "," + contactNo + "," + height + "," + weight + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + "," + Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + "," + Util.safeCsvString(medicines) + "," + Util.safeCsvString(emergency) + "," + Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed)+ "," + Util.safeCsvString(referralUpdates);
 	}
 
 }

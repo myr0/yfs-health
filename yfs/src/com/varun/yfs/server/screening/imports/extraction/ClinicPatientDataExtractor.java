@@ -8,7 +8,7 @@ import com.varun.yfs.dto.CampPatientDetailDTO;
 
 public class ClinicPatientDataExtractor extends SchoolPatientDataExtractor
 {
-	private static final  Logger LOGGER = Logger.getLogger(ClinicPatientDataExtractor.class);
+	private static final Logger LOGGER = Logger.getLogger(ClinicPatientDataExtractor.class);
 
 	public ClinicPatientDataExtractor(List<String> errorRows)
 	{
@@ -61,10 +61,10 @@ public class ClinicPatientDataExtractor extends SchoolPatientDataExtractor
 		String decodeReferral2 = decodeReferral(lstCols.get(13));
 		patientDetailDTO.setReferral2(decodeReferral2);
 
-		String decodeEmergency = decodeEmergency(lstCols.get(14));
+		String decodeEmergency = decodeYesNo(lstCols.get(14));
 		patientDetailDTO.setEmergency(decodeEmergency);
 
-		String decodeSurgery = decodeSurgery(lstCols.get(15));
+		String decodeSurgery = decodeYesNo(lstCols.get(15));
 		patientDetailDTO.setSurgeryCase(decodeSurgery);
 
 		int endErrorCount = errorRows.size();

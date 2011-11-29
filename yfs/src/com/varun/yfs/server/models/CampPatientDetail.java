@@ -72,6 +72,9 @@ public class CampPatientDetail implements Serializable
 	
 	@Column(nullable = true)
 	private String medicines;
+	
+	@Column(nullable = true)
+	private String referralUpdates;
 
 	public CampPatientDetail()
 	{
@@ -276,6 +279,16 @@ public class CampPatientDetail implements Serializable
 	public String getMedicines()
 	{
 		return medicines;
+	}
+
+	public void setReferralUpdates(String referralUpdates)
+	{
+		this.referralUpdates = referralUpdates;
+	}
+
+	public String getReferralUpdates()
+	{
+		return referralUpdates;
 	}
 
 }

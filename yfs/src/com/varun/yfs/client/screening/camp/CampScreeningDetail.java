@@ -713,7 +713,7 @@ public class CampScreeningDetail extends LayoutContainer
 		// ColumnConfig medicines3Column = new ColumnConfig("referral3",
 		// "Referral 3", 100);
 		// configs.add(medicines3Column);
-		
+
 		ColumnConfig medicines = new ColumnConfig("medicines", "Medicines", 100);
 		final SimpleComboBox<String> yesNoDto = new SimpleComboBox<String>();
 		yesNoDto.setTriggerAction(TriggerAction.ALL);
@@ -833,6 +833,14 @@ public class CampScreeningDetail extends LayoutContainer
 		};
 		caseClosed.setEditor(editor);
 		configs.add(caseClosed);
+
+		ColumnConfig referralUpdates = new ColumnConfig("referralUpdates", "Referral Updates", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(4096);
+		referralUpdates.setEditor(new CellEditor(textField));
+		configs.add(referralUpdates);
 
 		return configs;
 	}

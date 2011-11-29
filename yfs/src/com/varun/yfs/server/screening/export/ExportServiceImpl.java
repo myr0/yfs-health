@@ -73,18 +73,19 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 		}
 
 		String tmpDir = System.getProperty("java.io.tmpdir");
-		String fileName = tmpDir + File.separator + UUID.randomUUID().toString();
+		String fileName = UUID.randomUUID().toString() + ".xls";
+		String filePath = tmpDir + File.separator + fileName;
 		try
 		{
-			FileOutputStream out = new FileOutputStream(fileName);
+			FileOutputStream out = new FileOutputStream(filePath);
 			myWorkBook.write(out);
 			out.close();
-			LOGGER.debug("Created export file at location =" + fileName);
+			LOGGER.debug("Created export file at location =" + filePath);
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			LOGGER.error("Export file creation failed." + e.getMessage());
 		}
 
-		return fileName;
+		return filePath;
 	}
 }
