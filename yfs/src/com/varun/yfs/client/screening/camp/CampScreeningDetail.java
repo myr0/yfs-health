@@ -713,8 +713,8 @@ public class CampScreeningDetail extends LayoutContainer
 		// ColumnConfig medicines3Column = new ColumnConfig("referral3",
 		// "Referral 3", 100);
 		// configs.add(medicines3Column);
-
-		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
+		
+		ColumnConfig medicines = new ColumnConfig("medicines", "Medicines", 100);
 		final SimpleComboBox<String> yesNoDto = new SimpleComboBox<String>();
 		yesNoDto.setTriggerAction(TriggerAction.ALL);
 		yesNoDto.setForceSelection(true);
@@ -729,6 +729,36 @@ public class CampScreeningDetail extends LayoutContainer
 					return value;
 				}
 				return yesNoDto.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		medicines.setEditor(editor);
+		configs.add(medicines);
+
+		ColumnConfig emergency = new ColumnConfig("emergency", "Emergency", 100);
+		final SimpleComboBox<String> yesNoDtoEmergency = new SimpleComboBox<String>();
+		yesNoDtoEmergency.setTriggerAction(TriggerAction.ALL);
+		yesNoDtoEmergency.setForceSelection(true);
+		yesNoDtoEmergency.add(YesNoDTO.getStringValues());
+		editor = new CellEditor(yesNoDtoEmergency)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoEmergency.findModel(value.toString());
 			}
 
 			@Override

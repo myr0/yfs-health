@@ -6,16 +6,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "campPatientDetail")
 public class CampPatientDetail implements Serializable
 {
 	private static final long serialVersionUID = 8343184437177073237L;
 	@Id
 	@GeneratedValue
-	@Column(name = "campPatientDetailId")
+	@Column(name = "camPatDetId")
 	private long id;
 
 	@Column(nullable = false)
@@ -71,6 +69,9 @@ public class CampPatientDetail implements Serializable
 	
 	@Column(nullable = true)
 	private String bloodPressure;
+	
+	@Column(nullable = true)
+	private String medicines;
 
 	public CampPatientDetail()
 	{
@@ -265,6 +266,16 @@ public class CampPatientDetail implements Serializable
 	public String getBloodPressure()
 	{
 		return bloodPressure;
+	}
+	
+	public void setMedicines(String medicines)
+	{
+		this.medicines = medicines;
+	}
+
+	public String getMedicines()
+	{
+		return medicines;
 	}
 
 }

@@ -33,6 +33,8 @@ public class SchoolPatientDetailDTO extends BaseModelData
 	private GenderDTO gender;
 	private ReferralTypeDTO referral;
 
+	private String medicines;
+
 	public SchoolPatientDetailDTO()
 	{
 		setDeleted("N");
@@ -264,6 +266,17 @@ public class SchoolPatientDetailDTO extends BaseModelData
 	public ReferralTypeDTO getReferral()
 	{
 		return referral;
+	}
+
+	public void setMedicines(String medicines)
+	{
+		set("medicines", medicines);
+		this.medicines = medicines;
+	}
+
+	public String getMedicines()
+	{
+		return medicines;
 	}
 
 	@Override

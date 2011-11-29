@@ -527,6 +527,10 @@ public class DataUtil
 			object = modelData.get("emergency");
 			if (object != null)
 				patientDetail.setEmergency(object.toString());
+			
+			object = modelData.get("medicines");
+			if (object != null)
+				patientDetail.setMedicines(object.toString());
 
 			object = modelData.get("caseClosed");
 			if (object != null)
@@ -646,6 +650,10 @@ public class DataUtil
 			object = modelData.get("emergency");
 			if (object != null)
 				patientDetail.setEmergency(object.toString());
+			
+			object = modelData.get("medicines");
+			if (object != null)
+				patientDetail.setMedicines(object.toString());
 
 			object = modelData.get("caseClosed");
 			if (object != null)

@@ -62,11 +62,14 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 
 		String decodeReferral2 = decodeReferral(lstCols.get(12));
 		patientDetailDTO.setReferral2(decodeReferral2);
+		
+		String decodeMedicines = decodeEmergency(lstCols.get(13));
+		patientDetailDTO.setMedicines(decodeMedicines);
 
-		String decodeEmergency = decodeEmergency(lstCols.get(13));
+		String decodeEmergency = decodeEmergency(lstCols.get(14));
 		patientDetailDTO.setEmergency(decodeEmergency);
 
-		String decodeSurgery = decodeSurgery(lstCols.get(14));
+		String decodeSurgery = decodeSurgery(lstCols.get(15));
 		patientDetailDTO.setSurgeryCase(decodeSurgery);
 
 		int endErrorCount = errorRows.size();

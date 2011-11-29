@@ -34,6 +34,8 @@ public class CampPatientDetailDTO extends BaseModelData
 	private GenderDTO gender;
 	private ReferralTypeDTO referral;
 
+	private String medicines;
+
 	public CampPatientDetailDTO()
 	{
 		setDeleted("N");
@@ -276,6 +278,17 @@ public class CampPatientDetailDTO extends BaseModelData
 	public String getBloodPressure()
 	{
 		return bloodPressure;
+	}
+
+	public void setMedicines(String medicines)
+	{
+		set("medicines", medicines);
+		this.medicines = medicines;
+	}
+
+	public String getMedicines()
+	{
+		return medicines;
 	}
 
 	@Override

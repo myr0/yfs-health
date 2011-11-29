@@ -60,11 +60,14 @@ public class CampPatientDataExtractor extends SchoolPatientDataExtractor
 
 		String decodeReferral2 = decodeReferral(lstCols.get(13));
 		patientDetailDTO.setReferral2(decodeReferral2);
+		
+		String decodeMedicines = decodeEmergency(lstCols.get(14));
+		patientDetailDTO.setMedicines(decodeMedicines);
 
-		String decodeEmergency = decodeEmergency(lstCols.get(14));
+		String decodeEmergency = decodeEmergency(lstCols.get(15));
 		patientDetailDTO.setEmergency(decodeEmergency);
 
-		String decodeSurgery = decodeSurgery(lstCols.get(15));
+		String decodeSurgery = decodeSurgery(lstCols.get(16));
 		patientDetailDTO.setSurgeryCase(decodeSurgery);
 
 		int endErrorCount = errorRows.size();

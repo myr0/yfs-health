@@ -34,6 +34,7 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 
 			model.set("locationsCount", DataUtil.executeQuery("select count(*) from schoolscreeningdetail sd join locality ld on sd.schoolscreeningdetailid = ld.localityid"));
 			model.set("locationsList", DataUtil.executeQuery("select ld.* from schoolscreeningdetail sd join locality ld on sd.schoolscreeningdetailid = ld.localityid"));
+			model.set("breakupOfTreatments", DataUtil.executeQuery("select t.referral,sum(t.count1) from (select referral1 as referral,count(referral1) as count1 from schoolpatientdetail spd join referraltype rt on (spd.referral1 = rt.name) " + "where referral1 is not null group by referral1 union select referral2 as referral,count(referral2) as count1 from schoolpatientdetail spd join referraltype rt on (spd.referral2 = rt.name) " + " where referral2 is not null group by referral2) t group by t.referral "));
 		}
 
 		return null;
