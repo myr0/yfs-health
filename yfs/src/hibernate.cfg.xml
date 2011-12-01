@@ -38,7 +38,7 @@
 		<mapping class="com.varun.yfs.server.models.CampScreeningDetail" />
 		<mapping class="com.varun.yfs.server.models.CampPatientDetail" />
 		
-		<mapping class="com.varun.yfs.server.models.ClinicScreeningDetail" />
+		<mapping class="com.varun.yfs.server.models.ClinicPatientHistory" />
 		<mapping class="com.varun.yfs.server.models.ClinicPatientDetail" />
 		<mapping class="com.varun.yfs.server.models.User" />
 

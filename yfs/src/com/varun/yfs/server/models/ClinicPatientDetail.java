@@ -1,21 +1,26 @@
 package com.varun.yfs.server.models;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
-@Table(name = "clinicPatientDetail")
 public class ClinicPatientDetail implements Serializable
 {
 	private static final long serialVersionUID = 8343184437177073237L;
 	@Id
 	@GeneratedValue
-	@Column(name = "clinicPatientDetailId")
+	@Column(name = "cliPatDetId")
 	private long id;
 
 	@Column(nullable = false)
@@ -26,12 +31,12 @@ public class ClinicPatientDetail implements Serializable
 
 	@Column(nullable = true)
 	private String age;
-	
+
 	@Column(nullable = true)
 	private String sex;
 
 	@Column(nullable = true)
-	private String standard;
+	private String occupation;
 
 	@Column(nullable = true)
 	private String height;
@@ -44,30 +49,14 @@ public class ClinicPatientDetail implements Serializable
 
 	@Column(nullable = true)
 	private String contactNo;
-	
-	@Column(nullable = true)
-	private String findings;
-	
-	@Column(nullable = true)
-	private String treatment;
-	
-	@Column(nullable = true)
-	private String referral1;
-	
-	@Column(nullable = true)
-	private String referral2;
-	
-	@Column(nullable = true)
-	private String referral3;
 
-	@Column(nullable = true)
-	private String emergency;
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "clinicId", nullable = true, updatable = true, insertable = true)
+	private Clinic clinic;
 
-	@Column(nullable = true)
-	private String caseClosed;
-
-	@Column(nullable = true)
-	private String surgeryCase;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "CliPatDet_CliPatHis", joinColumns = { @JoinColumn(name = "clinicId") }, inverseJoinColumns = { @JoinColumn(name = "patId") })
+	private List<ClinicPatientHistory> lstPatientHistory;
 
 	public ClinicPatientDetail()
 	{
@@ -124,14 +113,14 @@ public class ClinicPatientDetail implements Serializable
 		this.sex = sex;
 	}
 
-	public String getStandard()
+	public String getOccupation()
 	{
-		return standard;
+		return occupation;
 	}
 
-	public void setStandard(String standard)
+	public void setOccupation(String occupation)
 	{
-		this.standard = standard;
+		this.occupation = occupation;
 	}
 
 	public String getHeight()
@@ -174,84 +163,24 @@ public class ClinicPatientDetail implements Serializable
 		this.contactNo = contactNo;
 	}
 
-	public String getFindings()
+	public List<ClinicPatientHistory> getLstPatientHistory()
 	{
-		return findings;
+		return lstPatientHistory;
 	}
 
-	public void setFindings(String findings)
+	public void setLstPatientHistory(List<ClinicPatientHistory> lstPatientHistory)
 	{
-		this.findings = findings;
+		this.lstPatientHistory = lstPatientHistory;
 	}
 
-	public String getTreatment()
+	public void setClinic(Clinic clinic)
 	{
-		return treatment;
+		this.clinic = clinic;
 	}
 
-	public void setTreatment(String treatment)
+	public Clinic getClinic()
 	{
-		this.treatment = treatment;
-	}
-
-	public String getReferral1()
-	{
-		return referral1;
-	}
-
-	public void setReferral1(String referral1)
-	{
-		this.referral1 = referral1;
-	}
-
-	public String getReferral2()
-	{
-		return referral2;
-	}
-
-	public void setReferral2(String referral2)
-	{
-		this.referral2 = referral2;
-	}
-
-	public String getReferral3()
-	{
-		return referral3;
-	}
-
-	public void setReferral3(String referral3)
-	{
-		this.referral3 = referral3;
-	}
-
-	public String getEmergency()
-	{
-		return emergency;
-	}
-
-	public void setEmergency(String emergency)
-	{
-		this.emergency = emergency;
-	}
-
-	public String getCaseClosed()
-	{
-		return caseClosed;
-	}
-
-	public void setCaseClosed(String caseClosed)
-	{
-		this.caseClosed = caseClosed;
-	}
-
-	public String getSurgeryCase()
-	{
-		return surgeryCase;
-	}
-
-	public void setSurgeryCase(String surgeryCase)
-	{
-		this.surgeryCase = surgeryCase;
+		return clinic;
 	}
 
 }

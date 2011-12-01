@@ -1,5 +1,7 @@
 package com.varun.yfs.server.screening.clinic.rpc;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
@@ -7,9 +9,8 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.common.RpcStatusEnum;
-import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.screening.clinic.rpc.ClinicScreeningDetailService;
-import com.varun.yfs.dto.ClinicScreeningDetailDTO;
+import com.varun.yfs.dto.ClinicPatientDetailDTO;
 import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
 import com.varun.yfs.server.common.data.DataUtil;
 
@@ -24,37 +25,21 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		ModelData modelData = new BaseModelData();
 		if (scrId != null)
 		{
-			ClinicScreeningDetailDTO scrDto = DataUtil.getClinicScreeningDetail(Long.valueOf(scrId));
+			List<ClinicPatientDetailDTO> scrDto = DataUtil.getClinicPatientDetail(Long.valueOf(scrId));
 			modelData.set("data", scrDto);
 		}
-
-		modelData.set("lstCountry", DataUtil.getModelList(ModelDataEnum.Country.name()));
-		modelData.set("lstState", DataUtil.getModelList(ModelDataEnum.State.name()));
-		modelData.set("lstCity", DataUtil.getModelList(ModelDataEnum.City.name()));
-		modelData.set("lstTown", DataUtil.getModelList(ModelDataEnum.Town.name()));
-		modelData.set("lstVillage", DataUtil.getModelList(ModelDataEnum.Village.name()));
-		modelData.set("lstLocality", DataUtil.getModelList(ModelDataEnum.Locality.name()));
-
-		modelData.set("lstChapterName", DataUtil.getModelList(ModelDataEnum.ChapterName.name()));
 		modelData.set("lstReferralTypes", DataUtil.getModelList(ListModelDataEnum.ReferralType.name()));
-		modelData.set("lstProcessType", DataUtil.getModelList(ListModelDataEnum.ProcessType.name()));
-		modelData.set("lstTypeOfLocation", DataUtil.getModelList(ListModelDataEnum.TypeOfLocation.name()));
-		modelData.set("lstVolunteers", DataUtil.getModelList(ListModelDataEnum.Volunteer.name()));
-		modelData.set("lstDoctors", DataUtil.getModelList(ListModelDataEnum.Doctor.name()));
 
 		return modelData;
 	}
 
 	@Override
-	public RpcStatusEnum saveModel(String scrId, ClinicScreeningDetailDTO modelData)
+	public RpcStatusEnum saveModel(String clinicId, List<ClinicPatientDetailDTO> modelData)
 	{
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
-			if (scrId != null)
-				modelData.set("id", scrId);
-
-			DataUtil.saveScreeningDetail(modelData);
+			DataUtil.saveScreeningDetail(clinicId,modelData);
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error trying to save the model." + ex.getCause());

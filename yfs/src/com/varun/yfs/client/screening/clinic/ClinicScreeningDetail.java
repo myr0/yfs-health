@@ -14,7 +14,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreFilter;
-import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
@@ -23,13 +22,10 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -39,10 +35,6 @@ import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.RowNumberer;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -61,57 +53,36 @@ import com.varun.yfs.client.screening.export.ExportService;
 import com.varun.yfs.client.screening.export.ExportServiceAsync;
 import com.varun.yfs.client.screening.imports.ImportDetail;
 import com.varun.yfs.client.screening.imports.ImportType;
-import com.varun.yfs.dto.ChapterNameDTO;
-import com.varun.yfs.dto.CityDTO;
 import com.varun.yfs.dto.ClinicPatientDetailDTO;
-import com.varun.yfs.dto.ClinicScreeningDetailDTO;
-import com.varun.yfs.dto.CountryDTO;
-import com.varun.yfs.dto.DoctorDTO;
+import com.varun.yfs.dto.ClinicPatientHistoryDTO;
 import com.varun.yfs.dto.GenderDTO;
-import com.varun.yfs.dto.LocalityDTO;
-import com.varun.yfs.dto.ProcessTypeDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
-import com.varun.yfs.dto.StateDTO;
-import com.varun.yfs.dto.TownDTO;
-import com.varun.yfs.dto.TypeOfLocationDTO;
-import com.varun.yfs.dto.VillageDTO;
-import com.varun.yfs.dto.VolunteerDTO;
 import com.varun.yfs.dto.YesNoDTO;
 
 public class ClinicScreeningDetail extends LayoutContainer
 {
-	private String headerText = "Clinic Screening";
 	private ClinicScreeningDetailServiceAsync detailServiceAsync = GWT.create(ClinicScreeningDetailService.class);
 	private ExportServiceAsync exportServiceAsync = GWT.create(ExportService.class);
+	private String headerText = "Clinic Screening";
 
 	protected ContentPanel mainContainerPanel = new ContentPanel();
-	private final ComboBox<ModelData> country = new ComboBox<ModelData>();
-	private final ComboBox<ModelData> state = new ComboBox<ModelData>();
-	private final ComboBox<ModelData> city = new ComboBox<ModelData>();
-	private final ComboBox<ModelData> town = new ComboBox<ModelData>();
-	private final ComboBox<ModelData> village = new ComboBox<ModelData>();
-	private final ComboBox<ModelData> chapterName = new ComboBox<ModelData>();
-	private final ComboBox<ModelData> locality = new ComboBox<ModelData>();
-	private final ComboBox<ModelData> processType = new ComboBox<ModelData>();
-	private final ComboBox<ModelData> typeOfLocation = new ComboBox<ModelData>();
-	private final CheckBoxListView<VolunteerDTO> volunteers = new CheckBoxListView<VolunteerDTO>();
-	private final CheckBoxListView<DoctorDTO> doctors = new CheckBoxListView<DoctorDTO>();
-	private final TextArea address = new TextArea();
-	private final TextArea contactInformation = new TextArea();
-	private final DateField screeningDate = new DateField();
-	
-	private ListStore<ClinicPatientDetailDTO> editorGridStore;
-	private EditorGrid<ClinicPatientDetailDTO> editorGrid;
+
+	private ListStore<ClinicPatientDetailDTO> storePatDetail;
+	private EditorGrid<ClinicPatientDetailDTO> gridPatDetail;
+
+	private ListStore<ClinicPatientHistoryDTO> storePatHistory;
+	private EditorGrid<ClinicPatientHistoryDTO> gridPatHistory;
+
 	private String scrId;
 
 	public EditorGrid<ClinicPatientDetailDTO> getEditorGrid()
 	{
-		return editorGrid;
+		return gridPatDetail;
 	}
 
 	public void setEditorGrid(EditorGrid<ClinicPatientDetailDTO> editorGrid)
 	{
-		this.editorGrid = editorGrid;
+		this.gridPatDetail = editorGrid;
 	}
 
 	public ClinicScreeningDetail()
@@ -135,157 +106,28 @@ public class ClinicScreeningDetail extends LayoutContainer
 		setLayoutData(new FitData(5));
 
 		mainContainerPanel.setHeading(headerText);
+		mainContainerPanel.setScrollMode(Scroll.AUTOY);
 
-		LayoutContainer cpMain = new LayoutContainer();
-		cpMain.setLayout(new TableLayout(3));
+		buildPatientDetail();
 
-		LayoutContainer cpPart1 = new LayoutContainer();
-		cpPart1.setLayout(new FormLayout());
-		TableData td_cpPart1 = new TableData();
-		td_cpPart1.setPadding(5);
-		cpMain.add(cpPart1, td_cpPart1);
+		buildPatientHistory();
 
-		country.setEditable(false);
-		cpPart1.add(country, new FormData("90%"));
-		country.setSize("150", "22");
-		country.setFieldLabel("Country");
-		country.setDisplayField("countryName");
-		country.setForceSelection(true);
-		country.setTriggerAction(TriggerAction.ALL);
-		country.setStore(new ListStore<ModelData>());
-		country.setAllowBlank(false);
+		add(mainContainerPanel);
+	}
 
-		cpPart1.add(state, new FormData("90%"));
-		state.setEditable(false);
-		state.setSize("150", "22");
-		state.setFieldLabel("State");
-		state.setDisplayField("stateName");
-		state.setTriggerAction(TriggerAction.ALL);
-		state.setStore(new ListStore<ModelData>());
-		state.setAllowBlank(false);
-
-		cpPart1.add(city, new FormData("90%"));
-		city.setSize("150", "22");
-		city.setFieldLabel("City");
-		city.setDisplayField("cityName");
-		city.setTriggerAction(TriggerAction.ALL);
-		city.setStore(new ListStore<ModelData>());
-		city.setAllowBlank(false);
-
-		town.setFieldLabel("Town");
-		cpPart1.add(town, new FormData("90%"));
-		town.setSize("150", "22");
-		town.setDisplayField("townName");
-		town.setTriggerAction(TriggerAction.ALL);
-		town.setStore(new ListStore<ModelData>());
-		town.setAllowBlank(false);
-
-		village.setFieldLabel("Village");
-		cpPart1.add(village, new FormData("90%"));
-		village.setSize("150", "22");
-		village.setDisplayField("villageName");
-		village.setTriggerAction(TriggerAction.ALL);
-		village.setStore(new ListStore<ModelData>());
-		village.setAllowBlank(false);
-
-		chapterName.setFieldLabel("Chapter Name");
-		cpPart1.add(chapterName, new FormData("90%"));
-		chapterName.setSize("150", "22");
-		chapterName.setDisplayField("chapterName");
-		chapterName.setTriggerAction(TriggerAction.ALL);
-		chapterName.setStore(new ListStore<ModelData>());
-		chapterName.setAllowBlank(false);
-
-		mainContainerPanel.add(cpMain);
-		cpPart1.setSize("33%", "280px");
-
-		LayoutContainer cpPart2 = new LayoutContainer();
-		cpPart2.setLayout(new FormLayout());
-		cpPart2.setSize("33%", "280px");
-		cpPart2.add(locality, new FormData("100%"));
-		locality.setFieldLabel("Locality");
-		locality.setDisplayField("localityName");
-		locality.setTriggerAction(TriggerAction.ALL);
-		locality.setStore(new ListStore<ModelData>());
-		locality.setWidth("150");
-		locality.setAllowBlank(false);
-
-		cpPart2.add(screeningDate, new FormData("90%"));
-		screeningDate.setFieldLabel("Date");
-		screeningDate.setAllowBlank(false);
-		screeningDate.setAllowBlank(false);
-
-		cpPart2.add(processType, new FormData("90%"));
-		processType.setFieldLabel("Process Type");
-		processType.setDisplayField("name");
-		processType.setTriggerAction(TriggerAction.ALL);
-		processType.setStore(new ListStore<ModelData>());
-		processType.setAllowBlank(false);
-
-		cpPart2.add(typeOfLocation, new FormData("90%"));
-		typeOfLocation.setFieldLabel("Type of Location");
-		typeOfLocation.setDisplayField("name");
-		typeOfLocation.setTriggerAction(TriggerAction.ALL);
-		typeOfLocation.setStore(new ListStore<ModelData>());
-		typeOfLocation.setAllowBlank(false);
-
-		cpPart2.add(address, new FormData("100% -240"));
-		address.setFieldLabel("Address");
-		address.setWidth("150");
-		address.setAllowBlank(false);
-
-		cpPart2.add(contactInformation, new FormData("90% -235"));
-		contactInformation.setFieldLabel("Contact Information");
-		contactInformation.setWidth("150");
-		contactInformation.setAllowBlank(false);
-
-		TableData td_cpPart2 = new TableData();
-		td_cpPart2.setPadding(5);
-		cpMain.add(cpPart2, td_cpPart2);
-		cpMain.setHeight("35%");
-
-		LayoutContainer cpPart3 = new LayoutContainer();
-		TableData td_cpPart3 = new TableData();
-		td_cpPart3.setPadding(5);
-
-		final ContentPanel cPanelDoctors = new ContentPanel();
-		cPanelDoctors.setScrollMode(Scroll.AUTOY);
-		cPanelDoctors.setHeading("Select Doctors");
-		cPanelDoctors.setSize("150", "90");
-		cPanelDoctors.add(doctors);
-		cPanelDoctors.setBodyBorder(false);
-		cPanelDoctors.setFrame(false);
-		cPanelDoctors.setBorders(false);
-		cpPart3.add(cPanelDoctors);
-		doctors.setStore(new ListStore<DoctorDTO>());
-		doctors.setDisplayProperty("name");
-
-		final ContentPanel cPanelVolunteers = new ContentPanel();
-		cPanelVolunteers.setScrollMode(Scroll.AUTOY);
-		cPanelVolunteers.setHeading("Select Volunteers");
-		cPanelVolunteers.setSize("150", "90");
-		cPanelVolunteers.add(volunteers);
-		cPanelVolunteers.setBodyBorder(false);
-		cPanelVolunteers.setFrame(false);
-		cPanelVolunteers.setBorders(false);
-		cpPart3.add(cPanelVolunteers);
-		volunteers.setStore(new ListStore<VolunteerDTO>());
-		volunteers.setDisplayProperty("name");
-
-		cpMain.add(cpPart3, td_cpPart3);
-		cpPart3.setSize("33%", "280");
-		
-		editorGridStore = new ListStore<ClinicPatientDetailDTO>();
+	private void buildPatientDetail()
+	{
+		storePatDetail = new ListStore<ClinicPatientDetailDTO>();
 		ColumnModel columnModel = getColumnModel();
-		editorGrid = new EditorGrid<ClinicPatientDetailDTO>(editorGridStore, columnModel);
+		gridPatDetail = new EditorGrid<ClinicPatientDetailDTO>(storePatDetail, columnModel);
 		// editorGrid.reconfigure(editorGridStore, columnModel);
-		editorGrid.setBorders(true);
-		editorGrid.setSelectionModel(new GridSelectionModel<ClinicPatientDetailDTO>());
-		editorGrid.setLoadMask(true);
-		editorGrid.setColumnLines(true);
-		editorGrid.setLoadMask(true);
-		editorGrid.setHeight("300px");
-		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
+		gridPatDetail.setBorders(true);
+		gridPatDetail.setSelectionModel(new GridSelectionModel<ClinicPatientDetailDTO>());
+		gridPatDetail.setLoadMask(true);
+		gridPatDetail.setColumnLines(true);
+		gridPatDetail.setLoadMask(true);
+		gridPatDetail.setSize("500px", "300px");
+		gridPatDetail.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 
 		final ContentPanel gridHolderPanel = new ContentPanel();
 		gridHolderPanel.setHeading("Patient Details");
@@ -298,12 +140,12 @@ public class ClinicScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				editorGrid.unmask();
+				gridPatDetail.unmask();
 				ClinicPatientDetailDTO patientDetail = new ClinicPatientDetailDTO();
 				patientDetail.setDeleted("N");
-				editorGrid.stopEditing();
-				editorGridStore.insert(patientDetail, 0);
-				editorGrid.startEditing(editorGridStore.indexOf(patientDetail), 0);
+				gridPatDetail.stopEditing();
+				storePatDetail.insert(patientDetail, 0);
+				gridPatDetail.startEditing(storePatDetail.indexOf(patientDetail), 0);
 			}
 		});
 		toolBar.add(add);
@@ -316,14 +158,14 @@ public class ClinicScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				editorGrid.stopEditing();
-				ClinicPatientDetailDTO selectedItem = editorGrid.getSelectionModel().getSelectedItem();
+				gridPatDetail.stopEditing();
+				ClinicPatientDetailDTO selectedItem = gridPatDetail.getSelectionModel().getSelectedItem();
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
-					editorGrid.mask("Removing Entry...");
+					gridPatDetail.mask("Removing Entry...");
 					validateAndSave();
-					editorGrid.getStore().remove(selectedItem);
+					gridPatDetail.getStore().remove(selectedItem);
 				}
 			}
 		});
@@ -331,6 +173,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 		toolBar.add(new SeparatorToolItem());
 
 		final FormPanel formPanel = new FormPanel();
+		formPanel.setHeaderVisible(false);
 
 		final HiddenField<String> exportedFileName = new HiddenField<String>();
 		exportedFileName.setName("ExportedFilename");
@@ -353,13 +196,179 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(MenuEvent ce)
 			{
 				List<String> headers = new ArrayList<String>();
-				List<ColumnConfig> columns = editorGrid.getColumnModel().getColumns();
+				List<ColumnConfig> columns = gridPatDetail.getColumnModel().getColumns();
 				columns = columns.subList(1, columns.size());
 				for (ColumnConfig columnConfig : columns)
 				{
 					headers.add(columnConfig.getHeader());
 				}
-				List<ClinicPatientDetailDTO> models = editorGridStore.getModels();
+				List<ClinicPatientDetailDTO> models = storePatDetail.getModels();
+				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
+				{
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						IndexPage.unmaskCenterComponent();
+						MessageBox.alert("Alert", "Error encountered while exporting." + caught.getMessage(), l);
+					}
+
+					@Override
+					public void onSuccess(String result)
+					{
+						exportedFileName.setValue(result);
+
+						String url = GWT.getModuleBaseURL();
+						url = url + "exportServlet";
+
+						formPanel.setAction(url);
+						formPanel.submit();
+					}
+
+				});
+
+			}
+		});
+		menu.add(exportAll);
+
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
+		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				Dialog dialogImport = new Dialog();
+				dialogImport.setHeading("Import Patient Detail");
+				dialogImport.setWidth("400");
+				boolean processIds = false;
+				if (scrId != null)
+					processIds = true;
+				dialogImport.add(new ImportDetail(ImportType.CLINIC, gridPatDetail, dialogImport, processIds), new FitData(5));
+				dialogImport.show();
+			}
+		});
+		toolBar.add(importPatientDetail);
+
+		gridHolderPanel.setTopComponent(toolBar);
+
+		gridHolderPanel.setButtonAlign(HorizontalAlignment.CENTER);
+		gridHolderPanel.addButton(new Button("Reset", new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				clearStores();
+				initialize(getTitle(), scrId);
+			}
+		}));
+
+		gridHolderPanel.addButton(new Button("Save", new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				validateAndSave();
+			}
+
+		}));
+
+		gridHolderPanel.setLayout(new FitLayout());
+		gridHolderPanel.add(gridPatDetail);
+		gridHolderPanel.setHeight("350");
+
+		mainContainerPanel.add(gridHolderPanel, new FitData(5));
+		mainContainerPanel.setHeight("700");
+		mainContainerPanel.add(formPanel);
+		formPanel.setSize("5", "5");
+		formPanel.setVisible(false);
+	}
+
+	private void buildPatientHistory()
+	{
+		storePatHistory = new ListStore<ClinicPatientHistoryDTO>();
+		ColumnModel columnModel = getColumnModelPatientHistory();
+		gridPatHistory = new EditorGrid<ClinicPatientHistoryDTO>(storePatHistory, columnModel);
+		gridPatHistory.setBorders(true);
+		gridPatHistory.setSelectionModel(new GridSelectionModel<ClinicPatientHistoryDTO>());
+		gridPatHistory.setLoadMask(true);
+		gridPatHistory.setColumnLines(true);
+		gridPatHistory.setLoadMask(true);
+		gridPatHistory.setHeight("300px");
+		gridPatHistory.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
+
+		final ContentPanel gridHolderPanel = new ContentPanel();
+		gridHolderPanel.setHeading("Patient Referral History");
+		gridHolderPanel.setHeaderVisible(true);
+
+		ToolBar toolBar = new ToolBar();
+		Button add = new Button("Add", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		add.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				gridPatHistory.unmask();
+				ClinicPatientHistoryDTO patientDetail = new ClinicPatientHistoryDTO();
+				patientDetail.setDeleted("N");
+				gridPatHistory.stopEditing();
+				storePatHistory.insert(patientDetail, 0);
+				gridPatDetail.startEditing(storePatHistory.indexOf(patientDetail), 0);
+			}
+		});
+		toolBar.add(add);
+
+		toolBar.add(new SeparatorToolItem());
+
+		Button remove = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				gridPatHistory.stopEditing();
+				ClinicPatientHistoryDTO selectedItem = gridPatHistory.getSelectionModel().getSelectedItem();
+				if (selectedItem != null)
+				{
+					selectedItem.set("deleted", "Y");
+					gridPatHistory.mask("Removing Entry...");
+					validateAndSave();
+					gridPatHistory.getStore().remove(selectedItem);
+				}
+			}
+		});
+		toolBar.add(remove);
+		toolBar.add(new SeparatorToolItem());
+
+		final FormPanel formPanel = new FormPanel();
+		formPanel.setHeaderVisible(false);
+
+		final HiddenField<String> exportedFileName = new HiddenField<String>();
+		exportedFileName.setName("ExportedFilename");
+		formPanel.add(exportedFileName);
+
+		toolBar.add(new FillToolItem());
+
+		SplitButton splitItem = new SplitButton("");
+		splitItem.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+
+		Menu menu = new Menu();
+		splitItem.setMenu(menu);
+
+		toolBar.add(splitItem);
+
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
+		{
+			@Override
+			public void componentSelected(MenuEvent ce)
+			{
+				List<String> headers = new ArrayList<String>();
+				List<ColumnConfig> columns = gridPatHistory.getColumnModel().getColumns();
+				columns = columns.subList(1, columns.size());
+				for (ColumnConfig columnConfig : columns)
+				{
+					headers.add(columnConfig.getHeader());
+				}
+				List<ClinicPatientHistoryDTO> models = storePatHistory.getModels();
 				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
@@ -394,17 +403,17 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(MenuEvent ce)
 			{
 				List<String> headers = new ArrayList<String>();
-				List<ColumnConfig> columns = editorGrid.getColumnModel().getColumns();
+				List<ColumnConfig> columns = gridPatHistory.getColumnModel().getColumns();
 				columns = columns.subList(1, columns.size());
 				for (ColumnConfig columnConfig : columns)
 				{
 					headers.add(columnConfig.getHeader());
 				}
 
-				StoreFilter<ClinicPatientDetailDTO> filterReferrals = new StoreFilter<ClinicPatientDetailDTO>()
+				StoreFilter<ClinicPatientHistoryDTO> filterReferrals = new StoreFilter<ClinicPatientHistoryDTO>()
 				{
 					@Override
-					public boolean select(Store<ClinicPatientDetailDTO> store, ClinicPatientDetailDTO parent, ClinicPatientDetailDTO item, String property)
+					public boolean select(Store<ClinicPatientHistoryDTO> store, ClinicPatientHistoryDTO parent, ClinicPatientHistoryDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
@@ -412,10 +421,10 @@ public class ClinicScreeningDetail extends LayoutContainer
 						return false;
 					}
 				};
-				editorGridStore.addFilter(filterReferrals);
-				editorGridStore.applyFilters("referral1");
+				storePatHistory.addFilter(filterReferrals);
+				storePatHistory.applyFilters("referral1");
 
-				List<ClinicPatientDetailDTO> models = editorGridStore.getModels();
+				List<ClinicPatientHistoryDTO> models = storePatHistory.getModels();
 				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
 				{
 					@Override
@@ -436,7 +445,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 						formPanel.setAction(url);
 						formPanel.submit();
 
-						editorGridStore.clearFilters();
+						storePatDetail.clearFilters();
 					}
 
 				});
@@ -457,7 +466,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(ImportType.CLINIC, editorGrid, dialogImport, processIds), new FitData(5));
+				dialogImport.add(new ImportDetail(ImportType.CLINIC, gridPatHistory, dialogImport, processIds), new FitData(5));
 				dialogImport.show();
 			}
 		});
@@ -465,8 +474,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		gridHolderPanel.setTopComponent(toolBar);
 
-		mainContainerPanel.setButtonAlign(HorizontalAlignment.CENTER);
-		mainContainerPanel.addButton(new Button("Reset", new SelectionListener<ButtonEvent>()
+		gridHolderPanel.setButtonAlign(HorizontalAlignment.CENTER);
+		gridHolderPanel.addButton(new Button("Reset", new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
@@ -476,7 +485,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			}
 		}));
 
-		mainContainerPanel.addButton(new Button("Save", new SelectionListener<ButtonEvent>()
+		gridHolderPanel.addButton(new Button("Save", new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
@@ -487,94 +496,98 @@ public class ClinicScreeningDetail extends LayoutContainer
 		}));
 
 		gridHolderPanel.setLayout(new FitLayout());
-		gridHolderPanel.add(editorGrid);
+		gridHolderPanel.add(gridPatHistory);
 		gridHolderPanel.setHeight("350");
 
 		mainContainerPanel.add(gridHolderPanel, new FitData(5));
-		add(mainContainerPanel);
-		mainContainerPanel.setHeight("700");
-		// mainContainerPanel.setSize("700px", "600px");
-		mainContainerPanel.add(formPanel);
-		formPanel.setVisible(false);
 	}
 
 	private void validateAndSave()
 	{
 		if (!validateFormEntry())
 		{
-			editorGrid.unmask();
+			gridPatDetail.unmask();
 			return;
 		}
 
-		ClinicScreeningDetailDTO modelData = extractFormData();
-		savePage(modelData);
+//		ClinicPatientDetailDTO modelData = extractFormData();
+		savePage(gridPatDetail.getStore().getModels());
 	}
 
 	private boolean validateFormEntry()
 	{
-		if (!country.validate())
-			return false;
-
-		if (!state.validate())
-			return false;
-
-		if (!city.validate())
-			return false;
-
-		if (!town.validate())
-			return false;
-
-		if (!village.validate())
-			return false;
-
-		if (!chapterName.validate())
-			return false;
-
-		if (!locality.validate())
-			return false;
-
-		if (!screeningDate.validate())
-			return false;
-
-		if (!processType.validate())
-			return false;
-
-		if (!typeOfLocation.validate())
-			return false;
-
-		if (!address.validate())
-			return false;
-
-		if (!contactInformation.validate())
-			return false;
+		// if (!country.validate())
+		// return false;
+		//
+		// if (!state.validate())
+		// return false;
+		//
+		// if (!city.validate())
+		// return false;
+		//
+		// if (!town.validate())
+		// return false;
+		//
+		// if (!village.validate())
+		// return false;
+		//
+		// if (!chapterName.validate())
+		// return false;
+		//
+		// if (!locality.validate())
+		// return false;
+		//
+		// if (!screeningDate.validate())
+		// return false;
+		//
+		// if (!processType.validate())
+		// return false;
+		//
+		// if (!typeOfLocation.validate())
+		// return false;
+		//
+		// if (!address.validate())
+		// return false;
+		//
+		// if (!contactInformation.validate())
+		// return false;
 		return true;
 	}
 
-	private ClinicScreeningDetailDTO extractFormData()
+	private ClinicPatientDetailDTO extractFormData()
 	{
 		IndexPage.maskCenterComponent("Saving...");
-		ClinicScreeningDetailDTO modelData = new ClinicScreeningDetailDTO();
-		modelData.setCountry((CountryDTO) country.getSelection().get(0));
-		modelData.setState((StateDTO) state.getSelection().get(0));
-		modelData.setCity((CityDTO) city.getSelection().get(0));
-		modelData.setTown((TownDTO) town.getSelection().get(0));
-		modelData.setVillage((VillageDTO) village.getSelection().get(0));
-		modelData.setLocality((LocalityDTO) locality.getSelection().get(0));
+		ClinicPatientDetailDTO modelData = new ClinicPatientDetailDTO();
+		// modelData.setCountry((CountryDTO) country.getSelection().get(0));
+		// modelData.setState((StateDTO) state.getSelection().get(0));
+		// modelData.setCity((CityDTO) city.getSelection().get(0));
+		// modelData.setTown((TownDTO) town.getSelection().get(0));
+		// modelData.setVillage((VillageDTO) village.getSelection().get(0));
+		// modelData.setLocality((LocalityDTO) locality.getSelection().get(0));
+		//
+		// modelData.setChapterName((ChapterNameDTO)
+		// chapterName.getSelection().get(0));
+		// modelData.setProcessType((ProcessTypeDTO)
+		// processType.getSelection().get(0));
+		// modelData.setTypeOfLocation((TypeOfLocationDTO)
+		// typeOfLocation.getSelection().get(0));
+		// modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
+		// modelData.setContactInformation(contactInformation.getValue());
+		// modelData.setAddress(address.getValue());
+		// modelData.setVolunteers(volunteers.getChecked());
+		// modelData.setDoctors(doctors.getChecked());
 
-		modelData.setChapterName((ChapterNameDTO) chapterName.getSelection().get(0));
-		modelData.setProcessType((ProcessTypeDTO) processType.getSelection().get(0));
-		modelData.setTypeOfLocation((TypeOfLocationDTO) typeOfLocation.getSelection().get(0));
-		modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
-		modelData.setContactInformation(contactInformation.getValue());
-		modelData.setAddress(address.getValue());
-		modelData.setVolunteers(volunteers.getChecked());
-		modelData.setDoctors(doctors.getChecked());
-
-		editorGrid.stopEditing();
-		editorGridStore.commitChanges();
-		List<ClinicPatientDetailDTO> models = editorGridStore.getModels();
-		modelData.setPatientDetails(models);
+		gridPatDetail.stopEditing();
+		storePatDetail.commitChanges();
+		// List<ClinicPatientDetailDTO> models = storePatDetail.getModels();
+		// modelData.setPatientDetails(models);
 		return modelData;
+	}
+
+	private ColumnModel getColumnModelPatientHistory()
+	{
+		List<ColumnConfig> configs = getColumnConfigsPatientHistory();
+		return new ColumnModel(configs);
 	}
 
 	private ColumnModel getColumnModel()
@@ -583,7 +596,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 		return new ColumnModel(configs);
 	}
 
-	private List<ColumnConfig> getColumnConfigs()
+	private List<ColumnConfig> getColumnConfigsPatientHistory()
 	{
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
@@ -593,98 +606,11 @@ public class ClinicScreeningDetail extends LayoutContainer
 		ColumnConfig nameColumn = new ColumnConfig("id", "Id", 20);
 		configs.add(nameColumn);
 
-		nameColumn = new ColumnConfig("name", "Name", 150);
+		ColumnConfig findingsPColumn = new ColumnConfig("findings", "Findings", 100);
 		TextField<String> textField = new TextField<String>();
 		textField.setAllowBlank(false);
 		textField.setMinLength(2);
-		textField.setMaxLength(255);
-		nameColumn.setEditor(new CellEditor(textField));
-		configs.add(nameColumn);
-
-		ColumnConfig sexColumn = new ColumnConfig("sex", "Sex", 50);
-		final SimpleComboBox<String> field = new SimpleComboBox<String>();
-		field.setTriggerAction(TriggerAction.ALL);
-		field.setForceSelection(true);
-		field.add(GenderDTO.getStringValues());
-		CellEditor editor = new CellEditor(field)
-		{
-			@Override
-			public Object preProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return field.findModel(value.toString());
-			}
-
-			@Override
-			public Object postProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return ((ModelData) value).get("value");
-			}
-		};
-		sexColumn.setEditor(editor);
-		configs.add(sexColumn);
-
-		ColumnConfig classColumn = new ColumnConfig("standard", "Standard", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(4);
-		classColumn.setEditor(new CellEditor(textField));
-		configs.add(classColumn);
-
-		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
-		NumberField numField = new NumberField();
-		numField.setAllowBlank(false);
-		numField.setMinLength(1);
-		numField.setMaxLength(3);
-		numField.setPropertyEditorType(Integer.class);
-		ageColumn.setEditor(new CellEditor(numField));
-		configs.add(ageColumn);
-
-		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(255);
-		addressColumn.setEditor(new CellEditor(textField));
-		configs.add(addressColumn);
-
-		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(15);
-		contactNoColumn.setEditor(new CellEditor(textField));
-		configs.add(contactNoColumn);
-
-		ColumnConfig heightColumn = new ColumnConfig("height", "Height(cm)", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(15);
-		heightColumn.setEditor(new CellEditor(textField));
-		configs.add(heightColumn);
-
-		ColumnConfig weightColumn = new ColumnConfig("weight", "Weight(kg)", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(1);
-		textField.setMaxLength(3);
-		weightColumn.setEditor(new CellEditor(textField));
-		configs.add(weightColumn);
-
-		ColumnConfig findingsPColumn = new ColumnConfig("findings", "Findings", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(1024);
+		textField.setMaxLength(4096);
 		findingsPColumn.setEditor(new CellEditor(textField));
 		configs.add(findingsPColumn);
 
@@ -692,7 +618,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
 		textField.setMinLength(2);
-		textField.setMaxLength(1024);
+		textField.setMaxLength(4096);
 		treatment.setEditor(new CellEditor(textField));
 		configs.add(treatment);
 
@@ -705,13 +631,13 @@ public class ClinicScreeningDetail extends LayoutContainer
 		// ColumnConfig medicines3Column = new ColumnConfig("referral3",
 		// "Referral 3", 100);
 		// configs.add(medicines3Column);
-		
+
 		ColumnConfig medicines = new ColumnConfig("medicines", "Medicines", 100);
 		final SimpleComboBox<String> yesNoDto = new SimpleComboBox<String>();
 		yesNoDto.setTriggerAction(TriggerAction.ALL);
 		yesNoDto.setForceSelection(true);
 		yesNoDto.add(YesNoDTO.getStringValues());
-		editor = new CellEditor(yesNoDto)
+		CellEditor editor = new CellEditor(yesNoDto)
 		{
 			@Override
 			public Object preProcessValue(Object value)
@@ -829,6 +755,106 @@ public class ClinicScreeningDetail extends LayoutContainer
 		return configs;
 	}
 
+	private List<ColumnConfig> getColumnConfigs()
+	{
+		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+
+		RowNumberer rowNumber = new RowNumberer();
+		configs.add(rowNumber);
+
+		ColumnConfig nameColumn = new ColumnConfig("id", "Id", 20);
+		configs.add(nameColumn);
+
+		nameColumn = new ColumnConfig("name", "Name", 150);
+		TextField<String> textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(255);
+		nameColumn.setEditor(new CellEditor(textField));
+		configs.add(nameColumn);
+
+		ColumnConfig sexColumn = new ColumnConfig("sex", "Sex", 50);
+		final SimpleComboBox<String> field = new SimpleComboBox<String>();
+		field.setTriggerAction(TriggerAction.ALL);
+		field.setForceSelection(true);
+		field.add(GenderDTO.getStringValues());
+		CellEditor editor = new CellEditor(field)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return field.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		sexColumn.setEditor(editor);
+		configs.add(sexColumn);
+
+		ColumnConfig classColumn = new ColumnConfig("occupation", "Occupation", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(4);
+		classColumn.setEditor(new CellEditor(textField));
+		configs.add(classColumn);
+
+		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
+		NumberField numField = new NumberField();
+		numField.setAllowBlank(false);
+		numField.setMinLength(1);
+		numField.setMaxLength(3);
+		numField.setPropertyEditorType(Integer.class);
+		ageColumn.setEditor(new CellEditor(numField));
+		configs.add(ageColumn);
+
+		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(255);
+		addressColumn.setEditor(new CellEditor(textField));
+		configs.add(addressColumn);
+
+		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(15);
+		contactNoColumn.setEditor(new CellEditor(textField));
+		configs.add(contactNoColumn);
+
+		ColumnConfig heightColumn = new ColumnConfig("height", "Height(cm)", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(2);
+		textField.setMaxLength(15);
+		heightColumn.setEditor(new CellEditor(textField));
+		configs.add(heightColumn);
+
+		ColumnConfig weightColumn = new ColumnConfig("weight", "Weight(kg)", 100);
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(1);
+		textField.setMaxLength(3);
+		weightColumn.setEditor(new CellEditor(textField));
+		configs.add(weightColumn);
+
+		return configs;
+	}
+
 	public void initialize(String title, String scrId)
 	{
 		mainContainerPanel.setHeading(title);
@@ -841,19 +867,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void onSuccess(ModelData modelData)
 			{
 				clearStores();
-				
-				country.getStore().add((List<ModelData>) modelData.get("lstCountry"));
-				state.getStore().add((List<ModelData>) modelData.get("lstState"));
-				city.getStore().add((List<ModelData>) modelData.get("lstCity"));
-				town.getStore().add((List<ModelData>) modelData.get("lstTown"));
-				village.getStore().add((List<ModelData>) modelData.get("lstVillage"));
-				locality.getStore().add((List<ModelData>) modelData.get("lstLocality"));
-
-				chapterName.getStore().add((List<ModelData>) modelData.get("lstChapterName"));
-				processType.getStore().add((List<ModelData>) modelData.get("lstProcessType"));
-				typeOfLocation.getStore().add((List<ModelData>) modelData.get("lstTypeOfLocation"));
-				volunteers.getStore().add((List<VolunteerDTO>) modelData.get("lstVolunteers"));
-				doctors.getStore().add((List<DoctorDTO>) modelData.get("lstDoctors"));
 
 				List<ReferralTypeDTO> lst = (List<ReferralTypeDTO>) modelData.get("lstReferralTypes");
 				List<String> lstReferrals = new ArrayList<String>(lst.size());
@@ -862,7 +875,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 					lstReferrals.add(referralTypeDTO.toString());
 				}
 
-				ColumnConfig columnById = editorGrid.getColumnModel().getColumnById("referral1");
+				ColumnConfig columnById = gridPatHistory.getColumnModel().getColumnById("referral1");
 				final SimpleComboBox<String> fieldReferral1 = new SimpleComboBox<String>();
 				fieldReferral1.setEditable(false);
 				fieldReferral1.setTriggerAction(TriggerAction.ALL);
@@ -891,7 +904,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				columnById.setEditor(editorReferral1);
 				fieldReferral1.add(lstReferrals);
 
-				columnById = editorGrid.getColumnModel().getColumnById("referral2");
+				columnById = gridPatHistory.getColumnModel().getColumnById("referral2");
 				final SimpleComboBox<String> fieldReferral2 = new SimpleComboBox<String>();
 				fieldReferral2.setEditable(false);
 				fieldReferral2.setTriggerAction(TriggerAction.ALL);
@@ -920,43 +933,13 @@ public class ClinicScreeningDetail extends LayoutContainer
 				columnById.setEditor(editorReferral2);
 				fieldReferral2.add(lstReferrals);
 
-				// columnById =
-				// editorGrid.getColumnModel().getColumnById("referral3");
-				// final SimpleComboBox<String> fieldReferral3 = new
-				// SimpleComboBox<String>();
-				// fieldReferral3.setEditable(false);
-				// fieldReferral3.setTriggerAction(TriggerAction.ALL);
-				// CellEditor editorReferral3 = new CellEditor(fieldReferral3)
-				// {
-				// @Override
-				// public Object preProcessValue(Object value)
-				// {
-				// if (value == null)
-				// {
-				// return value;
-				// }
-				// return fieldReferral3.findModel(value.toString());
-				// }
-				//
-				// @Override
-				// public Object postProcessValue(Object value)
-				// {
-				// if (value == null)
-				// {
-				// return value;
-				// }
-				// return ((ModelData) value).get("value");
-				// }
-				// };
-				// columnById.setEditor(editorReferral3);
-				// fieldReferral3.add(lstReferrals);
-
-				ClinicScreeningDetailDTO scrDto = modelData.get("data");
+				List<ClinicPatientDetailDTO> scrDto = modelData.get("data");
 				if (scrDto != null)
 				{
-					editorGridStore.removeAll();
-					List<ClinicPatientDetailDTO> patientDetails = scrDto.getPatientDetails();
-					editorGridStore.add(patientDetails);
+					storePatDetail.removeAll();
+					// List<ClinicPatientDetailDTO> patientDetails =
+					// scrDto.getls;
+					storePatDetail.add(scrDto);
 				}
 				IndexPage.unmaskCenterComponent();
 			}
@@ -970,9 +953,9 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 	}
 
-	private void savePage(ClinicScreeningDetailDTO model)
+	private void savePage(List<ClinicPatientDetailDTO> list)
 	{
-		detailServiceAsync.saveModel(this.scrId, model, new AsyncCallback<RpcStatusEnum>()
+		detailServiceAsync.saveModel(this.scrId, list, new AsyncCallback<RpcStatusEnum>()
 		{
 			@Override
 			public void onFailure(Throwable caught)
@@ -985,7 +968,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void onSuccess(RpcStatusEnum result)
 			{
 				IndexPage.unmaskCenterComponent();
-				editorGrid.unmask();
+				gridPatDetail.unmask();
 				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
 				{
 					MessageBox.alert("Alert", "Error encountered while saving", l);
@@ -1001,6 +984,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 	private void clearStores()
 	{
-		editorGridStore.removeAll();
+		storePatDetail.removeAll();
 	}
 }
