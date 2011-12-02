@@ -807,16 +807,15 @@ public class ClinicScreeningDetail extends LayoutContainer
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
 		textField.setMinLength(2);
-		textField.setMaxLength(4);
+		textField.setMaxLength(100);
 		classColumn.setEditor(new CellEditor(textField));
 		configs.add(classColumn);
 
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
-		NumberField numField = new NumberField();
+		TextField<String> numField = new TextField<String>();
 		numField.setAllowBlank(false);
 		numField.setMinLength(1);
 		numField.setMaxLength(3);
-		numField.setPropertyEditorType(Integer.class);
 		ageColumn.setEditor(new CellEditor(numField));
 		configs.add(ageColumn);
 
@@ -824,7 +823,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
 		textField.setMinLength(2);
-		textField.setMaxLength(255);
+		textField.setMaxLength(512);
 		addressColumn.setEditor(new CellEditor(textField));
 		configs.add(addressColumn);
 

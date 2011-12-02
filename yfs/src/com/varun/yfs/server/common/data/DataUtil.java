@@ -181,7 +181,7 @@ public class DataUtil
 			for (ClinicPatientDetailDTO clinicPatientDetailDTO : lstModelData)
 			{
 				ClinicPatientDetail scrDetHibObj = dozerMapper.map(clinicPatientDetailDTO, ClinicPatientDetail.class);
-				String id = clinicPatientDetailDTO.get("id");
+				Long id = clinicPatientDetailDTO.get("id");
 				scrDetHibObj.setName(Util.safeToString(clinicPatientDetailDTO.get("name")));
 				scrDetHibObj.setAge(Util.safeToString(clinicPatientDetailDTO.get("age")));
 
@@ -202,7 +202,7 @@ public class DataUtil
 					session.save(scrDetHibObj);
 				} else
 				{
-					scrDetHibObj.setId(Long.parseLong(id));
+					scrDetHibObj.setId(id);
 					session.saveOrUpdate(scrDetHibObj);
 				}
 			}
@@ -376,7 +376,7 @@ public class DataUtil
 
 		Criteria filter = session.createCriteria(ClinicPatientDetail.class);
 		filter.add(Restrictions.eq("clinic.id", scrId)).add(Restrictions.eq("deleted", "N"));
-		filter.createCriteria("lstPatientHistory").add(Restrictions.eq("deleted", "N"));
+//		filter.createCriteria("lstPatientHistory").add(Restrictions.eq("deleted", "N"));
 		try
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();

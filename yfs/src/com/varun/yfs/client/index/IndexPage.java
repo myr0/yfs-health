@@ -458,7 +458,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-//				System.out.println(caught.getMessage());
+				// System.out.println(caught.getMessage());
 				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(), dummyListener);
 			}
 
@@ -490,25 +490,27 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 		cpClinicScreening.setTopComponent(toolbar);
 
-		Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
-		toolbar.add(newScreening);
-		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
-		{
-			@Override
-			public void componentSelected(ButtonEvent ce)
-			{
-				layoutContainerCenter.mask("Loading...");
-				layoutContainerCenter.removeAll();
-				layoutContainerCenter.setLayoutData(new FitData(15));
-
-				layoutContainerCenter.mask("Initializing ...");
-				final ClinicScreeningDetail widget = new ClinicScreeningDetail();
-				widget.initialize("New Screening", null);
-				layoutContainerCenter.add(widget);
-
-				layoutContainerCenter.layout(true);
-			}
-		});
+		// Button newScreening = new Button("New",
+		// AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		// toolbar.add(newScreening);
+		// newScreening.addSelectionListener(new
+		// SelectionListener<ButtonEvent>()
+		// {
+		// @Override
+		// public void componentSelected(ButtonEvent ce)
+		// {
+		// layoutContainerCenter.mask("Loading...");
+		// layoutContainerCenter.removeAll();
+		// layoutContainerCenter.setLayoutData(new FitData(15));
+		//
+		// layoutContainerCenter.mask("Initializing ...");
+		// final ClinicScreeningDetail widget = new ClinicScreeningDetail();
+		// widget.initialize("New Screening", null);
+		// layoutContainerCenter.add(widget);
+		//
+		// layoutContainerCenter.layout(true);
+		// }
+		// });
 
 		treeClinicScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
 		{
@@ -540,7 +542,7 @@ public class IndexPage extends LayoutContainer
 		};
 		filter.setWidth("100");
 		filter.bind(clinicScreeningPanelStore);
-		toolbar.add(new SeparatorToolItem());
+		// toolbar.add(new SeparatorToolItem());
 		toolbar.add(filter);
 
 		treeClinicScreeningPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
@@ -790,7 +792,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-//				System.out.println(caught.getMessage());
+				// System.out.println(caught.getMessage());
 				MessageBox.info("Error", "Error Encountered while loading School Screening Panel" + caught.getMessage(), dummyListener);
 			}
 
@@ -817,7 +819,7 @@ public class IndexPage extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(), dummyListener);
-//				System.out.println(caught.getMessage());
+				// System.out.println(caught.getMessage());
 			}
 
 			@SuppressWarnings("unchecked")
@@ -833,6 +835,7 @@ public class IndexPage extends LayoutContainer
 					{
 						treeClinicScreeningPanel.getStore().add(modelData, children, true);
 					}
+					treeClinicScreeningPanel.setExpanded(modelData, true);
 				}
 			}
 		});
@@ -843,7 +846,7 @@ public class IndexPage extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				MessageBox.info("Error", "Error Encountered while loading Camp Panel" + caught.getMessage(), dummyListener);
-//				System.out.println(caught.getMessage());
+				// System.out.println(caught.getMessage());
 			}
 
 			@SuppressWarnings("unchecked")
