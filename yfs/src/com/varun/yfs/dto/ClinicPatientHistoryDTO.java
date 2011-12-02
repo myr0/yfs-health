@@ -19,6 +19,7 @@ public class ClinicPatientHistoryDTO extends BaseModelData
 	private String emergency;
 	private String caseClosed;
 	private String surgeryCase;
+	private String medicines;
 
 	private YesNoDTO yesNo;
 	private GenderDTO gender;
@@ -167,6 +168,17 @@ public class ClinicPatientHistoryDTO extends BaseModelData
 	public ReferralTypeDTO getReferral()
 	{
 		return referral;
+	}
+
+	public void setMedicines(String medicines)
+	{
+		set("medicines", medicines);
+		this.medicines = medicines;
+	}
+
+	public String getMedicines()
+	{
+		return medicines;
 	}
 
 	@Override

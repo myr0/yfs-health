@@ -6,7 +6,9 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
@@ -24,7 +26,6 @@ import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -126,8 +127,18 @@ public class ClinicScreeningDetail extends LayoutContainer
 		gridPatDetail.setLoadMask(true);
 		gridPatDetail.setColumnLines(true);
 		gridPatDetail.setLoadMask(true);
-		gridPatDetail.setSize("500px", "300px");
 		gridPatDetail.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
+
+		gridPatDetail.addListener(Events.RowClick, new Listener<BaseEvent>()
+		{
+			@Override
+			public void handleEvent(BaseEvent be)
+			{
+				ClinicPatientDetailDTO selItem = gridPatDetail.getSelectionModel().getSelectedItem();
+				gridPatHistory.getStore().removeAll();
+				gridPatHistory.getStore().add(selItem.getLstPatientHistory());
+			}
+		});
 
 		final ContentPanel gridHolderPanel = new ContentPanel();
 		gridHolderPanel.setHeading("Patient Details");
@@ -273,11 +284,14 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		gridHolderPanel.setLayout(new FitLayout());
 		gridHolderPanel.add(gridPatDetail);
-		gridHolderPanel.setHeight("350");
+//		gridHolderPanel.setHeight("350");
+//		gridHolderPanel.setWidth("350");
+		gridHolderPanel.setSize("600px", "250px");
 
 		mainContainerPanel.add(gridHolderPanel, new FitData(5));
 		mainContainerPanel.setHeight("700");
 		mainContainerPanel.add(formPanel);
+		
 		formPanel.setSize("5", "5");
 		formPanel.setVisible(false);
 	}
@@ -490,6 +504,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
+				ClinicPatientDetailDTO patDetail = gridPatDetail.getSelectionModel().getSelectedItem();
+				patDetail.setLstPatientHistory(gridPatHistory.getStore().getModels());
 				validateAndSave();
 			}
 
@@ -497,7 +513,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		gridHolderPanel.setLayout(new FitLayout());
 		gridHolderPanel.add(gridPatHistory);
-		gridHolderPanel.setHeight("350");
+		gridHolderPanel.setSize("600px", "250px");
 
 		mainContainerPanel.add(gridHolderPanel, new FitData(5));
 	}
@@ -509,8 +525,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 			gridPatDetail.unmask();
 			return;
 		}
-
-//		ClinicPatientDetailDTO modelData = extractFormData();
 		savePage(gridPatDetail.getStore().getModels());
 	}
 
@@ -936,8 +950,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 				if (scrDto != null)
 				{
 					storePatDetail.removeAll();
-					// List<ClinicPatientDetailDTO> patientDetails =
-					// scrDto.getls;
 					storePatDetail.add(scrDto);
 				}
 				IndexPage.unmaskCenterComponent();
@@ -960,6 +972,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				IndexPage.unmaskCenterComponent();
+				gridPatDetail.unmask();
 				MessageBox.alert("Alert", "Error encountered while saving", l);
 			}
 
@@ -984,5 +997,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 	private void clearStores()
 	{
 		storePatDetail.removeAll();
+		storePatHistory.removeAll();
 	}
 }

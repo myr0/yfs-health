@@ -43,6 +43,9 @@ public class ClinicPatientHistory implements Serializable
 
 	@Column(nullable = true)
 	private String surgeryCase;
+	
+	@Column(nullable = true)
+	private String medicines;
 
 	public ClinicPatientHistory()
 	{
@@ -147,5 +150,15 @@ public class ClinicPatientHistory implements Serializable
 	public void setSurgeryCase(String surgeryCase)
 	{
 		this.surgeryCase = surgeryCase;
+	}
+
+	public void setMedicines(String medicines)
+	{
+		this.medicines = medicines;
+	}
+
+	public String getMedicines()
+	{
+		return medicines;
 	}
 }

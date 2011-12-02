@@ -26,6 +26,7 @@ import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.CampScreeningDetailDTO;
 import com.varun.yfs.dto.ClinicDTO;
 import com.varun.yfs.dto.ClinicPatientDetailDTO;
+import com.varun.yfs.dto.ClinicPatientHistoryDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.CampPatientDetail;
@@ -182,21 +183,14 @@ public class DataUtil
 			{
 				ClinicPatientDetail scrDetHibObj = dozerMapper.map(clinicPatientDetailDTO, ClinicPatientDetail.class);
 				Long id = clinicPatientDetailDTO.get("id");
-				scrDetHibObj.setName(Util.safeToString(clinicPatientDetailDTO.get("name")));
-				scrDetHibObj.setAge(Util.safeToString(clinicPatientDetailDTO.get("age")));
-
-				Object object = clinicPatientDetailDTO.get("sex");
-				if (object != null)
-					scrDetHibObj.setSex(object.toString());
-
-				scrDetHibObj.setOccupation(Util.safeToString(clinicPatientDetailDTO.get("occupation")));
-				scrDetHibObj.setHeight(Util.safeToString(clinicPatientDetailDTO.get("height")));
-				scrDetHibObj.setWeight(Util.safeToString(clinicPatientDetailDTO.get("weight")));
-				scrDetHibObj.setAddress(Util.safeToString(clinicPatientDetailDTO.get("address")));
-				scrDetHibObj.setContactNo(Util.safeToString(clinicPatientDetailDTO.get("contactNo")));
-				scrDetHibObj.setDeleted(clinicPatientDetailDTO.get("deleted").toString());
-				if (clinic != null)
-					scrDetHibObj.setClinic(clinic);
+//				Object object;
+				extractPatientDetail(clinic, clinicPatientDetailDTO, scrDetHibObj);
+				int index = 0;
+				for (ClinicPatientHistory clinicPatientHistory : scrDetHibObj.getLstPatientHistory())
+				{
+					ClinicPatientHistoryDTO clinicPatientHistoryDTO = clinicPatientDetailDTO.getLstPatientHistory().get(index++);
+					extractPatientHistory(clinicPatientHistory, clinicPatientHistoryDTO);
+				}
 				if (id == null)
 				{
 					session.save(scrDetHibObj);
@@ -218,6 +212,60 @@ public class DataUtil
 		{
 			session.close();
 		}
+	}
+
+	private static void extractPatientHistory(ClinicPatientHistory clinicPatientHistory, ClinicPatientHistoryDTO clinicPatientHistoryDTO)
+	{
+		Object object;
+		clinicPatientHistory.setFindings(Util.safeToString(clinicPatientHistoryDTO.get("findings")));
+		clinicPatientHistory.setTreatment(Util.safeToString(clinicPatientHistoryDTO.get("treatment")));
+
+		object = clinicPatientHistoryDTO.get("referral1");
+		if (object != null)
+			clinicPatientHistory.setReferral1(object.toString());
+
+		object = clinicPatientHistoryDTO.get("referral2");
+		if (object != null)
+			clinicPatientHistory.setReferral2(object.toString());
+
+		object = clinicPatientHistoryDTO.get("referral3");
+		if (object != null)
+			clinicPatientHistory.setReferral3(object.toString());
+
+		object = clinicPatientHistoryDTO.get("emergency");
+		if (object != null)
+			clinicPatientHistory.setEmergency(object.toString());
+
+		object = clinicPatientHistoryDTO.get("medicines");
+		if (object != null)
+			clinicPatientHistory.setMedicines(object.toString());
+
+		object = clinicPatientHistoryDTO.get("caseClosed");
+		if (object != null)
+			clinicPatientHistory.setCaseClosed(object.toString());
+
+		object = clinicPatientHistoryDTO.get("surgeryCase");
+		if (object != null)
+			clinicPatientHistory.setSurgeryCase(object.toString());
+	}
+
+	private static void extractPatientDetail(Clinic clinic, ClinicPatientDetailDTO clinicPatientDetailDTO, ClinicPatientDetail scrDetHibObj)
+	{
+		scrDetHibObj.setName(Util.safeToString(clinicPatientDetailDTO.get("name")));
+		scrDetHibObj.setAge(Util.safeToString(clinicPatientDetailDTO.get("age")));
+
+		Object object = clinicPatientDetailDTO.get("sex");
+		if (object != null)
+			scrDetHibObj.setSex(object.toString());
+
+		scrDetHibObj.setOccupation(Util.safeToString(clinicPatientDetailDTO.get("occupation")));
+		scrDetHibObj.setHeight(Util.safeToString(clinicPatientDetailDTO.get("height")));
+		scrDetHibObj.setWeight(Util.safeToString(clinicPatientDetailDTO.get("weight")));
+		scrDetHibObj.setAddress(Util.safeToString(clinicPatientDetailDTO.get("address")));
+		scrDetHibObj.setContactNo(Util.safeToString(clinicPatientDetailDTO.get("contactNo")));
+		scrDetHibObj.setDeleted(clinicPatientDetailDTO.get("deleted").toString());
+		if (clinic != null)
+			scrDetHibObj.setClinic(clinic);
 	}
 
 	public static void saveScreeningDetail(CampScreeningDetailDTO screeningDetailDto)
@@ -376,7 +424,8 @@ public class DataUtil
 
 		Criteria filter = session.createCriteria(ClinicPatientDetail.class);
 		filter.add(Restrictions.eq("clinic.id", scrId)).add(Restrictions.eq("deleted", "N"));
-//		filter.createCriteria("lstPatientHistory").add(Restrictions.eq("deleted", "N"));
+		// filter.createCriteria("lstPatientHistory").add(Restrictions.eq("deleted",
+		// "N"));
 		try
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
