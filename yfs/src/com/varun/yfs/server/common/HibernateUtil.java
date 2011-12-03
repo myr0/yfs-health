@@ -185,11 +185,6 @@ public class HibernateUtil
 		session.flush();
 	}
 	
-	private static void insertClinic(Session session,City city)
-	{
-		
-	}
-
 	private static void insertDoctor(Session session)
 	{
 		session.save(new Doctor("Rama"));

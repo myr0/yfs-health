@@ -176,14 +176,14 @@ public class DataUtil
 		try
 		{
 			Clinic clinic = null;
-			if (clinicId != null || !clinicId.isEmpty())
+			if (!clinicId.isEmpty())
 				clinic = (Clinic) session.createCriteria(Clinic.class).add(Restrictions.eq("id", Long.parseLong(clinicId))).uniqueResult();
 
 			for (ClinicPatientDetailDTO clinicPatientDetailDTO : lstModelData)
 			{
 				ClinicPatientDetail scrDetHibObj = dozerMapper.map(clinicPatientDetailDTO, ClinicPatientDetail.class);
 				Long id = clinicPatientDetailDTO.get("id");
-//				Object object;
+				// Object object;
 				extractPatientDetail(clinic, clinicPatientDetailDTO, scrDetHibObj);
 				int index = 0;
 				for (ClinicPatientHistory clinicPatientHistory : scrDetHibObj.getLstPatientHistory())
@@ -424,11 +424,10 @@ public class DataUtil
 
 		Criteria filter = session.createCriteria(ClinicPatientDetail.class);
 		filter.add(Restrictions.eq("clinic.id", scrId)).add(Restrictions.eq("deleted", "N"));
-		// filter.createCriteria("lstPatientHistory").add(Restrictions.eq("deleted",
-		// "N"));
 		try
 		{
 			Mapper dozerMapper = HibernateUtil.getDozerMapper();
+			@SuppressWarnings("unchecked")
 			List<ClinicPatientDetail> screeningDetail = filter.list();
 			if (screeningDetail != null)
 			{
@@ -611,50 +610,6 @@ public class DataUtil
 			object = modelData.get("medicines");
 			if (object != null)
 				patientDetail.setMedicines(object.toString());
-
-			object = modelData.get("caseClosed");
-			if (object != null)
-				patientDetail.setCaseClosed(object.toString());
-
-			object = modelData.get("surgeryCase");
-			if (object != null)
-				patientDetail.setSurgeryCase(object.toString());
-
-			if (patientDetail.getId() > 0)
-			{
-				session.saveOrUpdate(patientDetail);
-			} else
-			{
-				session.save(patientDetail);
-			}
-			session.flush();
-		}
-	}
-
-	private static void extractPatientDetailData(Session session, ClinicPatientDetailDTO screeningDetailDto, ClinicPatientDetail scrDetHibObj)
-	{
-		int index = 0;
-		for (ModelData modelData : screeningDetailDto.getLstPatientHistory())
-		{
-			ClinicPatientHistory patientDetail = scrDetHibObj.getLstPatientHistory().get(index++);
-			patientDetail.setFindings(Util.safeToString(modelData.get("findings")));
-			patientDetail.setTreatment(Util.safeToString(modelData.get("treatment")));
-
-			Object object = modelData.get("referral1");
-			if (object != null)
-				patientDetail.setReferral1(object.toString());
-
-			object = modelData.get("referral2");
-			if (object != null)
-				patientDetail.setReferral2(object.toString());
-
-			object = modelData.get("referral3");
-			if (object != null)
-				patientDetail.setReferral3(object.toString());
-
-			object = modelData.get("emergency");
-			if (object != null)
-				patientDetail.setEmergency(object.toString());
 
 			object = modelData.get("caseClosed");
 			if (object != null)

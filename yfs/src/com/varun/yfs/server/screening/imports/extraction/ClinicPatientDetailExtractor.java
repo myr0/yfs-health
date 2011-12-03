@@ -4,24 +4,25 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.varun.yfs.dto.CampPatientDetailDTO;
+import com.varun.yfs.dto.ClinicPatientDetailDTO;
 
-public class ClinicPatientDataExtractor extends SchoolPatientDataExtractor
+public class ClinicPatientDetailExtractor extends SchoolPatientDataExtractor
 {
-	private static final Logger LOGGER = Logger.getLogger(ClinicPatientDataExtractor.class);
+	private static final Logger LOGGER = Logger.getLogger(ClinicPatientDetailExtractor.class);
 
-	public ClinicPatientDataExtractor(List<String> errorRows)
+	public ClinicPatientDetailExtractor(List<String> errorRows)
 	{
 		super(errorRows);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void convertToPatientDetailDTO(List<String> lstCols, boolean processIds)
 	{
 		LOGGER.debug(processedRowCount + "- starting conversion.");
 		errorString.trimToSize();
 
-		if (lstCols.size() < 14)
+		if (lstCols.size() < 8)
 		{
 			LOGGER.debug(processedRowCount + " -record conversion aborted. Insufficient columns in record.");
 			processedRowCount += 1;
@@ -30,9 +31,7 @@ public class ClinicPatientDataExtractor extends SchoolPatientDataExtractor
 
 		int startErrorCount = errorRows.size();
 
-		CampPatientDetailDTO patientDetailDTO = new CampPatientDetailDTO();
-		// patientDetailDTO.setCaseClosed(lstCols.get(4));
-		// patientDetailDTO.setReferral3(lstCols.get());
+		ClinicPatientDetailDTO patientDetailDTO = new ClinicPatientDetailDTO();
 
 		patientDetailDTO.setDeleted("N");
 
@@ -48,24 +47,9 @@ public class ClinicPatientDataExtractor extends SchoolPatientDataExtractor
 		patientDetailDTO.setAge(lstCols.get(4));
 		patientDetailDTO.setAddress(lstCols.get(5));
 		patientDetailDTO.setContactNo(lstCols.get(6));
-		patientDetailDTO.setBloodPressure(lstCols.get(7));
 
-		patientDetailDTO.setHeight(lstCols.get(8));
-		patientDetailDTO.setWeight(lstCols.get(9));
-		patientDetailDTO.setFindings(lstCols.get(10));
-		patientDetailDTO.setTreatment(lstCols.get(11));
-
-		String decodeReferral = decodeReferral(lstCols.get(12));
-		patientDetailDTO.setReferral1(decodeReferral);
-
-		String decodeReferral2 = decodeReferral(lstCols.get(13));
-		patientDetailDTO.setReferral2(decodeReferral2);
-
-		String decodeEmergency = decodeYesNo(lstCols.get(14));
-		patientDetailDTO.setEmergency(decodeEmergency);
-
-		String decodeSurgery = decodeYesNo(lstCols.get(15));
-		patientDetailDTO.setSurgeryCase(decodeSurgery);
+		patientDetailDTO.setHeight(lstCols.get(7));
+		patientDetailDTO.setWeight(lstCols.get(8));
 
 		int endErrorCount = errorRows.size();
 

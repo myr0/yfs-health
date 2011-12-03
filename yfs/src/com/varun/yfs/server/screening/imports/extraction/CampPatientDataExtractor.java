@@ -8,13 +8,14 @@ import com.varun.yfs.dto.CampPatientDetailDTO;
 
 public class CampPatientDataExtractor extends SchoolPatientDataExtractor
 {
-	private static  final Logger LOGGER = Logger.getLogger(CampPatientDataExtractor.class);
+	private static final Logger LOGGER = Logger.getLogger(CampPatientDataExtractor.class);
 
 	public CampPatientDataExtractor(List<String> errorRows)
 	{
 		super(errorRows);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void convertToPatientDetailDTO(List<String> lstCols, boolean processIds)
 	{
@@ -52,7 +53,7 @@ public class CampPatientDataExtractor extends SchoolPatientDataExtractor
 		patientDetailDTO.setHeight(lstCols.get(7));
 		patientDetailDTO.setWeight(lstCols.get(8));
 		patientDetailDTO.setBloodPressure(lstCols.get(9));
-		
+
 		patientDetailDTO.setFindings(lstCols.get(10));
 		patientDetailDTO.setTreatment(lstCols.get(11));
 
@@ -61,7 +62,7 @@ public class CampPatientDataExtractor extends SchoolPatientDataExtractor
 
 		String decodeReferral2 = decodeReferral(lstCols.get(13));
 		patientDetailDTO.setReferral2(decodeReferral2);
-		
+
 		String decodeMedicines = decodeYesNo(lstCols.get(14));
 		patientDetailDTO.setMedicines(decodeMedicines);
 
@@ -70,10 +71,10 @@ public class CampPatientDataExtractor extends SchoolPatientDataExtractor
 
 		String decodeSurgery = decodeYesNo(lstCols.get(16));
 		patientDetailDTO.setSurgeryCase(decodeSurgery);
-		
+
 		String decodeCaseClosed = decodeYesNo(lstCols.get(17));
 		patientDetailDTO.setCaseClosed(decodeCaseClosed);
-		
+
 		patientDetailDTO.setReferralUpdates(lstCols.get(18));
 
 		int endErrorCount = errorRows.size();

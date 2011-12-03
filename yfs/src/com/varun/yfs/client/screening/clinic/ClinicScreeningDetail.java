@@ -253,7 +253,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(ImportType.CLINIC, gridPatDetail, dialogImport, processIds), new FitData(5));
+				dialogImport.add(new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport, processIds), new FitData(5));
 				dialogImport.show();
 			}
 		});
@@ -284,14 +284,12 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		gridHolderPanel.setLayout(new FitLayout());
 		gridHolderPanel.add(gridPatDetail);
-//		gridHolderPanel.setHeight("350");
-//		gridHolderPanel.setWidth("350");
-		gridHolderPanel.setSize("600px", "250px");
+		gridHolderPanel.setSize("800px", "300px");
 
 		mainContainerPanel.add(gridHolderPanel, new FitData(5));
 		mainContainerPanel.setHeight("700");
 		mainContainerPanel.add(formPanel);
-		
+
 		formPanel.setSize("5", "5");
 		formPanel.setVisible(false);
 	}
@@ -306,7 +304,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 		gridPatHistory.setLoadMask(true);
 		gridPatHistory.setColumnLines(true);
 		gridPatHistory.setLoadMask(true);
-		gridPatHistory.setHeight("300px");
 		gridPatHistory.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 
 		final ContentPanel gridHolderPanel = new ContentPanel();
@@ -325,7 +322,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				patientDetail.setDeleted("N");
 				gridPatHistory.stopEditing();
 				storePatHistory.insert(patientDetail, 0);
-				gridPatDetail.startEditing(storePatHistory.indexOf(patientDetail), 0);
+				gridPatHistory.startEditing(storePatHistory.indexOf(patientDetail), 0);
 			}
 		});
 		toolBar.add(add);
@@ -475,12 +472,12 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				Dialog dialogImport = new Dialog();
-				dialogImport.setHeading("Import Patient Detail");
+				dialogImport.setHeading("Import Patient History");
 				dialogImport.setWidth("400");
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(ImportType.CLINIC, gridPatHistory, dialogImport, processIds), new FitData(5));
+				dialogImport.add(new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport, processIds), new FitData(5));
 				dialogImport.show();
 			}
 		});
@@ -513,9 +510,12 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		gridHolderPanel.setLayout(new FitLayout());
 		gridHolderPanel.add(gridPatHistory);
-		gridHolderPanel.setSize("600px", "250px");
+		gridHolderPanel.setSize("800px", "300px");
 
 		mainContainerPanel.add(gridHolderPanel, new FitData(5));
+		mainContainerPanel.add(formPanel);
+		formPanel.setSize("5", "5");
+		formPanel.setVisible(false);
 	}
 
 	private void validateAndSave()
@@ -566,36 +566,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 		// if (!contactInformation.validate())
 		// return false;
 		return true;
-	}
-
-	private ClinicPatientDetailDTO extractFormData()
-	{
-		IndexPage.maskCenterComponent("Saving...");
-		ClinicPatientDetailDTO modelData = new ClinicPatientDetailDTO();
-		// modelData.setCountry((CountryDTO) country.getSelection().get(0));
-		// modelData.setState((StateDTO) state.getSelection().get(0));
-		// modelData.setCity((CityDTO) city.getSelection().get(0));
-		// modelData.setTown((TownDTO) town.getSelection().get(0));
-		// modelData.setVillage((VillageDTO) village.getSelection().get(0));
-		// modelData.setLocality((LocalityDTO) locality.getSelection().get(0));
-		//
-		// modelData.setChapterName((ChapterNameDTO)
-		// chapterName.getSelection().get(0));
-		// modelData.setProcessType((ProcessTypeDTO)
-		// processType.getSelection().get(0));
-		// modelData.setTypeOfLocation((TypeOfLocationDTO)
-		// typeOfLocation.getSelection().get(0));
-		// modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
-		// modelData.setContactInformation(contactInformation.getValue());
-		// modelData.setAddress(address.getValue());
-		// modelData.setVolunteers(volunteers.getChecked());
-		// modelData.setDoctors(doctors.getChecked());
-
-		gridPatDetail.stopEditing();
-		storePatDetail.commitChanges();
-		// List<ClinicPatientDetailDTO> models = storePatDetail.getModels();
-		// modelData.setPatientDetails(models);
-		return modelData;
 	}
 
 	private ColumnModel getColumnModelPatientHistory()

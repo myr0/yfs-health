@@ -29,8 +29,8 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 
 		} else if (ReportType.School.equals(report))
 		{
-			Long fromDate = params.get("dateFrom");
-			Long toDate = params.get("dateTo");
+			// Long fromDate = params.get("dateFrom");
+			// Long toDate = params.get("dateTo");
 
 			model.set("locationsCount", DataUtil.executeQuery("select count(*) from schoolscreeningdetail sd join locality ld on sd.schoolscreeningdetailid = ld.localityid"));
 			model.set("locationsList", DataUtil.executeQuery("select ld.* from schoolscreeningdetail sd join locality ld on sd.schoolscreeningdetailid = ld.localityid"));

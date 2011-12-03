@@ -32,6 +32,7 @@ import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.IndexPage;
 import com.varun.yfs.dto.ProgressDTO;
 
+@SuppressWarnings("rawtypes")
 public class ImportDetail extends LayoutContainer
 {
 	private final PatientDataImportServiceAsync patientDataImportService = PatientDataImportService.Util.getInstance();
@@ -207,7 +208,7 @@ public class ImportDetail extends LayoutContainer
 							return;
 						}
 
-						@SuppressWarnings({ "rawtypes", "unchecked" })
+						@SuppressWarnings("unchecked")
 						@Override
 						public void onSuccess(List<? extends BaseModelData> result)
 						{

@@ -20,7 +20,7 @@ import com.varun.yfs.dto.ProgressDTO;
 public class PatientDataImportServiceImpl extends RemoteServiceServlet implements PatientDataImportService
 {
 	private static final long serialVersionUID = 152574210934616316L;
-	private static  final Logger LOGGER = Logger.getLogger(PatientDataImportServiceImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(PatientDataImportServiceImpl.class);
 
 	private final ArrayBlockingQueue<List<String>> excelRows = new ArrayBlockingQueue<List<String>>(1000);
 	private final List<String> errorRows = Collections.synchronizedList(new ArrayList<String>(1000));
@@ -85,6 +85,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 		return progressDto;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<? extends BaseModelData> getProcessedRecords()
 	{

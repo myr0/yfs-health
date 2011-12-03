@@ -11,6 +11,7 @@ import com.varun.yfs.dto.YesNoDTO;
 import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
 import com.varun.yfs.server.common.data.DataUtil;
 
+@SuppressWarnings("rawtypes")
 public abstract class AbstractPatientDataExtractor
 {
 	private static  final Logger LOGGER = Logger.getLogger(AbstractPatientDataExtractor.class);

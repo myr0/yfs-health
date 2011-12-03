@@ -9,12 +9,13 @@ import org.apache.log4j.Logger;
 import com.varun.yfs.client.screening.imports.ImportType;
 import com.varun.yfs.server.screening.imports.extraction.AbstractPatientDataExtractor;
 import com.varun.yfs.server.screening.imports.extraction.CampPatientDataExtractor;
-import com.varun.yfs.server.screening.imports.extraction.ClinicPatientDataExtractor;
+import com.varun.yfs.server.screening.imports.extraction.ClinicPatientDetailExtractor;
+import com.varun.yfs.server.screening.imports.extraction.ClinicPatientHistoryExtractor;
 import com.varun.yfs.server.screening.imports.extraction.SchoolPatientDataExtractor;
 
 public class PatientDetailImporter
 {
-	private static  final Logger LOGGER = Logger.getLogger(PatientDetailImporter.class);
+	private static final Logger LOGGER = Logger.getLogger(PatientDetailImporter.class);
 
 	private ArrayBlockingQueue<List<String>> excelRows;
 	private List<String> errorRows;
@@ -61,8 +62,10 @@ public class PatientDetailImporter
 			extractor = new CampPatientDataExtractor(errorRows);
 		else if (importType.equals(ImportType.SCHOOL))
 			extractor = new SchoolPatientDataExtractor(errorRows);
-		else if (importType.equals(ImportType.CLINIC))
-			extractor = new ClinicPatientDataExtractor(errorRows);
+		else if (importType.equals(ImportType.CLINICPATIENTDETAIL))
+			extractor = new ClinicPatientDetailExtractor(errorRows);
+		else if (importType.equals(ImportType.CLINICPATIENTHISTORY))
+			extractor = new ClinicPatientHistoryExtractor(errorRows);
 
 	}
 
@@ -71,6 +74,7 @@ public class PatientDetailImporter
 		return extractor.getProcessedCount();
 	}
 
+	@SuppressWarnings("rawtypes")
 	public List getProcessedRecords()
 	{
 		return extractor.getPatientData();

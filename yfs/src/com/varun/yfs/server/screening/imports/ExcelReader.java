@@ -25,7 +25,7 @@ public class ExcelReader
 {
 	public static final String WORKSHEET_NAME = "Screening Detail";
 
-	private static  final Logger LOGGER = Logger.getLogger(ExcelReader.class);
+	private static final Logger LOGGER = Logger.getLogger(ExcelReader.class);
 
 	private Workbook workbook = null;
 	private DataFormatter formatter = null;
@@ -36,7 +36,8 @@ public class ExcelReader
 	private int lastRowNum;
 	private int processedRowCount;
 	private ArrayBlockingQueue<List<String>> excelRows;
-	private List<String> errorRows;
+
+	// private List<String> errorRows;
 
 	class ExcelFilenameFilter implements FilenameFilter
 	{
@@ -49,7 +50,7 @@ public class ExcelReader
 	public ExcelReader(ArrayBlockingQueue<List<String>> excelRows, List<String> errorRows)
 	{
 		this.excelRows = excelRows;
-		this.errorRows = errorRows;
+		// this.errorRows = errorRows;
 	}
 
 	public void readContentsAsCSV(String strSource) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
@@ -111,6 +112,7 @@ public class ExcelReader
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void extractContents()
 	{
 		Row row = null;

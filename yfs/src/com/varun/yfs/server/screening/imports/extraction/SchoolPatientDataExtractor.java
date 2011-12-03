@@ -18,6 +18,7 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 		super(errorRows);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void convertToPatientDetailDTO(List<String> lstCols, boolean processIds)
 	{
