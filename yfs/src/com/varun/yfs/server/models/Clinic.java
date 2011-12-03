@@ -46,7 +46,7 @@ public class Clinic implements Serializable
 		setName(name);
 		setDeleted("N");
 	}
-	
+
 	public Clinic(String name, City city)
 	{
 		setName(name);
@@ -69,17 +69,17 @@ public class Clinic implements Serializable
 		return clinicName;
 	}
 
-	public void setName(String name)
+	public final void setName(String name)
 	{
 		this.clinicName = name;
 	}
 
-	public String getDeleted()
+	public final String getDeleted()
 	{
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}
@@ -89,7 +89,7 @@ public class Clinic implements Serializable
 		return city;
 	}
 
-	public void setCity(City city)
+	public final void setCity(City city)
 	{
 		this.city = city;
 	}

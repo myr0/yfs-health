@@ -13,7 +13,7 @@ public interface ExportService extends RemoteService
 	/**
 	 * Utility class for simplifying access to the instance of async service.
 	 */
-	public static class Util
+	class Util
 	{
 		private static ExportServiceAsync instance;
 
@@ -27,5 +27,5 @@ public interface ExportService extends RemoteService
 		}
 	}
 
-	public String createExportFile(List<String> colHeaders, List<? extends ModelData> lstData);
+	String createExportFile(List<String> colHeaders, List<? extends ModelData> lstData);
 }

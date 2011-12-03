@@ -9,8 +9,8 @@ import com.extjs.gxt.ui.client.store.ListStore;
 public class YesNoDTO extends BaseModelData
 {
 	private static final long serialVersionUID = 6280337431842932388L;
-	public static YesNoDTO YES = new YesNoDTO("YES");
-	public static YesNoDTO NO = new YesNoDTO("NO");
+	public final static YesNoDTO YES = new YesNoDTO("YES");
+	public final static YesNoDTO NO = new YesNoDTO("NO");
 
 	public YesNoDTO()
 	{

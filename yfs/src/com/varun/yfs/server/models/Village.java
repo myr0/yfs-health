@@ -20,27 +20,22 @@ import org.hibernate.annotations.FetchMode;
 public class Village implements Serializable
 {
 	private static final long serialVersionUID = 6088705710776244789L;
-	
+
 	@Id
 	@GeneratedValue
 	@Column(name = "villageId")
 	private long id;
-	
+
 	@Column(nullable = false)
 	private String villageName;
-	
+
 	@Column(nullable = false)
 	private String deleted;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinColumn(name = "stateId",  nullable = false, updatable = true, insertable = true)
+	@JoinColumn(name = "stateId", nullable = false, updatable = true, insertable = true)
 	@Fetch(FetchMode.SELECT)
 	private State state;
-	
-	
-//	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "village")
-//	@Fetch(FetchMode.SELECT)
-//	private List<Users> users;
 
 	public Village()
 	{
@@ -53,7 +48,6 @@ public class Village implements Serializable
 		setDeleted("N");
 	}
 
-	
 	public long getId()
 	{
 		return id;
@@ -63,13 +57,13 @@ public class Village implements Serializable
 	{
 		this.id = id;
 	}
-	
+
 	public String getName()
 	{
 		return villageName;
 	}
 
-	public void setName(String name)
+	public final void setName(String name)
 	{
 		this.villageName = name;
 	}
@@ -79,7 +73,7 @@ public class Village implements Serializable
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}
@@ -88,21 +82,11 @@ public class Village implements Serializable
 	{
 		return state;
 	}
-	
+
 	public void setState(State state)
 	{
 		this.state = state;
 	}
-	
-//	public void setUsers(List<Users> users)
-//	{
-//		this.users = users;
-//	}
-//
-//	public List<Users> getUsers()
-//	{
-//		return users;
-//	}
 
 	@Override
 	public int hashCode()
@@ -128,5 +112,4 @@ public class Village implements Serializable
 		return true;
 	}
 
-	
 }

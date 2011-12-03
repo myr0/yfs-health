@@ -36,39 +36,17 @@ public class User implements Serializable
 	@Column(nullable = true)
 	private String role;
 
-	// @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST,
-	// CascadeType.MERGE })
-	// @JoinColumn(name = "localityId", nullable = true, updatable = true,
-	// insertable = true)
-	// @Fetch(FetchMode.SELECT)
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_ChapterName", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "chapterNameId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<ChapterName> chapterNames;
 
-	// @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST,
-	// CascadeType.MERGE })
-	// @JoinColumn(name = "villageId", nullable = true, updatable = true,
-	// insertable = true)
-	// @Fetch(FetchMode.SELECT)
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_Project", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "projectId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<Project> projects;
-
-	// @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST,
-	// CascadeType.MERGE })
-	// @JoinColumn(name = "townId", nullable = true, updatable = true,
-	// insertable = true)
-	// @Fetch(FetchMode.SELECT)
-	// @ManyToMany(cascade = CascadeType.ALL)
-	// @JoinTable(name = "User_Town", joinColumns = { @JoinColumn(name =
-	// "userId") }, inverseJoinColumns = { @JoinColumn(name = "townId") })
-	// @Column(nullable = true)
-	// @Fetch(FetchMode.SELECT)
-	// private List<Town> towns ;
 
 	@Column(nullable = false)
 	private String deleted;
@@ -100,7 +78,7 @@ public class User implements Serializable
 		return name;
 	}
 
-	public void setName(String name)
+	public final void setName(String name)
 	{
 		this.name = name;
 	}
@@ -110,12 +88,12 @@ public class User implements Serializable
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}
 
-	public void setPassword(String password)
+	public final void setPassword(String password)
 	{
 		this.password = password;
 	}

@@ -53,7 +53,7 @@ public class Entities implements Serializable
 		return name;
 	}
 
-	public void setName(String name)
+	public final void setName(String name)
 	{
 		this.name = name;
 	}
@@ -63,12 +63,12 @@ public class Entities implements Serializable
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}
 
-	public void setGroupName(String groupName)
+	public final void setGroupName(String groupName)
 	{
 		this.groupName = groupName;
 	}

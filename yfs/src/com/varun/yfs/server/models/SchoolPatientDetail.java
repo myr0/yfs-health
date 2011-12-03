@@ -24,7 +24,7 @@ public class SchoolPatientDetail implements Serializable
 
 	@Column(nullable = true)
 	private String age;
-	
+
 	@Column(nullable = true)
 	private String sex;
 
@@ -42,19 +42,19 @@ public class SchoolPatientDetail implements Serializable
 
 	@Column(nullable = true)
 	private String contactNo;
-	
+
 	@Column(nullable = true)
 	private String findings;
-	
+
 	@Column(nullable = true)
 	private String treatment;
-	
+
 	@Column(nullable = true)
 	private String referral1;
-	
+
 	@Column(nullable = true)
 	private String referral2;
-	
+
 	@Column(nullable = true)
 	private String referral3;
 
@@ -66,10 +66,10 @@ public class SchoolPatientDetail implements Serializable
 
 	@Column(nullable = true)
 	private String surgeryCase;
-	
+
 	@Column(nullable = true)
 	private String medicines;
-	
+
 	@Column(nullable = true)
 	private String referralUpdates;
 
@@ -93,7 +93,7 @@ public class SchoolPatientDetail implements Serializable
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}

@@ -24,18 +24,18 @@ public class Locality implements Serializable
 	@GeneratedValue
 	@Column(name = "localityId")
 	private long id;
-	
+
 	@Column(nullable = false)
 	private String localityName;
-	
+
 	@Column(nullable = false)
 	private String deleted;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "cityId", nullable = false, updatable = true, insertable = true)
 	@Fetch(FetchMode.SELECT)
 	private City city;
-	
+
 	public Locality()
 	{
 		setDeleted("N");
@@ -47,7 +47,6 @@ public class Locality implements Serializable
 		setDeleted("N");
 	}
 
-	
 	public long getId()
 	{
 		return id;
@@ -58,13 +57,12 @@ public class Locality implements Serializable
 		this.id = id;
 	}
 
-	
 	public String getName()
 	{
 		return localityName;
 	}
 
-	public void setName(String name)
+	public final void setName(String name)
 	{
 		this.localityName = name;
 	}
@@ -74,7 +72,7 @@ public class Locality implements Serializable
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}
@@ -83,22 +81,12 @@ public class Locality implements Serializable
 	{
 		return city;
 	}
-	
+
 	public void setCity(City city)
 	{
 		this.city = city;
 	}
 
-//	public void setUsers(List<Users> users)
-//	{
-//		this.users = users;
-//	}
-//
-//	public List<Users> getUsers()
-//	{
-//		return users;
-//	}
-	
 	@Override
 	public int hashCode()
 	{
@@ -123,5 +111,4 @@ public class Locality implements Serializable
 		return true;
 	}
 
-	
 }

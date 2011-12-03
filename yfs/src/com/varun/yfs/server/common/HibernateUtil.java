@@ -34,9 +34,9 @@ import com.varun.yfs.server.models.Volunteer;
 
 public class HibernateUtil
 {
-	private static final SessionFactory sessionFactory;
+	private static final SessionFactory SESSIONFACTORY;
 	private static DozerBeanMapper mapper;
-	private static final Logger log = Logger.getLogger(HibernateUtil.class);
+	private static final Logger LOGGER = Logger.getLogger(HibernateUtil.class);
 
 	static
 	{
@@ -44,25 +44,25 @@ public class HibernateUtil
 		{
 			PropertyConfigurator.configure("log4j.properties");
 
-			sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
-			log.debug("The application is booting...");
+			SESSIONFACTORY = new AnnotationConfiguration().configure().buildSessionFactory();
+			LOGGER.debug("The application is booting...");
 
 			mapper = new DozerBeanMapper();
 
 			insertReferenceData();
 
-			log.debug("The application has finished booting.The reference data insertion is complete.");
+			LOGGER.debug("The application has finished booting.The reference data insertion is complete.");
 
 		} catch (Throwable ex)
 		{
-			log.error("Initial SessionFactory creation failed. No database connections available. " + ex);
+			LOGGER.error("Initial SessionFactory creation failed. No database connections available. " + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
 	}
 
 	public static SessionFactory getSessionFactory()
 	{
-		return sessionFactory;
+		return SESSIONFACTORY;
 	}
 
 	public static Mapper getDozerMapper()
@@ -92,31 +92,31 @@ public class HibernateUtil
 		Transaction transaction = session.beginTransaction();
 
 		insertEntities(session);
-		log.info("Initial load of Entities completed");
+		LOGGER.info("Initial load of Entities completed");
 
 		insertCountry(session);
-		log.info("Initial load of Geographical Data / Clinic completed");
+		LOGGER.info("Initial load of Geographical Data / Clinic completed");
 
 		insertChapterNames(session);
-		log.info("Initial load of Chapter Names completed");
+		LOGGER.info("Initial load of Chapter Names completed");
 
 		insertUsers(session);
-		log.info("Initial load of Users completed");
+		LOGGER.info("Initial load of Users completed");
 
 		insertDoctor(session);
-		log.info("Initial load of Doctors completed");
+		LOGGER.info("Initial load of Doctors completed");
 
 		insertProcessType(session);
-		log.info("Initial load of Process Types completed");
+		LOGGER.info("Initial load of Process Types completed");
 
 		insertTypeOfLocation(session);
-		log.info("Initial load of TypeOfLocation completed");
+		LOGGER.info("Initial load of TypeOfLocation completed");
 
 		insertVolunteer(session);
-		log.info("Initial load of Volunteer completed");
+		LOGGER.info("Initial load of Volunteer completed");
 
 		insertReferralTypes(session);
-		log.info("Initial load of ReferralTypes completed");
+		LOGGER.info("Initial load of ReferralTypes completed");
 		
 
 		transaction.commit();

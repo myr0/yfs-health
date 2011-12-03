@@ -35,18 +35,14 @@ import com.varun.yfs.client.images.YfsImageBundle;
 
 public class AdministrationPage extends LayoutContainer
 {
-	private StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
+	private final StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
 	private String curAdminEntity = "Default";
-	private List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+	private final List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 	private final ListStore<ModelData> editorGridStore = new ListStore<ModelData>();
-	private EditorGrid<ModelData> editorGrid = new EditorGrid<ModelData>(editorGridStore, new ColumnModel(configs));
-	private ContentPanel gridPanel = new ContentPanel();
+	private final EditorGrid<ModelData> editorGrid = new EditorGrid<ModelData>(editorGridStore, new ColumnModel(configs));
+	private final ContentPanel gridPanel = new ContentPanel();
 
-	public AdministrationPage()
-	{
-	}
-
-	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
+	private static final Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
 		{
@@ -162,7 +158,7 @@ public class AdministrationPage extends LayoutContainer
 				reinitPage(curAdminEntity);
 				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
 				{
-					MessageBox.alert("Alert", "Error encountered while saving", l);
+					MessageBox.alert("Alert", "Error encountered while saving", DUMMYLISTENER);
 				}
 			}
 
@@ -170,7 +166,7 @@ public class AdministrationPage extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				editorGrid.unmask();
-				MessageBox.alert("Alert", "Error encountered while saving", l);
+				MessageBox.alert("Alert", "Error encountered while saving", DUMMYLISTENER);
 			}
 		});
 	}
@@ -195,7 +191,7 @@ public class AdministrationPage extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				editorGrid.unmask();
-				MessageBox.alert("Alert", "Error encountered while loading", l);
+				MessageBox.alert("Alert", "Error encountered while loading", DUMMYLISTENER);
 			}
 		});
 	}

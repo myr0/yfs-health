@@ -18,18 +18,21 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "country")
-public class Country implements Serializable {
+public class Country implements Serializable
+{
 	private static final long serialVersionUID = -7972100793996969092L;
 	private long id;
 	private String countryName;
 	private String deleted;
 	private Set<State> states = new HashSet<State>();
 
-	public Country() {
+	public Country()
+	{
 		setDeleted("N");
 	}
 
-	public Country(String name) {
+	public Country(String name)
+	{
 		setName(name);
 		setDeleted("N");
 	}
@@ -37,44 +40,53 @@ public class Country implements Serializable {
 	@Id
 	@GeneratedValue
 	@Column(name = "countryId")
-	public long getId() {
+	public long getId()
+	{
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(long id)
+	{
 		this.id = id;
 	}
 
 	@Column(nullable = false)
-	public String getName() {
+	public String getName()
+	{
 		return countryName;
 	}
 
-	public void setName(String name) {
+	public final void setName(String name)
+	{
 		this.countryName = name;
 	}
 
 	@Column(nullable = false)
-	public String getDeleted() {
+	public String getDeleted()
+	{
 		return deleted;
 	}
 
-	public void setDeleted(String deleted) {
+	public final void setDeleted(String deleted)
+	{
 		this.deleted = deleted;
 	}
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "country")
 	@Fetch(FetchMode.SELECT)
-	public Set<State> getStates() {
+	public Set<State> getStates()
+	{
 		return states;
 	}
 
-	public void setStates(Set<State> states) {
+	public void setStates(Set<State> states)
+	{
 		this.states = states;
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (id ^ (id >>> 32));
@@ -82,7 +94,8 @@ public class Country implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj)
+	{
 		if (this == obj)
 			return true;
 		if (obj == null)

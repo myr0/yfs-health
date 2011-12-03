@@ -45,7 +45,7 @@ public class Volunteer implements Serializable
 		return name;
 	}
 
-	public void setName(String name)
+	public final void setName(String name)
 	{
 		this.name = name;
 	}
@@ -56,7 +56,7 @@ public class Volunteer implements Serializable
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}

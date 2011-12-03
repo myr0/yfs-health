@@ -81,9 +81,9 @@ import com.varun.yfs.dto.YesNoDTO;
 
 public class SchoolScreeningDetail extends LayoutContainer
 {
-	private String headerText = "Screening Detail";
-	private SchoolScreeningDetailServiceAsync detailServiceAsync = GWT.create(SchoolScreeningDetailService.class);
-	private ExportServiceAsync exportServiceAsync = GWT.create(ExportService.class);
+	private final String headerText = "Screening Detail";
+	private final SchoolScreeningDetailServiceAsync detailServiceAsync = GWT.create(SchoolScreeningDetailService.class);
+	private final ExportServiceAsync exportServiceAsync = GWT.create(ExportService.class);
 
 	protected ContentPanel mainContainerPanel = new ContentPanel();
 	private final ComboBox<ModelData> country = new ComboBox<ModelData>();

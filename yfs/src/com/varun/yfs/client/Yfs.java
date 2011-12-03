@@ -14,11 +14,12 @@ public class Yfs implements EntryPoint
 	public void onModuleLoad()
 	{
 		String sessionID = Cookies.getCookie("sid");
-		if (sessionID != null)
-			checkWithServerIfSessionIdIsStillLegal(sessionID);
-		else
+		if (sessionID == null)
 		{
 			displayLoginWindow();
+		} else
+		{
+			checkWithServerIfSessionIdIsStillLegal(sessionID);
 		}
 	}
 

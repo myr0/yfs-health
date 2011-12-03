@@ -19,7 +19,8 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "state")
-public class State implements Serializable {
+public class State implements Serializable
+{
 	private static final long serialVersionUID = 6593825060763079909L;
 	private long id;
 	private String stateName;
@@ -29,16 +30,19 @@ public class State implements Serializable {
 	private Set<Town> towns;
 	private Set<Village> villages;
 
-	public State() {
+	public State()
+	{
 		setDeleted("N");
 	}
 
-	public State(String name) {
+	public State(String name)
+	{
 		setName(name);
 		setDeleted("N");
 	}
 
-	public State(String name, Country country) {
+	public State(String name, Country country)
+	{
 		setName(name);
 		setCountry(country);
 		setDeleted("N");
@@ -47,75 +51,90 @@ public class State implements Serializable {
 	@Id
 	@GeneratedValue
 	@Column(name = "stateId")
-	public long getId() {
+	public long getId()
+	{
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(long id)
+	{
 		this.id = id;
 	}
 
 	@Column(nullable = false)
-	public String getName() {
+	public String getName()
+	{
 		return stateName;
 	}
 
-	public void setName(String name) {
+	public final void setName(String name)
+	{
 		this.stateName = name;
 	}
 
 	@Column(nullable = false)
-	public String getDeleted() {
+	public final String getDeleted()
+	{
 		return deleted;
 	}
 
-	public void setDeleted(String deleted) {
+	public final void setDeleted(String deleted)
+	{
 		this.deleted = deleted;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	@JoinColumn(name = "countryId", nullable = false, updatable = true, insertable = true)
 	@Fetch(FetchMode.SELECT)
-	public Country getCountry() {
+	public Country getCountry()
+	{
 		return country;
 	}
 
-	public void setCountry(Country country) {
+	public final void setCountry(Country country)
+	{
 		this.country = country;
 	}
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "state")
 	@Fetch(FetchMode.SELECT)
-	public Set<City> getCities() {
+	public Set<City> getCities()
+	{
 		return cities;
 	}
 
-	public void setCities(Set<City> cities) {
+	public void setCities(Set<City> cities)
+	{
 		this.cities = cities;
 	}
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "state")
 	@Fetch(FetchMode.SELECT)
-	public Set<Town> getTowns() {
+	public Set<Town> getTowns()
+	{
 		return towns;
 	}
 
-	public void setTowns(Set<Town> towns) {
+	public void setTowns(Set<Town> towns)
+	{
 		this.towns = towns;
 	}
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "state")
 	@Fetch(FetchMode.SELECT)
-	public Set<Village> getVillages() {
+	public Set<Village> getVillages()
+	{
 		return villages;
 	}
 
-	public void setVillages(Set<Village> villages) {
+	public void setVillages(Set<Village> villages)
+	{
 		this.villages = villages;
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (id ^ (id >>> 32));
@@ -123,7 +142,8 @@ public class State implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj)
+	{
 		if (this == obj)
 			return true;
 		if (obj == null)

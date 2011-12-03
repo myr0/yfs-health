@@ -84,7 +84,7 @@ public class IndexPage extends LayoutContainer
 
 	private String userName;
 
-	protected final static Listener<MessageBoxEvent> dummyListener = new Listener<MessageBoxEvent>()
+	protected final static Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
 		{
@@ -355,7 +355,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(), dummyListener);
+				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(), DUMMYLISTENER);
 				// System.out.println(caught.getMessage());
 			}
 
@@ -459,7 +459,7 @@ public class IndexPage extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				// System.out.println(caught.getMessage());
-				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(), dummyListener);
+				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(), DUMMYLISTENER);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -793,7 +793,7 @@ public class IndexPage extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				// System.out.println(caught.getMessage());
-				MessageBox.info("Error", "Error Encountered while loading School Screening Panel" + caught.getMessage(), dummyListener);
+				MessageBox.info("Error", "Error Encountered while loading School Screening Panel" + caught.getMessage(), DUMMYLISTENER);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -818,7 +818,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(), dummyListener);
+				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(), DUMMYLISTENER);
 				// System.out.println(caught.getMessage());
 			}
 
@@ -845,7 +845,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Camp Panel" + caught.getMessage(), dummyListener);
+				MessageBox.info("Error", "Error Encountered while loading Camp Panel" + caught.getMessage(), DUMMYLISTENER);
 				// System.out.println(caught.getMessage());
 			}
 

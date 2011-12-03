@@ -24,21 +24,17 @@ public class Town implements Serializable
 	@GeneratedValue
 	@Column(name = "townId")
 	private long id;
-	
+
 	@Column(nullable = false)
 	private String townName;
-	
+
 	@Column(nullable = false)
 	private String deleted;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinColumn(name = "stateId",  nullable = false, updatable = true, insertable = true)
+	@JoinColumn(name = "stateId", nullable = false, updatable = true, insertable = true)
 	@Fetch(FetchMode.SELECT)
 	private State state;
-	
-//	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "town")
-//	@Fetch(FetchMode.SELECT)
-//	private List<Users> users;
 
 	public Town()
 	{
@@ -51,7 +47,6 @@ public class Town implements Serializable
 		setDeleted("N");
 	}
 
-	
 	public long getId()
 	{
 		return id;
@@ -62,24 +57,22 @@ public class Town implements Serializable
 		this.id = id;
 	}
 
-	
 	public String getName()
 	{
 		return townName;
 	}
 
-	public void setName(String name)
+	public final void setName(String name)
 	{
 		this.townName = name;
 	}
 
-	
 	public String getDeleted()
 	{
 		return deleted;
 	}
 
-	public void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}
@@ -93,17 +86,6 @@ public class Town implements Serializable
 	{
 		this.state = state;
 	}
-	
-
-//	public void setUsers(List<Users> users)
-//	{
-//		this.users = users;
-//	}
-//
-//	public List<Users> getUsers()
-//	{
-//		return users;
-//	}
 
 	@Override
 	public int hashCode()
