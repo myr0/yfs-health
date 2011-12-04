@@ -186,7 +186,7 @@ public enum ListModelDataEnum
 			List<ModelData> child = new ArrayList<ModelData>();
 			m1.set("children", child);
 			child.add(newItem(ReportType.School.getValue(), ""));
-			child.add(newItem(ReportType.Medical.getValue(), ""));
+			child.add(newItem(ReportType.MedicalCamp.getValue(), ""));
 			child.add(newItem(ReportType.Clinic.getValue(), ""));
 			child.add(newItem(ReportType.Events.getValue(), ""));
 			child.add(newItem(ReportType.Events.getValue(), ""));

@@ -14,9 +14,12 @@ import com.extjs.gxt.charts.client.model.charts.BarChart;
 import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
 import com.extjs.gxt.charts.client.model.charts.LineChart;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -38,10 +41,17 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
+import com.varun.yfs.client.reports.rpc.ReportDetailService;
+import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
+import com.varun.yfs.client.reports.rpc.ReportType;
 
 public class MedicalCampProgramReport extends LayoutContainer
 {
-	private StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
+	private ReportDetailServiceAsync reportDetailService = GWT.create(ReportDetailService.class);
+	private LabelField lblfldLocations;
+	private LabelField lblfldTotalScreened;
+	private Grid<ModelData> gridBreakupOfTreatments;
+
 	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
@@ -69,23 +79,23 @@ public class MedicalCampProgramReport extends LayoutContainer
 		store.add(tmSales);
 		tmSales = new TeamSales("FS", 12, 2, 3);
 		store.add(tmSales);
-		tmSales = new TeamSales("Feature 1", 1, 2, 3);
-		store.add(tmSales);
-		tmSales = new TeamSales("Feature 2", 10, 232, 354);
-		store.add(tmSales);
-		tmSales = new TeamSales("Performance Test", 152, 422, 353);
-		store.add(tmSales);
-		tmSales = new TeamSales("System Test", 2, 20, 365);
-		store.add(tmSales);
-		tmSales = new TeamSales("Release", 12, 2, 3);
-		store.add(tmSales);
-		tmSales = new TeamSales("Handover", 1, 204, 305);
-		store.add(tmSales);
+		// tmSales = new TeamSales("Feature 1", 1, 2, 3);
+		// store.add(tmSales);
+		// tmSales = new TeamSales("Feature 2", 10, 232, 354);
+		// store.add(tmSales);
+		// tmSales = new TeamSales("Performance Test", 152, 422, 353);
+		// store.add(tmSales);
+		// tmSales = new TeamSales("System Test", 2, 20, 365);
+		// store.add(tmSales);
+		// tmSales = new TeamSales("Release", 12, 2, 3);
+		// store.add(tmSales);
+		// tmSales = new TeamSales("Handover", 1, 204, 305);
+		// store.add(tmSales);
 
 		String url = "open-flash-chart.swf";
 		final Chart chart = new Chart(url);
 
-		ChartModel model = new ChartModel("Project progress report", "font-size: 14px; font-family: Verdana; text-align: center;");
+		ChartModel model = new ChartModel("Camp Screening report", "font-size: 14px; font-family: Verdana; text-align: center;");
 		model.setBackgroundColour("fefefe");
 		model.setLegend(new Legend(Position.TOP, true));
 		model.setScaleProvider(ScaleProvider.ROUNDED_NEAREST_SCALE_PROVIDER);
@@ -125,7 +135,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 		LayoutContainer layoutContainer = new LayoutContainer();
 		layoutContainer.setLayout(new TableLayout(3));
 
-		DateField dtfldFromDate = new DateField();
+		final DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
 		LayoutContainer frmpnlFromDate = new LayoutContainer();
 		frmpnlFromDate.setLayout(new FormLayout());
@@ -136,7 +146,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 		td_frmpnlFromDate.setMargin(5);
 		layoutContainer.add(frmpnlFromDate, td_frmpnlFromDate);
 
-		DateField dtfldToDate = new DateField();
+		final DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
 		LayoutContainer frmpnlToDate = new LayoutContainer();
 		frmpnlToDate.setLayout(new FormLayout());
@@ -157,7 +167,31 @@ public class MedicalCampProgramReport extends LayoutContainer
 		td_frmpnlRefresh.setMargin(5);
 		layoutContainer.add(frmpnlRefresh, td_frmpnlRefresh);
 		frmpnlRefresh.setBorders(true);
+		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				ModelData model = new BaseModelData();
+				model.set("dateFrom", dtfldFromDate.getValue().getTime());
+				model.set("dateTo", dtfldToDate.getValue().getTime());
+				reportDetailService.getModel(ReportType.MedicalCamp, model, new AsyncCallback<ModelData>()
+				{
+					@Override
+					public void onSuccess(ModelData result)
+					{
+						lblfldLocations.setText(lblfldLocations.getText() + result.get("locationsList"));
+						lblfldTotalScreened.setText(lblfldTotalScreened.getText() + result.get("locationsCount"));
+						gridBreakupOfTreatments.getStore().add((List<? extends ModelData>) result.get("breakupOfTreatments"));
+					}
 
+					@Override
+					public void onFailure(Throwable caught)
+					{
+					}
+				});
+			}
+		});
 		add(layoutContainer);
 
 		FormPanel lcReportingParams = new FormPanel();
@@ -166,7 +200,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 		lcReportingParams.setSize("", "700");
 
 		lcReportingParams.add(chart, new FormData(""));
-		chart.setSize("", "200px");
+		chart.setHeight("200px");
 
 		LabelField lblfldLocations = new LabelField("Location(s) :");
 		lcReportingParams.add(lblfldLocations, new FormData("100%"));
@@ -193,58 +227,52 @@ public class MedicalCampProgramReport extends LayoutContainer
 
 		List<ColumnConfig> configsBreakupOfTreatments = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgBreakupOfTreatment = new ColumnConfig("breakUpOfTreatment", "Breakup of Treatments", 150);
-		configsBreakupOfTreatments.add(clmncnfgBreakupOfTreatment);
+		ColumnConfig breakupOfTreatment = new ColumnConfig("breakUpOfTreatment", "Breakup of Treatments", 150);
+		configsBreakupOfTreatments.add(breakupOfTreatment);
 
-		ColumnConfig clmncnfgScreened = new ColumnConfig("screened", "Screened", 150);
-		configsBreakupOfTreatments.add(clmncnfgScreened);
+		ColumnConfig screened = new ColumnConfig("screened", "Screened", 60);
+		configsBreakupOfTreatments.add(screened);
 
-		ColumnConfig clmncnfgReferred = new ColumnConfig("referredSurgical", "Referred", 150);
-		configsBreakupOfTreatments.add(clmncnfgReferred);
-		ColumnConfig clmncnfgCasesClosed = new ColumnConfig("casesClosedSurgical", "Cases Closed", 150);
-		configsBreakupOfTreatments.add(clmncnfgCasesClosed);
-		ColumnConfig clmncnfgPending = new ColumnConfig("pendingSurgical", "Pending", 150);
-		configsBreakupOfTreatments.add(clmncnfgPending);
+		ColumnConfig casesClosed = new ColumnConfig("surgeryCasesClosed", "Surgery Cases Closed", 60);
+		configsBreakupOfTreatments.add(casesClosed);
 
-		clmncnfgReferred = new ColumnConfig("referredNonSurgical", "Referred", 150);
-		configsBreakupOfTreatments.add(clmncnfgReferred);
-		clmncnfgCasesClosed = new ColumnConfig("casesClosedNonSurgical", "Cases Closed", 150);
-		configsBreakupOfTreatments.add(clmncnfgCasesClosed);
-		clmncnfgPending = new ColumnConfig("pendingNonSurgical", "Pending", 150);
-		configsBreakupOfTreatments.add(clmncnfgPending);
+		ColumnConfig medicineClosedCases = new ColumnConfig("medicineCasesClosed", "Medicine Closed Cases", 60);
+		configsBreakupOfTreatments.add(medicineClosedCases);
 
-		ColumnModel cmBreakupOfTreatments = new ColumnModel(configsBreakupOfTreatments);
-		cmBreakupOfTreatments.addHeaderGroup(0, 0, new HeaderGroupConfig("Surgical", 2, 4));
-		cmBreakupOfTreatments.addHeaderGroup(0, 0, new HeaderGroupConfig("Non-Surgical", 5, 7));
+		ColumnConfig pendingSurgeryCases = new ColumnConfig("pendingSurgeryCases", "Pending Surgery Cases", 60);
+		configsBreakupOfTreatments.add(pendingSurgeryCases);
 
-		final Grid<ModelData> gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), cmBreakupOfTreatments);
+		ColumnConfig followUpMedicines = new ColumnConfig("followUpMedicines", "Follow Up Medicines", 60);
+		configsBreakupOfTreatments.add(followUpMedicines);
+
+		ColumnConfig closedSurgeryCases = new ColumnConfig("closedSurgeryCases", "Surgery Cases Closed", 60);
+		configsBreakupOfTreatments.add(closedSurgeryCases);
+
+		ColumnConfig caseClosed = new ColumnConfig("caseClosed", "Case Closed", 60);
+		configsBreakupOfTreatments.add(caseClosed);
+
+		ColumnConfig referredToHospital = new ColumnConfig("referredToHospital", "Referred To Hospital", 60);
+		configsBreakupOfTreatments.add(referredToHospital);
+
+		ColumnConfig pendingCases = new ColumnConfig("pendingCases", "Pending Cases", 60);
+		configsBreakupOfTreatments.add(pendingCases);
+
+		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("total", "Total", 60);
+		configsBreakupOfTreatments.add(clmncnfgNewColumn_5);
+
+		gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
 		gridBreakupOfTreatments.setBorders(true);
 
-		FormData fd_gridStatusOfTreatment = new FormData("100%");
+		FormData fd_gridStatusOfTreatment = new FormData("80%");
 		fd_gridStatusOfTreatment.setMargins(new Margins(0, 0, 5, 0));
 		lcReportingParams.add(gridStatusOfTreatment, fd_gridStatusOfTreatment);
-		FormData fd_gridBreakupOfTreatments = new FormData("100%");
+		FormData fd_gridBreakupOfTreatments = new FormData("80%");
 		fd_gridBreakupOfTreatments.setMargins(new Margins(0, 0, 5, 0));
 		lcReportingParams.add(gridBreakupOfTreatments, fd_gridBreakupOfTreatments);
 		gridBreakupOfTreatments.setHeight("150");
 
 		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);
-
-		storeLoader.getListStore("ReferralType", new AsyncCallback<List<ModelData>>()
-		{
-			@Override
-			public void onSuccess(List<ModelData> result)
-			{
-				gridBreakupOfTreatments.getStore().add(result);
-			}
-
-			@Override
-			public void onFailure(Throwable caught)
-			{
-				MessageBox.alert("Alert", "Error encountered while loading", l);
-			}
-		});
 
 	}
 }

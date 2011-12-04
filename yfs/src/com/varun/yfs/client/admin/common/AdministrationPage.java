@@ -39,7 +39,7 @@ public class AdministrationPage extends LayoutContainer
 	private String curAdminEntity = "Default";
 	private final List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 	private final ListStore<ModelData> editorGridStore = new ListStore<ModelData>();
-	private final EditorGrid<ModelData> editorGrid = new EditorGrid<ModelData>(editorGridStore, new ColumnModel(configs));
+	private EditorGrid<ModelData> editorGrid = new EditorGrid<ModelData>(editorGridStore, new ColumnModel(configs));
 	private final ContentPanel gridPanel = new ContentPanel();
 
 	private static final Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()

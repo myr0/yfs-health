@@ -45,6 +45,11 @@ import com.varun.yfs.client.reports.rpc.ReportType;
 public class SchoolHealthProgramReport extends LayoutContainer
 {
 	private ReportDetailServiceAsync reportDetailService = GWT.create(ReportDetailService.class);
+
+	private LabelField lblfldLocations;
+	private LabelField lblfldTotalScreened;
+	private Grid<ModelData> gridBreakupOfTreatments;
+
 	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
@@ -72,23 +77,23 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		store.add(tmSales);
 		tmSales = new TeamSales("FS", 12, 2, 3);
 		store.add(tmSales);
-		tmSales = new TeamSales("Feature 1", 1, 2, 3);
-		store.add(tmSales);
-		tmSales = new TeamSales("Feature 2", 10, 232, 354);
-		store.add(tmSales);
-		tmSales = new TeamSales("Performance Test", 152, 422, 353);
-		store.add(tmSales);
-		tmSales = new TeamSales("System Test", 2, 20, 365);
-		store.add(tmSales);
-		tmSales = new TeamSales("Release", 12, 2, 3);
-		store.add(tmSales);
-		tmSales = new TeamSales("Handover", 1, 204, 305);
-		store.add(tmSales);
+//		tmSales = new TeamSales("Feature 1", 1, 2, 3);
+//		store.add(tmSales);
+//		tmSales = new TeamSales("Feature 2", 10, 232, 354);
+//		store.add(tmSales);
+//		tmSales = new TeamSales("Performance Test", 152, 422, 353);
+//		store.add(tmSales);
+//		tmSales = new TeamSales("System Test", 2, 20, 365);
+//		store.add(tmSales);
+//		tmSales = new TeamSales("Release", 12, 2, 3);
+//		store.add(tmSales);
+//		tmSales = new TeamSales("Handover", 1, 204, 305);
+//		store.add(tmSales);
 
 		String url = "open-flash-chart.swf";
 		final Chart chart = new Chart(url);
 
-		ChartModel model = new ChartModel("Project progress report", "font-size: 14px; font-family: Verdana; text-align: center;");
+		ChartModel model = new ChartModel("School Screening", "font-size: 14px; font-family: Verdana; text-align: center;");
 		model.setBackgroundColour("fefefe");
 		model.setLegend(new Legend(Position.TOP, true));
 		model.setScaleProvider(ScaleProvider.ROUNDED_NEAREST_SCALE_PROVIDER);
@@ -171,9 +176,12 @@ public class SchoolHealthProgramReport extends LayoutContainer
 				model.set("dateTo", dtfldToDate.getValue().getTime());
 				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
 				{
-					@Override
+					@Override	
 					public void onSuccess(ModelData result)
 					{
+						lblfldLocations.setText(lblfldLocations.getText() + result.get("locationsList"));
+						lblfldTotalScreened.setText(lblfldTotalScreened.getText() + result.get("locationsCount"));
+						gridBreakupOfTreatments.getStore().add((List<? extends ModelData>) result.get("breakupOfTreatments"));
 					}
 
 					@Override
@@ -189,28 +197,28 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		FormPanel lcReportingParams = new FormPanel();
 		lcReportingParams.setHeaderVisible(false);
 		lcReportingParams.setHeading("School Health Program Report");
-		lcReportingParams.setSize("", "700");
+		lcReportingParams.setHeight("700");
 
-		lcReportingParams.add(chart, new FormData(""));
-		chart.setSize("", "300px");
+		lcReportingParams.add(chart, new FormData("80%"));
+		chart.setHeight("250px");
 
-		LabelField lblfldLocations = new LabelField("Location(s) :");
+		lblfldLocations = new LabelField("Location(s) :");
 		lcReportingParams.add(lblfldLocations, new FormData("100%"));
 
-		LabelField lblfldTotalScreened = new LabelField("Total Number Screened:");
+		lblfldTotalScreened = new LabelField("Total Number Screened:");
 		lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
 		ColumnConfig clmncnfgNewColumn = new ColumnConfig("name", "Status Of Treatments", 150);
 		configs.add(clmncnfgNewColumn);
 
-		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("surgery", "Medicines", 150);
+		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("surgery", "Medicines", 60);
 		configs.add(clmncnfgNewColumn_1);
 
-		ColumnConfig clmncnfgNewColumn_2 = new ColumnConfig("nonSurgery", "Hospitals", 150);
+		ColumnConfig clmncnfgNewColumn_2 = new ColumnConfig("nonSurgery", "Hospitals", 60);
 		configs.add(clmncnfgNewColumn_2);
 
-		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("total", "Total", 150);
+		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("total", "Total", 60);
 		configs.add(clmncnfgNewColumn_3);
 
 		Grid<ModelData> gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
@@ -219,60 +227,53 @@ public class SchoolHealthProgramReport extends LayoutContainer
 
 		List<ColumnConfig> configsBreakupOfTreatments = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgNewColumn_4 = new ColumnConfig("breakUpOfTreatment", "Breakup of Treatments", 150);
-		configsBreakupOfTreatments.add(clmncnfgNewColumn_4);
+		ColumnConfig breakupOfTreatment = new ColumnConfig("breakUpOfTreatment", "Breakup of Treatments", 150);
+		configsBreakupOfTreatments.add(breakupOfTreatment);
 
-		ColumnConfig clmncnfgScreened = new ColumnConfig("screened", "Screened", 150);
-		configsBreakupOfTreatments.add(clmncnfgScreened);
+		ColumnConfig screened = new ColumnConfig("screened", "Screened", 60);
+		configsBreakupOfTreatments.add(screened);
 
-		ColumnConfig clmncnfgfollowUpMedicines = new ColumnConfig("followUpMedicines", "followUpMedicines", 150);
-		configsBreakupOfTreatments.add(clmncnfgfollowUpMedicines);
-		ColumnConfig clmncnfgReferredToHospital = new ColumnConfig("referredToHospital", "Referred To Hospital", 150);
-		configsBreakupOfTreatments.add(clmncnfgReferredToHospital);
+		ColumnConfig casesClosed = new ColumnConfig("surgeryCasesClosed", "Surgery Cases Closed", 60);
+		configsBreakupOfTreatments.add(casesClosed);
+		
+		ColumnConfig medicineClosedCases = new ColumnConfig("medicineCasesClosed", "Medicine Closed Cases", 60);
+		configsBreakupOfTreatments.add(medicineClosedCases);
+		
+		ColumnConfig pendingSurgeryCases = new ColumnConfig("pendingSurgeryCases", "Pending Surgery Cases", 60);
+		configsBreakupOfTreatments.add(pendingSurgeryCases);
+		
+		ColumnConfig followUpMedicines = new ColumnConfig("followUpMedicines", "Follow Up Medicines", 60);
+		configsBreakupOfTreatments.add(followUpMedicines);
+		
+		ColumnConfig closedSurgeryCases = new ColumnConfig("closedSurgeryCases", "Surgery Cases Closed", 60);
+		configsBreakupOfTreatments.add(closedSurgeryCases);
+		
+		ColumnConfig caseClosed = new ColumnConfig("caseClosed", "Case Closed", 60);
+		configsBreakupOfTreatments.add(caseClosed);
+		
+		ColumnConfig referredToHospital = new ColumnConfig("referredToHospital", "Referred To Hospital", 60);
+		configsBreakupOfTreatments.add(referredToHospital);
 
-		ColumnConfig clmncnfgClosedCases = new ColumnConfig("closedCases", "Closed Cases", 150);
-		configsBreakupOfTreatments.add(clmncnfgClosedCases);
+		ColumnConfig pendingCases = new ColumnConfig("pendingCases", "Pending Cases", 60);
+		configsBreakupOfTreatments.add(pendingCases);
 
-		ColumnConfig clmncnfgPendingCases = new ColumnConfig("pendingCases", "Pending Cases", 150);
-		configsBreakupOfTreatments.add(clmncnfgPendingCases);
-
-		ColumnConfig clmncnfgReferred = new ColumnConfig("referredForSurgery", "Referred for Surgery", 150);
-		configsBreakupOfTreatments.add(clmncnfgReferred);
-		ColumnConfig clmncnfgCasesClosed = new ColumnConfig("surgeryCasesClosed", "Surgery Cases Closed", 150);
-		configsBreakupOfTreatments.add(clmncnfgCasesClosed);
-
-		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("id", "Total", 150);
+		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("total", "Total", 60);
 		configsBreakupOfTreatments.add(clmncnfgNewColumn_5);
 
-		final Grid<ModelData> gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
+		gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
 		gridBreakupOfTreatments.setBorders(true);
 
-		FormData fd_gridStatusOfTreatment = new FormData("100%");
+		FormData fd_gridStatusOfTreatment = new FormData("80%");
 		fd_gridStatusOfTreatment.setMargins(new Margins(0, 0, 5, 0));
 		lcReportingParams.add(gridStatusOfTreatment, fd_gridStatusOfTreatment);
-		FormData fd_gridBreakupOfTreatments = new FormData("100%");
+		FormData fd_gridBreakupOfTreatments = new FormData("80%");
 		fd_gridBreakupOfTreatments.setMargins(new Margins(0, 0, 5, 0));
 		lcReportingParams.add(gridBreakupOfTreatments, fd_gridBreakupOfTreatments);
 		gridBreakupOfTreatments.setHeight("150");
+		gridBreakupOfTreatments.setWidth("300");
 
 		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);
-
-		// storeLoader.getListStore("ReferralType", new
-		// AsyncCallback<List<ModelData>>()
-		// {
-		// @Override
-		// public void onSuccess(List<ModelData> result)
-		// {
-		// gridBreakupOfTreatments.getStore().add(result);
-		// }
-		//
-		// @Override
-		// public void onFailure(Throwable caught)
-		// {
-		// MessageBox.alert("Alert", "Error encountered while loading", l);
-		// }
-		// });
 
 	}
 }

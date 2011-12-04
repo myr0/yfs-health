@@ -44,14 +44,19 @@ public class HibernateUtil
 		{
 			PropertyConfigurator.configure("log4j.properties");
 
-			SESSIONFACTORY = new AnnotationConfiguration().configure().buildSessionFactory();
+			AnnotationConfiguration annotationConfiguration = new AnnotationConfiguration();
+			SESSIONFACTORY = annotationConfiguration.configure().buildSessionFactory();
 			LOGGER.debug("The application is booting...");
 
 			mapper = new DozerBeanMapper();
-
-			insertReferenceData();
-
-			LOGGER.debug("The application has finished booting.The reference data insertion is complete.");
+			
+			String hbm2ddl = annotationConfiguration.getProperty("hbm2ddl.auto");
+			if (hbm2ddl.equalsIgnoreCase("create"))
+			{
+				insertReferenceData();
+				LOGGER.debug("The application has finished booting.The reference data insertion is complete.");
+			}
+			LOGGER.debug("The application has finished booting.");
 
 		} catch (Throwable ex)
 		{
@@ -117,7 +122,6 @@ public class HibernateUtil
 
 		insertReferralTypes(session);
 		LOGGER.info("Initial load of ReferralTypes completed");
-		
 
 		transaction.commit();
 		session.close();
@@ -184,7 +188,7 @@ public class HibernateUtil
 		session.save(new ProcessType("Specialist screening"));
 		session.flush();
 	}
-	
+
 	private static void insertDoctor(Session session)
 	{
 		session.save(new Doctor("Rama"));
@@ -244,8 +248,7 @@ public class HibernateUtil
 		country.setStates(lstStates);
 		session.saveOrUpdate(country);
 		session.flush();
-		
-		
+
 		session.save(new Clinic("Sanjivini Free clinic", city));
 		session.flush();
 	}

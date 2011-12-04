@@ -2,7 +2,7 @@ package com.varun.yfs.client.reports.rpc;
 
 public enum ReportType
 {
-	School("School Health"), Clinic("Clinic"), Medical("Medical Camp"), Events("Events"), Overall("Overall");
+	School("School Health"), Clinic("Clinic"), MedicalCamp("Medical Camp"), Events("Events"), Overall("Overall");
 
 	ReportType(String value)
 	{

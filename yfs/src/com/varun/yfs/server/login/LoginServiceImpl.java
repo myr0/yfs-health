@@ -26,7 +26,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
 		if (usrIdx >= 0) // user-name exists
 		{
-			if (user.getPassword().equalsIgnoreCase(password))
+			if (modelList.get(usrIdx).getPassword().equalsIgnoreCase(password))
 			{
 				user.setLoggedIn(true);
 				storeUserInSession(user);
