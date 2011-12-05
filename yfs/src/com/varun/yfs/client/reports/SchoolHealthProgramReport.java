@@ -49,7 +49,8 @@ public class SchoolHealthProgramReport extends LayoutContainer
 	private LabelField lblfldLocations;
 	private LabelField lblfldTotalScreened;
 	private Grid<ModelData> gridBreakupOfTreatments;
-
+	private Grid<ModelData> gridStatusOfTreatment;
+	
 	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
@@ -182,6 +183,8 @@ public class SchoolHealthProgramReport extends LayoutContainer
 						lblfldLocations.setText(lblfldLocations.getText() + result.get("locationsList"));
 						lblfldTotalScreened.setText(lblfldTotalScreened.getText() + result.get("locationsCount"));
 						gridBreakupOfTreatments.getStore().add((List<? extends ModelData>) result.get("breakupOfTreatments"));
+						gridStatusOfTreatment.getStore().add((List<? extends ModelData>) result.get("statusOfTreatments"));
+						
 					}
 
 					@Override
@@ -209,19 +212,19 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgNewColumn = new ColumnConfig("name", "Status Of Treatments", 150);
+		ColumnConfig clmncnfgNewColumn = new ColumnConfig("statusOfTreatments", "Status Of Treatments", 150);
 		configs.add(clmncnfgNewColumn);
 
-		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("surgery", "Medicines", 60);
+		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("medicineCasesClosed", "Medicines", 60);
 		configs.add(clmncnfgNewColumn_1);
 
-		ColumnConfig clmncnfgNewColumn_2 = new ColumnConfig("nonSurgery", "Hospitals", 60);
+		ColumnConfig clmncnfgNewColumn_2 = new ColumnConfig("followUpMedicines", "Follow Up Medicines", 60);
 		configs.add(clmncnfgNewColumn_2);
 
-		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("total", "Total", 60);
+		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("pendingCases", "Pending Cases", 60);
 		configs.add(clmncnfgNewColumn_3);
 
-		Grid<ModelData> gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
 		gridStatusOfTreatment.setHeight("150");
 		gridStatusOfTreatment.setBorders(true);
 

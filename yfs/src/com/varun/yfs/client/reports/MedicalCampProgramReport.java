@@ -23,7 +23,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -31,7 +30,6 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.HeaderGroupConfig;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
@@ -39,8 +37,6 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.varun.yfs.client.admin.rpc.StoreLoader;
-import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.reports.rpc.ReportDetailService;
 import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
 import com.varun.yfs.client.reports.rpc.ReportType;
@@ -51,6 +47,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 	private LabelField lblfldLocations;
 	private LabelField lblfldTotalScreened;
 	private Grid<ModelData> gridBreakupOfTreatments;
+	private Grid<ModelData> gridStatusOfTreatment;
 
 	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
 	{
@@ -183,6 +180,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 						lblfldLocations.setText(lblfldLocations.getText() + result.get("locationsList"));
 						lblfldTotalScreened.setText(lblfldTotalScreened.getText() + result.get("locationsCount"));
 						gridBreakupOfTreatments.getStore().add((List<? extends ModelData>) result.get("breakupOfTreatments"));
+						gridStatusOfTreatment.getStore().add((List<? extends ModelData>) result.get("statusOfTreatments"));
 					}
 
 					@Override
@@ -209,19 +207,19 @@ public class MedicalCampProgramReport extends LayoutContainer
 		lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgStatusOfTreatments = new ColumnConfig("name", "Status Of Treatments", 150);
-		configs.add(clmncnfgStatusOfTreatments);
+		ColumnConfig clmncnfgNewColumn = new ColumnConfig("statusOfTreatments", "Status Of Treatments", 150);
+		configs.add(clmncnfgNewColumn);
 
-		ColumnConfig clmncnfgSurgery = new ColumnConfig("surgery", "Surgery", 150);
-		configs.add(clmncnfgSurgery);
+		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("medicineCasesClosed", "Medicines", 60);
+		configs.add(clmncnfgNewColumn_1);
 
-		ColumnConfig clmncnfgNonSurgery = new ColumnConfig("nonSurgery", "Non-Surgery", 150);
-		configs.add(clmncnfgNonSurgery);
+		ColumnConfig clmncnfgNewColumn_2 = new ColumnConfig("followUpMedicines", "Follow Up Medicines", 60);
+		configs.add(clmncnfgNewColumn_2);
 
-		ColumnConfig clmncnfgTotal = new ColumnConfig("total", "Total", 150);
-		configs.add(clmncnfgTotal);
+		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("pendingCases", "Pending Cases", 60);
+		configs.add(clmncnfgNewColumn_3);
 
-		Grid<ModelData> gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
 		gridStatusOfTreatment.setHeight("150");
 		gridStatusOfTreatment.setBorders(true);
 
