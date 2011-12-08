@@ -208,10 +208,10 @@ public class TeamSales extends BaseModel
 	public TeamSales(String month, int a, int b, int c)
 	{
 		setMonth(month);
-		setAlphaSales(a);
-		setBetaSales(b);
-		setGammaSales(c);
-		setAvgSales();
+//		setAlphaSales(a);
+//		setBetaSales(b);
+//		setGammaSales(c);
+//		setAvgSales();
 	}
 
 	public int getAlphaSales()
