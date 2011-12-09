@@ -43,27 +43,9 @@ public class OverallReport extends LayoutContainer
 		super.onRender(parent, index);
 
 		final ListStore<ChartData> store = new ListStore<ChartData>();
-		ChartData tmSales = new ChartData("Requirement Analysis", 0, 10, 20);
+		ChartData tmSales = new ChartData("Requirement Analysis", 0, 10, 20, 2, 3);
 		store.add(tmSales);
-		tmSales = new ChartData("Technology Spiking Effort", 12, 2, 3);
-		store.add(tmSales);
-		tmSales = new ChartData("UI Prototypes", 12, 2, 3);
-		store.add(tmSales);
-		tmSales = new ChartData("FS", 12, 2, 3);
-		store.add(tmSales);
-		tmSales = new ChartData("Feature 1", 1, 2, 3);
-		store.add(tmSales);
-		tmSales = new ChartData("Feature 2", 10, 232, 354);
-		store.add(tmSales);
-		tmSales = new ChartData("Performance Test", 152, 422, 353);
-		store.add(tmSales);
-		tmSales = new ChartData("System Test", 2, 20, 365);
-		store.add(tmSales);
-		tmSales = new ChartData("Release", 12, 2, 3);
-		store.add(tmSales);
-		tmSales = new ChartData("Handover", 1, 204, 305);
-		store.add(tmSales);
-
+		
 		String url = "open-flash-chart.swf";
 		final Chart chart = new Chart(url);
 		chart.setSwfHeight("40%");

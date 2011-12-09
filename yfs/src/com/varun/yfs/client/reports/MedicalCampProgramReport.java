@@ -11,6 +11,7 @@ import com.extjs.gxt.charts.client.model.Legend.Position;
 import com.extjs.gxt.charts.client.model.LineDataProvider;
 import com.extjs.gxt.charts.client.model.ScaleProvider;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
+import com.extjs.gxt.charts.client.model.charts.ChartConfig;
 import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
 import com.extjs.gxt.charts.client.model.charts.LineChart;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -67,27 +68,9 @@ public class MedicalCampProgramReport extends LayoutContainer
 
 		super.onRender(parent, index);
 		setScrollMode(Scroll.AUTOY);
-//		final ListStore<TeamSales> store = new ListStore<TeamSales>();
-//		TeamSales tmSales = new TeamSales("Requirement Analysis", 0, 10, 20);
-//		store.add(tmSales);
-//		tmSales = new TeamSales("Technology Spiking Effort", 12, 2, 3);
-//		store.add(tmSales);
-//		tmSales = new TeamSales("UI Prototypes", 12, 2, 3);
-//		store.add(tmSales);
-//		tmSales = new TeamSales("FS", 12, 2, 3);
-//		store.add(tmSales);
-		// tmSales = new TeamSales("Feature 1", 1, 2, 3);
-		// store.add(tmSales);
-		// tmSales = new TeamSales("Feature 2", 10, 232, 354);
-		// store.add(tmSales);
-		// tmSales = new TeamSales("Performance Test", 152, 422, 353);
-		// store.add(tmSales);
-		// tmSales = new TeamSales("System Test", 2, 20, 365);
-		// store.add(tmSales);
-		// tmSales = new TeamSales("Release", 12, 2, 3);
-		// store.add(tmSales);
-		// tmSales = new TeamSales("Handover", 1, 204, 305);
-		// store.add(tmSales);
+		final ListStore<ChartData> store = new ListStore<ChartData>();
+		ChartData tmSales = new ChartData("", 0, 0, 0, 0, 0);
+		store.add(tmSales);
 
 		String url = "open-flash-chart.swf";
 		final Chart chart = new Chart(url);
@@ -97,35 +80,45 @@ public class MedicalCampProgramReport extends LayoutContainer
 		model.setLegend(new Legend(Position.TOP, true));
 		model.setScaleProvider(ScaleProvider.ROUNDED_NEAREST_SCALE_PROVIDER);
 
-//		BarChart bar = new BarChart(BarStyle.GLASS);
-//		bar.setColour("00aa00");
-//		BarDataProvider barProvider = new BarDataProvider("alphasales", "month");
-//		barProvider.bind(store);
-//		bar.setDataProvider(barProvider);
-//		model.addChartConfig(bar);
-//
-//		bar = new BarChart(BarStyle.GLASS);
-//		bar.setColour("0000cc");
-//		barProvider = new BarDataProvider("betasales");
-//		barProvider.bind(store);
-//		bar.setDataProvider(barProvider);
-//		model.addChartConfig(bar);
-//
-//		bar = new BarChart(BarStyle.GLASS);
-//		bar.setColour("ff6600");
-//		barProvider = new BarDataProvider("gammasales");
-//		barProvider.bind(store);
-//		bar.setDataProvider(barProvider);
-//		model.addChartConfig(bar);
-//
-//		LineChart line = new LineChart();
-//		line.setAnimateOnShow(true);
-//		line.setText("Average");
-//		line.setColour("FF0000");
-//		LineDataProvider lineProvider = new LineDataProvider("avgsales");
-//		lineProvider.bind(store);
-//		line.setDataProvider(lineProvider);
-//		model.addChartConfig(line);
+		BarChart bar = new BarChart(BarStyle.GLASS);
+		BarDataProvider barProvider = new BarDataProvider("screened", "month");
+		barProvider.bind(store);
+		bar.setColour("00aa00");
+		bar.setDataProvider(barProvider);
+		model.addChartConfig(bar);
+		bar.setTooltip("Total Screened : #val#");
+
+		bar = new BarChart(BarStyle.GLASS);
+		barProvider = new BarDataProvider("surgeryCasesClosed");
+		barProvider.bind(store);
+		bar.setColour("0000cc");
+		bar.setDataProvider(barProvider);
+		bar.setTooltip("Surgery Cases Closed : #val#");
+		model.addChartConfig(bar);
+
+		bar = new BarChart(BarStyle.GLASS);
+		barProvider = new BarDataProvider("pendingCases");
+		barProvider.bind(store);
+		bar.setColour("ff6600");
+		bar.setDataProvider(barProvider);
+		bar.setTooltip("Pending Cases: #val#");
+		model.addChartConfig(bar);
+
+		bar = new BarChart(BarStyle.GLASS);
+		barProvider = new BarDataProvider("followUpMedicines");
+		barProvider.bind(store);
+		bar.setColour("ff6600");
+		bar.setDataProvider(barProvider);
+		bar.setTooltip("Follow up Cases :#val#");
+		model.addChartConfig(bar);
+
+		bar = new BarChart(BarStyle.GLASS);
+		barProvider = new BarDataProvider("referredToHospital");
+		barProvider.bind(store);
+		bar.setColour("ff6600");
+		bar.setDataProvider(barProvider);
+		bar.setTooltip("Referred To Hospital : #val#");
+		model.addChartConfig(bar);
 
 		chart.setChartModel(model);
 
@@ -180,7 +173,6 @@ public class MedicalCampProgramReport extends LayoutContainer
 						lblfldLocations.setText(lblfldLocations.getText() + result.get("locationsList"));
 						lblfldTotalScreened.setText(lblfldTotalScreened.getText() + result.get("locationsCount"));
 						gridBreakupOfTreatments.getStore().add((List<? extends ModelData>) result.get("breakupOfTreatments"));
-//						gridStatusOfTreatment.getStore().add((List<? extends ModelData>) result.get("statusOfTreatments"));
 						List<ModelData> lstModels = new ArrayList<ModelData>();
 						int pendingCasesCnt = 0, followUpMedCnt = 0, medCaseCnt = 0;
 						for (ModelData model : (List<? extends ModelData>) result.get("statusOfTreatments"))
@@ -204,6 +196,37 @@ public class MedicalCampProgramReport extends LayoutContainer
 						tmpModel.set("pendingCases", pendingCasesCnt);
 						lstModels.add(tmpModel);
 						gridStatusOfTreatment.getStore().add(lstModels);
+
+						final ListStore<ChartData> store = new ListStore<ChartData>();
+						Integer screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital;
+						for (ModelData model : gridBreakupOfTreatments.getStore().getModels())
+						{
+							String breakupOfTreatment = model.get("breakUpOfTreatment").toString();
+
+							Object obj = model.get("screened");
+							screened = (obj == null) ? 0 : (Integer) obj;
+
+							obj = model.get("surgeryCasesClosed");
+							surgeryCaseClosed = (obj == null) ? 0 : (Integer) obj;
+
+							obj = model.get("pendingCases");
+							pendingCases = (obj == null) ? 0 : (Integer) obj;
+
+							obj = model.get("followUpMedicines");
+							followUpMedicines = (obj == null) ? 0 : (Integer) obj;
+
+							obj = model.get("referredToHospital");
+							referredToHospital = (obj == null) ? 0 : (Integer) obj;
+
+							ChartData tmSales = new ChartData(breakupOfTreatment, screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital);
+							store.add(tmSales);
+						}
+						List<ChartConfig> chartConfigs = chart.getChartModel().getChartConfigs();
+						for (ChartConfig chartConfig : chartConfigs)
+						{
+							chartConfig.getDataProvider().bind(store);
+						}
+						chart.refresh();
 					}
 
 					@Override
@@ -220,15 +243,15 @@ public class MedicalCampProgramReport extends LayoutContainer
 		lcReportingParams.setHeading("Medical Health Program Report");
 		lcReportingParams.setSize("", "700");
 
-		chart.setHeight("200px");
+		chart.setHeight("250px");
 
 		lblfldLocations = new LabelField("Location(s) :");
 		lblfldTotalScreened = new LabelField("Total Number Screened:");
-		
+
 		lcReportingParams.add(lblfldLocations, new FormData("100%"));
 		lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
-		lcReportingParams.add(chart);
-		
+		lcReportingParams.add(chart, new FormData("90%"));
+
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		ColumnConfig clmncnfgNewColumn = new ColumnConfig("statusOfTreatments", "Status Of Treatments", 80);
 		configs.add(clmncnfgNewColumn);
@@ -288,10 +311,10 @@ public class MedicalCampProgramReport extends LayoutContainer
 
 		FormData fd_gridStatusOfTreatment = new FormData("80%");
 		fd_gridStatusOfTreatment.setMargins(new Margins(0, 0, 5, 0));
-		
+
 		FormData fd_gridBreakupOfTreatments = new FormData("80%");
 		fd_gridBreakupOfTreatments.setMargins(new Margins(0, 0, 5, 0));
-		
+
 		lcReportingParams.add(gridBreakupOfTreatments, fd_gridBreakupOfTreatments);
 		lcReportingParams.add(gridStatusOfTreatment, fd_gridStatusOfTreatment);
 
