@@ -60,26 +60,26 @@ public class ClinicScreeningReport extends LayoutContainer
 
 		super.onRender(parent, index);
 
-		final ListStore<TeamSales> store = new ListStore<TeamSales>();
-		TeamSales tmSales = new TeamSales("Requirement Analysis", 0, 10, 20);
+		final ListStore<ChartData> store = new ListStore<ChartData>();
+		ChartData tmSales = new ChartData("Requirement Analysis", 0, 10, 20);
 		store.add(tmSales);
-		tmSales = new TeamSales("Technology Spiking Effort", 12, 2, 3);
+		tmSales = new ChartData("Technology Spiking Effort", 12, 2, 3);
 		store.add(tmSales);
-		tmSales = new TeamSales("UI Prototypes", 12, 2, 3);
+		tmSales = new ChartData("UI Prototypes", 12, 2, 3);
 		store.add(tmSales);
-		tmSales = new TeamSales("FS", 12, 2, 3);
+		tmSales = new ChartData("FS", 12, 2, 3);
 		store.add(tmSales);
-		tmSales = new TeamSales("Feature 1", 1, 2, 3);
+		tmSales = new ChartData("Feature 1", 1, 2, 3);
 		store.add(tmSales);
-		tmSales = new TeamSales("Feature 2", 10, 232, 354);
+		tmSales = new ChartData("Feature 2", 10, 232, 354);
 		store.add(tmSales);
-		tmSales = new TeamSales("Performance Test", 152, 422, 353);
+		tmSales = new ChartData("Performance Test", 152, 422, 353);
 		store.add(tmSales);
-		tmSales = new TeamSales("System Test", 2, 20, 365);
+		tmSales = new ChartData("System Test", 2, 20, 365);
 		store.add(tmSales);
-		tmSales = new TeamSales("Release", 12, 2, 3);
+		tmSales = new ChartData("Release", 12, 2, 3);
 		store.add(tmSales);
-		tmSales = new TeamSales("Handover", 1, 204, 305);
+		tmSales = new ChartData("Handover", 1, 204, 305);
 		store.add(tmSales);
 
 		String url = "open-flash-chart.swf";
