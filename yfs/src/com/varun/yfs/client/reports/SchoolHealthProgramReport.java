@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -36,7 +37,10 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.varun.yfs.client.reports.rpc.ImageService;
+import com.varun.yfs.client.reports.rpc.ImageServiceAsync;
 import com.varun.yfs.client.reports.rpc.ReportDetailService;
 import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
 import com.varun.yfs.client.reports.rpc.ReportType;
@@ -44,13 +48,14 @@ import com.varun.yfs.client.reports.rpc.ReportType;
 public class SchoolHealthProgramReport extends LayoutContainer
 {
 	private ReportDetailServiceAsync reportDetailService = GWT.create(ReportDetailService.class);
+	private ImageServiceAsync imageService = GWT.create(ImageService.class);
 
 	private LabelField lblfldLocations;
 	private LabelField lblfldTotalScreened;
 	private Grid<ModelData> gridBreakupOfTreatments;
 	private Grid<ModelData> gridStatusOfTreatment;
 
-	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
+	final Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
 		{
@@ -168,6 +173,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 				model.set("dateTo", dtfldToDate.getValue().getTime());
 				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
 				{
+					@SuppressWarnings("unchecked")
 					@Override
 					public void onSuccess(ModelData result)
 					{
@@ -228,11 +234,28 @@ public class SchoolHealthProgramReport extends LayoutContainer
 							chartConfig.getDataProvider().bind(store);
 						}
 						chart.refresh();
+						String chartData = getImageData(chart.getSwfId());
+						imageService.getImageToken(chartData, new AsyncCallback<String>()
+						{
+							@Override
+							public void onFailure(Throwable caught)
+							{
+								MessageBox.info("Error", "Error encountered while loading the report" + caught.getMessage(), DUMMYLISTENER);
+							}
+
+							@Override
+							public void onSuccess(String result)
+							{
+								Window.Location.assign(GWT.getModuleBaseURL() + "ImageByteReaderService?var=img_" + result);
+							}
+
+						});
 					}
 
 					@Override
 					public void onFailure(Throwable caught)
 					{
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
 					}
 				});
 			}
@@ -322,4 +345,10 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		add(lcReportingParams);
 
 	}
+
+	private native String getImageData(String id) /*-{
+		var swf = $doc.getElementById(id);
+		var data = swf.get_img_binary();
+		return data;
+	}-*/;
 }

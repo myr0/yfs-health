@@ -98,6 +98,24 @@
 		<servlet-name>LoginService</servlet-name>
 		<url-pattern>/yfs/LoginService</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ImageByteReaderService</servlet-name>
+		<servlet-class>com.varun.yfs.server.reports.rpc.ImageByteReader</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ImageByteReaderService</servlet-name>
+		<url-pattern>/yfs/ImageByteReaderService</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ImageService</servlet-name>
+		<servlet-class>com.varun.yfs.server.reports.rpc.ImageServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ImageService</servlet-name>
+		<url-pattern>/yfs/ImageService</url-pattern>
+	</servlet-mapping>
 
 	<listener>
 		<listener-class>com.varun.yfs.server.startup.StatusReportContextListener</listener-class>

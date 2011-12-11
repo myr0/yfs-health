@@ -8,12 +8,10 @@ import com.extjs.gxt.charts.client.model.BarDataProvider;
 import com.extjs.gxt.charts.client.model.ChartModel;
 import com.extjs.gxt.charts.client.model.Legend;
 import com.extjs.gxt.charts.client.model.Legend.Position;
-import com.extjs.gxt.charts.client.model.LineDataProvider;
 import com.extjs.gxt.charts.client.model.ScaleProvider;
 import com.extjs.gxt.charts.client.model.charts.BarChart;
-import com.extjs.gxt.charts.client.model.charts.ChartConfig;
 import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
-import com.extjs.gxt.charts.client.model.charts.LineChart;
+import com.extjs.gxt.charts.client.model.charts.ChartConfig;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -24,6 +22,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -50,7 +49,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 	private Grid<ModelData> gridBreakupOfTreatments;
 	private Grid<ModelData> gridStatusOfTreatment;
 
-	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
+	final Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
 		{
@@ -232,6 +231,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 					@Override
 					public void onFailure(Throwable caught)
 					{
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
 					}
 				});
 			}
