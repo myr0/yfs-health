@@ -3,25 +3,18 @@ package com.varun.yfs.client.reports;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.charts.client.Chart;
-import com.extjs.gxt.charts.client.model.BarDataProvider;
-import com.extjs.gxt.charts.client.model.ChartModel;
-import com.extjs.gxt.charts.client.model.Legend;
-import com.extjs.gxt.charts.client.model.Legend.Position;
-import com.extjs.gxt.charts.client.model.LineDataProvider;
-import com.extjs.gxt.charts.client.model.ScaleProvider;
-import com.extjs.gxt.charts.client.model.charts.BarChart;
-import com.extjs.gxt.charts.client.model.charts.BarChart.BarStyle;
-import com.extjs.gxt.charts.client.model.charts.LineChart;
-import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
@@ -35,14 +28,20 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.varun.yfs.client.admin.rpc.StoreLoader;
-import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
+import com.varun.yfs.client.reports.rpc.ReportDetailService;
+import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
+import com.varun.yfs.client.reports.rpc.ReportType;
 
 public class ClinicScreeningReport extends LayoutContainer
 {
-	private StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
+	private ReportDetailServiceAsync reportDetailService = GWT.create(ReportDetailService.class);
+	private LabelField lblfldTotalScreened;
+	private Grid<ModelData> gridNonSurgeryCases;
+	private Grid<ModelData> gridSurgeryCases;
 
-	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
+	private ComboBox<ModelData> clinics;
+
+	final Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
 		public void handleEvent(MessageBoxEvent ce)
 		{
@@ -60,72 +59,10 @@ public class ClinicScreeningReport extends LayoutContainer
 
 		super.onRender(parent, index);
 
-		final ListStore<ChartData> store = new ListStore<ChartData>();
-		ChartData tmSales = new ChartData("Requirement Analysis", 0, 10, 20, 2, 4);
-		store.add(tmSales);
-		// tmSales = new ChartData("Technology Spiking Effort", 12, 2, 3);
-		// store.add(tmSales);
-		// tmSales = new ChartData("UI Prototypes", 12, 2, 3);
-		// store.add(tmSales);
-		// tmSales = new ChartData("FS", 12, 2, 3);
-		// store.add(tmSales);
-		// tmSales = new ChartData("Feature 1", 1, 2, 3);
-		// store.add(tmSales);
-		// tmSales = new ChartData("Feature 2", 10, 232, 354);
-		// store.add(tmSales);
-		// tmSales = new ChartData("Performance Test", 152, 422, 353);
-		// store.add(tmSales);
-		// tmSales = new ChartData("System Test", 2, 20, 365);
-		// store.add(tmSales);
-		// tmSales = new ChartData("Release", 12, 2, 3);
-		// store.add(tmSales);
-		// tmSales = new ChartData("Handover", 1, 204, 305);
-		// store.add(tmSales);
-
-		String url = "open-flash-chart.swf";
-		final Chart chart = new Chart(url);
-
-		ChartModel model = new ChartModel("Report", "font-size: 14px; font-family: Verdana; text-align: center;");
-		model.setBackgroundColour("fefefe");
-		model.setLegend(new Legend(Position.TOP, true));
-		model.setScaleProvider(ScaleProvider.ROUNDED_NEAREST_SCALE_PROVIDER);
-
-		BarChart bar = new BarChart(BarStyle.GLASS);
-		bar.setColour("00aa00");
-		BarDataProvider barProvider = new BarDataProvider("alphasales", "month");
-		barProvider.bind(store);
-		bar.setDataProvider(barProvider);
-		model.addChartConfig(bar);
-
-		bar = new BarChart(BarStyle.GLASS);
-		bar.setColour("0000cc");
-		barProvider = new BarDataProvider("betasales");
-		barProvider.bind(store);
-		bar.setDataProvider(barProvider);
-		model.addChartConfig(bar);
-
-		bar = new BarChart(BarStyle.GLASS);
-		bar.setColour("ff6600");
-		barProvider = new BarDataProvider("gammasales");
-		barProvider.bind(store);
-		bar.setDataProvider(barProvider);
-		model.addChartConfig(bar);
-
-		LineChart line = new LineChart();
-		line.setAnimateOnShow(true);
-		line.setText("Average");
-		line.setColour("FF0000");
-		LineDataProvider lineProvider = new LineDataProvider("avgsales");
-		lineProvider.bind(store);
-		line.setDataProvider(lineProvider);
-		model.addChartConfig(line);
-
-		chart.setChartModel(model);
-
 		LayoutContainer layoutContainer = new LayoutContainer();
 		layoutContainer.setLayout(new TableLayout(3));
 
-		DateField dtfldFromDate = new DateField();
+		final DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
 		LayoutContainer frmpnlFromDate = new LayoutContainer();
 		frmpnlFromDate.setLayout(new FormLayout());
@@ -136,7 +73,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		td_frmpnlFromDate.setMargin(5);
 		layoutContainer.add(frmpnlFromDate, td_frmpnlFromDate);
 
-		DateField dtfldToDate = new DateField();
+		final DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
 		LayoutContainer frmpnlToDate = new LayoutContainer();
 		frmpnlToDate.setLayout(new FormLayout());
@@ -146,6 +83,17 @@ public class ClinicScreeningReport extends LayoutContainer
 		td_frmpnlToDate.setPadding(5);
 		td_frmpnlToDate.setMargin(5);
 		layoutContainer.add(frmpnlToDate, td_frmpnlToDate);
+
+		ComboBox<ModelData> clinics = new ComboBox<ModelData>();
+		clinics.setFieldLabel("Select a Clinic");
+		LayoutContainer frmpnlClinics = new LayoutContainer();
+		frmpnlClinics.setLayout(new FormLayout());
+		frmpnlClinics.add(clinics, new FormData("100%"));
+
+		TableData td_frmpnlClinics = new TableData();
+		td_frmpnlClinics.setPadding(5);
+		td_frmpnlClinics.setMargin(5);
+		layoutContainer.add(frmpnlClinics, td_frmpnlClinics);
 
 		LayoutContainer frmpnlRefresh = new LayoutContainer();
 		frmpnlRefresh.setLayout(new FormLayout());
@@ -157,18 +105,38 @@ public class ClinicScreeningReport extends LayoutContainer
 		td_frmpnlRefresh.setMargin(5);
 		layoutContainer.add(frmpnlRefresh, td_frmpnlRefresh);
 		frmpnlRefresh.setBorders(true);
-
-		chart.setHeight("300");
 		add(layoutContainer);
-		add(chart);
-		layout(true);
-		setScrollMode(Scroll.AUTOY);
+
+		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				ModelData model = new BaseModelData();
+				model.set("dateFrom", dtfldFromDate.getValue().getTime());
+				model.set("dateTo", dtfldToDate.getValue().getTime());
+				reportDetailService.getModel(ReportType.MedicalCamp, model, new AsyncCallback<ModelData>()
+				{
+					@Override
+					public void onSuccess(ModelData result)
+					{
+						lblfldTotalScreened.setText(lblfldTotalScreened.getText() + result.get("locationsCount"));
+					}
+
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
+					}
+				});
+			}
+		});
 
 		FormPanel lcReportingParams = new FormPanel();
 		lcReportingParams.setHeaderVisible(false);
 		lcReportingParams.setSize("", "700");
 
-		LabelField lblfldTotalScreened = new LabelField("Total Number Screened:");
+		lblfldTotalScreened = new LabelField("Total Number Screened:");
 		lcReportingParams.add(lblfldTotalScreened, new FormData("100%"));
 
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
@@ -188,7 +156,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		ColumnConfig clmncnfgTotal = new ColumnConfig("total", "Total", 150);
 		configs.add(clmncnfgTotal);
 
-		final Grid<ModelData> gridSurgeryCases = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		gridSurgeryCases = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
 		gridSurgeryCases.setHeight("150");
 		gridSurgeryCases.setBorders(true);
 
@@ -200,7 +168,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("noOfCases", "No. Of Cases", 150);
 		configsBreakupOfTreatments.add(clmncnfgNewColumn_5);
 
-		final Grid<ModelData> gridNonSurgeryCases = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
+		gridNonSurgeryCases = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
 		gridNonSurgeryCases.setBorders(true);
 
 		FormData fd_gridStatusOfTreatment = new FormData("100%");
@@ -213,22 +181,6 @@ public class ClinicScreeningReport extends LayoutContainer
 
 		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);
-
-		storeLoader.getListStore("ReferralType", new AsyncCallback<List<ModelData>>()
-		{
-			@Override
-			public void onSuccess(List<ModelData> result)
-			{
-				gridSurgeryCases.getStore().add(result);
-				gridNonSurgeryCases.getStore().add(result);
-			}
-
-			@Override
-			public void onFailure(Throwable caught)
-			{
-				MessageBox.alert("Alert", "Error encountered while loading", l);
-			}
-		});
 
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -253,34 +254,38 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport, processIds), new FitData(5));
+				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport, processIds)
+				{
+					@Override
+					protected void onImportComplete(List<? extends BaseModelData> result)
+					{
+						ListStore store = gridPatDetail.getStore();
+						List lstCurrentModels = store.getModels();
+						if (lstCurrentModels.isEmpty())
+							lstCurrentModels.addAll(result);
+						else
+							for (BaseModelData modelData : result)
+							{
+								if (lstCurrentModels.contains(modelData))
+								{
+									lstCurrentModels.set(lstCurrentModels.indexOf(modelData), modelData);
+								} else
+								{
+									lstCurrentModels.add(modelData);
+								}
+							}
+						store.removeAll();
+						store.add(lstCurrentModels);
+						gridPatDetail.unmask();
+					}
+				};
+				dialogImport.add(widget, new FitData(5));
 				dialogImport.show();
 			}
 		});
 		toolBar.add(importPatientDetail);
 
 		gridHolderPanel.setTopComponent(toolBar);
-
-		gridHolderPanel.setButtonAlign(HorizontalAlignment.CENTER);
-		gridHolderPanel.addButton(new Button("Reset", new SelectionListener<ButtonEvent>()
-		{
-			@Override
-			public void componentSelected(ButtonEvent ce)
-			{
-				clearStores();
-				initialize(getTitle(), scrId);
-			}
-		}));
-
-		gridHolderPanel.addButton(new Button("Save", new SelectionListener<ButtonEvent>()
-		{
-			@Override
-			public void componentSelected(ButtonEvent ce)
-			{
-				validateAndSave();
-			}
-
-		}));
 
 		gridHolderPanel.setLayout(new FitLayout());
 		gridHolderPanel.add(gridPatDetail);
@@ -477,7 +482,32 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport, processIds), new FitData(5));
+				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport, processIds)
+				{
+					@Override
+					protected void onImportComplete(List<? extends BaseModelData> result)
+					{
+						ListStore store = gridPatHistory.getStore();
+						List lstCurrentModels = store.getModels();
+						if (lstCurrentModels.isEmpty())
+							lstCurrentModels.addAll(result);
+						else
+							for (BaseModelData modelData : result)
+							{
+								if (lstCurrentModels.contains(modelData))
+								{
+									lstCurrentModels.set(lstCurrentModels.indexOf(modelData), modelData);
+								} else
+								{
+									lstCurrentModels.add(modelData);
+								}
+							}
+						store.removeAll();
+						store.add(lstCurrentModels);
+						gridPatHistory.unmask();
+					}
+				};
+				dialogImport.add(widget, new FitData(5));
 				dialogImport.show();
 			}
 		});
@@ -502,8 +532,14 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				ClinicPatientDetailDTO patDetail = gridPatDetail.getSelectionModel().getSelectedItem();
-				patDetail.setLstPatientHistory(gridPatHistory.getStore().getModels());
-				validateAndSave();
+				if (gridPatDetail == null)
+				{
+					MessageBox.info("No Patient Mapping", "Now row selected in the Patient Grid. Select the appropriate patient from the above grid to continue.", l);
+				} else
+				{
+					patDetail.setLstPatientHistory(gridPatHistory.getStore().getModels());
+					validateAndSave();
+				}
 			}
 
 		}));
@@ -520,52 +556,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 	private void validateAndSave()
 	{
-		if (!validateFormEntry())
-		{
-			gridPatDetail.unmask();
-			return;
-		}
+		gridPatDetail.unmask();
 		savePage(gridPatDetail.getStore().getModels());
-	}
-
-	private boolean validateFormEntry()
-	{
-		// if (!country.validate())
-		// return false;
-		//
-		// if (!state.validate())
-		// return false;
-		//
-		// if (!city.validate())
-		// return false;
-		//
-		// if (!town.validate())
-		// return false;
-		//
-		// if (!village.validate())
-		// return false;
-		//
-		// if (!chapterName.validate())
-		// return false;
-		//
-		// if (!locality.validate())
-		// return false;
-		//
-		// if (!screeningDate.validate())
-		// return false;
-		//
-		// if (!processType.validate())
-		// return false;
-		//
-		// if (!typeOfLocation.validate())
-		// return false;
-		//
-		// if (!address.validate())
-		// return false;
-		//
-		// if (!contactInformation.validate())
-		// return false;
-		return true;
 	}
 
 	private ColumnModel getColumnModelPatientHistory()

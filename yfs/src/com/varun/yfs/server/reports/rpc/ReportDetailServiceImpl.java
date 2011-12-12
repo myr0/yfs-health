@@ -46,7 +46,7 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		ModelData model = new BaseModelData();
 		if (ReportType.Clinic.equals(report))
 		{
-
+			model.set("locationsCount", DataUtil.executeQuery("select count(*) from campscreeningdetail cd join locality lo on cd.localityid = lo.localityid join campscrdet_patdet cpd on cpd.campid = cd.campscreeningdetailid"));
 		} else if (ReportType.Events.equals(report))
 		{
 

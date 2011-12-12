@@ -186,11 +186,13 @@ public class DataUtil
 				// Object object;
 				extractPatientDetail(clinic, clinicPatientDetailDTO, scrDetHibObj);
 				int index = 0;
-				for (ClinicPatientHistory clinicPatientHistory : scrDetHibObj.getLstPatientHistory())
-				{
-					ClinicPatientHistoryDTO clinicPatientHistoryDTO = clinicPatientDetailDTO.getLstPatientHistory().get(index++);
-					extractPatientHistory(clinicPatientHistory, clinicPatientHistoryDTO);
-				}
+				List<ClinicPatientHistory> lstPatientHistory = scrDetHibObj.getLstPatientHistory();
+				if (lstPatientHistory != null)
+					for (ClinicPatientHistory clinicPatientHistory : lstPatientHistory)
+					{
+						ClinicPatientHistoryDTO clinicPatientHistoryDTO = clinicPatientDetailDTO.getLstPatientHistory().get(index++);
+						extractPatientHistory(clinicPatientHistory, clinicPatientHistoryDTO);
+					}
 				if (id == null)
 				{
 					session.save(scrDetHibObj);

@@ -101,6 +101,28 @@ public class ImportDetail extends LayoutContainer
 		IndexPage.unmaskCenterComponent();
 	}
 
+	protected void onImportComplete(List<? extends BaseModelData> result)
+	{
+		List<? extends BaseModelData> resultTemp = result;
+		ListStore store = patientDetailGrid.getStore();
+		if (appendMode)
+		{
+			List lstCurrentModels = store.getModels();
+			for (BaseModelData modelData : result)
+			{
+				if (lstCurrentModels.contains(modelData))
+				{
+					lstCurrentModels.set(lstCurrentModels.indexOf(modelData), modelData);
+				}
+
+			}
+			resultTemp = lstCurrentModels;
+		}
+		store.removeAll();
+		store.add(resultTemp);
+		patientDetailGrid.unmask();
+	}
+
 	private final IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler()
 	{
 
@@ -212,24 +234,7 @@ public class ImportDetail extends LayoutContainer
 						@Override
 						public void onSuccess(List<? extends BaseModelData> result)
 						{
-							List<? extends BaseModelData> resultTemp = result;
-							ListStore store = patientDetailGrid.getStore();
-							if (appendMode)
-							{
-								List lstCurrentModels = store.getModels();
-								for (BaseModelData modelData : result)
-								{
-									if (lstCurrentModels.contains(modelData))
-									{
-										lstCurrentModels.set(lstCurrentModels.indexOf(modelData), modelData);
-									}
-
-								}
-								resultTemp = lstCurrentModels;
-							}
-							store.removeAll();
-							store.add(resultTemp);
-							patientDetailGrid.unmask();
+							onImportComplete(result);
 						}
 
 					});
