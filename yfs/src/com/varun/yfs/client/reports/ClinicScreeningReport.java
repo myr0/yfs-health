@@ -28,6 +28,9 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.varun.yfs.client.admin.rpc.StoreLoader;
+import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
+import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.reports.rpc.ReportDetailService;
 import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
 import com.varun.yfs.client.reports.rpc.ReportType;
@@ -35,6 +38,7 @@ import com.varun.yfs.client.reports.rpc.ReportType;
 public class ClinicScreeningReport extends LayoutContainer
 {
 	private ReportDetailServiceAsync reportDetailService = GWT.create(ReportDetailService.class);
+	private StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
 	private LabelField lblfldTotalScreened;
 	private Grid<ModelData> gridNonSurgeryCases;
 	private Grid<ModelData> gridSurgeryCases;
@@ -60,7 +64,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		super.onRender(parent, index);
 
 		LayoutContainer layoutContainer = new LayoutContainer();
-		layoutContainer.setLayout(new TableLayout(3));
+		layoutContainer.setLayout(new TableLayout(4));
 
 		final DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
@@ -84,8 +88,26 @@ public class ClinicScreeningReport extends LayoutContainer
 		td_frmpnlToDate.setMargin(5);
 		layoutContainer.add(frmpnlToDate, td_frmpnlToDate);
 
-		ComboBox<ModelData> clinics = new ComboBox<ModelData>();
+		clinics = new ComboBox<ModelData>();
 		clinics.setFieldLabel("Select a Clinic");
+		clinics.setStore(new ListStore<ModelData>());
+		clinics.setDisplayField("clinicName");
+		clinics.setValueField("clinicId");
+		storeLoader.getModel(ModelDataEnum.Clinic.name(), new AsyncCallback<ModelData>()
+		{
+
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				MessageBox.info("Error", "Error encountered while loading report params.", DUMMYLISTENER);
+			}
+
+			@Override
+			public void onSuccess(ModelData result)
+			{
+				clinics.getStore().add((List<ModelData>) result.get("data"));
+			}
+		});
 		LayoutContainer frmpnlClinics = new LayoutContainer();
 		frmpnlClinics.setLayout(new FormLayout());
 		frmpnlClinics.add(clinics, new FormData("100%"));
@@ -115,6 +137,7 @@ public class ClinicScreeningReport extends LayoutContainer
 				ModelData model = new BaseModelData();
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
 				model.set("dateTo", dtfldToDate.getValue().getTime());
+				model.set("clinic", clinics.getValueField());
 				reportDetailService.getModel(ReportType.MedicalCamp, model, new AsyncCallback<ModelData>()
 				{
 					@Override
