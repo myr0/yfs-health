@@ -46,7 +46,48 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		ModelData model = new BaseModelData();
 		if (ReportType.Clinic.equals(report))
 		{
-			model.set("locationsCount", DataUtil.executeQuery("select count(*) from clinicpatientdetail cpd where cpd.clinicid =" + params.get("clinic")));
+			Object clinicId = params.get("clinicId");
+			model.set("locationsCount", DataUtil.executeQuery("select count(*) from clinicpatientdetail cpd where cpd.clinicid =" + clinicId));
+			
+			Map<String, Integer> schRepType2CountTemp = new HashMap<String, Integer>(schRepType2Count);
+			List breakupOfTreatments = (List) DataUtil
+					.executeQuery("select t.referral,sum(t.count1) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines,case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 0 end case surgerycase from (select cph.referral1 as referral, count(cph.referral1) as count1, cph.medicines, cph.caseclosed, cph.surgerycase from clinicpatientdetail cpd join clipatdet_clipathis cpdcph on cpd.clipatdetid = cpdcph.clipatdetid join clinicpatienthistory cph on cph.clipathisid = cpdcph.clipathisid where cpd.clinicid =" + clinicId + "  and cph.referral1 is not null group by cph.referral1,cph.medicines, cph.caseclosed, cph.surgerycase union select cph.referral2 as referral, count(cph.referral2) as count1, cph.medicines, cph.caseclosed, cph.surgerycase from clinicpatientdetail cpd join clipatdet_clipathis cpdcph on cpd.clipatdetid = cpdcph.clipatdetid join clinicpatienthistory cph on cph.clipathisid = cpdcph.clipathisid where cpd.clinicid =" + clinicId + " and cph.referral2 is not null group by cph.referral2,cph.medicines, cph.caseclosed, cph.surgerycase) t group by t.referral, t.medicines, t.caseclosed, t.surgerycase");
+			Map<String, ModelData> referral2Model = new HashMap<String, ModelData>();
+			for (Object object : breakupOfTreatments)
+			{
+				ModelData modelTemp;
+				Object[] obj = (Object[]) object;
+
+				String referralType = obj[0].toString();
+				if (referral2Model.containsKey(referralType))
+				{
+					modelTemp = referral2Model.get(referralType);
+
+					BigInteger count = (BigInteger) obj[1];
+					Integer screenedCnt = modelTemp.get("screened");
+					modelTemp.set("screened", count.intValue() + screenedCnt);
+				} else
+				{
+					modelTemp = new BaseModelData();
+					modelTemp.set("breakUpOfTreatment", referralType);
+					modelTemp.set("screened", ((BigInteger) obj[1]).intValue());
+					referral2Model.put(referralType, modelTemp);
+				}
+
+				String medicines = String.valueOf(obj[2]);
+				String caseClosed = String.valueOf(obj[3]);
+				String surgeryCase = String.valueOf(obj[4]);
+				String key2RepType = medicines.concat(caseClosed).concat(surgeryCase); // 000
+
+				String repColType = schRepCol2Type.get(key2RepType); // colType
+				Integer screenedCnt = schRepType2CountTemp.get(repColType); // cur-type
+				BigInteger count = (BigInteger) obj[1]; // act count
+
+				modelTemp.set(repColType, count.intValue() + screenedCnt);
+
+			}
+			model.set("breakupOfTreatments", new ArrayList<ModelData>(referral2Model.values()));
+			model.set("statusOfTreatments", new ArrayList<ModelData>(referral2Model.values()));
 		} else if (ReportType.Events.equals(report))
 		{
 

@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
@@ -32,6 +33,10 @@ public class EventsReport extends LayoutContainer
 	{
 
 		super.onRender(parent, index);
+		
+		ContentPanel cpOuterContainer = new ContentPanel();
+		cpOuterContainer.setHeading("Reporting -> Reports -> Events");
+		add(cpOuterContainer);
 
 		setScrollMode(Scroll.AUTOY);
 		LayoutContainer layoutContainer = new LayoutContainer();
@@ -39,6 +44,7 @@ public class EventsReport extends LayoutContainer
 
 		DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
+		dtfldFromDate.setAllowBlank(false);
 		LayoutContainer frmpnlFromDate = new LayoutContainer();
 		frmpnlFromDate.setLayout(new FormLayout());
 		frmpnlFromDate.add(dtfldFromDate, new FormData("100%"));
@@ -50,6 +56,7 @@ public class EventsReport extends LayoutContainer
 
 		DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
+		dtfldToDate.setAllowBlank(false);
 		LayoutContainer frmpnlToDate = new LayoutContainer();
 		frmpnlToDate.setLayout(new FormLayout());
 		frmpnlToDate.add(dtfldToDate, new FormData("100%"));
@@ -62,7 +69,7 @@ public class EventsReport extends LayoutContainer
 		LayoutContainer frmpnlRefresh = new LayoutContainer();
 		frmpnlRefresh.setLayout(new FormLayout());
 
-		Button btnRefresh = new Button("Refresh");
+		Button btnRefresh = new Button("Get Report");
 		frmpnlRefresh.add(btnRefresh, new FormData("100%"));
 		TableData td_frmpnlRefresh = new TableData();
 		td_frmpnlRefresh.setPadding(5);

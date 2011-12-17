@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -72,6 +73,10 @@ public class SchoolHealthProgramReport extends LayoutContainer
 	{
 		super.onRender(parent, index);
 		setScrollMode(Scroll.AUTOY);
+
+		ContentPanel cpOuterContainer = new ContentPanel();
+		cpOuterContainer.setHeading("Reporting -> Reports -> School");
+		add(cpOuterContainer);
 
 		final ListStore<ChartData> store = new ListStore<ChartData>();
 		ChartData tmSales = new ChartData("", 0, 0, 0, 0, 0);
@@ -132,6 +137,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 
 		final DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
+		dtfldFromDate.setAllowBlank(false);
 		LayoutContainer frmpnlFromDate = new LayoutContainer();
 		frmpnlFromDate.setLayout(new FormLayout());
 		frmpnlFromDate.add(dtfldFromDate, new FormData("100%"));
@@ -143,6 +149,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 
 		final DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
+		dtfldToDate.setAllowBlank(false);
 		LayoutContainer frmpnlToDate = new LayoutContainer();
 		frmpnlToDate.setLayout(new FormLayout());
 		frmpnlToDate.add(dtfldToDate, new FormData("100%"));
@@ -156,7 +163,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		LayoutContainer frmpnlRefresh = new LayoutContainer();
 		frmpnlRefresh.setLayout(new FormLayout());
 
-		Button btnRefresh = new Button("Refresh");
+		Button btnRefresh = new Button("Get Report");
 		frmpnlRefresh.add(btnRefresh, new FormData("100%"));
 		TableData td_frmpnlRefresh = new TableData();
 		td_frmpnlRefresh.setPadding(5);
@@ -168,6 +175,16 @@ public class SchoolHealthProgramReport extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
+				if (dtfldFromDate.getValue() == null)
+				{
+					MessageBox.info("Report Parameter Needed", "From-Date field cannot be empty", DUMMYLISTENER);
+					return;
+				}
+				if (dtfldToDate.getValue() == null)
+				{
+					MessageBox.info("Report Parameter Needed", "To-Date field cannot be empty", DUMMYLISTENER);
+					return;
+				}
 				ModelData model = new BaseModelData();
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
 				model.set("dateTo", dtfldToDate.getValue().getTime());
@@ -177,9 +194,15 @@ public class SchoolHealthProgramReport extends LayoutContainer
 					@Override
 					public void onSuccess(ModelData result)
 					{
-						lblfldLocations.setText(lblfldLocations.getText() + result.get("locationsList"));
-						lblfldTotalScreened.setText(lblfldTotalScreened.getText() + result.get("locationsCount"));
+						lblfldLocations.clear();
+						lblfldLocations.setText("Location(s):" + result.get("locationsList"));
+
+						lblfldTotalScreened.clear();
+						lblfldTotalScreened.setText("Total Number Screened:" + result.get("locationsCount"));
+
+						gridBreakupOfTreatments.getStore().removeAll();
 						gridBreakupOfTreatments.getStore().add((List<? extends ModelData>) result.get("breakupOfTreatments"));
+						
 						List<ModelData> lstModels = new ArrayList<ModelData>();
 						int pendingCasesCnt = 0, followUpMedCnt = 0, medCaseCnt = 0;
 						for (ModelData model : (List<? extends ModelData>) result.get("statusOfTreatments"))
@@ -202,6 +225,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 						tmpModel.set("followUpMedicines", followUpMedCnt);
 						tmpModel.set("pendingCases", pendingCasesCnt);
 						lstModels.add(tmpModel);
+						gridStatusOfTreatment.getStore().removeAll();
 						gridStatusOfTreatment.getStore().add(lstModels);
 
 						final ListStore<ChartData> store = new ListStore<ChartData>();
@@ -229,6 +253,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 							store.add(tmSales);
 						}
 						List<ChartConfig> chartConfigs = chart.getChartModel().getChartConfigs();
+						chartConfigs.clear();
 						for (ChartConfig chartConfig : chartConfigs)
 						{
 							chartConfig.getDataProvider().bind(store);
@@ -294,6 +319,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		gridStatusOfTreatment.setHeight("100");
 		gridStatusOfTreatment.setBorders(true);
 		gridStatusOfTreatment.getView().setForceFit(true);
+		gridStatusOfTreatment.setColumnLines(true);
 
 		List<ColumnConfig> configsBreakupOfTreatments = new ArrayList<ColumnConfig>();
 
@@ -331,6 +357,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		gridBreakupOfTreatments.setBorders(true);
 		gridBreakupOfTreatments.setHeight("250");
 		gridBreakupOfTreatments.getView().setForceFit(true);
+		gridBreakupOfTreatments.setColumnLines(true);
 
 		FormData fd_gridBreakupOfTreatments = new FormData("80%");
 		fd_gridBreakupOfTreatments.setMargins(new Margins(0, 0, 5, 0));

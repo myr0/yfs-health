@@ -21,6 +21,7 @@ public class ClinicDTO extends BaseModelData
 	public void setId(long id)
 	{
 		this.id = id;
+		set("id", id);
 	}
 
 	public String getName()
@@ -79,10 +80,9 @@ public class ClinicDTO extends BaseModelData
 		if (getClass() != obj.getClass())
 			return false;
 		ClinicDTO other = (ClinicDTO) obj;
-		if(!this.getName().equalsIgnoreCase(other.getName()))
+		if (!this.getName().equalsIgnoreCase(other.getName()))
 			return false;
 		return true;
 	}
 
-	
 }

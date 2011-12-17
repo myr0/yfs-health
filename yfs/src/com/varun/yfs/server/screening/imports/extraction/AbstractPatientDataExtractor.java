@@ -14,7 +14,7 @@ import com.varun.yfs.server.common.data.DataUtil;
 @SuppressWarnings("rawtypes")
 public abstract class AbstractPatientDataExtractor
 {
-	private static  final Logger LOGGER = Logger.getLogger(AbstractPatientDataExtractor.class);
+	private static final Logger LOGGER = Logger.getLogger(AbstractPatientDataExtractor.class);
 
 	protected List<ReferralTypeDTO> referralTypes = DataUtil.getModelList(ListModelDataEnum.ReferralType.name());
 	protected List lstPatientDetails = new ArrayList();
@@ -42,13 +42,13 @@ public abstract class AbstractPatientDataExtractor
 		lstPatientDetails.clear();
 		this.processedRowCount = 0;
 	}
-	
+
 	protected String decodeYesNo(String string)
 	{
 		if (string == null)
-			return null;
+			return YesNoDTO.NO.toString();
 		if (string.isEmpty())
-			return null;
+			return YesNoDTO.NO.toString();
 
 		String emergency = string.toLowerCase();
 		ListStore<YesNoDTO> yesNoDTO = YesNoDTO.getValues();
@@ -60,7 +60,7 @@ public abstract class AbstractPatientDataExtractor
 		String errorMessage = " Unable to decode. No matching value for " + string + " found in database.";
 		LOGGER.debug("Decode for Emergency/Surgery Column failed. " + errorMessage);
 		errorString.append(errorMessage);
-		return null;
+		return YesNoDTO.NO.toString();
 	}
 
 	abstract public void convertToPatientDetailDTO(List<String> lstCols, boolean processIds);

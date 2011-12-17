@@ -189,7 +189,7 @@ public enum ListModelDataEnum
 			child.add(newItem(ReportType.MedicalCamp.getValue(), ""));
 			child.add(newItem(ReportType.Clinic.getValue(), ""));
 			child.add(newItem(ReportType.Events.getValue(), ""));
-			child.add(newItem(ReportType.Overall.getValue(), ""));
+//			child.add(newItem(ReportType.Overall.getValue(), ""));
 
 			// m1 = newItem("Summary Reports", "");
 			// arrayList.add(m1);
