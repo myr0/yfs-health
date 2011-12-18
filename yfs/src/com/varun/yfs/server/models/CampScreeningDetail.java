@@ -76,13 +76,15 @@ public class CampScreeningDetail implements Serializable
 	private TypeOfLocation typeOfLocation;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name="CampScrDet_Volunt", joinColumns = { @JoinColumn(name = "camScrId") }, inverseJoinColumns = { @JoinColumn(name = "volId") })
 	private List<Volunteer> lstVolunteers;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name="CampScrDet_Doct", joinColumns = { @JoinColumn(name = "camScrId") }, inverseJoinColumns = { @JoinColumn(name = "docId") })
 	private List<Doctor> lstDoctors;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name="CampScrDet_PatDet", joinColumns = { @JoinColumn(name = "campId") }, inverseJoinColumns = { @JoinColumn(name = "patId") })
+	@JoinTable(name="CampScrDet_PatDet", joinColumns = { @JoinColumn(name = "camScrId") }, inverseJoinColumns = { @JoinColumn(name = "patId") })
 	private List<CampPatientDetail> lstPatientDetails;
 
 	public CampScreeningDetail()
