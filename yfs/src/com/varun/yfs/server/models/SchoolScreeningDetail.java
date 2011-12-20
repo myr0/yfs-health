@@ -62,7 +62,7 @@ public class SchoolScreeningDetail implements Serializable
 	private Locality locality;
 
 	@Column(nullable = true)
-	private String screeningDate;
+	private Long screeningDate;
 
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "processTypeId", nullable = true, updatable = true, insertable = true)
@@ -76,15 +76,15 @@ public class SchoolScreeningDetail implements Serializable
 	private TypeOfLocation typeOfLocation;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name="SchScrDet_Volunt", joinColumns = { @JoinColumn(name = "schScrId") }, inverseJoinColumns = { @JoinColumn(name = "volId") })
+	@JoinTable(name = "SchScrDet_Volunt", joinColumns = { @JoinColumn(name = "schScrId") }, inverseJoinColumns = { @JoinColumn(name = "volId") })
 	private List<Volunteer> lstVolunteers;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name="SchScrDet_Doct", joinColumns = { @JoinColumn(name = "schScrId") }, inverseJoinColumns = { @JoinColumn(name = "docId") })
+	@JoinTable(name = "SchScrDet_Doct", joinColumns = { @JoinColumn(name = "schScrId") }, inverseJoinColumns = { @JoinColumn(name = "docId") })
 	private List<Doctor> lstDoctors;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "SchoolScrDet_PatDet", joinColumns = { @JoinColumn(name = "schId") }, inverseJoinColumns = { @JoinColumn(name = "patId") })
+	@JoinTable(name = "SchoolScrDet_PatDet", joinColumns = { @JoinColumn(name = "schScrId") }, inverseJoinColumns = { @JoinColumn(name = "patId") })
 	private List<SchoolPatientDetail> lstPatientDetails;
 
 	public SchoolScreeningDetail()
@@ -197,12 +197,12 @@ public class SchoolScreeningDetail implements Serializable
 		this.address = address;
 	}
 
-	public String getScreeningDate()
+	public Long getScreeningDate()
 	{
 		return screeningDate;
 	}
 
-	public void setScreeningDate(String screeningDate)
+	public void setScreeningDate(Long screeningDate)
 	{
 		this.screeningDate = screeningDate;
 	}

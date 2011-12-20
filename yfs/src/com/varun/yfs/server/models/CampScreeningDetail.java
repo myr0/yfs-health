@@ -1,6 +1,7 @@
 package com.varun.yfs.server.models;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -62,7 +63,7 @@ public class CampScreeningDetail implements Serializable
 	private Locality locality;
 
 	@Column(nullable = true)
-	private String screeningDate;
+	private Long screeningDate;
 
 	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	@JoinColumn(name = "processTypeId", nullable = true, updatable = true, insertable = true)
@@ -197,12 +198,12 @@ public class CampScreeningDetail implements Serializable
 		this.address = address;
 	}
 
-	public String getScreeningDate()
+	public Long getScreeningDate()
 	{
 		return screeningDate;
 	}
 
-	public void setScreeningDate(String screeningDate)
+	public void setScreeningDate(Long screeningDate)
 	{
 		this.screeningDate = screeningDate;
 	}
