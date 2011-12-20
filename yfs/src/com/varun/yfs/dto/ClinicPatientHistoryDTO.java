@@ -25,6 +25,8 @@ public class ClinicPatientHistoryDTO extends BaseModelData
 	private GenderDTO gender;
 	private ReferralTypeDTO referral;
 
+	private Long screeningDate;
+
 	public ClinicPatientHistoryDTO()
 	{
 		setDeleted("N");
@@ -179,6 +181,17 @@ public class ClinicPatientHistoryDTO extends BaseModelData
 	public String getMedicines()
 	{
 		return medicines;
+	}
+
+	public void setScreeningDate(Long screeningDate)
+	{
+		set("screeningDate", screeningDate);
+		this.screeningDate = screeningDate;
+	}
+
+	public Long getScreeningDate()
+	{
+		return screeningDate;
 	}
 
 	@Override

@@ -46,6 +46,9 @@ public class ClinicPatientHistory implements Serializable
 	
 	@Column(nullable = true)
 	private String medicines;
+	
+	@Column(nullable = true)
+	private Long screeningDate;
 
 	public ClinicPatientHistory()
 	{
@@ -160,5 +163,15 @@ public class ClinicPatientHistory implements Serializable
 	public String getMedicines()
 	{
 		return medicines;
+	}
+
+	public void setScreeningDate(Long screeningDate)
+	{
+		this.screeningDate = screeningDate;
+	}
+
+	public Long getScreeningDate()
+	{
+		return screeningDate;
 	}
 }

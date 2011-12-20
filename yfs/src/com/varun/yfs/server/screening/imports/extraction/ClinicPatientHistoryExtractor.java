@@ -1,5 +1,6 @@
 package com.varun.yfs.server.screening.imports.extraction;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -8,6 +9,7 @@ import com.varun.yfs.dto.ClinicPatientHistoryDTO;
 
 public class ClinicPatientHistoryExtractor extends SchoolPatientDataExtractor
 {
+	private static final Date DATE = new Date();
 	private static final Logger LOGGER = Logger.getLogger(ClinicPatientHistoryExtractor.class);
 
 	public ClinicPatientHistoryExtractor(List<String> errorRows)
@@ -50,6 +52,8 @@ public class ClinicPatientHistoryExtractor extends SchoolPatientDataExtractor
 		patientDetailDTO.setSurgeryCase(decodeYesNo(lstCols.get(7)));
 
 		patientDetailDTO.setCaseClosed(decodeYesNo(lstCols.get(8)));
+		
+		patientDetailDTO.setScreeningDate(DATE.getTime());
 
 		int endErrorCount = errorRows.size();
 
