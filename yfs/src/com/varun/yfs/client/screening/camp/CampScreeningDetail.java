@@ -321,7 +321,7 @@ public class CampScreeningDetail extends LayoutContainer
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
-					editorGrid.mask("Removing Entry...");
+					// editorGrid.mask("Removing Entry...");
 					validateAndSave();
 					editorGrid.getStore().remove(selectedItem);
 				}
@@ -346,7 +346,8 @@ public class CampScreeningDetail extends LayoutContainer
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -387,7 +388,8 @@ public class CampScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		MenuItem exportReferral = new MenuItem("Export Referrals", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportReferral = new MenuItem("Export Referrals",
+				AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -404,7 +406,8 @@ public class CampScreeningDetail extends LayoutContainer
 				StoreFilter<CampPatientDetailDTO> filterReferrals = new StoreFilter<CampPatientDetailDTO>()
 				{
 					@Override
-					public boolean select(Store<CampPatientDetailDTO> store, CampPatientDetailDTO parent, CampPatientDetailDTO item, String property)
+					public boolean select(Store<CampPatientDetailDTO> store, CampPatientDetailDTO parent,
+							CampPatientDetailDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
@@ -445,7 +448,8 @@ public class CampScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportReferral);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -457,7 +461,8 @@ public class CampScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(ImportType.CAMP, editorGrid, dialogImport, processIds), new FitData(5));
+				dialogImport.add(new ImportDetail(ImportType.CAMP, editorGrid, dialogImport, processIds),
+						new FitData(5));
 				dialogImport.show();
 			}
 		});
@@ -952,6 +957,9 @@ public class CampScreeningDetail extends LayoutContainer
 					typeOfLocation.setValue(scrDto.getTypeOfLocation());
 					village.setValue(scrDto.getVillage());
 
+					screeningDate.setReadOnly(true);
+					chapterName.setReadOnly(true);
+
 					for (DoctorDTO doctor : scrDto.getDoctors())
 					{
 						doctors.setChecked(doctor, true);
@@ -972,7 +980,9 @@ public class CampScreeningDetail extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.alert("Alert", "Error encountered while loading the screen. Please retry the operation. Additional Details: " + caught.getMessage(), l);
+				MessageBox.alert("Alert",
+						"Error encountered while loading the screen. Please retry the operation. Additional Details: "
+								+ caught.getMessage(), l);
 			}
 		});
 
@@ -985,6 +995,7 @@ public class CampScreeningDetail extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
+				editorGrid.unmask();
 				IndexPage.unmaskCenterComponent();
 				MessageBox.alert("Alert", "Error encountered while saving", l);
 			}
@@ -999,7 +1010,8 @@ public class CampScreeningDetail extends LayoutContainer
 					MessageBox.alert("Alert", "Error encountered while saving", l);
 				} else
 				{
-					clearStores();
+					screeningDate.setReadOnly(true);
+					chapterName.setReadOnly(true);
 					Info.display("Screening Detail", "Save Completed Sucessfully.");
 					IndexPage.reinitScreeningPanel();
 				}
@@ -1021,6 +1033,9 @@ public class CampScreeningDetail extends LayoutContainer
 		address.clear();
 		contactInformation.clear();
 		screeningDate.clear();
+
+		screeningDate.setReadOnly(false);
+		chapterName.setReadOnly(false);
 
 		country.getStore().removeAll();
 		state.getStore().removeAll();

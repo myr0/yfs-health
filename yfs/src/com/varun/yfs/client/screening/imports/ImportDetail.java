@@ -193,12 +193,12 @@ public class ImportDetail extends LayoutContainer
 									{
 										cancel();
 										box.close();
-										Info.display("Screening Detail Import", "Processing failed", "");
+//										Info.display("Screening Detail Import", "Processing failed", "");
 									} else if (curProcessed >= totalProcessed)
 									{
 										cancel();
 										box.close();
-										Info.display("Import Completed", "Processing completed", "");
+//										Info.display("Import Completed", "Processing completed", "");
 
 										patientDetailGrid.mask("Loading ...");
 										updateProcessedRecords();

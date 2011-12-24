@@ -4,6 +4,8 @@ import java.util.Date;
 
 import com.extjs.gxt.ui.client.Style.IconAlign;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -37,44 +39,53 @@ public class Login extends LayoutContainer
 		txtfldPassword.setPassword(true);
 		frmpnlLogin.add(txtfldPassword, new FormData("100%"));
 		txtfldPassword.setFieldLabel("Password");
+		txtfldPassword.addKeyListener(new KeyListener()
+		{
+			@Override
+			public void componentKeyPress(ComponentEvent event)
+			{
+				super.componentKeyPress(event);
+			}
+		});
 
 		Button btnLogin = new Button("Login");
 		btnLogin.setIconAlign(IconAlign.RIGHT);
-		frmpnlLogin.add(btnLogin, new FormData("50%"));
-		btnLogin.setSize("100", "22");
+		frmpnlLogin.add(btnLogin, new FormData("30%"));
+		// btnLogin.setSize("100", "22");
 
 		btnLogin.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				LoginService.Util.getInstance().loginServer(txtfldUserName.getValue(), txtfldPassword.getValue(), new AsyncCallback<UserDTO>()
-				{
-					@Override
-					public void onSuccess(UserDTO result)
-					{
-						if (result.getLoggedIn())
+				LoginService.Util.getInstance().loginServer(txtfldUserName.getValue(), txtfldPassword.getValue(),
+						new AsyncCallback<UserDTO>()
 						{
-							RootPanel.get().clear();
-							RootPanel.get().add(new IndexPage(result.getName()));
+							@Override
+							public void onSuccess(UserDTO result)
+							{
+								if (result.getLoggedIn())
+								{
+									RootPanel.get().clear();
+									RootPanel.get().add(new IndexPage(result.getName()));
 
-							String sessionID = result.getSessionId();
-							final long DURATION = 1000 * 60 * 60 * 24 * 1;
-							Date expires = new Date(System.currentTimeMillis() + DURATION);
-							Cookies.setCookie("sid", sessionID, expires, null, "/", false);
-						} else
-						{
-							Window.alert("Access Denied. Check your user-name and password.");
-						}
+									String sessionID = result.getSessionId();
+									final long DURATION = 1000 * 60 * 60 * 24 * 1;
+									Date expires = new Date(System.currentTimeMillis() + DURATION);
+									Cookies.setCookie("sid", sessionID, expires, null, "/", false);
+								} else
+								{
+									Window.alert("Access Denied. Check your user-name and password.");
+								}
 
-					}
+							}
 
-					@Override
-					public void onFailure(Throwable caught)
-					{
-						Window.alert("Access Denied. Check your user-name and password.");
-					}
-				});
+							@Override
+							public void onFailure(Throwable caught)
+							{
+								Window.alert("Access Denied. Check your user-name and password.");
+							}
+						});
 			}
 		});
 		add(frmpnlLogin);

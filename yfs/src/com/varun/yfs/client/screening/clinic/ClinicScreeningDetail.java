@@ -201,7 +201,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -242,7 +243,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -254,7 +256,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport, processIds)
+				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport,
+						processIds)
 				{
 					@Override
 					protected void onImportComplete(List<? extends BaseModelData> result)
@@ -345,7 +348,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
-					gridPatHistory.mask("Removing Entry...");
+					// gridPatHistory.mask("Removing Entry...");
 					validateAndSave();
 					gridPatHistory.getStore().remove(selectedItem);
 				}
@@ -371,7 +374,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -412,7 +416,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		MenuItem exportReferral = new MenuItem("Export Referrals", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportReferral = new MenuItem("Export Referrals",
+				AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -429,7 +434,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 				StoreFilter<ClinicPatientHistoryDTO> filterReferrals = new StoreFilter<ClinicPatientHistoryDTO>()
 				{
 					@Override
-					public boolean select(Store<ClinicPatientHistoryDTO> store, ClinicPatientHistoryDTO parent, ClinicPatientHistoryDTO item, String property)
+					public boolean select(Store<ClinicPatientHistoryDTO> store, ClinicPatientHistoryDTO parent,
+							ClinicPatientHistoryDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
@@ -470,7 +476,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportReferral);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -482,7 +489,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport, processIds)
+				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport,
+						processIds)
 				{
 					@Override
 					protected void onImportComplete(List<? extends BaseModelData> result)
@@ -534,7 +542,10 @@ public class ClinicScreeningDetail extends LayoutContainer
 				ClinicPatientDetailDTO patDetail = gridPatDetail.getSelectionModel().getSelectedItem();
 				if (gridPatDetail == null)
 				{
-					MessageBox.info("No Patient Mapping", "Now row selected in the Patient Grid. Select the appropriate patient from the above grid to continue.", l);
+					MessageBox
+							.info("No Patient Mapping",
+									"Now row selected in the Patient Grid. Select the appropriate patient from the above grid to continue.",
+									l);
 				} else
 				{
 					patDetail.setLstPatientHistory(gridPatHistory.getStore().getModels());
@@ -920,7 +931,9 @@ public class ClinicScreeningDetail extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.alert("Alert", "Error encountered while loading the screen. Please retry the operation. Additional Details: " + caught.getMessage(), l);
+				MessageBox.alert("Alert",
+						"Error encountered while loading the screen. Please retry the operation. Additional Details: "
+								+ caught.getMessage(), l);
 			}
 		});
 
@@ -948,7 +961,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 					MessageBox.alert("Alert", "Error encountered while saving", l);
 				} else
 				{
-					clearStores();
+					gridPatDetail.getStore().commitChanges();
+					gridPatHistory.getStore().commitChanges();
 					Info.display("Screening Detail", "Save Completed Sucessfully.");
 					IndexPage.reinitScreeningPanel();
 				}
