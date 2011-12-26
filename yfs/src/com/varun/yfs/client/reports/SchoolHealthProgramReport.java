@@ -253,7 +253,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 							store.add(tmSales);
 						}
 						List<ChartConfig> chartConfigs = chart.getChartModel().getChartConfigs();
-						chartConfigs.clear();
+//						chartConfigs.clear();
 						for (ChartConfig chartConfig : chartConfigs)
 						{
 							chartConfig.getDataProvider().bind(store);

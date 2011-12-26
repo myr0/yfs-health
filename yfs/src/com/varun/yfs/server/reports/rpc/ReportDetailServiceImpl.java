@@ -15,6 +15,7 @@ import com.varun.yfs.server.common.data.DataUtil;
 
 public class ReportDetailServiceImpl extends RemoteServiceServlet implements ReportDetailService
 {
+	private static final String NON_REFERRALS = "Non Referrals";
 	private static final long serialVersionUID = -8632087746514887014L;
 	private final Map<String, Integer> schRepType2Count = new HashMap<String, Integer>();
 	private final Map<String, String> schRepCol2Type = new HashMap<String, String>();
@@ -60,18 +61,23 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 							+ clinicId
 							+ " and cph.referral1 is not null group by cph.referral1,cph.medicines, cph.caseclosed, cph.surgerycase , cph.screeningdate union select cph.referral2 as referral, count(cph.referral2) as count1, cph.medicines, cph.caseclosed, cph.surgerycase , cph.screeningdate from clinicpatientdetail cpd join clipatdet_clipathis cpdcph on cpd.clipatdetid = cpdcph.clipatdetid join clinicpatienthistory cph on cph.clipathisid = cpdcph.clipatdetid where cpd.clinicid ="
 							+ clinicId
-							+ " and cph.referral2 is not null group by cph.referral2,cph.medicines, cph.caseclosed, cph.surgerycase, cph.screeningdate ) t where where t.screeningdate >= "
+							+ " and cph.referral2 is not null group by cph.referral2,cph.medicines, cph.caseclosed, cph.surgerycase, cph.screeningdate ) t  where t.screeningdate >= "
 							+ fromDate
 							+ " and t.screeningdate <= "
 							+ toDate
 							+ " group by t.referral, t.medicines, t.caseclosed, t.surgerycase , t.screeningdate");
 			Map<String, ModelData> referral2Model = new HashMap<String, ModelData>();
+			String referralType;
+			ModelData modelTemp;
 			for (Object object : breakupOfTreatments)
 			{
-				ModelData modelTemp;
 				Object[] obj = (Object[]) object;
 
-				String referralType = obj[0].toString();
+				if (obj[0] != null)
+					referralType = obj[0].toString();
+				else
+					referralType = NON_REFERRALS;
+
 				if (referral2Model.containsKey(referralType))
 				{
 					modelTemp = referral2Model.get(referralType);
@@ -105,6 +111,10 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		{
 			Long fromDate = params.get("dateFrom");
 			Long toDate = params.get("dateTo");
+//			model.set("eventsInfo", );
+			
+			List<Object> lstObjs1 = (List<Object>) DataUtil.executeQuery("select cd.screeningdate as date , 'Camp Screening', pt.name as eventType, cd.address as eventLocation, count(*) as noscreened from campscreeningdetail cd join locality lo on cd.localityid = lo.localityid join campscrdet_patdet cpd on cpd.camscrid = cd.campscreeningdetailid join processtype pt on pt.processtypeid = cd.processtypeid group by cd.screeningdate,pt.name, cd.address");
+			List<Object> lstObjs2 = (List<Object>) DataUtil.executeQuery("select sd.screeningdate as date , 'School Screening', pt.name as eventType,sd.address as eventLocation, count(*) as noscreened from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schscrid = sd.schoolscreeningdetailid join processtype pt on pt.processtypeid = sd.processtypeid group by sd.screeningdate,pt.name, sd.address");
 
 		} else if (ReportType.MedicalCamp.equals(report))
 		{
@@ -127,12 +137,17 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 							+ toDate
 							+ " group by t.referral1, t.medicines, t.caseclosed, t.surgerycase, t.emergency, t.screeningdate");
 			Map<String, ModelData> referral2Model = new HashMap<String, ModelData>();
+			String referralType;
+			ModelData modelTemp;
 			for (Object object : breakupOfTreatments)
 			{
-				ModelData modelTemp;
 				Object[] obj = (Object[]) object;
 
-				String referralType = obj[0].toString();
+				if (obj[0] != null)
+					referralType = obj[0].toString();
+				else
+					referralType = NON_REFERRALS;
+
 				if (referral2Model.containsKey(referralType))
 				{
 					modelTemp = referral2Model.get(referralType);
@@ -175,7 +190,7 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 
 			model.set(
 					"locationsCount",
-					DataUtil.executeQuery("select count(*) from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schid = sd.schoolscreeningdetailid where sd.screeningdate >= "
+					DataUtil.executeQuery("select count(*) from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schScrId = sd.schoolscreeningdetailid where sd.screeningdate >= "
 							+ fromDate + " and sd.screeningdate <= " + toDate));
 			model.set(
 					"locationsList",
@@ -188,12 +203,17 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 							+ toDate
 							+ " group by t.referral1, t.medicines, t.caseclosed, t.surgerycase, t.emergency, t.screeningdate");
 			Map<String, ModelData> referral2Model = new HashMap<String, ModelData>();
+			ModelData modelTemp;
+			String referralType;
 			for (Object object : breakupOfTreatments)
 			{
-				ModelData modelTemp;
 				Object[] obj = (Object[]) object;
 
-				String referralType = obj[0].toString();
+				if (obj[0] != null)
+					referralType = obj[0].toString();
+				else
+					referralType = NON_REFERRALS;
+
 				if (referral2Model.containsKey(referralType))
 				{
 					modelTemp = referral2Model.get(referralType);
