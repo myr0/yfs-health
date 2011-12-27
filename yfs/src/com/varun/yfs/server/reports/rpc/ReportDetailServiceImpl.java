@@ -2,6 +2,7 @@ package com.varun.yfs.server.reports.rpc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,10 +112,45 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		{
 			Long fromDate = params.get("dateFrom");
 			Long toDate = params.get("dateTo");
-//			model.set("eventsInfo", );
-			
-			List<Object> lstObjs1 = (List<Object>) DataUtil.executeQuery("select cd.screeningdate as date , 'Camp Screening', pt.name as eventType, cd.address as eventLocation, count(*) as noscreened from campscreeningdetail cd join locality lo on cd.localityid = lo.localityid join campscrdet_patdet cpd on cpd.camscrid = cd.campscreeningdetailid join processtype pt on pt.processtypeid = cd.processtypeid group by cd.screeningdate,pt.name, cd.address");
-			List<Object> lstObjs2 = (List<Object>) DataUtil.executeQuery("select sd.screeningdate as date , 'School Screening', pt.name as eventType,sd.address as eventLocation, count(*) as noscreened from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schscrid = sd.schoolscreeningdetailid join processtype pt on pt.processtypeid = sd.processtypeid group by sd.screeningdate,pt.name, sd.address");
+
+			List results = new ArrayList();
+			List lstObjs1 = (List) DataUtil
+					.executeQuery("select cd.screeningdate as date , 'Camp Screening', pt.name as eventType, cd.address as eventLocation, count(*) as noscreened from campscreeningdetail cd join locality lo on cd.localityid = lo.localityid join campscrdet_patdet cpd on cpd.camscrid = cd.campscreeningdetailid join processtype pt on pt.processtypeid = cd.processtypeid group by cd.screeningdate,pt.name, cd.address");
+
+			if (lstObjs1 != null)
+			{
+				for (Object object : lstObjs1)
+				{
+					Object[] obj = (Object[]) object;
+
+					String[] str = new String[obj.length];
+					for (int i = 0; i < obj.length; i++)
+					{
+						str[i] = obj[i].toString();
+					}
+					results.addAll(Arrays.asList(str));
+				}
+			}
+
+			List lstObjs2 = (List) DataUtil
+					.executeQuery("select sd.screeningdate as date , 'School Screening', pt.name as eventType,sd.address as eventLocation, count(*) as noscreened from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schscrid = sd.schoolscreeningdetailid join processtype pt on pt.processtypeid = sd.processtypeid group by sd.screeningdate,pt.name, sd.address");
+
+			if (lstObjs2 != null)
+			{
+				for (Object object : lstObjs2)
+				{
+					Object[] obj = (Object[]) object;
+					
+					String[] str = new String[obj.length];
+					for (int i = 0; i < obj.length; i++)
+					{
+						str[i] = obj[i].toString();
+					}
+					results.addAll(Arrays.asList(str));
+				}
+			}
+
+			model.set("eventsInfo", results);
 
 		} else if (ReportType.MedicalCamp.equals(report))
 		{

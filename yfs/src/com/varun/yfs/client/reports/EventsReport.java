@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -19,21 +25,36 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.varun.yfs.client.reports.rpc.ReportDetailService;
+import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
+import com.varun.yfs.client.reports.rpc.ReportType;
 
 public class EventsReport extends LayoutContainer
 {
+	private ReportDetailServiceAsync reportDetailService = GWT.create(ReportDetailService.class);
+	private Grid<ModelData> gridEvents;
+
 	public EventsReport()
 	{
 		setHeight("700");
 	}
+
+	final Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
+	{
+		public void handleEvent(MessageBoxEvent ce)
+		{
+		}
+	};
 
 	@Override
 	protected void onRender(Element parent, int index)
 	{
 
 		super.onRender(parent, index);
-		
+
 		ContentPanel cpOuterContainer = new ContentPanel();
 		cpOuterContainer.setHeading("Reporting -> Reports -> Events");
 		add(cpOuterContainer);
@@ -42,7 +63,7 @@ public class EventsReport extends LayoutContainer
 		LayoutContainer layoutContainer = new LayoutContainer();
 		layoutContainer.setLayout(new TableLayout(3));
 
-		DateField dtfldFromDate = new DateField();
+		final DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
 		dtfldFromDate.setAllowBlank(false);
 		LayoutContainer frmpnlFromDate = new LayoutContainer();
@@ -54,7 +75,7 @@ public class EventsReport extends LayoutContainer
 		td_frmpnlFromDate.setPadding(5);
 		layoutContainer.add(frmpnlFromDate, td_frmpnlFromDate);
 
-		DateField dtfldToDate = new DateField();
+		final DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
 		dtfldToDate.setAllowBlank(false);
 		LayoutContainer frmpnlToDate = new LayoutContainer();
@@ -76,6 +97,65 @@ public class EventsReport extends LayoutContainer
 		td_frmpnlRefresh.setMargin(5);
 		layoutContainer.add(frmpnlRefresh, td_frmpnlRefresh);
 		frmpnlRefresh.setBorders(true);
+
+		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				if (dtfldFromDate.getValue() == null)
+				{
+					MessageBox.info("Report Parameter Needed", "From-Date field cannot be empty", DUMMYLISTENER);
+					return;
+				}
+				if (dtfldToDate.getValue() == null)
+				{
+					MessageBox.info("Report Parameter Needed", "To-Date field cannot be empty", DUMMYLISTENER);
+					return;
+				}
+				ModelData model = new BaseModelData();
+				model.set("dateFrom", dtfldFromDate.getValue().getTime());
+				model.set("dateTo", dtfldToDate.getValue().getTime());
+				reportDetailService.getModel(ReportType.Events, model, new AsyncCallback<ModelData>()
+				{
+					@Override
+					public void onSuccess(ModelData result)
+					{
+						gridEvents.getStore().removeAll();
+						gridEvents.getStore().add((List<? extends ModelData>) result.get("eventsInfo"));
+
+//						Integer screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital;
+//						for (ModelData model : gridEvents.getStore().getModels())
+//						{
+//							String breakupOfTreatment = model.get("breakUpOfTreatment").toString();
+//
+//							Object obj = model.get("screened");
+//							screened = (obj == null) ? 0 : (Integer) obj;
+//
+//							obj = model.get("surgeryCasesClosed");
+//							surgeryCaseClosed = (obj == null) ? 0 : (Integer) obj;
+//
+//							obj = model.get("pendingCases");
+//							pendingCases = (obj == null) ? 0 : (Integer) obj;
+//
+//							obj = model.get("followUpMedicines");
+//							followUpMedicines = (obj == null) ? 0 : (Integer) obj;
+//
+//							obj = model.get("referredToHospital");
+//							referredToHospital = (obj == null) ? 0 : (Integer) obj;
+//
+//						}
+					}
+
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(),
+								DUMMYLISTENER);
+					}
+				});
+			}
+		});
 
 		add(layoutContainer);
 
@@ -109,7 +189,7 @@ public class EventsReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_7 = new ColumnConfig("medicalTeam", "Medical Team", 150);
 		configs.add(clmncnfgNewColumn_7);
 
-		Grid<ModelData> gridEvents = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		gridEvents = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
 		gridEvents.setHeight("350");
 		gridEvents.setBorders(true);
 
