@@ -123,12 +123,14 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 				{
 					Object[] obj = (Object[]) object;
 
-					String[] str = new String[obj.length];
-					for (int i = 0; i < obj.length; i++)
-					{
-						str[i] = obj[i].toString();
-					}
-					results.addAll(Arrays.asList(str));
+					ModelData modelTemp = new BaseModelData();
+
+					modelTemp.set("date", obj[0].toString());
+					modelTemp.set("eventType", obj[2].toString());
+					modelTemp.set("eventLocation", obj[3].toString());
+					modelTemp.set("noScreened", obj[4].toString());
+
+					results.add(modelTemp);
 				}
 			}
 
@@ -140,13 +142,15 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 				for (Object object : lstObjs2)
 				{
 					Object[] obj = (Object[]) object;
-					
-					String[] str = new String[obj.length];
-					for (int i = 0; i < obj.length; i++)
-					{
-						str[i] = obj[i].toString();
-					}
-					results.addAll(Arrays.asList(str));
+
+					ModelData modelTemp = new BaseModelData();
+
+					modelTemp.set("date", obj[0].toString());
+					modelTemp.set("eventType", obj[2].toString());
+					modelTemp.set("eventLocation", obj[3].toString());
+					modelTemp.set("noScreened", obj[4].toString());
+
+					results.add(modelTemp);
 				}
 			}
 

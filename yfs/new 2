@@ -1,0 +1,192 @@
+
+// total screened grouped by referral type
+select t.referral,sum(t.count1) from
+(select referral1 as referral,count(referral1) as count1 from schoolpatientdetail spd join referraltype rt on (spd.referral1 = rt.name) 
+where referral1 is not null
+group by referral1
+union
+select referral2 as referral,count(referral2) as count1 from schoolpatientdetail spd join referraltype rt on (spd.referral2 = rt.name) 
+where referral2 is not null
+group by referral2) t
+group by t.referral
+
+select t.referral,sum(t.count1), t.medicines,sum(t.countmedicines), t.caseclosed, sum(t.countcases), t.surgerycase, sum(t.countsurgerycase) from (select referral1 as referral,count(referral1) as count1,medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase from schoolpatientdetail spd join referraltype rt on (spd.referral1 = rt.name)  where referral1 is not null group by referral1,medicines,caseclosed,surgerycase UNION select referral2 as referral,count(referral2) as count1,medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase from schoolpatientdetail spd join referraltype rt on (spd.referral2 = rt.name)  where referral2 is not null group by referral2,medicines,caseclosed,surgerycase) t group by t.referral,  t.medicines,  t.caseclosed,  t.surgerycase
+
+
+select t.referral,sum(t.count1), t.medicines, t.caseclosed, t.surgerycase from (select referral1 as referral,count(referral1) as count1,medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase from schoolpatientdetail spd join referraltype rt on (spd.referral1 = rt.name) where referral1 is not null group by referral1,medicines,caseclosed,surgerycase UNION select referral2 as referral,count(referral2) as count1,medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase from schoolpatientdetail spd join referraltype rt on (spd.referral2 = rt.name) where referral2 is not null group by referral2,medicines,caseclosed,surgerycase) t group by t.referral, t.medicines, t.caseclosed, t.surgerycase 
+
+select t.referral,sum(t.count1) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines,case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed,case t.surgerycase when 'YES' then 1 else 0 end case surgerycase from (select referral1 as referral,count(referral1) as count1,medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase from schoolpatientdetail spd join referraltype rt on (spd.referral1 = rt.name) where referral1 is not null group by referral1,medicines,caseclosed,surgerycase UNION select referral2 as referral,count(referral2) as count1,medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase from schoolpatientdetail spd join referraltype rt on (spd.referral2 = rt.name) where referral2 is not null group by referral2,medicines,caseclosed,surgerycase) t group by t.referral, t.medicines, t.caseclosed, t.surgerycase 
+
+	
+
+select t.referral,sum(t.count1) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines,case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed,
+case t.surgerycase when 'YES' then 1 else 0 end case surgerycase
+from (select referral1 as referral,count(referral1) as count1,medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase
+from camppatientdetail spd join referraltype rt on (spd.referral1 = rt.name) 
+where referral1 is not null group by referral1,medicines,caseclosed,surgerycase
+UNION
+select referral2 as referral,count(referral2) as count1,medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, 
+count(surgerycase) as countsurgerycase from camppatientdetail spd join referraltype rt on (spd.referral2 = rt.name) 
+where referral2 is not null group by referral2,medicines,caseclosed,surgerycase) t 
+group by t.referral, t.medicines, t.caseclosed, t.surgerycase
+
+
+//camp breakup
+
+select t.referral,sum(t.count1) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines,case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 0 end case surgerycase 
+from (select referral1 as referral,count(referral1) as count1,medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase 
+from camppatientdetail spd join referraltype rt on (spd.referral1 = rt.name) 
+group by referral1,medicines,caseclosed,surgerycase 
+UNION 
+select referral2 as referral,count(referral2) as count1,medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase 
+from camppatientdetail spd join referraltype rt on (spd.referral2 = rt.name) 
+group by referral2,medicines,caseclosed,surgerycase) t 
+group by t.referral, t.medicines, t.caseclosed, t.surgerycase
+
+
+//clinic breakup
+//select t.referral,sum(t.count1) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines,case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 0 end case surgerycase from (select cph.referral1 as referral, count(cph.referral1) as count1, cph.medicines, cph.caseclosed, cph.surgerycase from clinicpatientdetail cpd join clipatdet_clipathis cpdcph on cpd.clipatdetid = cpdcph.clinicid join clinicpatienthistory cph on cph.clipathisid = cpdcph.patid where cpd.clinicid = 25 and cph.referral1 is not null group by cph.referral1,cph.medicines, cph.caseclosed, cph.surgerycase union select cph.referral2 as referral, count(cph.referral2) as count1, cph.medicines, cph.caseclosed, cph.surgerycase from clinicpatientdetail cpd join clipatdet_clipathis cpdcph on cpd.clipatdetid = cpdcph.clinicid join clinicpatienthistory cph on cph.clipathisid = cpdcph.patid where cpd.clinicid = 25 and cph.referral2 is not null group by cph.referral2,cph.medicines, cph.caseclosed, cph.surgerycase) t group by t.referral, t.medicines, t.caseclosed, t.surgerycase 
+
+select t.referral,sum(t.count1) as screened, case t.medicines when 'YES' 
+then 1 else 0 end case as medicines, case t.caseclosed when 'YES' then 1 
+else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 
+0 end case surgerycase, t.screeningdate from ( select cph.referral1 as 
+referral, count(cph.referral1) as count1, cph.medicines, cph.caseclosed, 
+cph.surgerycase, cph.screeningdate from clinicpatientdetail cpd join 
+clipatdet_clipathis cpdcph on cpd.clipatdetid = cpdcph.clipatdetid join 
+clinicpatienthistory cph on cph.clipathisid = cpdcph.clipathisid where 
+cpd.clinicid = 25 and cph.referral1 is not null group by 
+cph.referral1,cph.medicines, cph.caseclosed, cph.surgerycase , 
+cph.screeningdate union select cph.referral2 as referral, 
+count(cph.referral2) as count1, cph.medicines, cph.caseclosed, 
+cph.surgerycase , cph.screeningdate from clinicpatientdetail cpd join 
+clipatdet_clipathis cpdcph on cpd.clipatdetid = cpdcph.clipatdetid join 
+clinicpatienthistory cph on cph.clipathisid = cpdcph.clipatdetid where 
+cpd.clinicid = 25 and cph.referral2 is not null group by 
+cph.referral2,cph.medicines, cph.caseclosed, cph.surgerycase, 
+cph.screeningdate ) t group by t.referral, t.medicines, t.caseclosed, 
+t.surgerycase , t.screeningdate 
+
+
+
+
+select csd.screeningdate,pt.name,csd.address from campscreeningdetail csd join processtype pt on pt.processtypeid = csd.processtypeid 
+
+select count(medicines) as count1, medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase 
+from camppatientdetail cpd 
+where (referral1 is null and referral2 is not null)
+group by medicines,caseclosed,surgerycase 
+union
+select  count(medicines) as count1, medicines, count(medicines) as countmedicines, caseclosed, count(caseclosed) as countcases, surgerycase, count(surgerycase) as countsurgerycase 
+from camppatientdetail cpd 
+where (referral2 is null and referral1 is not null)
+group by medicines,caseclosed,surgerycase 
+
+select t.referral2, sum(cnt), case t.medicines when 'YES' then 1 else 0 end case as medicines,case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 0 end case surgerycase 
+from (
+select cpd.referral2,count(cpd.referral2) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency
+ from camppatientdetail cpd join referraltype rt on (cpd.referral2 = rt.name) 
+group by referral2, medicines, caseclosed, surgerycase, emergency
+union
+select cpd.referral1,count(cpd.referral1) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency
+ from camppatientdetail cpd join referraltype rt on (cpd.referral1 = rt.name) 
+group by referral1, medicines, caseclosed, surgerycase, emergency
+union
+select cpd.referral2,count(*) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency
+ from camppatientdetail cpd 
+where cpd.referral1 is null and cpd.referral2 is null
+group by referral2, medicines, caseclosed, surgerycase, emergency ) t
+group by t.referral2, t.medicines, t.caseclosed, t.surgerycase, t.emergency
+
+
+// camp - modified
+select t.referral1, sum(t.cnt), case t.medicines when 'YES' then 1 else 0 end case as medicines,case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, 
+case t.surgerycase when 'YES' then 1 else 0 end case surgerycase , t.screeningdate
+from (
+select cpd.referral1,count(cpd.referral1) as cnt, cpd.medicines,  cpd.caseclosed, cpd.surgerycase, cpd.emergency, csd.screeningdate
+from camppatientdetail cpd join referraltype rt on (cpd.referral1 = rt.name )  join campscrdet_patdet csdpd on csdpd.patid = cpd.campatdetid join
+ campscreeningdetail csd on csd.campscreeningdetailid = csdpd.camscrid
+group by referral1, medicines, caseclosed, surgerycase, emergency, csd.screeningdate
+union all
+select cpd.referral2, count(cpd.referral2) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency, csd.screeningdate
+from camppatientdetail cpd join referraltype rt on (cpd.referral2 = rt.name ) join campscrdet_patdet csdpd on csdpd.patid = cpd.campatdetid join
+ campscreeningdetail csd on csd.campscreeningdetailid = csdpd.camscrid
+group by referral2, medicines, caseclosed, surgerycase, emergency, csd.screeningdate
+union all
+select cpd.referral2,count(*) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency, csd.screeningdate
+ from camppatientdetail cpd  join campscrdet_patdet csdpd on csdpd.patid = cpd.campatdetid join
+ campscreeningdetail csd on csd.campscreeningdetailid = csdpd.camscrid
+where cpd.referral1 is null and cpd.referral2 is null
+group by referral2, medicines, caseclosed, surgerycase, emergency , csd.screeningdate
+) t
+where t.screeningdate >= + fromDate + and t.screeningdate <=  + toDate
+group by t.referral1, t.medicines, t.caseclosed, t.surgerycase, t.emergency, t.screeningdate
+
+where t.screeningdate >= 1324319400000 and t.screeningdate <= 1324319400000
+
+select t.referral1, sum(t.cnt), case t.medicines when 'YES' then 1 else 0 end case as medicines,case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 0 end case surgerycase , t.screeningdate from ( select cpd.referral1,count(cpd.referral1) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency, csd.screeningdate from camppatientdetail cpd join referraltype rt on (cpd.referral1 = rt.name ) join campscrdet_patdet csdpd on csdpd.patid = cpd.campatdetid join campscreeningdetail csd on csd.campscreeningdetailid = csdpd.camscrid group by referral1, medicines, caseclosed, surgerycase, emergency, csd.screeningdate union all select cpd.referral2, count(cpd.referral2) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency, csd.screeningdate from camppatientdetail cpd join referraltype rt on (cpd.referral2 = rt.name ) join campscrdet_patdet csdpd on csdpd.patid = cpd.campatdetid join campscreeningdetail csd on csd.campscreeningdetailid = csdpd.camscrid group by referral2, medicines, caseclosed, surgerycase, emergency, csd.screeningdate union all select cpd.referral2,count(*) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency, csd.screeningdate from camppatientdetail cpd join campscrdet_patdet csdpd on csdpd.patid = cpd.campatdetid join campscreeningdetail csd on csd.campscreeningdetailid = csdpd.camscrid where cpd.referral1 is null and cpd.referral2 is null group by referral2, medicines, caseclosed, surgerycase, emergency , csd.screeningdate ) t where t.screeningdate >= + fromDate + and t.screeningdate <= + toDate group by t.referral1, t.medicines, t.caseclosed, t.surgerycase, t.emergency, t.screeningdate 
+
+
+// school report
+select t.referral1 as referral, sum(t.cnt) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines,
+case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 0 end case surgerycase, t.screeningdate
+from (
+select spd.referral1,count(spd.referral1) as cnt, spd.medicines,  spd.caseclosed, spd.surgerycase,spd.emergency, ssd.screeningdate
+from schoolpatientdetail spd join referraltype rt on (spd.referral1 = rt.name ) join schoolscrdet_patdet ssdpd on ssdpd.patid = spd.schpatdetid join
+ schoolscreeningdetail ssd on ssd.schoolscreeningdetailid = ssdpd.schScrid
+group by referral1, medicines, caseclosed, surgerycase, emergency, ssd.screeningdate
+union all
+select spd.referral2, count(spd.referral2) as cnt, spd.medicines, spd.caseclosed, spd.surgerycase, spd.emergency, ssd.screeningdate
+from schoolpatientdetail spd join referraltype rt on (spd.referral2 = rt.name ) join schoolscrdet_patdet ssdpd on ssdpd.patid = spd.schpatdetid join
+ schoolscreeningdetail ssd on ssd.schoolscreeningdetailid = ssdpd.schScrid
+group by referral2, medicines, caseclosed, surgerycase, emergency, ssd.screeningdate
+union all
+select spd.referral2,count(*) as snt, spd.medicines,spd.caseclosed, spd.surgerycase, spd.emergency, ssd.screeningdate
+ from schoolpatientdetail spd join schoolscrdet_patdet ssdpd on ssdpd.patid = spd.schpatdetid join
+ schoolscreeningdetail ssd on ssd.schoolscreeningdetailid = ssdpd.schScrid
+where spd.referral1 is null and spd.referral2 is null
+group by referral2, medicines, caseclosed, surgerycase, emergency, ssd.screeningdate
+) t
+group by t.referral1, t.medicines, t.caseclosed, t.surgerycase, t.emergency, t.screeningdate
+
+select t.referral1 as referral, sum(t.cnt) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines, case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 0 end case surgerycase, t.screeningdate from ( select spd.referral1,count(spd.referral1) as cnt, spd.medicines, spd.caseclosed, spd.surgerycase,spd.emergency, ssd.screeningdate from schoolpatientdetail spd join referraltype rt on (spd.referral1 = rt.name ) join schoolscrdet_patdet ssdpd on ssdpd.patid = spd.schpatdetid join schoolscreeningdetail ssd on ssd.schoolscreeningdetailid = ssdpd.schScrid group by referral1, medicines, caseclosed, surgerycase, emergency, ssd.screeningdate union all select spd.referral2, count(spd.referral2) as cnt, spd.medicines, spd.caseclosed, spd.surgerycase, spd.emergency, ssd.screeningdate from schoolpatientdetail spd join referraltype rt on (spd.referral2 = rt.name ) join schoolscrdet_patdet ssdpd on ssdpd.patid = spd.schpatdetid join schoolscreeningdetail ssd on ssd.schoolscreeningdetailid = ssdpd.schScrid group by referral2, medicines, caseclosed, surgerycase, emergency, ssd.screeningdate union all select spd.referral2,count(*) as snt, spd.medicines,spd.caseclosed, spd.surgerycase, spd.emergency, ssd.screeningdate from schoolpatientdetail spd join schoolscrdet_patdet ssdpd on ssdpd.patid = spd.schpatdetid join schoolscreeningdetail ssd on ssd.schoolscreeningdetailid = ssdpd.schScrid where spd.referral1 is null and spd.referral2 is null group by referral2, medicines, caseclosed, surgerycase, emergency, ssd.screeningdate ) t group by t.referral1, t.medicines, t.caseclosed, t.surgerycase, t.emergency, t.screeningdate 
+
+
+
+
+// events - 
+
+select cd.screeningdate as date , 'Camp Screening', pt.name as eventType, cd.address as eventLocation, count(*) as noscreened
+from campscreeningdetail cd join locality lo on cd.localityid = lo.localityid join campscrdet_patdet cpd on cpd.camscrid = cd.campscreeningdetailid
+join processtype pt on pt.processtypeid = cd.processtypeid
+group by cd.screeningdate,pt.name, cd.address
+
+select cd.screeningdate as date , 'Camp Screening', pt.name as eventType, cd.address as eventLocation, count(*) as noscreened from campscreeningdetail cd join locality lo on cd.localityid = lo.localityid join campscrdet_patdet cpd on cpd.camscrid = cd.campscreeningdetailid join processtype pt on pt.processtypeid = cd.processtypeid group by cd.screeningdate,pt.name, cd.address 
+
+select sd.screeningdate as date , 'School Screening', pt.name as eventType,sd.address as eventLocation, count(*) as noscreened
+from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schscrid = sd.schoolscreeningdetailid
+join processtype pt on pt.processtypeid = sd.processtypeid
+group by sd.screeningdate,pt.name, sd.address
+
+select sd.screeningdate as date , 'School Screening', pt.name as eventType,sd.address as eventLocation, count(*) as noscreened from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schscrid = sd.schoolscreeningdetailid join processtype pt on pt.processtypeid = sd.processtypeid group by sd.screeningdate,pt.name, sd.address 
+
+//scratch - events
+
+select sd.screeningdate as date , 'School Screening', pt.name as eventType,sd.address as eventLocation, count(*) as noscreened , sd.schoolscreeningdetailid
+from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd 
+on spd.schscrid = sd.schoolscreeningdetailid join processtype pt on pt.processtypeid = sd.processtypeid group by sd.screeningdate,pt.name, sd.address, 
+sd.schoolscreeningdetailid
+
+select sd.schoolscreeningdetailid, d.name
+from schoolscreeningdetail sd join schscrdet_doct ssd on sd.schoolscreeningdetailid = ssd.schscrid join doctor d on d.doctorid = ssd.docid
+
+select sd.schoolscreeningdetailid, v.name
+from schoolscreeningdetail sd join schscrdet_volunt ssd on sd.schoolscreeningdetailid = ssd.schscrid join volunteer v on v.volunteerid = ssd.volid
+
+
+select cd.campscreeningdetailid, d.name
+from campscreeningdetail cd join campscrdet_doct csd on cd.campscreeningdetailid = csd.camscrid join doctor d on d.doctorid = csd.docid
+
+select cd.campscreeningdetailid, v.name
+from campscreeningdetail cd join campscrdet_volunt csd on cd.campscreeningdetailid = csd.camscrid join volunteer v on v.volunteerid = csd.volid
+
