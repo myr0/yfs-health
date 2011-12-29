@@ -1,6 +1,7 @@
 package com.varun.yfs.client.reports;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -19,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -71,9 +73,12 @@ public class ClinicScreeningReport extends LayoutContainer
 		LayoutContainer layoutContainer = new LayoutContainer();
 		layoutContainer.setLayout(new TableLayout(4));
 
+		
 		final DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
 		dtfldFromDate.setAllowBlank(false);
+		Date currentDate = new Date();
+		dtfldFromDate.setValue(currentDate);
 		LayoutContainer frmpnlFromDate = new LayoutContainer();
 		frmpnlFromDate.setLayout(new FormLayout());
 		frmpnlFromDate.add(dtfldFromDate, new FormData("100%"));
@@ -86,6 +91,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		final DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
 		dtfldToDate.setAllowBlank(false);
+		dtfldToDate.setValue(currentDate);
 		LayoutContainer frmpnlToDate = new LayoutContainer();
 		frmpnlToDate.setLayout(new FormLayout());
 		frmpnlToDate.add(dtfldToDate, new FormData("100%"));

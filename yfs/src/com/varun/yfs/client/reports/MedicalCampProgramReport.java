@@ -1,6 +1,7 @@
 package com.varun.yfs.client.reports;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.charts.client.Chart;
@@ -131,6 +132,8 @@ public class MedicalCampProgramReport extends LayoutContainer
 
 		final DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
+		Date currentDate = new Date();
+		dtfldFromDate.setValue(currentDate);
 		dtfldFromDate.setAllowBlank(false);
 		LayoutContainer frmpnlFromDate = new LayoutContainer();
 		frmpnlFromDate.setLayout(new FormLayout());
@@ -143,6 +146,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 
 		final DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
+		dtfldToDate.setValue(currentDate);
 		dtfldToDate.setAllowBlank(false);
 		LayoutContainer frmpnlToDate = new LayoutContainer();
 		frmpnlToDate.setLayout(new FormLayout());

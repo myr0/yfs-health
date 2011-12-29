@@ -1,6 +1,7 @@
 package com.varun.yfs.client.reports;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -39,7 +40,6 @@ public class EventsReport extends LayoutContainer
 
 	public EventsReport()
 	{
-		setHeight("700");
 	}
 
 	final Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
@@ -65,6 +65,8 @@ public class EventsReport extends LayoutContainer
 
 		final DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
+		Date currentDate = new Date();
+		dtfldFromDate.setValue(currentDate);
 		dtfldFromDate.setAllowBlank(false);
 		LayoutContainer frmpnlFromDate = new LayoutContainer();
 		frmpnlFromDate.setLayout(new FormLayout());
@@ -77,6 +79,7 @@ public class EventsReport extends LayoutContainer
 
 		final DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
+		dtfldToDate.setValue(currentDate);
 		dtfldToDate.setAllowBlank(false);
 		LayoutContainer frmpnlToDate = new LayoutContainer();
 		frmpnlToDate.setLayout(new FormLayout());
@@ -123,28 +126,6 @@ public class EventsReport extends LayoutContainer
 					{
 						gridEvents.getStore().removeAll();
 						gridEvents.getStore().add((List<? extends ModelData>) result.get("eventsInfo"));
-
-//						Integer screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital;
-//						for (ModelData model : gridEvents.getStore().getModels())
-//						{
-//							String breakupOfTreatment = model.get("breakUpOfTreatment").toString();
-//
-//							Object obj = model.get("screened");
-//							screened = (obj == null) ? 0 : (Integer) obj;
-//
-//							obj = model.get("surgeryCasesClosed");
-//							surgeryCaseClosed = (obj == null) ? 0 : (Integer) obj;
-//
-//							obj = model.get("pendingCases");
-//							pendingCases = (obj == null) ? 0 : (Integer) obj;
-//
-//							obj = model.get("followUpMedicines");
-//							followUpMedicines = (obj == null) ? 0 : (Integer) obj;
-//
-//							obj = model.get("referredToHospital");
-//							referredToHospital = (obj == null) ? 0 : (Integer) obj;
-//
-//						}
 					}
 
 					@Override
@@ -161,7 +142,7 @@ public class EventsReport extends LayoutContainer
 
 		FormPanel lcReportingParams = new FormPanel();
 		lcReportingParams.setHeaderVisible(false);
-		lcReportingParams.setSize("", "700");
+//		lcReportingParams.setSize("", "700");
 
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
@@ -177,11 +158,11 @@ public class EventsReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("noScreened", "Number Screened", 150);
 		configs.add(clmncnfgNewColumn_3);
 
-		ColumnConfig clmncnfgNewColumn_4 = new ColumnConfig("noRequiringTreatment", "Requiring Treatment", 150);
-		configs.add(clmncnfgNewColumn_4);
+//		ColumnConfig clmncnfgNewColumn_4 = new ColumnConfig("noRequiringTreatment", "Requiring Treatment", 150);
+//		configs.add(clmncnfgNewColumn_4);
 
-		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("noTreated", "Number Treated", 150);
-		configs.add(clmncnfgNewColumn_5);
+//		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("noTreated", "Number Treated", 150);
+//		configs.add(clmncnfgNewColumn_5);
 
 		ColumnConfig clmncnfgNewColumn_6 = new ColumnConfig("volunteers", "Volunteers", 150);
 		configs.add(clmncnfgNewColumn_6);

@@ -98,7 +98,7 @@ public class IndexPage extends LayoutContainer
 
 	public IndexPage(String userLoginName)
 	{
-		setHeight("700");
+//		setHeight("100%");
 		setLayout(new FitLayout());
 		this.userName = userLoginName;
 
@@ -231,7 +231,7 @@ public class IndexPage extends LayoutContainer
 
 		mainContentPanel.add(layoutContainerCenter, new BorderLayoutData(LayoutRegion.CENTER));
 		mainContentPanel.add(layoutContainerCenter);
-		mainContentPanel.setHeight("670px");
+		mainContentPanel.setHeight(com.google.gwt.user.client.Window.getClientHeight() + "px");
 
 		layoutContainerCenter.add(new LandingPage());
 	}

@@ -29,7 +29,7 @@ public class Login extends LayoutContainer
 		setSize("300", "300");
 
 		FormPanel frmpnlLogin = new FormPanel();
-		frmpnlLogin.setHeading("Login");
+		frmpnlLogin.setHeading("DFS Patient Management Software Login");
 
 		final TextField<String> txtfldUserName = new TextField<String>();
 		frmpnlLogin.add(txtfldUserName, new FormData("100%"));

@@ -108,6 +108,14 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 			{
 				try
 				{
+					// hack to let the UI init properly
+					try
+					{
+						Thread.sleep(50);
+					} catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
 					patientDetailImporter.convertRecords(processIds);
 				} catch (Exception ex)
 				{
