@@ -977,6 +977,7 @@ public class IndexPage extends LayoutContainer
 					}
 					treeClinicScreeningPanel.setExpanded(modelData, true);
 				}
+				treeClinicScreeningPanel.expandAll();
 			}
 		});
 
@@ -1003,6 +1004,7 @@ public class IndexPage extends LayoutContainer
 						treeCampScreeningPanel.getStore().add(modelData, children, true);
 					}
 				}
+				treeCampScreeningPanel.expandAll();
 			}
 		});
 	}

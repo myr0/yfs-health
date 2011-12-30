@@ -28,7 +28,6 @@ import com.varun.yfs.dto.ClinicDTO;
 import com.varun.yfs.dto.ClinicPatientDetailDTO;
 import com.varun.yfs.dto.ClinicPatientHistoryDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
-import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.CampPatientDetail;
 import com.varun.yfs.server.models.CampScreeningDetail;
@@ -577,12 +576,15 @@ public class DataUtil
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Query filter = session.createSQLQuery(queryString);
+		Transaction tran = session.beginTransaction();
 		int updCount;
 		try
 		{
 			updCount = filter.executeUpdate();
+			tran.commit();
 		} catch (HibernateException ex)
 		{
+			tran.rollback();
 			LOGGER.error("Encountered error while updating objects: " + ex.getMessage());
 			throw ex;
 		} finally
