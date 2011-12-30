@@ -16,7 +16,8 @@ public interface StoreLoader extends RemoteService
 
 	RpcStatusEnum saveModel(String entityName, ModelData model);
 
-
 	RpcStatusEnum saveListStore(String className, List<ModelData> lstModels);
+	
+	RpcStatusEnum setDeleted(String entityName, String id);
 
 }

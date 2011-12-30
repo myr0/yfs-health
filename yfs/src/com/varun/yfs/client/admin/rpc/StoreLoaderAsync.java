@@ -13,8 +13,9 @@ public interface StoreLoaderAsync
 
 	void getListStore(String className, AsyncCallback<List<ModelData>> callback);
 
-
 	void saveModel(String entityName, ModelData model, AsyncCallback<RpcStatusEnum> callback);
 
 	void saveListStore(String className, List<ModelData> lstModels, AsyncCallback<RpcStatusEnum> callback);
+
+	void setDeleted(String entityName, String id, AsyncCallback<RpcStatusEnum> callback);
 }

@@ -12,4 +12,6 @@ public interface LoginServiceAsync
 
 	void logout(AsyncCallback<Void> callback);
 
+	void changePassword(String name, String newPassword, AsyncCallback<Boolean> callback);
+
 }

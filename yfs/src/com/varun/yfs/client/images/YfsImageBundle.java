@@ -44,4 +44,22 @@ public interface YfsImageBundle extends ClientBundle
 	@Source("adminHelp.png")
 	public ImageResource adminHelpButtonImage();
 
+	@Source("dfslogo1.png")
+	public ImageResource dfsLogoImage();
+
+	@Source("yfslogotag.png")
+	public ImageResource yfsLogoImage();
+
+	@Source("userPassword.png")
+	public ImageResource userPassword();
+
+	@Source("world.png")
+	public ImageResource worldIcon();
+
+	@Source("settings.png")
+	public ImageResource settingsIcon();
+
+	@Source("report.png")
+	public ImageResource reportIcon();
+
 }

@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.Store;
@@ -30,6 +31,8 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -45,9 +48,11 @@ import com.varun.yfs.client.admin.location.LocationAdministration;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.admin.users.UserAdministration;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.help.HelpPage;
 import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.landing.LandingPage;
+import com.varun.yfs.client.login.ChangePassword;
 import com.varun.yfs.client.login.Login;
 import com.varun.yfs.client.login.LoginService;
 import com.varun.yfs.client.reports.ClinicScreeningReport;
@@ -98,7 +103,7 @@ public class IndexPage extends LayoutContainer
 
 	public IndexPage(String userLoginName)
 	{
-//		setHeight("100%");
+		// setHeight("100%");
 		setLayout(new FitLayout());
 		this.userName = userLoginName;
 
@@ -132,7 +137,7 @@ public class IndexPage extends LayoutContainer
 		super.onRender(parent, index);
 
 		mainContentPanel.setLayout(new BorderLayout());
-		mainContentPanel.setHeading("YFS Health Chapter");
+		mainContentPanel.setHeading("Patient Health Management");
 
 		buildToolBar();
 
@@ -165,6 +170,8 @@ public class IndexPage extends LayoutContainer
 				cpSchoolScreening.expand();
 				layoutContainerCenter.add(new LandingPage());
 				layoutContainerCenter.layout(true);
+
+				refreshIndexPanel(true);
 			}
 		});
 
@@ -214,11 +221,29 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
+		Button changePassword = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.userPassword()));
+		changePassword.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				Window dialog = new Window();
+				dialog.setHeading("Change Password");
+				dialog.setSize("350", "180");
+				dialog.setScrollMode(Scroll.AUTO);
+				dialog.setLayout(new FitLayout());
+				dialog.add(new ChangePassword(getCurrentUserName()), new FitData());
+				dialog.show();
+			}
+		});
+
 		toolbar.add(home);
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(userName);
 		toolbar.add(new FillToolItem());
 		toolbar.add(help);
+		toolbar.add(new FillToolItem());
+		toolbar.add(changePassword);
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(logout);
 
@@ -287,6 +312,11 @@ public class IndexPage extends LayoutContainer
 		refreshIndexPanel(false);
 	}
 
+	private String getCurrentUserName()
+	{
+		return this.userName;
+	}
+
 	private void buildAdministrationPanel()
 	{
 		final ContentPanel cpAdministration = new ContentPanel();
@@ -303,7 +333,9 @@ public class IndexPage extends LayoutContainer
 			{
 				if (model.get("icon") != null)
 				{
-					return IconHelper.createStyle((String) model.get("icon"));
+					// return IconHelper.createStyle((String)
+					// model.get("icon"));
+					return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.settingsIcon());
 				} else
 				{
 					return null;
@@ -411,7 +443,9 @@ public class IndexPage extends LayoutContainer
 			{
 				if (model.get("icon") != null)
 				{
-					return IconHelper.createStyle((String) model.get("icon"));
+					// return IconHelper.createStyle((String)
+					// model.get("icon"));
+					return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.reportIcon());
 				}
 				return null;
 			}
@@ -591,7 +625,7 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 		cpCampScreening.setTopComponent(toolbar);
 
-		Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		toolbar.add(newScreening);
 		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -608,6 +642,18 @@ public class IndexPage extends LayoutContainer
 				layoutContainerCenter.add(widget);
 
 				layoutContainerCenter.layout(true);
+			}
+		});
+
+		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		toolbar.add(new SeparatorToolItem());
+		toolbar.add(removeScreening);
+		removeScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+
 			}
 		});
 
@@ -677,6 +723,54 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
+		Menu contextMenu = new Menu();
+
+		MenuItem insert = new MenuItem();
+		insert.setText("Create New Screening");
+		insert.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		insert.addSelectionListener(new SelectionListener<MenuEvent>()
+		{
+			public void componentSelected(MenuEvent ce)
+			{
+				newScreening.fireEvent(Events.Select);
+			}
+		});
+		contextMenu.add(insert);
+
+		MenuItem remove = new MenuItem();
+		remove.setText("Remove Screening");
+		remove.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		remove.addSelectionListener(new SelectionListener<MenuEvent>()
+		{
+			public void componentSelected(MenuEvent ce)
+			{
+				List<ModelData> selected = treeCampScreeningPanel.getSelectionModel().getSelectedItems();
+				for (ModelData sel : selected)
+				{
+					// treeCampScreeningPanel.getStore().remove(sel);
+					storeLoader.setDeleted("campscreeningdetail", sel.get("id").toString(), new AsyncCallback<RpcStatusEnum>()
+					{
+						@Override
+						public void onFailure(Throwable caught)
+						{
+							MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
+						}
+
+						@Override
+						public void onSuccess(RpcStatusEnum result)
+						{
+							if (result.equals(RpcStatusEnum.SUCCESS))
+								refreshIndexPanel(true);
+							else
+								MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
+						}
+					});
+				}
+			}
+		});
+		contextMenu.add(remove);
+		treeCampScreeningPanel.setContextMenu(contextMenu);
+
 		cpCampScreening.add(treeCampScreeningPanel);
 	}
 
@@ -690,7 +784,7 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 		cpSchoolScreening.setTopComponent(toolbar);
 
-		Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		toolbar.add(newScreening);
 		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -706,6 +800,18 @@ public class IndexPage extends LayoutContainer
 				layoutContainerCenter.add(widget);
 
 				layoutContainerCenter.layout(true);
+			}
+		});
+
+		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		toolbar.add(new SeparatorToolItem());
+		toolbar.add(removeScreening);
+		removeScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+
 			}
 		});
 
@@ -774,6 +880,54 @@ public class IndexPage extends LayoutContainer
 				}
 			}
 		});
+
+		Menu contextMenu = new Menu();
+
+		MenuItem insert = new MenuItem();
+		insert.setText("Create New Screening");
+		insert.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		insert.addSelectionListener(new SelectionListener<MenuEvent>()
+		{
+			public void componentSelected(MenuEvent ce)
+			{
+				newScreening.fireEvent(Events.Select);
+			}
+		});
+		contextMenu.add(insert);
+
+		MenuItem remove = new MenuItem();
+		remove.setText("Remove Entry");
+		remove.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		remove.addSelectionListener(new SelectionListener<MenuEvent>()
+		{
+			public void componentSelected(MenuEvent ce)
+			{
+				List<ModelData> selected = treeSchoolScreeningPanel.getSelectionModel().getSelectedItems();
+				for (ModelData sel : selected)
+				{
+					// treeSchoolScreeningPanel.getStore().remove(sel);
+					storeLoader.setDeleted("schoolscreeningdetail", sel.get("id").toString(), new AsyncCallback<RpcStatusEnum>()
+					{
+						@Override
+						public void onFailure(Throwable caught)
+						{
+							MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
+						}
+
+						@Override
+						public void onSuccess(RpcStatusEnum result)
+						{
+							if (result.equals(RpcStatusEnum.SUCCESS))
+								refreshIndexPanel(true);
+							else
+								MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
+						}
+					});
+				}
+			}
+		});
+		contextMenu.add(remove);
+		treeSchoolScreeningPanel.setContextMenu(contextMenu);
 
 		cpSchoolScreening.add(treeSchoolScreeningPanel);
 	}

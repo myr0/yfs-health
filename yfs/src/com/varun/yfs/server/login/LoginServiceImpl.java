@@ -49,6 +49,28 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		deleteUserFromSession();
 	}
 
+	@Override
+	public boolean changePassword(String name, String newPassword)
+	{
+
+		List<UserDTO> modelList = DataUtil.<UserDTO> getModelList("User");
+		UserDTO user = new UserDTO(name, "");
+		int usrIdx = modelList.indexOf(user);
+
+		if (usrIdx >= 0) // user-name exists
+		{
+			UserDTO userDTO = modelList.get(usrIdx);
+			
+			userDTO.setPassword(newPassword);
+
+			DataUtil.saveUser(userDTO);
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private UserDTO getUserAlreadyFromSession()
 	{
 		UserDTO user = null;
@@ -75,4 +97,5 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		HttpSession session = httpServletRequest.getSession();
 		session.removeAttribute("user");
 	}
+
 }

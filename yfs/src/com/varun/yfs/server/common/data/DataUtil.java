@@ -28,6 +28,7 @@ import com.varun.yfs.dto.ClinicDTO;
 import com.varun.yfs.dto.ClinicPatientDetailDTO;
 import com.varun.yfs.dto.ClinicPatientHistoryDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
+import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.CampPatientDetail;
 import com.varun.yfs.server.models.CampScreeningDetail;
@@ -366,7 +367,7 @@ public class DataUtil
 	public static List<CampScreeningDetailDTO> getCampScreeningDetail(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from CampScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
+		Query filter = session.createQuery("select sd from CampScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value + " and tb.deleted = 'N'");
 		List<CampScreeningDetailDTO> lstScreening = new ArrayList<CampScreeningDetailDTO>();
 		try
 		{
@@ -394,7 +395,7 @@ public class DataUtil
 	public static List<SchoolScreeningDetailDTO> getSchoolScreeningDetail(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from SchoolScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
+		Query filter = session.createQuery("select sd from SchoolScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value + " and tb.deleted = 'N'");
 		List<SchoolScreeningDetailDTO> lstScreening = new ArrayList<SchoolScreeningDetailDTO>();
 		try
 		{
@@ -483,24 +484,36 @@ public class DataUtil
 
 	public static void saveUserDetail(ModelData model)
 	{
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		Mapper dozerMapper = HibernateUtil.getDozerMapper();
-		Transaction trans = session.beginTransaction();
 		try
 		{
 			List<ModelData> modelList = model.get("users");
 			for (ModelData modelData : modelList)
 			{
-				User usrObj = dozerMapper.map(modelData, User.class);
-				Long id = modelData.get("id");
-				if (id == null)
-				{
-					session.save(usrObj);
-				} else
-				{
-					usrObj.setId(id);
-					session.saveOrUpdate(usrObj);
-				}
+				saveUser(modelData);
+			}
+		} catch (HibernateException ex)
+		{
+			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			throw ex;
+		}
+	}
+
+	public static void saveUser(ModelData modelData)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Mapper dozerMapper = HibernateUtil.getDozerMapper();
+		Transaction trans = session.beginTransaction();
+		try
+		{
+			User usrObj = dozerMapper.map(modelData, User.class);
+			Long id = modelData.get("id");
+			if (id == null)
+			{
+				session.save(usrObj);
+			} else
+			{
+				usrObj.setId(id);
+				session.saveOrUpdate(usrObj);
 			}
 			trans.commit();
 			session.flush();
@@ -558,6 +571,25 @@ public class DataUtil
 			session.close();
 		}
 		return obj;
+	}
+
+	public static boolean executeUpdate(String queryString)
+	{
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Query filter = session.createSQLQuery(queryString);
+		int updCount;
+		try
+		{
+			updCount = filter.executeUpdate();
+		} catch (HibernateException ex)
+		{
+			LOGGER.error("Encountered error while updating objects: " + ex.getMessage());
+			throw ex;
+		} finally
+		{
+			session.close();
+		}
+		return updCount >= 0;
 	}
 
 	protected <E> E findParent(List<E> lst, E searchSeed)

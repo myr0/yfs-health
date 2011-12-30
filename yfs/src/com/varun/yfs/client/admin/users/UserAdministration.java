@@ -134,7 +134,9 @@ public class UserAdministration extends LayoutContainer
 					txtfldPassword.setValue(modelData.get("password").toString());
 					lstfldChapterNames.getStore().add((List<ChapterNameDTO>) currentModelData.get("lstChapterNames"));
 					lstfldProjects.getStore().add((List<ProjectDTO>) currentModelData.get("lstProjects"));
-					userRole.findModel(modelData.get("role").toString());
+					Object role = modelData.get("role");
+					if (role != null)
+						userRole.findModel(role.toString());
 
 					updateSelections((List<ModelData>) modelData.get("chapterNames"), lstfldChapterNames);
 					updateSelections((List<ModelData>) modelData.get("projects"), lstfldProjects);
