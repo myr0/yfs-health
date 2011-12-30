@@ -367,7 +367,7 @@ public class DataUtil
 	public static List<CampScreeningDetailDTO> getCampScreeningDetail(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from CampScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value + " and tb.deleted = 'N'");
+		Query filter = session.createQuery("select sd from CampScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value + " and sd.deleted = 'N'");
 		List<CampScreeningDetailDTO> lstScreening = new ArrayList<CampScreeningDetailDTO>();
 		try
 		{
@@ -395,7 +395,7 @@ public class DataUtil
 	public static List<SchoolScreeningDetailDTO> getSchoolScreeningDetail(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from SchoolScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value + " and tb.deleted = 'N'");
+		Query filter = session.createQuery("select sd from SchoolScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value + " and sd.deleted = 'N'");
 		List<SchoolScreeningDetailDTO> lstScreening = new ArrayList<SchoolScreeningDetailDTO>();
 		try
 		{

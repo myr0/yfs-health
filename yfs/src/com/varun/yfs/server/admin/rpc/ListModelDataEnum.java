@@ -101,7 +101,7 @@ public enum ListModelDataEnum
 					ModelData scrNode = new BaseModelData();
 					scrNode.set("name", screeningDetailDTO.toString());
 					scrNode.set("id", String.valueOf(screeningDetailDTO.getId()));
-					scrNode.set("icon", "");
+					scrNode.set("icon", "screeningIndividual");
 					chapterNodes.add(scrNode);
 				}
 			}
@@ -133,7 +133,7 @@ public enum ListModelDataEnum
 					ModelData scrNode = new BaseModelData();
 					scrNode.set("name", clinicDTO.toString());
 					scrNode.set("id", String.valueOf(clinicDTO.getId()));
-					scrNode.set("icon", "");
+					scrNode.set("icon", "screeningIndividual");
 					chapterNodes.add(scrNode);
 				}
 			}
@@ -165,7 +165,7 @@ public enum ListModelDataEnum
 					ModelData scrNode = new BaseModelData();
 					scrNode.set("name", screeningDetailDTO.toString());
 					scrNode.set("id", String.valueOf(screeningDetailDTO.getId()));
-					scrNode.set("icon", "");
+					scrNode.set("icon", "screeningIndividual");
 					chapterNodes.add(scrNode);
 				}
 			}
@@ -185,10 +185,10 @@ public enum ListModelDataEnum
 
 			List<ModelData> child = new ArrayList<ModelData>();
 			m1.set("children", child);
-			child.add(newItem(ReportType.School.getValue(), ""));
-			child.add(newItem(ReportType.MedicalCamp.getValue(), ""));
-			child.add(newItem(ReportType.Clinic.getValue(), ""));
-			child.add(newItem(ReportType.Events.getValue(), ""));
+			child.add(newItem(ReportType.School.getValue(), "reportIndividual"));
+			child.add(newItem(ReportType.MedicalCamp.getValue(), "reportIndividual"));
+			child.add(newItem(ReportType.Clinic.getValue(), "reportIndividual"));
+			child.add(newItem(ReportType.Events.getValue(), "reportIndividual"));			
 //			child.add(newItem(ReportType.Overall.getValue(), ""));
 
 			// m1 = newItem("Summary Reports", "");

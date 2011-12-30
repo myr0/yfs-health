@@ -41,6 +41,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.reports.rpc.ImageService;
 import com.varun.yfs.client.reports.rpc.ImageServiceAsync;
 import com.varun.yfs.client.reports.rpc.ReportDetailService;
@@ -134,7 +136,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		chart.setChartModel(model);
 
 		LayoutContainer layoutContainer = new LayoutContainer();
-		layoutContainer.setLayout(new TableLayout(3));
+		layoutContainer.setLayout(new TableLayout(4));
 
 		final DateField dtfldFromDate = new DateField();
 		dtfldFromDate.setFieldLabel("From Date");
@@ -167,13 +169,24 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		LayoutContainer frmpnlRefresh = new LayoutContainer();
 		frmpnlRefresh.setLayout(new FormLayout());
 
-		Button btnRefresh = new Button("Get Report");
+		Button btnRefresh = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.refreshButtonIcon()));
 		frmpnlRefresh.add(btnRefresh, new FormData("100%"));
 		TableData td_frmpnlRefresh = new TableData();
 		td_frmpnlRefresh.setPadding(5);
 		td_frmpnlRefresh.setMargin(5);
 		layoutContainer.add(frmpnlRefresh, td_frmpnlRefresh);
 		frmpnlRefresh.setBorders(true);
+
+		LayoutContainer frmpnlExport = new LayoutContainer();
+		frmpnlExport.setLayout(new FormLayout());
+		frmpnlExport.setBorders(true);
+		Button btnExport = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		frmpnlExport.add(btnExport, new FormData("100%"));
+		TableData td_frmpnlExport = new TableData();
+		td_frmpnlExport.setPadding(5);
+		td_frmpnlExport.setMargin(5);
+		layoutContainer.add(frmpnlExport, td_frmpnlExport);
+
 		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -206,7 +219,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 
 						gridBreakupOfTreatments.getStore().removeAll();
 						gridBreakupOfTreatments.getStore().add((List<? extends ModelData>) result.get("breakupOfTreatments"));
-						
+
 						List<ModelData> lstModels = new ArrayList<ModelData>();
 						int pendingCasesCnt = 0, followUpMedCnt = 0, medCaseCnt = 0;
 						for (ModelData model : (List<? extends ModelData>) result.get("statusOfTreatments"))
@@ -257,7 +270,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 							store.add(tmSales);
 						}
 						List<ChartConfig> chartConfigs = chart.getChartModel().getChartConfigs();
-//						chartConfigs.clear();
+						// chartConfigs.clear();
 						for (ChartConfig chartConfig : chartConfigs)
 						{
 							chartConfig.getDataProvider().bind(store);
@@ -378,8 +391,8 @@ public class SchoolHealthProgramReport extends LayoutContainer
 	}
 
 	private native String getImageData(String id) /*-{
-		var swf = $doc.getElementById(id);
-		var data = swf.get_img_binary();
-		return data;
-	}-*/;
+													var swf = $doc.getElementById(id);
+													var data = swf.get_img_binary();
+													return data;
+													}-*/;
 }

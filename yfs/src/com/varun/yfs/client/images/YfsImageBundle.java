@@ -62,4 +62,10 @@ public interface YfsImageBundle extends ClientBundle
 	@Source("report.png")
 	public ImageResource reportIcon();
 
+	@Source("reportIndividual.png")
+	public ImageResource reportIndividualIcon();
+	
+	@Source("screeningIndividual.png")
+	public ImageResource screeningIndividualIcon();
+
 }

@@ -20,7 +20,6 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.Time;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -31,8 +30,10 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
+import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.reports.rpc.ReportDetailService;
 import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
@@ -71,7 +72,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		add(cpOuterContainer);
 
 		LayoutContainer layoutContainer = new LayoutContainer();
-		layoutContainer.setLayout(new TableLayout(4));
+		layoutContainer.setLayout(new TableLayout(5));
 
 		
 		final DateField dtfldFromDate = new DateField();
@@ -82,12 +83,11 @@ public class ClinicScreeningReport extends LayoutContainer
 		LayoutContainer frmpnlFromDate = new LayoutContainer();
 		frmpnlFromDate.setLayout(new FormLayout());
 		frmpnlFromDate.add(dtfldFromDate, new FormData("100%"));
-
 		TableData td_frmpnlFromDate = new TableData();
 		td_frmpnlFromDate.setPadding(5);
 		td_frmpnlFromDate.setMargin(5);
 		layoutContainer.add(frmpnlFromDate, td_frmpnlFromDate);
-
+		
 		final DateField dtfldToDate = new DateField();
 		dtfldToDate.setFieldLabel("To Date");
 		dtfldToDate.setAllowBlank(false);
@@ -95,7 +95,6 @@ public class ClinicScreeningReport extends LayoutContainer
 		LayoutContainer frmpnlToDate = new LayoutContainer();
 		frmpnlToDate.setLayout(new FormLayout());
 		frmpnlToDate.add(dtfldToDate, new FormData("100%"));
-
 		TableData td_frmpnlToDate = new TableData();
 		td_frmpnlToDate.setPadding(5);
 		td_frmpnlToDate.setMargin(5);
@@ -125,7 +124,6 @@ public class ClinicScreeningReport extends LayoutContainer
 		LayoutContainer frmpnlClinics = new LayoutContainer();
 		frmpnlClinics.setLayout(new FormLayout());
 		frmpnlClinics.add(clinics, new FormData("100%"));
-
 		TableData td_frmpnlClinics = new TableData();
 		td_frmpnlClinics.setPadding(5);
 		td_frmpnlClinics.setMargin(5);
@@ -133,14 +131,25 @@ public class ClinicScreeningReport extends LayoutContainer
 
 		LayoutContainer frmpnlRefresh = new LayoutContainer();
 		frmpnlRefresh.setLayout(new FormLayout());
-
-		Button btnRefresh = new Button("Get Report");
+		frmpnlRefresh.setBorders(true);
+		Button btnRefresh = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.refreshButtonIcon()));
 		frmpnlRefresh.add(btnRefresh, new FormData("100%"));
 		TableData td_frmpnlRefresh = new TableData();
 		td_frmpnlRefresh.setPadding(5);
 		td_frmpnlRefresh.setMargin(5);
 		layoutContainer.add(frmpnlRefresh, td_frmpnlRefresh);
-		frmpnlRefresh.setBorders(true);
+		
+		
+		LayoutContainer frmpnlExport = new LayoutContainer();
+		frmpnlExport.setLayout(new FormLayout());
+		frmpnlExport.setBorders(true);
+		Button btnExport = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		frmpnlExport.add(btnExport, new FormData("100%"));
+		TableData td_frmpnlExport = new TableData();
+		td_frmpnlExport.setPadding(5);
+		td_frmpnlExport.setMargin(5);
+		layoutContainer.add(frmpnlExport, td_frmpnlExport);
+		
 		add(layoutContainer);
 
 		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>()

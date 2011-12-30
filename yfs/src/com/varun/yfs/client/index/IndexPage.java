@@ -19,7 +19,6 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -239,12 +238,16 @@ public class IndexPage extends LayoutContainer
 
 		toolbar.add(home);
 		toolbar.add(new SeparatorToolItem());
+
 		toolbar.add(userName);
 		toolbar.add(new FillToolItem());
+
 		toolbar.add(help);
-		toolbar.add(new FillToolItem());
+		toolbar.add(new SeparatorToolItem());
+
 		toolbar.add(changePassword);
 		toolbar.add(new SeparatorToolItem());
+
 		toolbar.add(logout);
 
 		mainContentPanel.setTopComponent(toolbar);
@@ -441,13 +444,14 @@ public class IndexPage extends LayoutContainer
 
 			public AbstractImagePrototype getIcon(ModelData model)
 			{
-				if (model.get("icon") != null)
-				{
-					// return IconHelper.createStyle((String)
-					// model.get("icon"));
-					return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.reportIcon());
-				}
-				return null;
+				Object iconString = model.get("icon");
+				if (iconString == null)
+					return null;
+
+				if (iconString.toString().equals("reportIndividual"))
+					return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.reportIndividualIcon());
+
+				return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.reportIcon());
 			}
 
 		});
@@ -524,39 +528,18 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 		cpClinicScreening.setTopComponent(toolbar);
 
-		// Button newScreening = new Button("New",
-		// AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
-		// toolbar.add(newScreening);
-		// newScreening.addSelectionListener(new
-		// SelectionListener<ButtonEvent>()
-		// {
-		// @Override
-		// public void componentSelected(ButtonEvent ce)
-		// {
-		// layoutContainerCenter.mask("Loading...");
-		// layoutContainerCenter.removeAll();
-		// layoutContainerCenter.setLayoutData(new FitData(15));
-		//
-		// layoutContainerCenter.mask("Initializing ...");
-		// final ClinicScreeningDetail widget = new ClinicScreeningDetail();
-		// widget.initialize("New Screening", null);
-		// layoutContainerCenter.add(widget);
-		//
-		// layoutContainerCenter.layout(true);
-		// }
-		// });
-
 		treeClinicScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
 		{
 			public AbstractImagePrototype getIcon(ModelData model)
 			{
-				if (model.get("icon") != null)
-				{
-					return IconHelper.createStyle((String) model.get("icon"));
-				} else
-				{
+				Object iconString = model.get("icon");
+				if (iconString == null)
 					return null;
-				}
+
+				if (iconString.toString().equals("screeningIndividual"))
+					return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.screeningIndividualIcon());
+
+				return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.worldIcon());
 			}
 		});
 		treeClinicScreeningPanel.setDisplayProperty("name");
@@ -653,7 +636,14 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
+				List<ModelData> selected = treeCampScreeningPanel.getSelectionModel().getSelectedItems();
+				if (selected.isEmpty())
+				{
 
+					MessageBox.alert("Warning", "Select a screening record to delete.", DUMMYLISTENER);
+					return;
+				}
+				removeScreeningRecord("campscreeningdetail", selected);
 			}
 		});
 
@@ -661,13 +651,14 @@ public class IndexPage extends LayoutContainer
 		{
 			public AbstractImagePrototype getIcon(ModelData model)
 			{
-				if (model.get("icon") != null)
-				{
-					return IconHelper.createStyle((String) model.get("icon"));
-				} else
-				{
+				Object iconString = model.get("icon");
+				if (iconString == null)
 					return null;
-				}
+
+				if (iconString.toString().equals("screeningIndividual"))
+					return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.screeningIndividualIcon());
+
+				return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.worldIcon());
 			}
 		});
 		treeCampScreeningPanel.setDisplayProperty("name");
@@ -723,8 +714,7 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		Menu contextMenu = new Menu();
-
+		final Menu contextMenu = new Menu();
 		MenuItem insert = new MenuItem();
 		insert.setText("Create New Screening");
 		insert.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
@@ -738,6 +728,7 @@ public class IndexPage extends LayoutContainer
 		contextMenu.add(insert);
 
 		MenuItem remove = new MenuItem();
+		remove.setId("removeCampScreening");
 		remove.setText("Remove Screening");
 		remove.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
 		remove.addSelectionListener(new SelectionListener<MenuEvent>()
@@ -745,33 +736,39 @@ public class IndexPage extends LayoutContainer
 			public void componentSelected(MenuEvent ce)
 			{
 				List<ModelData> selected = treeCampScreeningPanel.getSelectionModel().getSelectedItems();
-				for (ModelData sel : selected)
-				{
-					// treeCampScreeningPanel.getStore().remove(sel);
-					storeLoader.setDeleted("campscreeningdetail", sel.get("id").toString(), new AsyncCallback<RpcStatusEnum>()
-					{
-						@Override
-						public void onFailure(Throwable caught)
-						{
-							MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
-						}
-
-						@Override
-						public void onSuccess(RpcStatusEnum result)
-						{
-							if (result.equals(RpcStatusEnum.SUCCESS))
-								refreshIndexPanel(true);
-							else
-								MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
-						}
-					});
-				}
+				removeScreeningRecord("campscreeningdetail", selected);
 			}
+
 		});
 		contextMenu.add(remove);
 		treeCampScreeningPanel.setContextMenu(contextMenu);
 
 		cpCampScreening.add(treeCampScreeningPanel);
+	}
+
+	private void removeScreeningRecord(String entity, List<ModelData> selected)
+	{
+		for (ModelData sel : selected)
+		{
+			if (sel.get("id") != null)
+				storeLoader.setDeleted(entity, sel.get("id").toString(), new AsyncCallback<RpcStatusEnum>()
+				{
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
+					}
+
+					@Override
+					public void onSuccess(RpcStatusEnum result)
+					{
+						if (result.equals(RpcStatusEnum.SUCCESS))
+							refreshIndexPanel(true);
+						else
+							MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
+					}
+				});
+		}
 	}
 
 	private void buildSchoolScreeningPanel()
@@ -811,7 +808,14 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
+				List<ModelData> selected = treeSchoolScreeningPanel.getSelectionModel().getSelectedItems();
+				if (selected.isEmpty())
+				{
 
+					MessageBox.alert("Warning", "Select a screening record to delete.", DUMMYLISTENER);
+					return;
+				}
+				removeScreeningRecord("schoolscreeningdetail", selected);
 			}
 		});
 
@@ -819,13 +823,14 @@ public class IndexPage extends LayoutContainer
 		{
 			public AbstractImagePrototype getIcon(ModelData model)
 			{
-				if (model.get("icon") != null)
-				{
-					return IconHelper.createStyle((String) model.get("icon"));
-				} else
-				{
+				Object iconString = model.get("icon");
+				if (iconString == null)
 					return null;
-				}
+
+				if (iconString.toString().equals("screeningIndividual"))
+					return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.screeningIndividualIcon());
+
+				return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.worldIcon());
 			}
 		});
 		treeSchoolScreeningPanel.setDisplayProperty("name");
@@ -881,7 +886,7 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		Menu contextMenu = new Menu();
+		final Menu contextMenu = new Menu();
 
 		MenuItem insert = new MenuItem();
 		insert.setText("Create New Screening");
@@ -897,33 +902,14 @@ public class IndexPage extends LayoutContainer
 
 		MenuItem remove = new MenuItem();
 		remove.setText("Remove Entry");
+		remove.setId("removeSchoolScreening");
 		remove.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
 		remove.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			public void componentSelected(MenuEvent ce)
 			{
 				List<ModelData> selected = treeSchoolScreeningPanel.getSelectionModel().getSelectedItems();
-				for (ModelData sel : selected)
-				{
-					// treeSchoolScreeningPanel.getStore().remove(sel);
-					storeLoader.setDeleted("schoolscreeningdetail", sel.get("id").toString(), new AsyncCallback<RpcStatusEnum>()
-					{
-						@Override
-						public void onFailure(Throwable caught)
-						{
-							MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
-						}
-
-						@Override
-						public void onSuccess(RpcStatusEnum result)
-						{
-							if (result.equals(RpcStatusEnum.SUCCESS))
-								refreshIndexPanel(true);
-							else
-								MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
-						}
-					});
-				}
+				removeScreeningRecord("schoolscreeningdetail", selected);
 			}
 		});
 		contextMenu.add(remove);

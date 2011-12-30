@@ -28,6 +28,8 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.varun.yfs.client.images.YfsImageBundle;
 
 public class OverallReport extends LayoutContainer
 {
@@ -110,7 +112,7 @@ public class OverallReport extends LayoutContainer
 		LayoutContainer frmpnlRefresh = new LayoutContainer();
 		frmpnlRefresh.setLayout(new FormLayout());
 
-		Button btnRefresh = new Button("Refresh");
+		Button btnRefresh = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.refreshButtonIcon()));
 		frmpnlRefresh.add(btnRefresh, new FormData("100%"));
 		layoutContainer.add(frmpnlRefresh);
 		frmpnlRefresh.setBorders(true);

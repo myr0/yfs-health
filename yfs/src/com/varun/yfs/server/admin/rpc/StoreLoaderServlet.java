@@ -74,7 +74,7 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
-			DataUtil.executeUpdate("update table " + Util.stripSpace(entityName) +
+			DataUtil.executeUpdate("update " + Util.stripSpace(entityName) +
 					" set deleted = 'Y' where " + Util.stripSpace(entityName) + "id =" + id);
 		} catch (Exception ex)
 		{
