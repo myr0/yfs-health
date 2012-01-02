@@ -14,12 +14,15 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import au.com.bytecode.opencsv.CSVReader;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.varun.yfs.client.screening.export.ExportService;
+import com.varun.yfs.dto.ExportTableDTO;
 import com.varun.yfs.server.screening.imports.ExcelReader;
 
 public class ExportServiceImpl extends RemoteServiceServlet implements ExportService
@@ -28,48 +31,59 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 	private static final Logger LOGGER = Logger.getLogger(ExportServiceImpl.class);
 
 	@Override
-	public String createExportFile(List<String> colHeaders, List<? extends ModelData> lstData)
+	public String createExportFile(List<ExportTableDTO> exportTables, String base64Image)
 	{
 		HSSFWorkbook myWorkBook = new HSSFWorkbook();
 		HSSFSheet mySheet = myWorkBook.createSheet(ExcelReader.WORKSHEET_NAME);
 		HSSFRow myRow = null;
 		HSSFCell myCell = null;
-
 		int rowNum = 0;
-		int cellNum = 0;
-		myRow = mySheet.createRow(rowNum++);
-		for (String header : colHeaders)
-		{
-			myCell = myRow.createCell(cellNum++);
-			myCell.setCellValue(header);
 
-			CellStyle style = myWorkBook.createCellStyle();
-			style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-			myCell.setCellStyle(style);
-			mySheet.autoSizeColumn(cellNum);
-		}
-
-		CSVReader reader;
-		for (ModelData e : lstData)
+		for (ExportTableDTO exportTableDTO : exportTables)
 		{
+			List<String> colHeaders = exportTableDTO.getColHeaders();
+
+			int cellNum = 0;
 			myRow = mySheet.createRow(rowNum++);
-			reader = new CSVReader(new StringReader(e.toString()));
-			String[] split = null;
-			try
+			for (String header : colHeaders)
 			{
-				split = reader.readNext();
-				cellNum = 0;
-				for (String cell : split)
-				{
-					myCell = myRow.createCell(cellNum++);
-					myCell.setCellValue(cell);
-				}
-			} catch (IOException e1)
-			{
-				e1.printStackTrace();
+				myCell = myRow.createCell(cellNum++);
+				myCell.setCellValue(header);
+
+				CellStyle style = myWorkBook.createCellStyle();
+				style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				myCell.setCellStyle(style);
+				mySheet.autoSizeColumn(cellNum);
 			}
 
+			List<? extends ModelData> lstData = exportTableDTO.getLstData();
+			CSVReader reader;
+			for (ModelData e : lstData)
+			{
+				myRow = mySheet.createRow(rowNum++);
+				reader = new CSVReader(new StringReader(e.toString()));
+				String[] split = null;
+				try
+				{
+					split = reader.readNext();
+					cellNum = 0;
+					for (String cell : split)
+					{
+						myCell = myRow.createCell(cellNum++);
+						myCell.setCellValue(cell);
+					}
+				} catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+
+		}
+
+		if (base64Image != null)
+		{
+			myWorkBook.addPicture(Base64.decode(base64Image), Workbook.PICTURE_TYPE_PNG);
 		}
 
 		String tmpDir = System.getProperty("java.io.tmpdir");

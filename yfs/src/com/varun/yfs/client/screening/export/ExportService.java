@@ -2,10 +2,10 @@ package com.varun.yfs.client.screening.export;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.varun.yfs.dto.ExportTableDTO;
 
 @RemoteServiceRelativePath("ExportService")
 public interface ExportService extends RemoteService
@@ -27,5 +27,5 @@ public interface ExportService extends RemoteService
 		}
 	}
 
-	String createExportFile(List<String> colHeaders, List<? extends ModelData> lstData);
+	String createExportFile(List<ExportTableDTO> exportTables, String base64Image);
 }

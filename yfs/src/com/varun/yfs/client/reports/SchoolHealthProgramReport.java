@@ -1,6 +1,7 @@
 package com.varun.yfs.client.reports;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -39,7 +41,6 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.images.YfsImageBundle;
@@ -48,16 +49,23 @@ import com.varun.yfs.client.reports.rpc.ImageServiceAsync;
 import com.varun.yfs.client.reports.rpc.ReportDetailService;
 import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
 import com.varun.yfs.client.reports.rpc.ReportType;
+import com.varun.yfs.client.screening.export.ExportService;
+import com.varun.yfs.client.screening.export.ExportServiceAsync;
+import com.varun.yfs.dto.ExportTableDTO;
+import com.varun.yfs.dto.ExportTableDataDTO;
 
 public class SchoolHealthProgramReport extends LayoutContainer
 {
 	private ReportDetailServiceAsync reportDetailService = GWT.create(ReportDetailService.class);
 	private ImageServiceAsync imageService = GWT.create(ImageService.class);
+	private ExportServiceAsync exportServiceAsync = GWT.create(ExportService.class);
 
 	private LabelField lblfldLocations;
 	private LabelField lblfldTotalScreened;
-	private Grid<ModelData> gridBreakupOfTreatments;
-	private Grid<ModelData> gridStatusOfTreatment;
+	private Grid<ExportTableDataDTO> gridBreakupOfTreatments;
+	private Grid<ExportTableDataDTO> gridStatusOfTreatment;
+
+	private Chart chart;
 
 	final Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
@@ -86,7 +94,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		store.add(tmSales);
 
 		String url = "open-flash-chart.swf";
-		final Chart chart = new Chart(url);
+		chart = new Chart(url);
 
 		ChartModel model = new ChartModel("School Screening", "font-size: 14px; font-family: Verdana; text-align: center;");
 		model.setBackgroundColour("fefefe");
@@ -187,108 +195,88 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		td_frmpnlExport.setMargin(5);
 		layoutContainer.add(frmpnlExport, td_frmpnlExport);
 
-		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>()
+		final FormPanel formPanel = new FormPanel();
+
+		final HiddenField<String> exportedFileName = new HiddenField<String>();
+		exportedFileName.setName("ExportedFilename");
+		formPanel.add(exportedFileName);
+		formPanel.setVisible(false);
+		add(formPanel);
+
+		btnExport.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				if (dtfldFromDate.getValue() == null)
-				{
-					MessageBox.info("Report Parameter Needed", "From-Date field cannot be empty", DUMMYLISTENER);
+
+				mask("Please wait.Generating Report...");
+
+				if (!validateReportParams(dtfldFromDate, dtfldToDate))
 					return;
-				}
-				if (dtfldToDate.getValue() == null)
-				{
-					MessageBox.info("Report Parameter Needed", "To-Date field cannot be empty", DUMMYLISTENER);
-					return;
-				}
+
 				ModelData model = new BaseModelData();
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
 				model.set("dateTo", dtfldToDate.getValue().getTime());
+
 				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
 				{
 					@SuppressWarnings("unchecked")
 					@Override
 					public void onSuccess(ModelData result)
 					{
-						lblfldLocations.clear();
-						lblfldLocations.setText("Location(s):" + result.get("locationsList"));
+						decodeResult(result);
 
-						lblfldTotalScreened.clear();
-						lblfldTotalScreened.setText("Total Number Screened:" + result.get("locationsCount"));
-
-						gridBreakupOfTreatments.getStore().removeAll();
-						gridBreakupOfTreatments.getStore().add((List<? extends ModelData>) result.get("breakupOfTreatments"));
-
-						List<ModelData> lstModels = new ArrayList<ModelData>();
-						int pendingCasesCnt = 0, followUpMedCnt = 0, medCaseCnt = 0;
-						for (ModelData model : (List<? extends ModelData>) result.get("statusOfTreatments"))
+						List<ExportTableDTO> lstExportTableDto = new ArrayList<ExportTableDTO>();
+						List<String> headers = new ArrayList<String>();
+						List<String> headerTags = new ArrayList<String>();
+						List<ColumnConfig> columns = gridStatusOfTreatment.getColumnModel().getColumns();
+						columns = columns.subList(1, columns.size());
+						for (ColumnConfig columnConfig : columns)
 						{
-							Object pendingCases = model.get("pendingCases");
-							if (pendingCases != null)
-								pendingCasesCnt += (Integer) pendingCases;
-
-							Object followUpMedicines = model.get("followUpMedicines");
-							if (followUpMedicines != null)
-								followUpMedCnt += (Integer) followUpMedicines;
-
-							Object medicalCaseCnt = model.get("medicineCasesClosed");
-							if (medicalCaseCnt != null)
-								medCaseCnt += (Integer) medicalCaseCnt;
+							headers.add(columnConfig.getHeader());
+							headerTags.add(columnConfig.getId());
 						}
-						ModelData tmpModel = new BaseModelData();
-						tmpModel.set("statusOfTreatments", "Count");
-						tmpModel.set("medicineCasesClosed", medCaseCnt);
-						tmpModel.set("followUpMedicines", followUpMedCnt);
-						tmpModel.set("pendingCases", pendingCasesCnt);
-						lstModels.add(tmpModel);
-						gridStatusOfTreatment.getStore().removeAll();
-						gridStatusOfTreatment.getStore().add(lstModels);
+						List<ExportTableDataDTO> models = gridStatusOfTreatment.getStore().getModels();
+						ExportTableDTO expTab = new ExportTableDTO();
+						expTab.setColHeaders(headers);
+						expTab.setLstData(models);
+						expTab.setColHeaderTags(headerTags);
+						lstExportTableDto.add(expTab);
 
-						final ListStore<ChartData> store = new ListStore<ChartData>();
-						Integer screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital;
-						for (ModelData model : gridBreakupOfTreatments.getStore().getModels())
+						columns = gridBreakupOfTreatments.getColumnModel().getColumns();
+						columns = columns.subList(1, columns.size());
+						for (ColumnConfig columnConfig : columns)
 						{
-							String breakupOfTreatment = model.get("breakUpOfTreatment").toString();
-
-							Object obj = model.get("screened");
-							screened = (obj == null) ? 0 : (Integer) obj;
-
-							obj = model.get("surgeryCasesClosed");
-							surgeryCaseClosed = (obj == null) ? 0 : (Integer) obj;
-
-							obj = model.get("pendingCases");
-							pendingCases = (obj == null) ? 0 : (Integer) obj;
-
-							obj = model.get("followUpMedicines");
-							followUpMedicines = (obj == null) ? 0 : (Integer) obj;
-
-							obj = model.get("referredToHospital");
-							referredToHospital = (obj == null) ? 0 : (Integer) obj;
-
-							ChartData tmSales = new ChartData(breakupOfTreatment, screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital);
-							store.add(tmSales);
+							headers.add(columnConfig.getHeader());
+							headerTags.add(columnConfig.getId());
 						}
-						List<ChartConfig> chartConfigs = chart.getChartModel().getChartConfigs();
-						// chartConfigs.clear();
-						for (ChartConfig chartConfig : chartConfigs)
-						{
-							chartConfig.getDataProvider().bind(store);
-						}
-						chart.refresh();
-						String chartData = getImageData(chart.getSwfId());
-						imageService.getImageToken(chartData, new AsyncCallback<String>()
+						models = gridBreakupOfTreatments.getStore().getModels();
+						expTab = new ExportTableDTO();
+						expTab.setColHeaders(headers);
+						expTab.setLstData(models);
+						expTab.setColHeaderTags(headerTags);
+						lstExportTableDto.add(expTab);
+
+						exportServiceAsync.createExportFile(lstExportTableDto, getImageData(chart.getSwfId()), new AsyncCallback<String>()
 						{
 							@Override
 							public void onFailure(Throwable caught)
 							{
-								MessageBox.info("Error", "Error encountered while loading the report" + caught.getMessage(), DUMMYLISTENER);
+								unmask();
+								MessageBox.alert("Alert", "Error encountered while exporting." + caught.getMessage(), DUMMYLISTENER);
 							}
 
 							@Override
 							public void onSuccess(String result)
 							{
-								Window.Location.assign(GWT.getModuleBaseURL() + "ImageByteReaderService?var=img_" + result);
+								exportedFileName.setValue(result);
+
+								String url = GWT.getModuleBaseURL();
+								url = url + "exportServlet";
+
+								formPanel.setAction(url);
+								formPanel.submit();
+								unmask();
 							}
 
 						});
@@ -297,10 +285,47 @@ public class SchoolHealthProgramReport extends LayoutContainer
 					@Override
 					public void onFailure(Throwable caught)
 					{
+						unmask();
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
+					}
+				});
+
+			}
+		});
+
+		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				mask("Please wait.Generating Report...");
+
+				if (!validateReportParams(dtfldFromDate, dtfldToDate))
+					return;
+
+				ModelData model = new BaseModelData();
+				model.set("dateFrom", dtfldFromDate.getValue().getTime());
+				model.set("dateTo", dtfldToDate.getValue().getTime());
+
+				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
+				{
+					@SuppressWarnings("unchecked")
+					@Override
+					public void onSuccess(ModelData result)
+					{
+						decodeResult(result);
+						unmask();
+					}
+
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						unmask();
 						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
 					}
 				});
 			}
+
 		});
 
 		add(layoutContainer);
@@ -332,7 +357,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("pendingCases", "Pending Cases", 150);
 		configs.add(clmncnfgNewColumn_3);
 
-		gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		gridStatusOfTreatment = new Grid<ExportTableDataDTO>(new ListStore<ExportTableDataDTO>(), new ColumnModel(configs));
 		gridStatusOfTreatment.setHeight("100");
 		gridStatusOfTreatment.setBorders(true);
 		gridStatusOfTreatment.getView().setForceFit(true);
@@ -370,7 +395,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		ColumnConfig pendingCases = new ColumnConfig("pendingCases", "Pending Cases", 60);
 		configsBreakupOfTreatments.add(pendingCases);
 
-		gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
+		gridBreakupOfTreatments = new Grid<ExportTableDataDTO>(new ListStore<ExportTableDataDTO>(), new ColumnModel(configsBreakupOfTreatments));
 		gridBreakupOfTreatments.setBorders(true);
 		gridBreakupOfTreatments.setHeight("250");
 		gridBreakupOfTreatments.getView().setForceFit(true);
@@ -388,6 +413,91 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);
 
+	}
+
+	private boolean validateReportParams(final DateField dtfldFromDate, final DateField dtfldToDate)
+	{
+		if (dtfldFromDate.getValue() == null)
+		{
+			MessageBox.info("Report Parameter Needed", "From-Date field cannot be empty", DUMMYLISTENER);
+			return false;
+		}
+		if (dtfldToDate.getValue() == null)
+		{
+			MessageBox.info("Report Parameter Needed", "To-Date field cannot be empty", DUMMYLISTENER);
+			return false;
+		}
+
+		return true;
+	}
+
+	private void decodeResult(ModelData result)
+	{
+		lblfldLocations.clear();
+		lblfldLocations.setText("Location(s):" + result.get("locationsList"));
+
+		lblfldTotalScreened.clear();
+		lblfldTotalScreened.setText("Total Number Screened:" + result.get("locationsCount"));
+
+		gridBreakupOfTreatments.getStore().removeAll();
+		gridBreakupOfTreatments.getStore().add((List<ExportTableDataDTO>) result.get("breakupOfTreatments"));
+
+		List<ExportTableDataDTO> lstModels = new ArrayList<ExportTableDataDTO>();
+		int pendingCasesCnt = 0, followUpMedCnt = 0, medCaseCnt = 0;
+		for (ModelData model : (List<ExportTableDataDTO>) result.get("statusOfTreatments"))
+		{
+			Object pendingCases = model.get("pendingCases");
+			if (pendingCases != null)
+				pendingCasesCnt += (Integer) pendingCases;
+
+			Object followUpMedicines = model.get("followUpMedicines");
+			if (followUpMedicines != null)
+				followUpMedCnt += (Integer) followUpMedicines;
+
+			Object medicalCaseCnt = model.get("medicineCasesClosed");
+			if (medicalCaseCnt != null)
+				medCaseCnt += (Integer) medicalCaseCnt;
+		}
+		ExportTableDataDTO tmpModel = new ExportTableDataDTO();
+		tmpModel.set("statusOfTreatments", "Count");
+		tmpModel.set("medicineCasesClosed", medCaseCnt);
+		tmpModel.set("followUpMedicines", followUpMedCnt);
+		tmpModel.set("pendingCases", pendingCasesCnt);
+		lstModels.add(tmpModel);
+		gridStatusOfTreatment.getStore().removeAll();
+		gridStatusOfTreatment.getStore().add(lstModels);
+
+		final ListStore<ChartData> store = new ListStore<ChartData>();
+		Integer screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital;
+		for (ModelData model : gridBreakupOfTreatments.getStore().getModels())
+		{
+			String breakupOfTreatment = model.get("breakUpOfTreatment").toString();
+
+			Object obj = model.get("screened");
+			screened = (obj == null) ? 0 : (Integer) obj;
+
+			obj = model.get("surgeryCasesClosed");
+			surgeryCaseClosed = (obj == null) ? 0 : (Integer) obj;
+
+			obj = model.get("pendingCases");
+			pendingCases = (obj == null) ? 0 : (Integer) obj;
+
+			obj = model.get("followUpMedicines");
+			followUpMedicines = (obj == null) ? 0 : (Integer) obj;
+
+			obj = model.get("referredToHospital");
+			referredToHospital = (obj == null) ? 0 : (Integer) obj;
+
+			ChartData tmSales = new ChartData(breakupOfTreatment, screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital);
+			store.add(tmSales);
+		}
+
+		List<ChartConfig> chartConfigs = chart.getChartModel().getChartConfigs();
+		for (ChartConfig chartConfig : chartConfigs)
+		{
+			chartConfig.getDataProvider().bind(store);
+		}
+		chart.refresh();
 	}
 
 	private native String getImageData(String id) /*-{

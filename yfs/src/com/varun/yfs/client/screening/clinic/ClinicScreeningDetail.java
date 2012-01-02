@@ -1,6 +1,7 @@
 package com.varun.yfs.client.screening.clinic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -57,6 +58,7 @@ import com.varun.yfs.client.screening.imports.ImportDetail;
 import com.varun.yfs.client.screening.imports.ImportType;
 import com.varun.yfs.dto.ClinicPatientDetailDTO;
 import com.varun.yfs.dto.ClinicPatientHistoryDTO;
+import com.varun.yfs.dto.ExportTableDTO;
 import com.varun.yfs.dto.GenderDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
 import com.varun.yfs.dto.YesNoDTO;
@@ -201,8 +203,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -216,7 +217,10 @@ public class ClinicScreeningDetail extends LayoutContainer
 					headers.add(columnConfig.getHeader());
 				}
 				List<ClinicPatientDetailDTO> models = storePatDetail.getModels();
-				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
+				ExportTableDTO expTab = new ExportTableDTO();
+				expTab.setColHeaders(headers);
+				expTab.setLstData(models);
+				exportServiceAsync.createExportFile(Arrays.asList(expTab), null, new AsyncCallback<String>()
 				{
 					@Override
 					public void onFailure(Throwable caught)
@@ -243,8 +247,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -256,8 +259,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport,
-						processIds)
+				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport, processIds)
 				{
 					@Override
 					protected void onImportComplete(List<? extends BaseModelData> result)
@@ -374,8 +376,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -389,7 +390,10 @@ public class ClinicScreeningDetail extends LayoutContainer
 					headers.add(columnConfig.getHeader());
 				}
 				List<ClinicPatientHistoryDTO> models = storePatHistory.getModels();
-				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
+				ExportTableDTO expTab = new ExportTableDTO();
+				expTab.setColHeaders(headers);
+				expTab.setLstData(models);
+				exportServiceAsync.createExportFile(Arrays.asList(expTab), null, new AsyncCallback<String>()
 				{
 					@Override
 					public void onFailure(Throwable caught)
@@ -416,8 +420,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		MenuItem exportReferral = new MenuItem("Export Referrals",
-				AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportReferral = new MenuItem("Export Referrals", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -434,8 +437,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				StoreFilter<ClinicPatientHistoryDTO> filterReferrals = new StoreFilter<ClinicPatientHistoryDTO>()
 				{
 					@Override
-					public boolean select(Store<ClinicPatientHistoryDTO> store, ClinicPatientHistoryDTO parent,
-							ClinicPatientHistoryDTO item, String property)
+					public boolean select(Store<ClinicPatientHistoryDTO> store, ClinicPatientHistoryDTO parent, ClinicPatientHistoryDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
@@ -447,7 +449,10 @@ public class ClinicScreeningDetail extends LayoutContainer
 				storePatHistory.applyFilters("referral1");
 
 				List<ClinicPatientHistoryDTO> models = storePatHistory.getModels();
-				exportServiceAsync.createExportFile(headers, models, new AsyncCallback<String>()
+				ExportTableDTO expTab = new ExportTableDTO();
+				expTab.setColHeaders(headers);
+				expTab.setLstData(models);
+				exportServiceAsync.createExportFile(Arrays.asList(expTab), null, new AsyncCallback<String>()
 				{
 					@Override
 					public void onFailure(Throwable caught)
@@ -476,8 +481,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportReferral);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -489,8 +493,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport,
-						processIds)
+				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport, processIds)
 				{
 					@Override
 					protected void onImportComplete(List<? extends BaseModelData> result)
@@ -542,10 +545,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 				ClinicPatientDetailDTO patDetail = gridPatDetail.getSelectionModel().getSelectedItem();
 				if (gridPatDetail == null)
 				{
-					MessageBox
-							.info("No Patient Mapping",
-									"Now row selected in the Patient Grid. Select the appropriate patient from the above grid to continue.",
-									l);
+					MessageBox.info("No Patient Mapping", "Now row selected in the Patient Grid. Select the appropriate patient from the above grid to continue.", l);
 				} else
 				{
 					patDetail.setLstPatientHistory(gridPatHistory.getStore().getModels());
@@ -931,9 +931,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.alert("Alert",
-						"Error encountered while loading the screen. Please retry the operation. Additional Details: "
-								+ caught.getMessage(), l);
+				MessageBox.alert("Alert", "Error encountered while loading the screen. Please retry the operation. Additional Details: " + caught.getMessage(), l);
 			}
 		});
 

@@ -207,7 +207,7 @@ public class ImportDetail extends LayoutContainer
 							});
 						}
 					};
-					t.scheduleRepeating(50);
+					t.scheduleRepeating(100);
 				}
 
 				@Override

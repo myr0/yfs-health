@@ -27,7 +27,7 @@ public class ExportServlet extends HttpServlet
 			response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 
 			BufferedInputStream iStream = new BufferedInputStream(new FileInputStream(fileName));
-			byte[] arg0 = new byte[2048];
+			byte[] arg0 = new byte[8192];
 			while (iStream.read(arg0) != -1)
 				response.getOutputStream().write(arg0);
 

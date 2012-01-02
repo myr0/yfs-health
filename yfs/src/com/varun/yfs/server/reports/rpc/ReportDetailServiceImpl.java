@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.reports.rpc.ReportDetailService;
 import com.varun.yfs.client.reports.rpc.ReportType;
+import com.varun.yfs.dto.ExportTableDataDTO;
 import com.varun.yfs.server.common.data.DataUtil;
 
 public class ReportDetailServiceImpl extends RemoteServiceServlet implements ReportDetailService
@@ -78,10 +79,10 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 				.executeQuery("select t.referral1 as referral, sum(t.cnt) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines, case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 0 end case surgerycase, t.screeningdate from ( select spd.referral1,count(spd.referral1) as cnt, spd.medicines, spd.caseclosed, spd.surgerycase,spd.emergency, ssd.screeningdate from schoolpatientdetail spd join referraltype rt on (spd.referral1 = rt.name ) join schoolscrdet_patdet ssdpd on ssdpd.patid = spd.schpatdetid join schoolscreeningdetail ssd on ssd.schoolscreeningdetailid = ssdpd.schScrid group by referral1, medicines, caseclosed, surgerycase, emergency, ssd.screeningdate union all select spd.referral2, count(spd.referral2) as cnt, spd.medicines, spd.caseclosed, spd.surgerycase, spd.emergency, ssd.screeningdate from schoolpatientdetail spd join referraltype rt on (spd.referral2 = rt.name ) join schoolscrdet_patdet ssdpd on ssdpd.patid = spd.schpatdetid join schoolscreeningdetail ssd on ssd.schoolscreeningdetailid = ssdpd.schScrid group by referral2, medicines, caseclosed, surgerycase, emergency, ssd.screeningdate union all select spd.referral2,count(*) as snt, spd.medicines,spd.caseclosed, spd.surgerycase, spd.emergency, ssd.screeningdate from schoolpatientdetail spd join schoolscrdet_patdet ssdpd on ssdpd.patid = spd.schpatdetid join schoolscreeningdetail ssd on ssd.schoolscreeningdetailid = ssdpd.schScrid where spd.referral1 is null and spd.referral2 is null group by referral2, medicines, caseclosed, surgerycase, emergency, ssd.screeningdate ) t where t.screeningdate >="
 						+ fromDate + " and t.screeningdate <= " + toDate + " group by t.referral1, t.medicines, t.caseclosed, t.surgerycase, t.emergency, t.screeningdate");
 
-		Map<String, ModelData> referral2Model = buildBreakupSummaryModel(breakupOfTreatments);
+		Map<String, ExportTableDataDTO> referral2Model = buildBreakupSummaryModel(breakupOfTreatments);
 
-		model.set("breakupOfTreatments", new ArrayList<ModelData>(referral2Model.values()));
-		model.set("statusOfTreatments", new ArrayList<ModelData>(referral2Model.values()));
+		model.set("breakupOfTreatments", new ArrayList<ExportTableDataDTO>(referral2Model.values()));
+		model.set("statusOfTreatments", new ArrayList<ExportTableDataDTO>(referral2Model.values()));
 	}
 
 	private void generateMedicalCampReport(ModelData params, ModelData model)
@@ -95,10 +96,10 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 				.executeQuery("select t.referral1, sum(t.cnt), case t.medicines when 'YES' then 1 else 0 end case as medicines,case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 0 end case surgerycase , t.screeningdate from ( select cpd.referral1,count(cpd.referral1) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency, csd.screeningdate from camppatientdetail cpd join referraltype rt on (cpd.referral1 = rt.name ) join campscrdet_patdet csdpd on csdpd.patid = cpd.campatdetid join campscreeningdetail csd on csd.campscreeningdetailid = csdpd.camscrid group by referral1, medicines, caseclosed, surgerycase, emergency, csd.screeningdate union all select cpd.referral2, count(cpd.referral2) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency, csd.screeningdate from camppatientdetail cpd join referraltype rt on (cpd.referral2 = rt.name ) join campscrdet_patdet csdpd on csdpd.patid = cpd.campatdetid join campscreeningdetail csd on csd.campscreeningdetailid = csdpd.camscrid group by referral2, medicines, caseclosed, surgerycase, emergency, csd.screeningdate union all select cpd.referral2,count(*) as cnt, cpd.medicines, cpd.caseclosed, cpd.surgerycase, cpd.emergency, csd.screeningdate from camppatientdetail cpd join campscrdet_patdet csdpd on csdpd.patid = cpd.campatdetid join campscreeningdetail csd on csd.campscreeningdetailid = csdpd.camscrid where cpd.referral1 is null and cpd.referral2 is null group by referral2, medicines, caseclosed, surgerycase, emergency , csd.screeningdate ) t where t.screeningdate >="
 						+ fromDate + " and t.screeningdate <=" + toDate + " group by t.referral1, t.medicines, t.caseclosed, t.surgerycase, t.emergency, t.screeningdate");
 
-		Map<String, ModelData> referral2Model = buildBreakupSummaryModel(breakupOfTreatments);
+		Map<String, ExportTableDataDTO> referral2Model = buildBreakupSummaryModel(breakupOfTreatments);
 
-		model.set("breakupOfTreatments", new ArrayList<ModelData>(referral2Model.values()));
-		model.set("statusOfTreatments", new ArrayList<ModelData>(referral2Model.values()));
+		model.set("breakupOfTreatments", new ArrayList<ExportTableDataDTO>(referral2Model.values()));
+		model.set("statusOfTreatments", new ArrayList<ExportTableDataDTO>(referral2Model.values()));
 	}
 
 	private void generateEventsReport(ModelData params, ModelData model)
@@ -124,10 +125,10 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		List breakupOfTreatments = (List) DataUtil.executeQuery("select t.referral,sum(t.count1) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines, case t.caseclosed when 'YES' then 1 else 0 end case as caseclosed, case t.surgerycase when 'YES' then 1 else 0 end case surgerycase, t.screeningdate from ( select cph.referral1 as referral, count(cph.referral1) as count1, cph.medicines, cph.caseclosed, cph.surgerycase, cph.screeningdate from clinicpatientdetail cpd join clipatdet_clipathis cpdcph on cpd.clipatdetid = cpdcph.clipatdetid join clinicpatienthistory cph on cph.clipathisid = cpdcph.clipathisid where cpd.clinicid = " + clinicId
 				+ " and cph.referral1 is not null group by cph.referral1,cph.medicines, cph.caseclosed, cph.surgerycase , cph.screeningdate union select cph.referral2 as referral, count(cph.referral2) as count1, cph.medicines, cph.caseclosed, cph.surgerycase , cph.screeningdate from clinicpatientdetail cpd join clipatdet_clipathis cpdcph on cpd.clipatdetid = cpdcph.clipatdetid join clinicpatienthistory cph on cph.clipathisid = cpdcph.clipatdetid where cpd.clinicid =" + clinicId + " and cph.referral2 is not null group by cph.referral2,cph.medicines, cph.caseclosed, cph.surgerycase, cph.screeningdate ) t  where t.screeningdate >= " + fromDate + " and t.screeningdate <= " + toDate + " group by t.referral, t.medicines, t.caseclosed, t.surgerycase , t.screeningdate");
 
-		Map<String, ModelData> referral2Model = buildBreakupSummaryModel(breakupOfTreatments);
+		Map<String, ExportTableDataDTO> referral2Model = buildBreakupSummaryModel(breakupOfTreatments);
 
-		model.set("breakupOfTreatments", new ArrayList<ModelData>(referral2Model.values()));
-		model.set("statusOfTreatments", new ArrayList<ModelData>(referral2Model.values()));
+		model.set("breakupOfTreatments", new ArrayList<ExportTableDataDTO>(referral2Model.values()));
+		model.set("statusOfTreatments", new ArrayList<ExportTableDataDTO>(referral2Model.values()));
 	}
 
 	private List<ModelData> extractRowData(Map<String, List<String>> mapId2Docs, Map<String, List<String>> mapId2Volunteers, List<Object> lstData)
@@ -218,11 +219,11 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		return mapId2Docs;
 	}
 
-	private Map<String, ModelData> buildBreakupSummaryModel(List breakupOfTreatments)
+	private Map<String, ExportTableDataDTO> buildBreakupSummaryModel(List breakupOfTreatments)
 	{
 		Map<String, Integer> schRepType2CountTemp = new HashMap<String, Integer>(schRepType2Count);
-		Map<String, ModelData> referral2Model = new HashMap<String, ModelData>();
-		ModelData modelTemp;
+		Map<String, ExportTableDataDTO> referral2Model = new HashMap<String, ExportTableDataDTO>();
+		ExportTableDataDTO modelTemp;
 		String referralType;
 		for (Object object : breakupOfTreatments)
 		{
@@ -242,7 +243,7 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 				modelTemp.set("screened", count.intValue() + screenedCnt);
 			} else
 			{
-				modelTemp = new BaseModelData();
+				modelTemp = new ExportTableDataDTO();
 				modelTemp.set("breakUpOfTreatment", referralType);
 				modelTemp.set("screened", ((BigInteger) obj[1]).intValue());
 				referral2Model.put(referralType, modelTemp);
