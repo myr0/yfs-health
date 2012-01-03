@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -29,6 +31,7 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 {
 	private static final long serialVersionUID = -2853390238324491312L;
 	private static final Logger LOGGER = Logger.getLogger(ExportServiceImpl.class);
+	private static final int START_CELL_NO = 2;
 
 	@Override
 	public String createExportFile(List<ExportTableDTO> exportTables, String base64Image)
@@ -37,13 +40,42 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 		HSSFSheet mySheet = myWorkBook.createSheet(ExcelReader.WORKSHEET_NAME);
 		HSSFRow myRow = null;
 		HSSFCell myCell = null;
-		int rowNum = 0;
+		int rowNum = START_CELL_NO;
+
+		if (base64Image != null)
+		{
+			int index = myWorkBook.addPicture(Base64.decode(base64Image), Workbook.PICTURE_TYPE_PNG);
+
+			HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short) START_CELL_NO, rowNum, (short) (START_CELL_NO + 5), rowNum + 15);
+			HSSFPatriarch patriarch = mySheet.createDrawingPatriarch();
+			patriarch.createPicture(anchor, index);
+			anchor.setAnchorType(2);
+
+			rowNum = rowNum + 15;
+		}
 
 		for (ExportTableDTO exportTableDTO : exportTables)
 		{
 			List<String> colHeaders = exportTableDTO.getColHeaders();
+			List<String> lstAddlData = exportTableDTO.getAddlData();
+			int cellNum = START_CELL_NO;
 
-			int cellNum = 0;
+			if (lstAddlData != null)
+			{
+				myRow = mySheet.createRow(rowNum++);
+				for (String string : lstAddlData)
+				{
+					myCell = myRow.createCell(START_CELL_NO);
+					myCell.setCellValue(string);
+
+					// empty row
+					myRow = mySheet.createRow(rowNum++);
+				}
+				// empty row
+				myRow = mySheet.createRow(rowNum++);
+			}
+			
+			cellNum = START_CELL_NO;
 			myRow = mySheet.createRow(rowNum++);
 			for (String header : colHeaders)
 			{
@@ -54,7 +86,6 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 				style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
 				myCell.setCellStyle(style);
-				mySheet.autoSizeColumn(cellNum);
 			}
 
 			List<? extends ModelData> lstData = exportTableDTO.getLstData();
@@ -67,11 +98,13 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 				try
 				{
 					split = reader.readNext();
-					cellNum = 0;
+					cellNum = START_CELL_NO;
 					for (String cell : split)
 					{
 						myCell = myRow.createCell(cellNum++);
 						myCell.setCellValue(cell);
+
+						mySheet.autoSizeColumn(cellNum);
 					}
 				} catch (IOException e1)
 				{
@@ -79,11 +112,9 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 				}
 			}
 
-		}
+			// empty row
+			myRow = mySheet.createRow(rowNum++);
 
-		if (base64Image != null)
-		{
-			myWorkBook.addPicture(Base64.decode(base64Image), Workbook.PICTURE_TYPE_PNG);
 		}
 
 		String tmpDir = System.getProperty("java.io.tmpdir");

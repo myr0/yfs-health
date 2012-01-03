@@ -17,7 +17,7 @@ public class ExportTableDataDTO extends com.extjs.gxt.ui.client.data.BaseModelDa
 	public String toString()
 	{
 		List<String> colHeadersTags = get("colHeadersTags");
-		String retString = null;
+		String retString = "";
 		Map<String, Object> map = getProperties();
 		for (String header : colHeadersTags)
 		{

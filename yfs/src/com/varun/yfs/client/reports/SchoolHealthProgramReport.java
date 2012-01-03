@@ -1,7 +1,6 @@
 package com.varun.yfs.client.reports;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -44,8 +43,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.varun.yfs.client.images.YfsImageBundle;
-import com.varun.yfs.client.reports.rpc.ImageService;
-import com.varun.yfs.client.reports.rpc.ImageServiceAsync;
 import com.varun.yfs.client.reports.rpc.ReportDetailService;
 import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
 import com.varun.yfs.client.reports.rpc.ReportType;
@@ -57,7 +54,6 @@ import com.varun.yfs.dto.ExportTableDataDTO;
 public class SchoolHealthProgramReport extends LayoutContainer
 {
 	private ReportDetailServiceAsync reportDetailService = GWT.create(ReportDetailService.class);
-	private ImageServiceAsync imageService = GWT.create(ImageService.class);
 	private ExportServiceAsync exportServiceAsync = GWT.create(ExportService.class);
 
 	private LabelField lblfldLocations;
@@ -188,7 +184,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		LayoutContainer frmpnlExport = new LayoutContainer();
 		frmpnlExport.setLayout(new FormLayout());
 		frmpnlExport.setBorders(true);
-		Button btnExport = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		Button btnExport = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.excelExportIcon()));
 		frmpnlExport.add(btnExport, new FormData("100%"));
 		TableData td_frmpnlExport = new TableData();
 		td_frmpnlExport.setPadding(5);
@@ -196,7 +192,6 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		layoutContainer.add(frmpnlExport, td_frmpnlExport);
 
 		final FormPanel formPanel = new FormPanel();
-
 		final HiddenField<String> exportedFileName = new HiddenField<String>();
 		exportedFileName.setName("ExportedFilename");
 		formPanel.add(exportedFileName);
@@ -209,11 +204,10 @@ public class SchoolHealthProgramReport extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 
-				mask("Please wait.Generating Report...");
-
 				if (!validateReportParams(dtfldFromDate, dtfldToDate))
 					return;
 
+				mask("Please wait.Generating Report...");
 				ModelData model = new BaseModelData();
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
 				model.set("dateTo", dtfldToDate.getValue().getTime());
@@ -227,30 +221,36 @@ public class SchoolHealthProgramReport extends LayoutContainer
 						decodeResult(result);
 
 						List<ExportTableDTO> lstExportTableDto = new ArrayList<ExportTableDTO>();
+
 						List<String> headers = new ArrayList<String>();
 						List<String> headerTags = new ArrayList<String>();
-						List<ColumnConfig> columns = gridStatusOfTreatment.getColumnModel().getColumns();
-						columns = columns.subList(1, columns.size());
+						List<ColumnConfig> columns = gridBreakupOfTreatments.getColumnModel().getColumns();
+						List<ExportTableDataDTO> models = gridBreakupOfTreatments.getStore().getModels();
+						List<String> addlData = new ArrayList<String>();
+
+						addlData.add(lblfldLocations.getText());
+						addlData.add(lblfldTotalScreened.getText());
 						for (ColumnConfig columnConfig : columns)
 						{
 							headers.add(columnConfig.getHeader());
 							headerTags.add(columnConfig.getId());
 						}
-						List<ExportTableDataDTO> models = gridStatusOfTreatment.getStore().getModels();
 						ExportTableDTO expTab = new ExportTableDTO();
 						expTab.setColHeaders(headers);
 						expTab.setLstData(models);
 						expTab.setColHeaderTags(headerTags);
+						expTab.setAddlData(addlData);
 						lstExportTableDto.add(expTab);
 
-						columns = gridBreakupOfTreatments.getColumnModel().getColumns();
-						columns = columns.subList(1, columns.size());
+						columns = gridStatusOfTreatment.getColumnModel().getColumns();
+						models = gridStatusOfTreatment.getStore().getModels();
+						headers = new ArrayList<String>();
+						headerTags = new ArrayList<String>();
 						for (ColumnConfig columnConfig : columns)
 						{
 							headers.add(columnConfig.getHeader());
 							headerTags.add(columnConfig.getId());
 						}
-						models = gridBreakupOfTreatments.getStore().getModels();
 						expTab = new ExportTableDTO();
 						expTab.setColHeaders(headers);
 						expTab.setLstData(models);

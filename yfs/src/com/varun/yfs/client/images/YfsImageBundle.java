@@ -26,6 +26,9 @@ public interface YfsImageBundle extends ClientBundle
 	@Source("export.png")
 	public ImageResource exportButtonIcon();
 
+	@Source("excelExport.png")
+	public ImageResource excelExportIcon();
+
 	@Source("home.png")
 	public ImageResource homeButtonIcon();
 
@@ -64,7 +67,7 @@ public interface YfsImageBundle extends ClientBundle
 
 	@Source("reportIndividual.png")
 	public ImageResource reportIndividualIcon();
-	
+
 	@Source("screeningIndividual.png")
 	public ImageResource screeningIndividualIcon();
 

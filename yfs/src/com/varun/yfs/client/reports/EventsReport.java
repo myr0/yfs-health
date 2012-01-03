@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -34,11 +35,16 @@ import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.reports.rpc.ReportDetailService;
 import com.varun.yfs.client.reports.rpc.ReportDetailServiceAsync;
 import com.varun.yfs.client.reports.rpc.ReportType;
+import com.varun.yfs.client.screening.export.ExportService;
+import com.varun.yfs.client.screening.export.ExportServiceAsync;
+import com.varun.yfs.dto.ExportTableDTO;
+import com.varun.yfs.dto.ExportTableDataDTO;
 
 public class EventsReport extends LayoutContainer
 {
 	private ReportDetailServiceAsync reportDetailService = GWT.create(ReportDetailService.class);
-	private Grid<ModelData> gridEvents;
+	private ExportServiceAsync exportServiceAsync = GWT.create(ExportService.class);
+	private Grid<ExportTableDataDTO> gridEvents;
 
 	public EventsReport()
 	{
@@ -106,28 +112,106 @@ public class EventsReport extends LayoutContainer
 		LayoutContainer frmpnlExport = new LayoutContainer();
 		frmpnlExport.setLayout(new FormLayout());
 		frmpnlExport.setBorders(true);
-		Button btnExport = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		Button btnExport = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.excelExportIcon()));
 		frmpnlExport.add(btnExport, new FormData("100%"));
 		TableData td_frmpnlExport = new TableData();
 		td_frmpnlExport.setPadding(5);
 		td_frmpnlExport.setMargin(5);
 		layoutContainer.add(frmpnlExport, td_frmpnlExport);
 
+		final FormPanel formPanel = new FormPanel();
+		final HiddenField<String> exportedFileName = new HiddenField<String>();
+		exportedFileName.setName("ExportedFilename");
+		formPanel.add(exportedFileName);
+		formPanel.setVisible(false);
+		add(formPanel);
+
+		btnExport.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+
+				mask("Please wait.Generating Report...");
+
+				if (!validateReportParams(dtfldFromDate, dtfldToDate))
+					return;
+
+				ModelData model = new BaseModelData();
+				model.set("dateFrom", dtfldFromDate.getValue().getTime());
+				model.set("dateTo", dtfldToDate.getValue().getTime());
+
+				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
+				{
+					@SuppressWarnings("unchecked")
+					@Override
+					public void onSuccess(ModelData result)
+					{
+						decodeResult(result);
+
+						List<ExportTableDTO> lstExportTableDto = new ArrayList<ExportTableDTO>();
+						List<String> headers = new ArrayList<String>();
+						List<String> headerTags = new ArrayList<String>();
+						List<ColumnConfig> columns = gridEvents.getColumnModel().getColumns();
+						columns = columns.subList(1, columns.size());
+						for (ColumnConfig columnConfig : columns)
+						{
+							headers.add(columnConfig.getHeader());
+							headerTags.add(columnConfig.getId());
+						}
+						List<ExportTableDataDTO> models = gridEvents.getStore().getModels();
+						ExportTableDTO expTab = new ExportTableDTO();
+						expTab.setColHeaders(headers);
+						expTab.setLstData(models);
+						expTab.setColHeaderTags(headerTags);
+						lstExportTableDto.add(expTab);
+
+						exportServiceAsync.createExportFile(lstExportTableDto, null, new AsyncCallback<String>()
+						{
+							@Override
+							public void onFailure(Throwable caught)
+							{
+								unmask();
+								MessageBox.alert("Alert", "Error encountered while exporting." + caught.getMessage(), DUMMYLISTENER);
+							}
+
+							@Override
+							public void onSuccess(String result)
+							{
+								exportedFileName.setValue(result);
+
+								String url = GWT.getModuleBaseURL();
+								url = url + "exportServlet";
+
+								formPanel.setAction(url);
+								formPanel.submit();
+								unmask();
+							}
+
+						});
+					}
+
+					@Override
+					public void onFailure(Throwable caught)
+					{
+						unmask();
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
+					}
+				});
+
+			}
+		});
+
 		btnRefresh.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				if (dtfldFromDate.getValue() == null)
-				{
-					MessageBox.info("Report Parameter Needed", "From-Date field cannot be empty", DUMMYLISTENER);
+				mask("Please wait.Generating Report...");
+
+				if (!validateReportParams(dtfldFromDate, dtfldToDate))
 					return;
-				}
-				if (dtfldToDate.getValue() == null)
-				{
-					MessageBox.info("Report Parameter Needed", "To-Date field cannot be empty", DUMMYLISTENER);
-					return;
-				}
+
 				ModelData model = new BaseModelData();
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
 				model.set("dateTo", dtfldToDate.getValue().getTime());
@@ -137,7 +221,7 @@ public class EventsReport extends LayoutContainer
 					public void onSuccess(ModelData result)
 					{
 						gridEvents.getStore().removeAll();
-						gridEvents.getStore().add((List<? extends ModelData>) result.get("eventsInfo"));
+						gridEvents.getStore().add((List<? extends ExportTableDataDTO>) result.get("eventsInfo"));
 					}
 
 					@Override
@@ -183,7 +267,7 @@ public class EventsReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_7 = new ColumnConfig("medicalTeam", "Medical Team", 150);
 		configs.add(clmncnfgNewColumn_7);
 
-		gridEvents = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		gridEvents = new Grid<ExportTableDataDTO>(new ListStore<ExportTableDataDTO>(), new ColumnModel(configs));
 		gridEvents.setHeight("350");
 		gridEvents.setBorders(true);
 
@@ -194,5 +278,52 @@ public class EventsReport extends LayoutContainer
 		lcReportingParams.setLayoutData(new Margins(5, 5, 5, 5));
 		add(lcReportingParams);
 
+	}
+
+	private boolean validateReportParams(final DateField dtfldFromDate, final DateField dtfldToDate)
+	{
+		if (dtfldFromDate.getValue() == null)
+		{
+			MessageBox.info("Report Parameter Needed", "From-Date field cannot be empty", DUMMYLISTENER);
+			return false;
+		}
+		if (dtfldToDate.getValue() == null)
+		{
+			MessageBox.info("Report Parameter Needed", "To-Date field cannot be empty", DUMMYLISTENER);
+			return false;
+		}
+		
+		return true;
+	}
+
+	private void decodeResult(ModelData result)
+	{
+		gridEvents.getStore().removeAll();
+		gridEvents.getStore().add((List<? extends ExportTableDataDTO>) result.get("breakupOfTreatments"));
+
+		final ListStore<ChartData> store = new ListStore<ChartData>();
+		Integer screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital;
+		for (ModelData model : gridEvents.getStore().getModels())
+		{
+			String breakupOfTreatment = model.get("breakUpOfTreatment").toString();
+
+			Object obj = model.get("screened");
+			screened = (obj == null) ? 0 : (Integer) obj;
+
+			obj = model.get("surgeryCasesClosed");
+			surgeryCaseClosed = (obj == null) ? 0 : (Integer) obj;
+
+			obj = model.get("pendingCases");
+			pendingCases = (obj == null) ? 0 : (Integer) obj;
+
+			obj = model.get("followUpMedicines");
+			followUpMedicines = (obj == null) ? 0 : (Integer) obj;
+
+			obj = model.get("referredToHospital");
+			referredToHospital = (obj == null) ? 0 : (Integer) obj;
+
+			ChartData tmSales = new ChartData(breakupOfTreatment, screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital);
+			store.add(tmSales);
+		}
 	}
 }

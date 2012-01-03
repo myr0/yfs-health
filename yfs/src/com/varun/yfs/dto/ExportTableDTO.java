@@ -10,6 +10,7 @@ public class ExportTableDTO extends com.extjs.gxt.ui.client.data.BaseModelData
 	private List<String> colHeaders;
 	private List<String> colHeaderTags;
 	private List<? extends ModelData> lstData;
+	private List<String> addlData;
 
 	public ExportTableDTO()
 	{
@@ -38,15 +39,26 @@ public class ExportTableDTO extends com.extjs.gxt.ui.client.data.BaseModelData
 	public void setColHeaderTags(List<String> colHeaderTags)
 	{
 		this.colHeaderTags = colHeaderTags;
-		for (ModelData exp : lstData)
-		{
-			exp.set("colHeadersTags", colHeaderTags);
-		}
+		if (lstData != null)
+			for (ModelData exp : lstData)
+			{
+				exp.set("colHeadersTags", colHeaderTags);
+			}
 	}
 
 	public List<String> getColHeaderTags()
 	{
 		return colHeaderTags;
+	}
+
+	public void setAddlData(List<String> addlData)
+	{
+		this.addlData = addlData;
+	}
+
+	public List<String> getAddlData()
+	{
+		return addlData;
 	}
 
 }
