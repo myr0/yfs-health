@@ -1,5 +1,6 @@
 package com.varun.yfs.server.screening.imports.extraction;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -9,12 +10,18 @@ import com.varun.yfs.dto.ClinicPatientHistoryDTO;
 
 public class ClinicPatientHistoryExtractor extends SchoolPatientDataExtractor
 {
-	private static final Date DATE = new Date();
+	private final static Calendar currentDate = Calendar.getInstance();
 	private static final Logger LOGGER = Logger.getLogger(ClinicPatientHistoryExtractor.class);
 
 	public ClinicPatientHistoryExtractor(List<String> errorRows)
 	{
 		super(errorRows);
+		currentDate.setTime(new Date());
+		
+		currentDate.set(Calendar.HOUR_OF_DAY, 0);  
+		currentDate.set(Calendar.MINUTE, 0);  
+		currentDate.set(Calendar.SECOND, 0);  
+		currentDate.set(Calendar.MILLISECOND, 0);  
 	}
 
 	@SuppressWarnings("unchecked")
@@ -52,8 +59,8 @@ public class ClinicPatientHistoryExtractor extends SchoolPatientDataExtractor
 		patientDetailDTO.setSurgeryCase(decodeYesNo(lstCols.get(7)));
 
 		patientDetailDTO.setCaseClosed(decodeYesNo(lstCols.get(8)));
-		
-		patientDetailDTO.setScreeningDate(DATE.getTime());
+
+		patientDetailDTO.setScreeningDate(currentDate.getTimeInMillis());
 
 		int endErrorCount = errorRows.size();
 

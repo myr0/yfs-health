@@ -175,8 +175,8 @@ public class ClinicScreeningReport extends LayoutContainer
 				ModelData model = new BaseModelData();
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
 				model.set("dateTo", dtfldToDate.getValue().getTime());
-
-				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
+				model.set("clinicId", ((ClinicDTO) clinics.getSelection().get(0)).getId());
+				reportDetailService.getModel(ReportType.Clinic, model, new AsyncCallback<ModelData>()
 				{
 					@SuppressWarnings("unchecked")
 					@Override
@@ -211,7 +211,8 @@ public class ClinicScreeningReport extends LayoutContainer
 							public void onFailure(Throwable caught)
 							{
 								unmask();
-								MessageBox.alert("Alert", "Error encountered while exporting." + caught.getMessage(), DUMMYLISTENER);
+								MessageBox.alert("Alert", "Error encountered while exporting." + caught.getMessage(),
+										DUMMYLISTENER);
 							}
 
 							@Override
@@ -234,7 +235,8 @@ public class ClinicScreeningReport extends LayoutContainer
 					public void onFailure(Throwable caught)
 					{
 						unmask();
-						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(),
+								DUMMYLISTENER);
 					}
 				});
 
@@ -264,7 +266,8 @@ public class ClinicScreeningReport extends LayoutContainer
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(),
+								DUMMYLISTENER);
 					}
 				});
 			}
@@ -309,7 +312,8 @@ public class ClinicScreeningReport extends LayoutContainer
 		ColumnConfig pendingCases = new ColumnConfig("pendingCases", "Pending Cases", 80);
 		configsBreakupOfTreatments.add(pendingCases);
 
-		gridBreakupOfTreatments = new Grid<ExportTableDataDTO>(new ListStore<ExportTableDataDTO>(), new ColumnModel(configsBreakupOfTreatments));
+		gridBreakupOfTreatments = new Grid<ExportTableDataDTO>(new ListStore<ExportTableDataDTO>(), new ColumnModel(
+				configsBreakupOfTreatments));
 		gridBreakupOfTreatments.setHeight("350");
 		gridBreakupOfTreatments.setBorders(true);
 		gridBreakupOfTreatments.setColumnLines(true);

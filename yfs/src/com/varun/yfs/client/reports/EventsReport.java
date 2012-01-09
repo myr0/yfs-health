@@ -131,12 +131,11 @@ public class EventsReport extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-
-				mask("Please wait.Generating Report...");
-
 				if (!validateReportParams(dtfldFromDate, dtfldToDate))
 					return;
 
+				mask("Please wait.Generating Report...");
+				
 				ModelData model = new BaseModelData();
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
 				model.set("dateTo", dtfldToDate.getValue().getTime());
@@ -172,7 +171,8 @@ public class EventsReport extends LayoutContainer
 							public void onFailure(Throwable caught)
 							{
 								unmask();
-								MessageBox.alert("Alert", "Error encountered while exporting." + caught.getMessage(), DUMMYLISTENER);
+								MessageBox.alert("Alert", "Error encountered while exporting." + caught.getMessage(),
+										DUMMYLISTENER);
 							}
 
 							@Override
@@ -195,7 +195,8 @@ public class EventsReport extends LayoutContainer
 					public void onFailure(Throwable caught)
 					{
 						unmask();
-						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(),
+								DUMMYLISTENER);
 					}
 				});
 
@@ -207,10 +208,11 @@ public class EventsReport extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				mask("Please wait.Generating Report...");
 
 				if (!validateReportParams(dtfldFromDate, dtfldToDate))
 					return;
+
+				mask("Please wait.Generating Report...");
 
 				ModelData model = new BaseModelData();
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
@@ -220,6 +222,7 @@ public class EventsReport extends LayoutContainer
 					@Override
 					public void onSuccess(ModelData result)
 					{
+						unmask();
 						gridEvents.getStore().removeAll();
 						gridEvents.getStore().add((List<? extends ExportTableDataDTO>) result.get("eventsInfo"));
 					}
@@ -227,7 +230,9 @@ public class EventsReport extends LayoutContainer
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
+						unmask();
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(),
+								DUMMYLISTENER);
 					}
 				});
 			}
@@ -292,38 +297,42 @@ public class EventsReport extends LayoutContainer
 			MessageBox.info("Report Parameter Needed", "To-Date field cannot be empty", DUMMYLISTENER);
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	private void decodeResult(ModelData result)
 	{
 		gridEvents.getStore().removeAll();
-		gridEvents.getStore().add((List<? extends ExportTableDataDTO>) result.get("breakupOfTreatments"));
+		gridEvents.getStore().add((List<? extends ExportTableDataDTO>) result.get("eventsInfo"));
 
-		final ListStore<ChartData> store = new ListStore<ChartData>();
-		Integer screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital;
-		for (ModelData model : gridEvents.getStore().getModels())
-		{
-			String breakupOfTreatment = model.get("breakUpOfTreatment").toString();
-
-			Object obj = model.get("screened");
-			screened = (obj == null) ? 0 : (Integer) obj;
-
-			obj = model.get("surgeryCasesClosed");
-			surgeryCaseClosed = (obj == null) ? 0 : (Integer) obj;
-
-			obj = model.get("pendingCases");
-			pendingCases = (obj == null) ? 0 : (Integer) obj;
-
-			obj = model.get("followUpMedicines");
-			followUpMedicines = (obj == null) ? 0 : (Integer) obj;
-
-			obj = model.get("referredToHospital");
-			referredToHospital = (obj == null) ? 0 : (Integer) obj;
-
-			ChartData tmSales = new ChartData(breakupOfTreatment, screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital);
-			store.add(tmSales);
-		}
+		// final ListStore<ChartData> store = new ListStore<ChartData>();
+		// Integer screened, surgeryCaseClosed, pendingCases, followUpMedicines,
+		// referredToHospital;
+		// for (ModelData model : gridEvents.getStore().getModels())
+		// {
+		// String breakupOfTreatment =
+		// model.get("breakUpOfTreatment").toString();
+		//
+		// Object obj = model.get("screened");
+		// screened = (obj == null) ? 0 : (Integer) obj;
+		//
+		// obj = model.get("surgeryCasesClosed");
+		// surgeryCaseClosed = (obj == null) ? 0 : (Integer) obj;
+		//
+		// obj = model.get("pendingCases");
+		// pendingCases = (obj == null) ? 0 : (Integer) obj;
+		//
+		// obj = model.get("followUpMedicines");
+		// followUpMedicines = (obj == null) ? 0 : (Integer) obj;
+		//
+		// obj = model.get("referredToHospital");
+		// referredToHospital = (obj == null) ? 0 : (Integer) obj;
+		//
+		// ChartData tmSales = new ChartData(breakupOfTreatment, screened,
+		// surgeryCaseClosed, pendingCases, followUpMedicines,
+		// referredToHospital);
+		// store.add(tmSales);
+		// }
 	}
 }

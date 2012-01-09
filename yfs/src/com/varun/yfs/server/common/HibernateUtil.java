@@ -42,7 +42,7 @@ public class HibernateUtil
 	{
 		try
 		{
-			PropertyConfigurator.configure("log4j.properties");
+//			PropertyConfigurator.configure("log4j.properties");
 
 			AnnotationConfiguration annotationConfiguration = new AnnotationConfiguration();
 			SESSIONFACTORY = annotationConfiguration.configure().buildSessionFactory();
