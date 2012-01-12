@@ -73,7 +73,7 @@ public class DataUtil
 		{
 			Session session = HibernateUtil.getSessionFactory().openSession();
 			Criteria criteria = session.createCriteria(nameToHibernateModelClass.get(entityName));
-			criteria.add(Restrictions.eq("deleted", "N"));
+			criteria.add(Restrictions.eq("deleted", "N")).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			lstEntities = criteria.list();
 			session.close();
 		} catch (HibernateException ex)
@@ -92,7 +92,7 @@ public class DataUtil
 		{
 			Session session = HibernateUtil.getSessionFactory().openSession();
 			Criteria criteria = session.createCriteria(nameToHibernateModelClass.get(entityName));
-			criteria.add(Restrictions.eq("deleted", "N"));
+			criteria.add(Restrictions.eq("deleted", "N")).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			List lstEntities = criteria.list();
 
 			Class dtoClassInstance = nameToDtoClass.get(entityName);
