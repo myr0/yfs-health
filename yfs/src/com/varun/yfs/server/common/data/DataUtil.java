@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -179,6 +180,13 @@ public class DataUtil
 			if (!clinicId.isEmpty())
 				clinic = (Clinic) session.createCriteria(Clinic.class).add(Restrictions.eq("id", Long.parseLong(clinicId))).uniqueResult();
 
+			final Calendar currentDate = Calendar.getInstance();
+			currentDate.setTime(new Date());
+			currentDate.set(Calendar.HOUR_OF_DAY, 0);
+			currentDate.set(Calendar.MINUTE, 0);
+			currentDate.set(Calendar.SECOND, 0);
+			currentDate.set(Calendar.MILLISECOND, 0);
+
 			for (ClinicPatientDetailDTO clinicPatientDetailDTO : lstModelData)
 			{
 				ClinicPatientDetail scrDetHibObj = dozerMapper.map(clinicPatientDetailDTO, ClinicPatientDetail.class);
@@ -191,7 +199,7 @@ public class DataUtil
 					for (ClinicPatientHistory clinicPatientHistory : lstPatientHistory)
 					{
 						ClinicPatientHistoryDTO clinicPatientHistoryDTO = clinicPatientDetailDTO.getLstPatientHistory().get(index++);
-						extractPatientHistory(clinicPatientHistory, clinicPatientHistoryDTO);
+						extractPatientHistory(clinicPatientHistory, clinicPatientHistoryDTO, currentDate);
 					}
 				if (id == null)
 				{
@@ -216,8 +224,9 @@ public class DataUtil
 		}
 	}
 
-	private static void extractPatientHistory(ClinicPatientHistory clinicPatientHistory, ClinicPatientHistoryDTO clinicPatientHistoryDTO)
+	private static void extractPatientHistory(ClinicPatientHistory clinicPatientHistory, ClinicPatientHistoryDTO clinicPatientHistoryDTO, Calendar currentDate)
 	{
+
 		Object object;
 		clinicPatientHistory.setFindings(Util.safeToString(clinicPatientHistoryDTO.get("findings")));
 		clinicPatientHistory.setTreatment(Util.safeToString(clinicPatientHistoryDTO.get("treatment")));
@@ -233,7 +242,7 @@ public class DataUtil
 		object = clinicPatientHistoryDTO.get("referral3");
 		if (object != null)
 			clinicPatientHistory.setReferral3(object.toString());
-
+		
 		object = clinicPatientHistoryDTO.get("emergency");
 		if (object != null)
 			clinicPatientHistory.setEmergency(object.toString());
@@ -249,6 +258,8 @@ public class DataUtil
 		object = clinicPatientHistoryDTO.get("surgeryCase");
 		if (object != null)
 			clinicPatientHistory.setSurgeryCase(object.toString());
+
+		clinicPatientHistory.setScreeningDate(currentDate.getTimeInMillis());
 	}
 
 	private static void extractPatientDetail(Clinic clinic, ClinicPatientDetailDTO clinicPatientDetailDTO, ClinicPatientDetail scrDetHibObj)

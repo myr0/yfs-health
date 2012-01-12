@@ -74,7 +74,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		super.onRender(parent, index);
 
 		ContentPanel cpOuterContainer = new ContentPanel();
-		cpOuterContainer.setHeading("Reporting -> Reports -> Clinic");
+		cpOuterContainer.setHeading("Clinic Screening Report");
 		add(cpOuterContainer);
 
 		LayoutContainer layoutContainer = new LayoutContainer();

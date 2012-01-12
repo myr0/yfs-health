@@ -83,7 +83,7 @@ import com.varun.yfs.dto.YesNoDTO;
 
 public class CampScreeningDetail extends LayoutContainer
 {
-	private String headerText = "Camp Screening";
+	private String headerText = "Medical Camp Screening";
 	private CampScreeningDetailServiceAsync detailServiceAsync = GWT.create(CampScreeningDetailService.class);
 	private ExportServiceAsync exportServiceAsync = GWT.create(ExportService.class);
 
@@ -139,7 +139,7 @@ public class CampScreeningDetail extends LayoutContainer
 		mainContainerPanel.setHeading(headerText);
 
 		LayoutContainer cpMain = new LayoutContainer();
-		cpMain.setLayout(new TableLayout(3));
+		cpMain.setLayout(new TableLayout(4));
 
 		LayoutContainer cpPart1 = new LayoutContainer();
 		cpPart1.setLayout(new FormLayout());
@@ -249,11 +249,13 @@ public class CampScreeningDetail extends LayoutContainer
 		LayoutContainer cpPart3 = new LayoutContainer();
 		TableData td_cpPart3 = new TableData();
 		td_cpPart3.setPadding(5);
+		cpMain.add(cpPart3, td_cpPart3);
+		cpPart3.setSize("33%", "280");
 
 		final ContentPanel cPanelDoctors = new ContentPanel();
 		cPanelDoctors.setScrollMode(Scroll.AUTOY);
 		cPanelDoctors.setHeading("Select Doctors");
-		cPanelDoctors.setSize("150", "90");
+		cPanelDoctors.setWidth("150");
 		cPanelDoctors.add(doctors);
 		cPanelDoctors.setBodyBorder(false);
 		cPanelDoctors.setFrame(false);
@@ -262,20 +264,23 @@ public class CampScreeningDetail extends LayoutContainer
 		doctors.setStore(new ListStore<DoctorDTO>());
 		doctors.setDisplayProperty("name");
 
+		LayoutContainer cpPart4 = new LayoutContainer();
+		TableData td_cpPart4 = new TableData();
+		td_cpPart4.setPadding(5);
+		cpMain.add(cpPart4, td_cpPart4);
+		cpPart4.setSize("33%", "280");
+
 		final ContentPanel cPanelVolunteers = new ContentPanel();
 		cPanelVolunteers.setScrollMode(Scroll.AUTOY);
 		cPanelVolunteers.setHeading("Select Volunteers");
-		cPanelVolunteers.setSize("150", "90");
+		cPanelVolunteers.setWidth("150");
 		cPanelVolunteers.add(volunteers);
 		cPanelVolunteers.setBodyBorder(false);
 		cPanelVolunteers.setFrame(false);
 		cPanelVolunteers.setBorders(false);
-		cpPart3.add(cPanelVolunteers);
+		cpPart4.add(cPanelVolunteers);
 		volunteers.setStore(new ListStore<VolunteerDTO>());
 		volunteers.setDisplayProperty("name");
-
-		cpMain.add(cpPart3, td_cpPart3);
-		cpPart3.setSize("33%", "280");
 
 		editorGridStore = new ListStore<CampPatientDetailDTO>();
 		ColumnModel columnModel = getColumnModel();

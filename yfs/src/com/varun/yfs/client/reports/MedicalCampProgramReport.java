@@ -23,7 +23,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -81,7 +80,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 		super.onRender(parent, index);
 
 		ContentPanel cpOuterContainer = new ContentPanel();
-		cpOuterContainer.setHeading("Reporting -> Reports -> Medical Camp");
+		cpOuterContainer.setHeading("Medical Camp Report");
 		add(cpOuterContainer);
 
 		setScrollMode(Scroll.AUTOY);

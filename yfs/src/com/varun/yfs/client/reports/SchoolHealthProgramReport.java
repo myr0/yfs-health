@@ -82,7 +82,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		setScrollMode(Scroll.AUTOY);
 
 		ContentPanel cpOuterContainer = new ContentPanel();
-		cpOuterContainer.setHeading("Reporting -> Reports -> School");
+		cpOuterContainer.setHeading("School Screening Report");
 		add(cpOuterContainer);
 
 		final ListStore<ChartData> store = new ListStore<ChartData>();

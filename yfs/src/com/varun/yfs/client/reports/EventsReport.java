@@ -64,7 +64,7 @@ public class EventsReport extends LayoutContainer
 		super.onRender(parent, index);
 
 		ContentPanel cpOuterContainer = new ContentPanel();
-		cpOuterContainer.setHeading("Reporting -> Reports -> Events");
+		cpOuterContainer.setHeading("Events Report");
 		add(cpOuterContainer);
 
 		setScrollMode(Scroll.AUTOY);
@@ -140,7 +140,7 @@ public class EventsReport extends LayoutContainer
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
 				model.set("dateTo", dtfldToDate.getValue().getTime());
 
-				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
+				reportDetailService.getModel(ReportType.Events, model, new AsyncCallback<ModelData>()
 				{
 					@SuppressWarnings("unchecked")
 					@Override
