@@ -40,13 +40,13 @@ public class User implements Serializable
 	@JoinTable(name = "User_ChapterName", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "chapterNameId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
-	private List<ChapterName> chapterNames;
+	private List<UserChapterPermissions> chapterPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_Project", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "projectId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
-	private List<Project> projects;
+	private List<UserProjectPermissions> projectPermissions;
 
 	@Column(nullable = false)
 	private String deleted;
@@ -103,36 +103,27 @@ public class User implements Serializable
 		return password;
 	}
 
-	public void setChapterNames(List<ChapterName> chapterName)
+	public void setChapterNames(List<UserChapterPermissions> chapterName)
 	{
-		this.chapterNames = chapterName;
+		this.chapterPermissions = chapterName;
 	}
 
-	public List<ChapterName> getChapterNames()
+	public List<UserChapterPermissions> getChapterNames()
 	{
-		return chapterNames;
+		return chapterPermissions;
 	}
 
-	public void setProjects(List<Project> project)
+	public void setProjects(List<UserProjectPermissions> project)
 	{
-		this.projects = project;
+		this.projectPermissions = project;
 	}
 
-	public List<Project> getProjects()
+	public List<UserProjectPermissions> getProjects()
 	{
-		return projects;
+		return projectPermissions;
 	}
 
-	// public void setTowns(List<Town> towns)
-	// {
-	// this.towns = towns;
-	// }
-	//
-	// public List<Town> getTowns()
-	// {
-	// return towns;
-	// }
-
+	
 	public void setRole(String role)
 	{
 		this.role = role;
