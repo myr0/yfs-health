@@ -20,11 +20,14 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
@@ -43,10 +46,7 @@ import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.images.YfsImageBundle;
-import com.varun.yfs.dto.ChapterNameDTO;
-import com.varun.yfs.dto.ProjectDTO;
 import com.varun.yfs.dto.UserDTO;
-import java.util.Collections;
 
 public class UserAdministration extends LayoutContainer
 {
@@ -118,46 +118,45 @@ public class UserAdministration extends LayoutContainer
 		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 		gridPanel.add(editorGrid);
 
-		editorGrid.getSelectionModel().addListener(Events.SelectionChange,
-				new Listener<SelectionChangedEvent<ModelData>>()
+		editorGrid.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<ModelData>>()
+		{
+			@SuppressWarnings("unchecked")
+			public void handleEvent(SelectionChangedEvent<ModelData> be)
+			{
+				List<ModelData> selection = be.getSelection();
+				if (selection.size() > 0)
 				{
-					@SuppressWarnings("unchecked")
-					public void handleEvent(SelectionChangedEvent<ModelData> be)
+					txtfldUsrName.clear();
+					txtfldPassword.clear();
+					userRole.clearSelections();
+
+					ModelData modelData = selection.get(0);
+					txtfldUsrName.setValue(modelData.get("name").toString());
+					txtfldPassword.setValue(modelData.get("password").toString());
+					Object role = modelData.get("role");
+					if (role != null && userRole.findModel(role.toString()) != null)
 					{
-						List<ModelData> selection = be.getSelection();
-						if (selection.size() > 0)
-						{
-							txtfldUsrName.clear();
-							txtfldPassword.clear();
-							userRole.clearSelections();
-
-							ModelData modelData = selection.get(0);
-							txtfldUsrName.setValue(modelData.get("name").toString());
-							txtfldPassword.setValue(modelData.get("password").toString());
-							Object role = modelData.get("role");
-							if (role != null && userRole.findModel(role.toString()) != null)
-							{
-								userRole.setValue(userRole.findModel(role.toString()));
-							}
-
-							userDetailsViewHolder.setVisible(true);
-							userDetailsViewHolder.focus();
-						}
+						userRole.setValue(userRole.findModel(role.toString()));
 					}
 
-					@SuppressWarnings({ "rawtypes", "unchecked" })
-					private <E> void updateSelections(List<? extends ModelData> modelData, CheckBoxListView view)
+					userDetailsViewHolder.setVisible(true);
+					userDetailsViewHolder.focus();
+				}
+			}
+
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			private <E> void updateSelections(List<? extends ModelData> modelData, CheckBoxListView view)
+			{
+				for (ModelData modelData1 : modelData)
+				{
+					int idx = view.getStore().getModels().indexOf(modelData1);
+					if (idx >= 0)
 					{
-						for (ModelData modelData1 : modelData)
-						{
-							int idx = view.getStore().getModels().indexOf(modelData1);
-							if (idx >= 0)
-							{
-								view.setChecked(view.getStore().getAt(idx), true);
-							}
-						}
+						view.setChecked(view.getStore().getAt(idx), true);
 					}
-				});
+				}
+			}
+		});
 
 		ToolBar toolBar = new ToolBar();
 		mainPanel.setTopComponent(toolBar);
@@ -250,20 +249,52 @@ public class UserAdministration extends LayoutContainer
 		LayoutContainer layoutContainer = new LayoutContainer();
 		List<ColumnConfig> configs_1 = new ArrayList<ColumnConfig>();
 
-		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("id", "Chapter/Project", 120);
+		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("chapterProject", "Chapter/Project", 120);
+		
+		final SimpleComboBox<String> field = new SimpleComboBox<String>();
+		field.setTriggerAction(TriggerAction.ALL);
+		CellEditor editor = new CellEditor(field)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return field.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+//		field.add(lstValues);
+		clmncnfgNewColumn_1.setEditor(editor);
 		configs_1.add(clmncnfgNewColumn_1);
 
-		ColumnConfig clmncnfgNewColumn_2 = new ColumnConfig("id", "Read", 50);
-		configs_1.add(clmncnfgNewColumn_2);
+		CheckColumnConfig checkColumn = new CheckColumnConfig("read", "Read?", 55);
+		CellEditor checkBoxEditor = new CellEditor(new CheckBox());
+		checkColumn.setEditor(checkBoxEditor);
+		configs_1.add(checkColumn);
 
-		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("id", "Write", 50);
-		configs_1.add(clmncnfgNewColumn_3);
+		checkColumn = new CheckColumnConfig("write", "Write?", 55);
+		checkBoxEditor = new CellEditor(new CheckBox());
+		checkColumn.setEditor(checkBoxEditor);
+		configs_1.add(checkColumn);
 
-		ColumnConfig clmncnfgNewColumn_4 = new ColumnConfig("id", "Delete", 50);
-		configs_1.add(clmncnfgNewColumn_4);
+		checkColumn = new CheckColumnConfig("delete", "Delete?", 55);
+		checkBoxEditor = new CellEditor(new CheckBox());
+		checkColumn.setEditor(checkBoxEditor);
+		configs_1.add(checkColumn);
 
-		EditorGrid<ModelData> editorGrid_1 = new EditorGrid<ModelData>(new ListStore<ModelData>(), new ColumnModel(
-				configs_1));
+		EditorGrid<ModelData> editorGrid_1 = new EditorGrid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs_1));
 		editorGrid_1.setStripeRows(true);
 		editorGrid_1.setLoadMask(true);
 		editorGrid_1.setColumnLines(true);
