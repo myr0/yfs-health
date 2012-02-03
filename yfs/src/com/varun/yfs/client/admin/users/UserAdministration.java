@@ -46,12 +46,14 @@ import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.images.YfsImageBundle;
+import com.varun.yfs.dto.UserChapterPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
+import com.varun.yfs.dto.UserProjectPermissionsDTO;
 
 public class UserAdministration extends LayoutContainer
 {
 	private final StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
-	private EditorGrid<UserDTO> editorGrid;
+	private EditorGrid<UserDTO> editorGridUser;
 	private final ContentPanel gridPanel = new ContentPanel();
 
 	private final ContentPanel userDetailsViewHolder = new ContentPanel();
@@ -85,22 +87,178 @@ public class UserAdministration extends LayoutContainer
 		mainPanel.setHeaderVisible(true);
 		mainPanel.setHeading("Administration");
 		mainPanel.setLayout(new FitLayout());
+		mainPanel.setTopComponent(getUserAdminToolbar());
 
-		TableLayout tl_lp = new TableLayout(2);
+		TableLayout tl_lp = new TableLayout(1);
 		tl_lp.setCellPadding(5);
 		mainPanel.setLayout(tl_lp);
 
 		TableData td_gridPanel = new TableData();
 		td_gridPanel.setRowspan(2);
-		mainPanel.add(gridPanel, td_gridPanel);
 		mainPanel.setScrollMode(Scroll.AUTOY);
-		mainPanel.setSize("635px", "700");
+		mainPanel.add(gridPanel, td_gridPanel);
 
 		add(mainPanel, new FitData(5));
 
+		buildUserNameAdminPanel();
+
+		buildBasicUserInfoPanel();
+
+		buildPermissionsGrid();
+
+		TableData td_lstViewHolder = new TableData();
+		td_lstViewHolder.setHorizontalAlign(HorizontalAlignment.LEFT);
+		td_lstViewHolder.setRowspan(2);
+		td_lstViewHolder.setPadding(5);
+		td_lstViewHolder.setMargin(5);
+		mainPanel.add(userDetailsViewHolder, td_lstViewHolder);
+		userDetailsViewHolder.setWidth("382px");
+	}
+
+	private ToolBar getUserAdminToolbar()
+	{
+		ToolBar toolBar = new ToolBar();
+		
+		Button add = new Button("Add");
+		add.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		add.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+
+				txtfldUsrName.clear();
+				txtfldPassword.clear();
+
+				userDetailsViewHolder.setVisible(true);
+				userDetailsViewHolder.focus();
+
+				isAdd = true;
+			}
+		});
+		toolBar.add(add);
+
+		Button remove = new Button("Remove");
+		remove.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				editorGridUser.stopEditing();
+				UserDTO selectedItem = editorGridUser.getSelectionModel().getSelectedItem();
+				if (selectedItem != null)
+				{
+					selectedItem.set("deleted", "Y");
+					List<UserDTO> lstModels = editorGridUser.getStore().getModels();
+					editorGridUser.getStore().remove(selectedItem);
+					editorGridUser.mask("Removing Entry...");
+					savePage(lstModels);
+				}
+			}
+		});
+		toolBar.add(remove);
+		
+		return toolBar;
+	}
+
+	private void buildBasicUserInfoPanel()
+	{
+		userDetailsViewHolder.setHeading("User Details");
+		userDetailsViewHolder.setVisible(false);
+
+		FormPanel frmpanelUserBasic = new FormPanel();
+		frmpanelUserBasic.setHeaderVisible(false);
+		frmpanelUserBasic.setCollapsible(false);
+		frmpanelUserBasic.setBorders(false);
+		frmpanelUserBasic.setFrame(false);
+
+		txtfldUsrName.setMaxLength(255);
+		txtfldUsrName.setName("userName");
+		txtfldUsrName.setFieldLabel("User Name");
+
+		txtfldPassword.setPassword(true);
+		txtfldPassword.setName("userPassword");
+		txtfldPassword.setMaxLength(255);
+		txtfldPassword.setFieldLabel("Password");
+
+		userRole.setTriggerAction(TriggerAction.ALL);
+		userRole.setFieldLabel("Role");
+		userRole.add("Administrator");
+		userRole.add("Administrator - Chapter");
+		userRole.add("Area Co-Ordinator");
+
+		frmpanelUserBasic.add(txtfldUsrName, new FormData("80%"));
+		frmpanelUserBasic.add(txtfldPassword, new FormData("80%"));
+		frmpanelUserBasic.add(userRole, new FormData("80%"));
+
+		userDetailsViewHolder.setButtonAlign(HorizontalAlignment.CENTER);
+		userDetailsViewHolder.addButton(new Button("Reset", new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				reinitPage(curAdminEntity);
+				userDetailsViewHolder.setVisible(false);
+			}
+		}));
+
+		userDetailsViewHolder.addButton(new Button("Save", new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				userDetailsViewHolder.setVisible(false);
+				List<UserDTO> models = editorGridUser.getStore().getModels();
+
+				if (isAdd)
+				{
+					UserDTO modelData = new UserDTO();
+					models.add(modelData);
+					modelData.setName(txtfldUsrName.getValue());
+					modelData.setPassword(txtfldPassword.getValue());
+					modelData.setRole(userRole.getSimpleValue());
+				} else
+				{
+					UserDTO modelData = editorGridUser.getSelectionModel().getSelectedItem();
+					if (modelData != null)
+					{
+						modelData.setName(txtfldUsrName.getValue());
+						modelData.setPassword(txtfldPassword.getValue());
+						modelData.setRole(userRole.getSimpleValue());
+					}
+				}
+				savePage(models);
+			}
+		}));
+
+		userRole.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>()
+		{
+			@Override
+			public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se)
+			{
+				if (se.getSelectedItem().equals("Administrator"))
+				{
+
+				} else if (se.getSelectedItem().equals("Administrator - Chapter"))
+				{
+
+				} else if (se.getSelectedItem().equals("Area Co-Ordinator"))
+				{
+				}
+
+			}
+		});
+
+		// userDetailsViewHolder.setSize("300px", "600px");
+		userDetailsViewHolder.add(frmpanelUserBasic, new FitData(5));
+	}
+
+	private void buildUserNameAdminPanel()
+	{
 		gridPanel.setLayout(new FitLayout());
 		gridPanel.setHeading(curAdminEntity);
-		gridPanel.setSize("300px", "550px");
+		gridPanel.setSize("300px", "200px");
 
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		ColumnConfig clmncnfgNewColumn = new ColumnConfig("name", "Name", 150);
@@ -108,17 +266,17 @@ public class UserAdministration extends LayoutContainer
 
 		ListStore<ModelData> editorGridStore = new ListStore<ModelData>();
 
-		editorGrid = new EditorGrid<UserDTO>(editorGridStore, new ColumnModel(configs));
-		editorGrid.setHideHeaders(true);
-		editorGrid.setSelectionModel(new GridSelectionModel<UserDTO>());
-		editorGrid.setLoadMask(true);
-		editorGrid.setAutoExpandColumn("name");
-		editorGrid.mask("Loading...");
-		editorGrid.setAutoWidth(true);
-		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
-		gridPanel.add(editorGrid);
+		editorGridUser = new EditorGrid<UserDTO>(editorGridStore, new ColumnModel(configs));
+		editorGridUser.setHideHeaders(true);
+		editorGridUser.setSelectionModel(new GridSelectionModel<UserDTO>());
+		editorGridUser.setLoadMask(true);
+		editorGridUser.setAutoExpandColumn("name");
+		editorGridUser.mask("Loading...");
+		editorGridUser.setAutoWidth(true);
+		editorGridUser.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
+		gridPanel.add(editorGridUser);
 
-		editorGrid.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<ModelData>>()
+		editorGridUser.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<ModelData>>()
 		{
 			@SuppressWarnings("unchecked")
 			public void handleEvent(SelectionChangedEvent<ModelData> be)
@@ -157,100 +315,17 @@ public class UserAdministration extends LayoutContainer
 				}
 			}
 		});
+	}
 
-		ToolBar toolBar = new ToolBar();
-		mainPanel.setTopComponent(toolBar);
+	private void buildPermissionsGrid()
+	{
 
-		Button add = new Button("Add");
-		add.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
-		add.addSelectionListener(new SelectionListener<ButtonEvent>()
-		{
-			@Override
-			public void componentSelected(ButtonEvent ce)
-			{
+		ContentPanel cpChapterGrid = new ContentPanel();
+		cpChapterGrid.setLayout(new FitLayout());
+		cpChapterGrid.setHeaderVisible(false);
 
-				txtfldUsrName.clear();
-				txtfldPassword.clear();
-
-				userDetailsViewHolder.setVisible(true);
-				userDetailsViewHolder.focus();
-
-				isAdd = true;
-			}
-		});
-		toolBar.add(add);
-
-		Button remove = new Button("Remove");
-		remove.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
-		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
-		{
-			@Override
-			public void componentSelected(ButtonEvent ce)
-			{
-				editorGrid.stopEditing();
-				UserDTO selectedItem = editorGrid.getSelectionModel().getSelectedItem();
-				if (selectedItem != null)
-				{
-					selectedItem.set("deleted", "Y");
-					List<UserDTO> lstModels = editorGrid.getStore().getModels();
-					editorGrid.getStore().remove(selectedItem);
-					editorGrid.mask("Removing Entry...");
-					savePage(lstModels);
-				}
-			}
-		});
-		toolBar.add(remove);
-
-		userDetailsViewHolder.setHeading("Location Details");
-		userDetailsViewHolder.setVisible(false);
-
-		FormPanel frmpanelUserBasic = new FormPanel();
-		frmpanelUserBasic.setHeaderVisible(false);
-		frmpanelUserBasic.setCollapsible(false);
-		frmpanelUserBasic.setBorders(false);
-		frmpanelUserBasic.setFrame(false);
-
-		txtfldUsrName.setMaxLength(255);
-		txtfldUsrName.setName("userName");
-		txtfldUsrName.setFieldLabel("User Name");
-		frmpanelUserBasic.add(txtfldUsrName, new FormData("80%"));
-
-		txtfldPassword.setPassword(true);
-		txtfldPassword.setName("userPassword");
-		txtfldPassword.setMaxLength(255);
-		txtfldPassword.setFieldLabel("Password");
-		frmpanelUserBasic.add(txtfldPassword, new FormData("80%"));
-
-		frmpanelUserBasic.add(userRole, new FormData("80%"));
-		userRole.setTriggerAction(TriggerAction.ALL);
-		userRole.setFieldLabel("Role");
-		userRole.add("Administrator");
-		userRole.add("Administrator - Chapter");
-		userRole.add("Area Co-Ordinator");
-
-		userRole.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>()
-		{
-			@Override
-			public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se)
-			{
-				if (se.getSelectedItem().equals("Administrator"))
-				{
-
-				} else if (se.getSelectedItem().equals("Administrator - Chapter"))
-				{
-
-				} else if (se.getSelectedItem().equals("Area Co-Ordinator"))
-				{
-				}
-
-			}
-		});
-
-		LayoutContainer layoutContainer = new LayoutContainer();
-		List<ColumnConfig> configs_1 = new ArrayList<ColumnConfig>();
-
-		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("chapterProject", "Chapter/Project", 120);
-		
+		List<ColumnConfig> configsChapter = new ArrayList<ColumnConfig>();
+		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("chapterName", "Chapter", 120);
 		final SimpleComboBox<String> field = new SimpleComboBox<String>();
 		field.setTriggerAction(TriggerAction.ALL);
 		CellEditor editor = new CellEditor(field)
@@ -275,84 +350,170 @@ public class UserAdministration extends LayoutContainer
 				return ((ModelData) value).get("value");
 			}
 		};
-//		field.add(lstValues);
+		// field.add(lstValues);
 		clmncnfgNewColumn_1.setEditor(editor);
-		configs_1.add(clmncnfgNewColumn_1);
+		configsChapter.add(clmncnfgNewColumn_1);
 
 		CheckColumnConfig checkColumn = new CheckColumnConfig("read", "Read?", 55);
 		CellEditor checkBoxEditor = new CellEditor(new CheckBox());
 		checkColumn.setEditor(checkBoxEditor);
-		configs_1.add(checkColumn);
+		configsChapter.add(checkColumn);
 
 		checkColumn = new CheckColumnConfig("write", "Write?", 55);
 		checkBoxEditor = new CellEditor(new CheckBox());
 		checkColumn.setEditor(checkBoxEditor);
-		configs_1.add(checkColumn);
+		configsChapter.add(checkColumn);
 
 		checkColumn = new CheckColumnConfig("delete", "Delete?", 55);
 		checkBoxEditor = new CellEditor(new CheckBox());
 		checkColumn.setEditor(checkBoxEditor);
-		configs_1.add(checkColumn);
+		configsChapter.add(checkColumn);
 
-		EditorGrid<ModelData> editorGrid_1 = new EditorGrid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs_1));
-		editorGrid_1.setStripeRows(true);
-		editorGrid_1.setLoadMask(true);
-		editorGrid_1.setColumnLines(true);
-		layoutContainer.add(editorGrid_1);
-		editorGrid_1.setHeight("300");
-		editorGrid_1.setBorders(true);
-		layoutContainer.setBorders(true);
+		final EditorGrid<UserChapterPermissionsDTO> editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(new ListStore<UserChapterPermissionsDTO>(), new ColumnModel(configsChapter));
+		editorGridChapter.setHeight(200);
+		editorGridChapter.setLoadMask(true);
+		editorGridChapter.setColumnLines(true);
+		cpChapterGrid.add(editorGridChapter);
+		editorGridChapter.setBorders(true);
 
-		userDetailsViewHolder.add(frmpanelUserBasic, new FitData(5));
-		userDetailsViewHolder.add(layoutContainer, new FitData(5));
-
-		TableData td_lstViewHolder = new TableData();
-		td_lstViewHolder.setHorizontalAlign(HorizontalAlignment.LEFT);
-		td_lstViewHolder.setRowspan(2);
-		td_lstViewHolder.setPadding(5);
-		td_lstViewHolder.setMargin(5);
-		mainPanel.add(userDetailsViewHolder, td_lstViewHolder);
-		userDetailsViewHolder.setSize("300px", "550px");
-
-		userDetailsViewHolder.setButtonAlign(HorizontalAlignment.CENTER);
-		userDetailsViewHolder.addButton(new Button("Reset", new SelectionListener<ButtonEvent>()
+		ToolBar toolBarChapterPerm = new ToolBar();
+		Button addChapterPerm = new Button("Add");
+		addChapterPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		addChapterPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				reinitPage(curAdminEntity);
-				userDetailsViewHolder.setVisible(false);
+				UserChapterPermissionsDTO plant = new UserChapterPermissionsDTO();
+
+				editorGridChapter.getStore().add(plant);
+				editorGridChapter.startEditing(editorGridChapter.getStore().getCount() - 1, 0);
 			}
-		}));
+		});
+		toolBarChapterPerm.add(addChapterPerm);
 
-		userDetailsViewHolder.addButton(new Button("Save", new SelectionListener<ButtonEvent>()
+		Button removeChapterPerm = new Button("Remove");
+		removeChapterPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		removeChapterPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				userDetailsViewHolder.setVisible(false);
-				List<UserDTO> models = editorGrid.getStore().getModels();
+				editorGridChapter.stopEditing();
+				UserChapterPermissionsDTO selectedItem = editorGridChapter.getSelectionModel().getSelectedItem();
+				if (selectedItem != null)
+				{
+					selectedItem.set("deleted", "Y");
 
-				if (isAdd)
-				{
-					UserDTO modelData = new UserDTO();
-					models.add(modelData);
-					modelData.setName(txtfldUsrName.getValue());
-					modelData.setPassword(txtfldPassword.getValue());
-					modelData.setRole(userRole.getSimpleValue());
-				} else
-				{
-					UserDTO modelData = editorGrid.getSelectionModel().getSelectedItem();
-					if (modelData != null)
-					{
-						modelData.setName(txtfldUsrName.getValue());
-						modelData.setPassword(txtfldPassword.getValue());
-						modelData.setRole(userRole.getSimpleValue());
-					}
+					List<UserChapterPermissionsDTO> lstModels = editorGridChapter.getStore().getModels();
+					UserDTO curUser = editorGridUser.getSelectionModel().getSelectedItem();
+					curUser.setChapterPermissions(lstModels);
+
+					editorGridChapter.getStore().remove(selectedItem);
 				}
-				savePage(models);
 			}
-		}));
+		});
+		toolBarChapterPerm.add(removeChapterPerm);
+		cpChapterGrid.setTopComponent(toolBarChapterPerm);
+
+		ContentPanel cpProjectGrid = new ContentPanel();
+		cpProjectGrid.setLayout(new FitLayout());
+		cpProjectGrid.setHeaderVisible(false);
+
+		List<ColumnConfig> configsProjectGrid = new ArrayList<ColumnConfig>();
+		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
+		final SimpleComboBox<String> fieldChapter = new SimpleComboBox<String>();
+		fieldChapter.setTriggerAction(TriggerAction.ALL);
+		editor = new CellEditor(fieldChapter)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return fieldChapter.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		// field.add(lstValues);
+		clmncnfgProjectName.setEditor(editor);
+		configsProjectGrid.add(clmncnfgProjectName);
+
+		checkColumn = new CheckColumnConfig("read", "Read?", 55);
+		checkBoxEditor = new CellEditor(new CheckBox());
+		checkColumn.setEditor(checkBoxEditor);
+		configsProjectGrid.add(checkColumn);
+
+		checkColumn = new CheckColumnConfig("write", "Write?", 55);
+		checkBoxEditor = new CellEditor(new CheckBox());
+		checkColumn.setEditor(checkBoxEditor);
+		configsProjectGrid.add(checkColumn);
+
+		checkColumn = new CheckColumnConfig("delete", "Delete?", 55);
+		checkBoxEditor = new CellEditor(new CheckBox());
+		checkColumn.setEditor(checkBoxEditor);
+		configsProjectGrid.add(checkColumn);
+
+		final EditorGrid<UserProjectPermissionsDTO> editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
+		editorGridProject.setHeight(200);
+		editorGridProject.setLoadMask(true);
+		editorGridProject.setColumnLines(true);
+		cpProjectGrid.add(editorGridProject);
+		editorGridProject.setBorders(true);
+
+		ToolBar toolBarProjectPerm = new ToolBar();
+		Button addProjectPerm = new Button("Add");
+		addProjectPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		addProjectPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				UserProjectPermissionsDTO plant = new UserProjectPermissionsDTO();
+
+				editorGridProject.getStore().add(plant);
+				editorGridProject.startEditing(editorGridProject.getStore().getCount() - 1, 0);
+			}
+		});
+		toolBarProjectPerm.add(addProjectPerm);
+
+		Button removeProjectPerm = new Button("Remove");
+		removeProjectPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		removeProjectPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				editorGridChapter.stopEditing();
+				UserProjectPermissionsDTO selectedItem = editorGridProject.getSelectionModel().getSelectedItem();
+				if (selectedItem != null)
+				{
+					selectedItem.set("deleted", "Y");
+
+					List<UserProjectPermissionsDTO> lstModels = editorGridProject.getStore().getModels();
+					UserDTO curUser = editorGridUser.getSelectionModel().getSelectedItem();
+					curUser.setProjectPermissions(lstModels);
+
+					editorGridProject.getStore().remove(selectedItem);
+				}
+			}
+		});
+		toolBarProjectPerm.add(removeProjectPerm);
+		cpProjectGrid.setTopComponent(toolBarProjectPerm);
+
+		userDetailsViewHolder.add(cpChapterGrid, new FitData(5));
+		userDetailsViewHolder.add(cpProjectGrid, new FitData(5));
 	}
 
 	public void savePage(final List<UserDTO> lstModels)
@@ -374,7 +535,7 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				editorGrid.unmask();
+				editorGridUser.unmask();
 				MessageBox.alert("Alert", "Error encountered while saving", l);
 			}
 		});
@@ -391,17 +552,17 @@ public class UserAdministration extends LayoutContainer
 			public void onSuccess(ModelData result)
 			{
 				currentModelData = result;
-				editorGrid.getStore().removeAll();
-				editorGrid.getStore().add((List<UserDTO>) currentModelData.get("users"));
-				editorGrid.getStore().commitChanges();
-				editorGrid.unmask();
-				editorGrid.setAutoWidth(true);
+				editorGridUser.getStore().removeAll();
+				editorGridUser.getStore().add((List<UserDTO>) currentModelData.get("users"));
+				editorGridUser.getStore().commitChanges();
+				editorGridUser.unmask();
+				editorGridUser.setAutoWidth(true);
 			}
 
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				editorGrid.unmask();
+				editorGridUser.unmask();
 				MessageBox.alert("Alert", "Error encountered while loading", l);
 			}
 		});

@@ -12,10 +12,11 @@ import javax.persistence.Table;
 @Table(name = "userProjectPermissions")
 public class UserProjectPermissions implements Serializable
 {
+	private static final long serialVersionUID = -2814894310932414503L;
 
 	@Id
 	@GeneratedValue
-	@Column(name = "userprojectpermId")
+	@Column(name = "userProjectPermId")
 	private long id;
 
 	@Column(nullable = false)

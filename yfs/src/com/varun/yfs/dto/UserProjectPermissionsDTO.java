@@ -1,47 +1,29 @@
-package com.varun.yfs.server.models;
+package com.varun.yfs.dto;
 
-import java.io.Serializable;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "userChapterPermissions")
-public class UserChapterPermissions implements Serializable
+public class UserProjectPermissionsDTO extends BaseModelData
 {
-	private static final long serialVersionUID = -420052322734423454L;
-
-	@Id
-	@GeneratedValue
-	@Column(name = "userChapterPermId")
 	private long id;
 
-	@Column(nullable = false)
-	private String chapterName;
+	private String projectName;
 
-	@Column(nullable = false)
 	private String deleted;
 
-	@Column(nullable = false)
 	private String read;
 
-	@Column(nullable = false)
 	private String write;
 
-	@Column(nullable = false)
 	private String delete;
 
-	public UserChapterPermissions()
+	public UserProjectPermissionsDTO()
 	{
 		setDeleted("N");
 	}
 
-	public UserChapterPermissions(String name, String pass)
+	public UserProjectPermissionsDTO(String name, String pass)
 	{
-		setChapterName(name);
+		setProjectName(name);
 		setDeleted("N");
 	}
 
@@ -52,17 +34,19 @@ public class UserChapterPermissions implements Serializable
 
 	public void setId(long id)
 	{
+		set("id", id);
 		this.id = id;
 	}
 
-	public String getName()
+	public String getProjectName()
 	{
-		return chapterName;
+		return projectName;
 	}
 
-	public final void setChapterName(String name)
+	public final void setProjectName(String name)
 	{
-		this.chapterName = name;
+		set("projectName", name);
+		this.projectName = name;
 	}
 
 	public String getDeleted()
@@ -72,11 +56,13 @@ public class UserChapterPermissions implements Serializable
 
 	public final void setDeleted(String deleted)
 	{
+		set("deleted", deleted);
 		this.deleted = deleted;
 	}
-	
+
 	public void setRead(String read)
 	{
+		set("read", read);
 		this.read = read;
 	}
 
@@ -87,6 +73,7 @@ public class UserChapterPermissions implements Serializable
 
 	public void setWrite(String write)
 	{
+		set("write", write);
 		this.write = write;
 	}
 
@@ -97,6 +84,7 @@ public class UserChapterPermissions implements Serializable
 
 	public void setDelete(String delete)
 	{
+		set("delete", delete);
 		this.delete = delete;
 	}
 
@@ -104,7 +92,7 @@ public class UserChapterPermissions implements Serializable
 	{
 		return delete;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
@@ -123,11 +111,13 @@ public class UserChapterPermissions implements Serializable
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserChapterPermissions other = (UserChapterPermissions) obj;
-		if (!chapterName.equalsIgnoreCase(other.chapterName))
+		if (projectName == null)
+			return false;
+
+		UserProjectPermissionsDTO other = (UserProjectPermissionsDTO) obj;
+		if (!projectName.equalsIgnoreCase(other.projectName))
 			return false;
 		return true;
 	}
-
 
 }

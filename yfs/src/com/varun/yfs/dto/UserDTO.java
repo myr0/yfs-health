@@ -8,8 +8,8 @@ public class UserDTO extends BaseModelData
 {
 	private static final long serialVersionUID = 3196402615838002153L;
 	private long id;
-	private List<ChapterNameDTO> chapterNames;
-	private List<ProjectDTO> projects;
+	private List<UserChapterPermissionsDTO> chapterPermissions;
+	private List<UserProjectPermissionsDTO> projectPermissions;
 
 	public UserDTO()
 	{
@@ -54,26 +54,26 @@ public class UserDTO extends BaseModelData
 		set("password", password);
 	}
 
-	public void setChapterNames(List<ChapterNameDTO> chapterNames)
+	public void setChapterPermissions(List<UserChapterPermissionsDTO> chapterNames)
 	{
-		set("chapterNames", chapterNames);
-		this.chapterNames = chapterNames;
+		set("chapterPermissions", chapterNames);
+		this.chapterPermissions = chapterNames;
 	}
 
-	public List<ChapterNameDTO> getChapterNames()
+	public List<UserChapterPermissionsDTO> getChapterPermissions()
 	{
-		return this.chapterNames;
+		return this.chapterPermissions;
 	}
 
-	public void setProjects(List<ProjectDTO> villages)
+	public void setProjectPermissions(List<UserProjectPermissionsDTO> villages)
 	{
-		set("projects", villages);
-		this.projects = villages;
+		set("projectPermissions", villages);
+		this.projectPermissions = villages;
 	}
 
-	public List<ProjectDTO> getProjects()
+	public List<UserProjectPermissionsDTO> getProjectPermissions()
 	{
-		return this.projects;
+		return this.projectPermissions;
 	}
 
 	public String getDeleted()

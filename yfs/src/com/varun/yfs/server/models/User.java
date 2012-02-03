@@ -37,13 +37,13 @@ public class User implements Serializable
 	private String role;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_ChapterName", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "chapterNameId") })
+	@JoinTable(name = "User_ChapterPermissions", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "chapterPermId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserChapterPermissions> chapterPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_Project", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "projectId") })
+	@JoinTable(name = "User_ProjectPermissions", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "projPermId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserProjectPermissions> projectPermissions;
@@ -103,22 +103,22 @@ public class User implements Serializable
 		return password;
 	}
 
-	public void setChapterNames(List<UserChapterPermissions> chapterName)
+	public void setChapterPermissions(List<UserChapterPermissions> chapterName)
 	{
 		this.chapterPermissions = chapterName;
 	}
 
-	public List<UserChapterPermissions> getChapterNames()
+	public List<UserChapterPermissions> getChapterPermissions()
 	{
 		return chapterPermissions;
 	}
 
-	public void setProjects(List<UserProjectPermissions> project)
+	public void setProjectPermissions(List<UserProjectPermissions> project)
 	{
 		this.projectPermissions = project;
 	}
 
-	public List<UserProjectPermissions> getProjects()
+	public List<UserProjectPermissions> getProjectPermissions()
 	{
 		return projectPermissions;
 	}
