@@ -60,6 +60,8 @@ public class UserAdministration extends LayoutContainer
 	private final TextField<String> txtfldUsrName = new TextField<String>();
 	private final TextField<String> txtfldPassword = new TextField<String>();
 	private SimpleComboBox<String> userRole = new SimpleComboBox<String>();
+	private final SimpleComboBox<String> fieldProject = new SimpleComboBox<String>();
+	private final SimpleComboBox<String> fieldChapter = new SimpleComboBox<String>();
 
 	private String curAdminEntity = "Default";
 	private ModelData currentModelData = new BaseModelData();
@@ -118,7 +120,7 @@ public class UserAdministration extends LayoutContainer
 	private ToolBar getUserAdminToolbar()
 	{
 		ToolBar toolBar = new ToolBar();
-		
+
 		Button add = new Button("Add");
 		add.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		add.addSelectionListener(new SelectionListener<ButtonEvent>()
@@ -158,7 +160,7 @@ public class UserAdministration extends LayoutContainer
 			}
 		});
 		toolBar.add(remove);
-		
+
 		return toolBar;
 	}
 
@@ -276,45 +278,46 @@ public class UserAdministration extends LayoutContainer
 		editorGridUser.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 		gridPanel.add(editorGridUser);
 
-		editorGridUser.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<ModelData>>()
-		{
-			@SuppressWarnings("unchecked")
-			public void handleEvent(SelectionChangedEvent<ModelData> be)
-			{
-				List<ModelData> selection = be.getSelection();
-				if (selection.size() > 0)
+		editorGridUser.getSelectionModel().addListener(Events.SelectionChange,
+				new Listener<SelectionChangedEvent<ModelData>>()
 				{
-					txtfldUsrName.clear();
-					txtfldPassword.clear();
-					userRole.clearSelections();
-
-					ModelData modelData = selection.get(0);
-					txtfldUsrName.setValue(modelData.get("name").toString());
-					txtfldPassword.setValue(modelData.get("password").toString());
-					Object role = modelData.get("role");
-					if (role != null && userRole.findModel(role.toString()) != null)
+					@SuppressWarnings("unchecked")
+					public void handleEvent(SelectionChangedEvent<ModelData> be)
 					{
-						userRole.setValue(userRole.findModel(role.toString()));
+						List<ModelData> selection = be.getSelection();
+						if (selection.size() > 0)
+						{
+							txtfldUsrName.clear();
+							txtfldPassword.clear();
+							userRole.clearSelections();
+
+							ModelData modelData = selection.get(0);
+							txtfldUsrName.setValue(modelData.get("name").toString());
+							txtfldPassword.setValue(modelData.get("password").toString());
+							Object role = modelData.get("role");
+							if (role != null && userRole.findModel(role.toString()) != null)
+							{
+								userRole.setValue(userRole.findModel(role.toString()));
+							}
+
+							userDetailsViewHolder.setVisible(true);
+							userDetailsViewHolder.focus();
+						}
 					}
 
-					userDetailsViewHolder.setVisible(true);
-					userDetailsViewHolder.focus();
-				}
-			}
-
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			private <E> void updateSelections(List<? extends ModelData> modelData, CheckBoxListView view)
-			{
-				for (ModelData modelData1 : modelData)
-				{
-					int idx = view.getStore().getModels().indexOf(modelData1);
-					if (idx >= 0)
+					@SuppressWarnings({ "rawtypes", "unchecked" })
+					private <E> void updateSelections(List<? extends ModelData> modelData, CheckBoxListView view)
 					{
-						view.setChecked(view.getStore().getAt(idx), true);
+						for (ModelData modelData1 : modelData)
+						{
+							int idx = view.getStore().getModels().indexOf(modelData1);
+							if (idx >= 0)
+							{
+								view.setChecked(view.getStore().getAt(idx), true);
+							}
+						}
 					}
-				}
-			}
-		});
+				});
 	}
 
 	private void buildPermissionsGrid()
@@ -326,9 +329,8 @@ public class UserAdministration extends LayoutContainer
 
 		List<ColumnConfig> configsChapter = new ArrayList<ColumnConfig>();
 		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("chapterName", "Chapter", 120);
-		final SimpleComboBox<String> field = new SimpleComboBox<String>();
-		field.setTriggerAction(TriggerAction.ALL);
-		CellEditor editor = new CellEditor(field)
+		fieldChapter.setTriggerAction(TriggerAction.ALL);
+		CellEditor editor = new CellEditor(fieldChapter)
 		{
 			@Override
 			public Object preProcessValue(Object value)
@@ -337,7 +339,7 @@ public class UserAdministration extends LayoutContainer
 				{
 					return value;
 				}
-				return field.findModel(value.toString());
+				return fieldChapter.findModel(value.toString());
 			}
 
 			@Override
@@ -369,7 +371,8 @@ public class UserAdministration extends LayoutContainer
 		checkColumn.setEditor(checkBoxEditor);
 		configsChapter.add(checkColumn);
 
-		final EditorGrid<UserChapterPermissionsDTO> editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(new ListStore<UserChapterPermissionsDTO>(), new ColumnModel(configsChapter));
+		final EditorGrid<UserChapterPermissionsDTO> editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(
+				new ListStore<UserChapterPermissionsDTO>(), new ColumnModel(configsChapter));
 		editorGridChapter.setHeight(200);
 		editorGridChapter.setLoadMask(true);
 		editorGridChapter.setColumnLines(true);
@@ -422,9 +425,8 @@ public class UserAdministration extends LayoutContainer
 
 		List<ColumnConfig> configsProjectGrid = new ArrayList<ColumnConfig>();
 		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
-		final SimpleComboBox<String> fieldChapter = new SimpleComboBox<String>();
-		fieldChapter.setTriggerAction(TriggerAction.ALL);
-		editor = new CellEditor(fieldChapter)
+		fieldProject.setTriggerAction(TriggerAction.ALL);
+		editor = new CellEditor(fieldProject)
 		{
 			@Override
 			public Object preProcessValue(Object value)
@@ -433,7 +435,7 @@ public class UserAdministration extends LayoutContainer
 				{
 					return value;
 				}
-				return fieldChapter.findModel(value.toString());
+				return fieldProject.findModel(value.toString());
 			}
 
 			@Override
@@ -465,7 +467,8 @@ public class UserAdministration extends LayoutContainer
 		checkColumn.setEditor(checkBoxEditor);
 		configsProjectGrid.add(checkColumn);
 
-		final EditorGrid<UserProjectPermissionsDTO> editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
+		final EditorGrid<UserProjectPermissionsDTO> editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(
+				new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
 		editorGridProject.setHeight(200);
 		editorGridProject.setLoadMask(true);
 		editorGridProject.setColumnLines(true);
@@ -557,6 +560,9 @@ public class UserAdministration extends LayoutContainer
 				editorGridUser.getStore().commitChanges();
 				editorGridUser.unmask();
 				editorGridUser.setAutoWidth(true);
+
+				fieldChapter.add((List<String>) currentModelData.get("lstChapterNames"));
+				fieldProject.add((List<String>) currentModelData.get("lstProjects"));
 			}
 
 			@Override

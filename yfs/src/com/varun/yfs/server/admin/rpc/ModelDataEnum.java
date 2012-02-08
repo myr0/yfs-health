@@ -650,8 +650,8 @@ public enum ModelDataEnum
 		{
 			ModelData modelData = new BaseModelData();
 			List<ModelData> modelList = DataUtil.<ModelData> getModelList("User");
-			List<ModelData> lstChapterNames = DataUtil.<ModelData> getModelList("ChapterName");
-			List<ModelData> lstProjects = DataUtil.<ModelData> getModelList("Project");
+			List<String> lstChapterNames = (List<String>)DataUtil.executeQuery("select name from ChapterName");
+			List<String> lstProjects = (List<String>)DataUtil.executeQuery("select name from Project");
 
 			modelData.set("users", modelList);
 			modelData.set("lstChapterNames", lstChapterNames);
