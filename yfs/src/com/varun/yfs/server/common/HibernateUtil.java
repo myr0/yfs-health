@@ -24,6 +24,7 @@ import com.varun.yfs.server.models.Doctor;
 import com.varun.yfs.server.models.Entities;
 import com.varun.yfs.server.models.Locality;
 import com.varun.yfs.server.models.ProcessType;
+import com.varun.yfs.server.models.Project;
 import com.varun.yfs.server.models.ReferralType;
 import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Town;
@@ -42,14 +43,14 @@ public class HibernateUtil
 	{
 		try
 		{
-//			PropertyConfigurator.configure("log4j.properties");
+			// PropertyConfigurator.configure("log4j.properties");
 
 			AnnotationConfiguration annotationConfiguration = new AnnotationConfiguration();
 			SESSIONFACTORY = annotationConfiguration.configure().buildSessionFactory();
 			LOGGER.debug("The application is booting...");
 
 			mapper = new DozerBeanMapper();
-			
+
 			String hbm2ddl = annotationConfiguration.getProperty("hbm2ddl.auto");
 			if (hbm2ddl.equalsIgnoreCase("create"))
 			{
@@ -255,7 +256,11 @@ public class HibernateUtil
 
 	private static void insertChapterNames(Session session)
 	{
-		session.save(new ChapterName("Bangalore"));
+		ChapterName chapterName = new ChapterName("Bangalore");
+		session.save(chapterName);
+		session.flush();
+		session.save(new Project("Ramakrishna Mission", chapterName));
+		session.flush();
 		session.save(new ChapterName("Hyderabad"));
 		session.save(new ChapterName("Pune"));
 		session.save(new ChapterName("Bhopal"));

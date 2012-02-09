@@ -15,22 +15,20 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -91,6 +89,8 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void onSuccess(RpcStatusEnum result)
 			{
+				editorGridChapter.getStore().commitChanges();
+				editorGridProject.getStore().commitChanges();
 				reinitPage(curAdminEntity);
 				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
 				{
@@ -269,7 +269,7 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				userDetailsViewHolder.setVisible(false);
+				// userDetailsViewHolder.setVisible(false);
 				List<UserDTO> models = editorGridUser.getStore().getModels();
 
 				if (isAdd)
@@ -323,7 +323,7 @@ public class UserAdministration extends LayoutContainer
 	{
 		gridPanel.setLayout(new FitLayout());
 		gridPanel.setHeading(curAdminEntity);
-		gridPanel.setSize("300px", "200px");
+		gridPanel.setSize("250px", "450px");
 
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 		ColumnConfig clmncnfgNewColumn = new ColumnConfig("name", "Name", 150);
@@ -341,33 +341,38 @@ public class UserAdministration extends LayoutContainer
 		editorGridUser.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 		gridPanel.add(editorGridUser);
 
-		editorGridUser.getSelectionModel().addListener(Events.SelectionChange,
-				new Listener<SelectionChangedEvent<ModelData>>()
+		editorGridUser.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<ModelData>>()
+		{
+			@SuppressWarnings("unchecked")
+			public void handleEvent(SelectionChangedEvent<ModelData> be)
+			{
+				List<ModelData> selection = be.getSelection();
+				if (selection.size() > 0)
 				{
-					@SuppressWarnings("unchecked")
-					public void handleEvent(SelectionChangedEvent<ModelData> be)
+					txtfldUsrName.clear();
+					txtfldPassword.clear();
+					userRole.clearSelections();
+
+					ModelData modelData = selection.get(0);
+					txtfldUsrName.setValue(modelData.get("name").toString());
+					txtfldPassword.setValue(modelData.get("password").toString());
+					Object role = modelData.get("role");
+					if (role != null && userRole.findModel(role.toString()) != null)
 					{
-						List<ModelData> selection = be.getSelection();
-						if (selection.size() > 0)
-						{
-							txtfldUsrName.clear();
-							txtfldPassword.clear();
-							userRole.clearSelections();
-
-							ModelData modelData = selection.get(0);
-							txtfldUsrName.setValue(modelData.get("name").toString());
-							txtfldPassword.setValue(modelData.get("password").toString());
-							Object role = modelData.get("role");
-							if (role != null && userRole.findModel(role.toString()) != null)
-							{
-								userRole.setValue(userRole.findModel(role.toString()));
-							}
-
-							userDetailsViewHolder.setVisible(true);
-							userDetailsViewHolder.focus();
-						}
+						userRole.setValue(userRole.findModel(role.toString()));
 					}
-				});
+
+					userDetailsViewHolder.setVisible(true);
+					userDetailsViewHolder.focus();
+
+					editorGridChapter.getStore().removeAll();
+					editorGridProject.getStore().removeAll();
+
+					editorGridChapter.getStore().add((List<? extends UserChapterPermissionsDTO>) modelData.get("chapterPermissions"));
+					editorGridProject.getStore().add((List<? extends UserProjectPermissionsDTO>) modelData.get("projectPermissions"));
+				}
+			}
+		});
 	}
 
 	private void buildPermissionsGrid()
@@ -499,13 +504,13 @@ public class UserAdministration extends LayoutContainer
 		checkColumn.setEditor(editor);
 		configsChapter.add(checkColumn);
 
-		editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(new ListStore<UserChapterPermissionsDTO>(),
-				new ColumnModel(configsChapter));
+		editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(new ListStore<UserChapterPermissionsDTO>(), new ColumnModel(configsChapter));
 		editorGridChapter.setHeight(200);
 		editorGridChapter.setLoadMask(true);
 		editorGridChapter.setColumnLines(true);
-		cpChapterGrid.add(editorGridChapter);
 		editorGridChapter.setBorders(true);
+		editorGridChapter.setClicksToEdit(ClicksToEdit.ONE);
+		cpChapterGrid.add(editorGridChapter);
 
 		ToolBar toolBarChapterPerm = new ToolBar();
 		Button addChapterPerm = new Button("Add");
@@ -673,13 +678,13 @@ public class UserAdministration extends LayoutContainer
 		checkColumn.setEditor(editor);
 		configsProjectGrid.add(checkColumn);
 
-		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(),
-				new ColumnModel(configsProjectGrid));
+		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
 		editorGridProject.setHeight(200);
 		editorGridProject.setLoadMask(true);
 		editorGridProject.setColumnLines(true);
-		cpProjectGrid.add(editorGridProject);
 		editorGridProject.setBorders(true);
+		editorGridProject.setClicksToEdit(ClicksToEdit.ONE);
+		cpProjectGrid.add(editorGridProject);
 
 		ToolBar toolBarProjectPerm = new ToolBar();
 		Button addProjectPerm = new Button("Add");

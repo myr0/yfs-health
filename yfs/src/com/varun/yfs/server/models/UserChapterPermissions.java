@@ -22,27 +22,22 @@ public class UserChapterPermissions implements Serializable
 	@Column(nullable = false)
 	private String chapterName;
 
-	@Column(nullable = false)
-	private String deleted;
-
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String read;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String write;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String delete;
 
 	public UserChapterPermissions()
 	{
-		setDeleted("N");
 	}
 
 	public UserChapterPermissions(String name, String pass)
 	{
 		setChapterName(name);
-		setDeleted("N");
 	}
 
 	public long getId()
@@ -60,19 +55,14 @@ public class UserChapterPermissions implements Serializable
 		return chapterName;
 	}
 
+	public String getChapterName()
+	{
+		return chapterName;
+	}
+
 	public final void setChapterName(String name)
 	{
 		this.chapterName = name;
-	}
-
-	public String getDeleted()
-	{
-		return deleted;
-	}
-
-	public final void setDeleted(String deleted)
-	{
-		this.deleted = deleted;
 	}
 	
 	public void setRead(String read)

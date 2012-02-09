@@ -44,6 +44,12 @@ public class Project implements Serializable
 		setDeleted("N");
 	}
 
+	public Project(String string, ChapterName chapterName2)
+	{
+		this(string);
+		this.chapterName = chapterName2;
+	}
+
 	public long getId()
 	{
 		return id;
