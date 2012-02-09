@@ -20,14 +20,14 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
-import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
@@ -49,6 +49,7 @@ import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.dto.UserChapterPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.dto.UserProjectPermissionsDTO;
+import com.varun.yfs.dto.YesNoDTO;
 
 public class UserAdministration extends LayoutContainer
 {
@@ -67,9 +68,11 @@ public class UserAdministration extends LayoutContainer
 	private ModelData currentModelData = new BaseModelData();
 	private boolean isAdd;
 
+	private EditorGrid<UserChapterPermissionsDTO> editorGridChapter;
+	private EditorGrid<UserProjectPermissionsDTO> editorGridProject;
+
 	public UserAdministration()
 	{
-		setHeight("700px");
 	}
 
 	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
@@ -78,6 +81,62 @@ public class UserAdministration extends LayoutContainer
 		{
 		}
 	};
+
+	public void savePage(final List<UserDTO> lstModels)
+	{
+		ModelData modelData = new BaseModelData();
+		modelData.set("users", lstModels);
+		storeLoader.saveModel(curAdminEntity, modelData, new AsyncCallback<RpcStatusEnum>()
+		{
+			@Override
+			public void onSuccess(RpcStatusEnum result)
+			{
+				reinitPage(curAdminEntity);
+				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
+				{
+					MessageBox.alert("Alert", "Error encountered while saving", l);
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				editorGridUser.unmask();
+				MessageBox.alert("Alert", "Error encountered while saving", l);
+			}
+		});
+	}
+
+	public void reinitPage(String entityName)
+	{
+		this.curAdminEntity = entityName;
+		gridPanel.setHeading(entityName);
+		storeLoader.getModel(entityName, new AsyncCallback<ModelData>()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public void onSuccess(ModelData result)
+			{
+				currentModelData = result;
+				editorGridUser.getStore().removeAll();
+				editorGridUser.getStore().add((List<UserDTO>) currentModelData.get("users"));
+				editorGridUser.getStore().commitChanges();
+				editorGridUser.unmask();
+				editorGridUser.setAutoWidth(true);
+
+				fieldChapter.add((List<String>) currentModelData.get("lstChapterNames"));
+				fieldProject.add((List<String>) currentModelData.get("lstProjects"));
+			}
+
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				editorGridUser.unmask();
+				MessageBox.alert("Alert", "Error encountered while loading", l);
+			}
+		});
+
+	}
 
 	@Override
 	protected void onRender(Element parent, int index)
@@ -220,6 +279,8 @@ public class UserAdministration extends LayoutContainer
 					modelData.setName(txtfldUsrName.getValue());
 					modelData.setPassword(txtfldPassword.getValue());
 					modelData.setRole(userRole.getSimpleValue());
+					modelData.setChapterPermissions(editorGridChapter.getStore().getModels());
+					modelData.setProjectPermissions(editorGridProject.getStore().getModels());
 				} else
 				{
 					UserDTO modelData = editorGridUser.getSelectionModel().getSelectedItem();
@@ -228,6 +289,8 @@ public class UserAdministration extends LayoutContainer
 						modelData.setName(txtfldUsrName.getValue());
 						modelData.setPassword(txtfldPassword.getValue());
 						modelData.setRole(userRole.getSimpleValue());
+						modelData.setChapterPermissions(editorGridChapter.getStore().getModels());
+						modelData.setProjectPermissions(editorGridProject.getStore().getModels());
 					}
 				}
 				savePage(models);
@@ -304,19 +367,6 @@ public class UserAdministration extends LayoutContainer
 							userDetailsViewHolder.focus();
 						}
 					}
-
-					@SuppressWarnings({ "rawtypes", "unchecked" })
-					private <E> void updateSelections(List<? extends ModelData> modelData, CheckBoxListView view)
-					{
-						for (ModelData modelData1 : modelData)
-						{
-							int idx = view.getStore().getModels().indexOf(modelData1);
-							if (idx >= 0)
-							{
-								view.setChecked(view.getStore().getAt(idx), true);
-							}
-						}
-					}
 				});
 	}
 
@@ -328,8 +378,9 @@ public class UserAdministration extends LayoutContainer
 		cpChapterGrid.setHeaderVisible(false);
 
 		List<ColumnConfig> configsChapter = new ArrayList<ColumnConfig>();
-		ColumnConfig clmncnfgNewColumn_1 = new ColumnConfig("chapterName", "Chapter", 120);
+		ColumnConfig clmncnfgChapter = new ColumnConfig("chapterName", "Chapter", 120);
 		fieldChapter.setTriggerAction(TriggerAction.ALL);
+		fieldChapter.setAllowBlank(false);
 		CellEditor editor = new CellEditor(fieldChapter)
 		{
 			@Override
@@ -352,27 +403,104 @@ public class UserAdministration extends LayoutContainer
 				return ((ModelData) value).get("value");
 			}
 		};
-		// field.add(lstValues);
-		clmncnfgNewColumn_1.setEditor(editor);
-		configsChapter.add(clmncnfgNewColumn_1);
+		clmncnfgChapter.setEditor(editor);
+		configsChapter.add(clmncnfgChapter);
 
-		CheckColumnConfig checkColumn = new CheckColumnConfig("read", "Read?", 55);
-		CellEditor checkBoxEditor = new CellEditor(new CheckBox());
-		checkColumn.setEditor(checkBoxEditor);
+		ColumnConfig checkColumn = new ColumnConfig("read", "Read", 55);
+		final SimpleComboBox<String> yesNoDtoChapterRead = new SimpleComboBox<String>();
+		yesNoDtoChapterRead.setTriggerAction(TriggerAction.ALL);
+		yesNoDtoChapterRead.setForceSelection(true);
+		yesNoDtoChapterRead.add(YesNoDTO.getStringValues());
+		yesNoDtoChapterRead.setAllowBlank(false);
+		editor = new CellEditor(yesNoDtoChapterRead)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoChapterRead.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		checkColumn.setEditor(editor);
 		configsChapter.add(checkColumn);
 
-		checkColumn = new CheckColumnConfig("write", "Write?", 55);
-		checkBoxEditor = new CellEditor(new CheckBox());
-		checkColumn.setEditor(checkBoxEditor);
+		checkColumn = new ColumnConfig("write", "Write", 55);
+		final SimpleComboBox<String> yesNoDtoChapterWrite = new SimpleComboBox<String>();
+		yesNoDtoChapterWrite.setTriggerAction(TriggerAction.ALL);
+		yesNoDtoChapterWrite.setForceSelection(true);
+		yesNoDtoChapterWrite.add(YesNoDTO.getStringValues());
+		yesNoDtoChapterWrite.setAllowBlank(false);
+		editor = new CellEditor(yesNoDtoChapterWrite)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoChapterWrite.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		checkColumn.setEditor(editor);
 		configsChapter.add(checkColumn);
 
-		checkColumn = new CheckColumnConfig("delete", "Delete?", 55);
-		checkBoxEditor = new CellEditor(new CheckBox());
-		checkColumn.setEditor(checkBoxEditor);
+		checkColumn = new ColumnConfig("delete", "Delete", 55);
+		final SimpleComboBox<String> yesNoDtoDelete = new SimpleComboBox<String>();
+		yesNoDtoDelete.setTriggerAction(TriggerAction.ALL);
+		yesNoDtoDelete.setForceSelection(true);
+		yesNoDtoDelete.add(YesNoDTO.getStringValues());
+		yesNoDtoDelete.setAllowBlank(false);
+		editor = new CellEditor(yesNoDtoDelete)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoDelete.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		checkColumn.setEditor(editor);
 		configsChapter.add(checkColumn);
 
-		final EditorGrid<UserChapterPermissionsDTO> editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(
-				new ListStore<UserChapterPermissionsDTO>(), new ColumnModel(configsChapter));
+		editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(new ListStore<UserChapterPermissionsDTO>(),
+				new ColumnModel(configsChapter));
 		editorGridChapter.setHeight(200);
 		editorGridChapter.setLoadMask(true);
 		editorGridChapter.setColumnLines(true);
@@ -426,6 +554,7 @@ public class UserAdministration extends LayoutContainer
 		List<ColumnConfig> configsProjectGrid = new ArrayList<ColumnConfig>();
 		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
 		fieldProject.setTriggerAction(TriggerAction.ALL);
+		fieldProject.setAllowBlank(false);
 		editor = new CellEditor(fieldProject)
 		{
 			@Override
@@ -448,27 +577,104 @@ public class UserAdministration extends LayoutContainer
 				return ((ModelData) value).get("value");
 			}
 		};
-		// field.add(lstValues);
 		clmncnfgProjectName.setEditor(editor);
 		configsProjectGrid.add(clmncnfgProjectName);
 
-		checkColumn = new CheckColumnConfig("read", "Read?", 55);
-		checkBoxEditor = new CellEditor(new CheckBox());
-		checkColumn.setEditor(checkBoxEditor);
+		checkColumn = new ColumnConfig("read", "Read", 55);
+		final SimpleComboBox<String> yesNoDto = new SimpleComboBox<String>();
+		yesNoDto.setTriggerAction(TriggerAction.ALL);
+		yesNoDto.setForceSelection(true);
+		yesNoDto.add(YesNoDTO.getStringValues());
+		yesNoDto.setAllowBlank(false);
+		editor = new CellEditor(yesNoDto)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDto.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		checkColumn.setEditor(editor);
 		configsProjectGrid.add(checkColumn);
 
-		checkColumn = new CheckColumnConfig("write", "Write?", 55);
-		checkBoxEditor = new CellEditor(new CheckBox());
-		checkColumn.setEditor(checkBoxEditor);
+		checkColumn = new ColumnConfig("write", "Write", 55);
+		final SimpleComboBox<String> yesNoDtoWrite = new SimpleComboBox<String>();
+		yesNoDtoWrite.setTriggerAction(TriggerAction.ALL);
+		yesNoDtoWrite.setForceSelection(true);
+		yesNoDtoWrite.add(YesNoDTO.getStringValues());
+		yesNoDtoWrite.setAllowBlank(false);
+		editor = new CellEditor(yesNoDtoWrite)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoWrite.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		checkColumn.setEditor(editor);
 		configsProjectGrid.add(checkColumn);
 
-		checkColumn = new CheckColumnConfig("delete", "Delete?", 55);
-		checkBoxEditor = new CellEditor(new CheckBox());
-		checkColumn.setEditor(checkBoxEditor);
+		checkColumn = new ColumnConfig("delete", "Delete", 55);
+		final SimpleComboBox<String> yesNoDtoProjectDelete = new SimpleComboBox<String>();
+		yesNoDtoProjectDelete.setTriggerAction(TriggerAction.ALL);
+		yesNoDtoProjectDelete.setForceSelection(true);
+		yesNoDtoProjectDelete.add(YesNoDTO.getStringValues());
+		yesNoDtoProjectDelete.setAllowBlank(false);
+		editor = new CellEditor(yesNoDtoProjectDelete)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoProjectDelete.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		checkColumn.setEditor(editor);
 		configsProjectGrid.add(checkColumn);
 
-		final EditorGrid<UserProjectPermissionsDTO> editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(
-				new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
+		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(),
+				new ColumnModel(configsProjectGrid));
 		editorGridProject.setHeight(200);
 		editorGridProject.setLoadMask(true);
 		editorGridProject.setColumnLines(true);
@@ -517,62 +723,6 @@ public class UserAdministration extends LayoutContainer
 
 		userDetailsViewHolder.add(cpChapterGrid, new FitData(5));
 		userDetailsViewHolder.add(cpProjectGrid, new FitData(5));
-	}
-
-	public void savePage(final List<UserDTO> lstModels)
-	{
-		ModelData modelData = new BaseModelData();
-		modelData.set("users", lstModels);
-		storeLoader.saveModel(curAdminEntity, modelData, new AsyncCallback<RpcStatusEnum>()
-		{
-			@Override
-			public void onSuccess(RpcStatusEnum result)
-			{
-				reinitPage(curAdminEntity);
-				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
-				{
-					MessageBox.alert("Alert", "Error encountered while saving", l);
-				}
-			}
-
-			@Override
-			public void onFailure(Throwable caught)
-			{
-				editorGridUser.unmask();
-				MessageBox.alert("Alert", "Error encountered while saving", l);
-			}
-		});
-	}
-
-	public void reinitPage(String entityName)
-	{
-		this.curAdminEntity = entityName;
-		gridPanel.setHeading(entityName);
-		storeLoader.getModel(entityName, new AsyncCallback<ModelData>()
-		{
-			@SuppressWarnings("unchecked")
-			@Override
-			public void onSuccess(ModelData result)
-			{
-				currentModelData = result;
-				editorGridUser.getStore().removeAll();
-				editorGridUser.getStore().add((List<UserDTO>) currentModelData.get("users"));
-				editorGridUser.getStore().commitChanges();
-				editorGridUser.unmask();
-				editorGridUser.setAutoWidth(true);
-
-				fieldChapter.add((List<String>) currentModelData.get("lstChapterNames"));
-				fieldProject.add((List<String>) currentModelData.get("lstProjects"));
-			}
-
-			@Override
-			public void onFailure(Throwable caught)
-			{
-				editorGridUser.unmask();
-				MessageBox.alert("Alert", "Error encountered while loading", l);
-			}
-		});
-
 	}
 
 }

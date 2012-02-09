@@ -670,6 +670,7 @@ public enum ModelDataEnum
 			} catch (HibernateException ex)
 			{
 				ex.printStackTrace();
+				throw ex;
 			}
 			return status;
 		}
