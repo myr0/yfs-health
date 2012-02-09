@@ -1,6 +1,7 @@
 package com.varun.yfs.client.admin.users;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -248,6 +249,7 @@ public class UserAdministration extends LayoutContainer
 		userRole.add("Administrator");
 		userRole.add("Administrator - Chapter");
 		userRole.add("Area Co-Ordinator");
+		userRole.setAllowBlank(false);
 
 		frmpanelUserBasic.add(txtfldUsrName, new FormData("80%"));
 		frmpanelUserBasic.add(txtfldPassword, new FormData("80%"));
@@ -302,14 +304,70 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se)
 			{
-				if (se.getSelectedItem().equals("Administrator"))
-				{
+				List<String> chapters = (List<String>) currentModelData.get("lstChapterNames");
+				List<String> projects = (List<String>) currentModelData.get("lstProjects");
 
-				} else if (se.getSelectedItem().equals("Administrator - Chapter"))
-				{
+				if (projects == null)
+					projects = Collections.EMPTY_LIST;
+				
+				if (chapters == null)
+					chapters = Collections.EMPTY_LIST;
 
-				} else if (se.getSelectedItem().equals("Area Co-Ordinator"))
+				editorGridChapter.getStore().removeAll();
+				editorGridProject.getStore().removeAll();
+
+				String selectedValue = se.getSelectedItem().getValue();
+				if (selectedValue.isEmpty() || selectedValue == null)
+					return;
+
+				if (selectedValue.equals("Administrator"))
 				{
+					for (String string : projects)
+					{
+						UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+						model.setProjectName(string);
+						model.setDelete("YES");
+						model.setWrite("YES");
+						model.setRead("YES");
+						editorGridProject.getStore().add(model);
+					}
+					editorGridProject.getStore().commitChanges();
+
+					for (String string : chapters)
+					{
+						UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
+						model.setChapterName(string);
+						model.setDelete("YES");
+						model.setWrite("YES");
+						model.setRead("YES");
+						editorGridChapter.getStore().add(model);
+					}
+					editorGridChapter.getStore().commitChanges();
+				} else if (selectedValue.equals("Administrator - Chapter"))
+				{
+					for (String string : chapters)
+					{
+						UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
+						model.setChapterName(string);
+						model.setDelete("YES");
+						model.setWrite("YES");
+						model.setRead("YES");
+						editorGridChapter.getStore().add(model);
+					}
+					editorGridProject.getStore().commitChanges();
+
+				} else if (selectedValue.equals("Area Co-Ordinator"))
+				{
+					for (String string : projects)
+					{
+						UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+						model.setProjectName(string);
+						model.setDelete("YES");
+						model.setWrite("YES");
+						model.setRead("YES");
+						editorGridProject.getStore().add(model);
+					}
+					editorGridProject.getStore().commitChanges();
 				}
 
 			}
