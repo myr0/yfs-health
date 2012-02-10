@@ -9,9 +9,9 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.screening.clinic.rpc.ClinicScreeningDetailService;
 import com.varun.yfs.dto.ClinicPatientDetailDTO;
-import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
 import com.varun.yfs.server.common.data.DataUtil;
 
 public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet implements ClinicScreeningDetailService
@@ -28,7 +28,7 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 			List<ClinicPatientDetailDTO> scrDto = DataUtil.getClinicPatientDetail(Long.valueOf(scrId));
 			modelData.set("data", scrDto);
 		}
-		modelData.set("lstReferralTypes", DataUtil.getModelList(ListModelDataEnum.ReferralType.name()));
+		modelData.set("lstReferralTypes", DataUtil.getModelList(ModelDataEnum.ReferralType.name()));
 
 		return modelData;
 	}

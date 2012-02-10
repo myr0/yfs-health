@@ -309,7 +309,7 @@ public class UserAdministration extends LayoutContainer
 
 				if (projects == null)
 					projects = Collections.EMPTY_LIST;
-				
+
 				if (chapters == null)
 					chapters = Collections.EMPTY_LIST;
 
@@ -578,9 +578,11 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				UserChapterPermissionsDTO plant = new UserChapterPermissionsDTO();
-
-				editorGridChapter.getStore().add(plant);
+				UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
+				model.setDelete("YES");
+				model.setWrite("YES");
+				model.setRead("YES");
+				editorGridChapter.getStore().add(model);
 				editorGridChapter.startEditing(editorGridChapter.getStore().getCount() - 1, 0);
 			}
 		});
@@ -752,9 +754,11 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				UserProjectPermissionsDTO plant = new UserProjectPermissionsDTO();
-
-				editorGridProject.getStore().add(plant);
+				UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+				model.setDelete("YES");
+				model.setWrite("YES");
+				model.setRead("YES");
+				editorGridProject.getStore().add(model);
 				editorGridProject.startEditing(editorGridProject.getStore().getCount() - 1, 0);
 			}
 		});

@@ -6,9 +6,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.dto.ReferralTypeDTO;
 import com.varun.yfs.dto.YesNoDTO;
-import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
 import com.varun.yfs.server.common.data.DataUtil;
 
 @SuppressWarnings("rawtypes")
@@ -16,7 +16,7 @@ public abstract class AbstractPatientDataExtractor
 {
 	private static final Logger LOGGER = Logger.getLogger(AbstractPatientDataExtractor.class);
 
-	protected List<ReferralTypeDTO> referralTypes = DataUtil.getModelList(ListModelDataEnum.ReferralType.name());
+	protected List<ReferralTypeDTO> referralTypes = DataUtil.getModelList(ModelDataEnum.ReferralType.name());
 	protected List lstPatientDetails = new ArrayList();
 	protected StringBuilder errorString = new StringBuilder();
 	protected final List<String> errorRows;

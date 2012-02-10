@@ -2,7 +2,7 @@ package com.varun.yfs.client.index;
 
 public enum ModelDataEnum
 {
-	City, Country, Locality, State, Town, Village, ChapterName, Project, Clinic;
+	City, Country, Locality, State, Town, Village, ChapterName, Project, Clinic, ReferralType, ProcessType, TypeOfLocation, Volunteer, Doctor;
 
 	public static boolean isLocationAdmin(String entityName)
 	{

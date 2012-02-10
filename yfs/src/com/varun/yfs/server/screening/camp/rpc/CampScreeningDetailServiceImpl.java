@@ -36,11 +36,11 @@ public class CampScreeningDetailServiceImpl extends RemoteServiceServlet impleme
 		modelData.set("lstLocality", DataUtil.getModelList(ModelDataEnum.Locality.name()));
 
 		modelData.set("lstChapterName", DataUtil.getModelList(ModelDataEnum.ChapterName.name()));
-		modelData.set("lstReferralTypes", DataUtil.getModelList(ListModelDataEnum.ReferralType.name()));
-		modelData.set("lstProcessType", DataUtil.getModelList(ListModelDataEnum.ProcessType.name()));
-		modelData.set("lstTypeOfLocation", DataUtil.getModelList(ListModelDataEnum.TypeOfLocation.name()));
-		modelData.set("lstVolunteers", DataUtil.getModelList(ListModelDataEnum.Volunteer.name()));
-		modelData.set("lstDoctors", DataUtil.getModelList(ListModelDataEnum.Doctor.name()));
+		modelData.set("lstReferralTypes", DataUtil.getModelList(ModelDataEnum.ReferralType.name()));
+		modelData.set("lstProcessType", DataUtil.getModelList(ModelDataEnum.ProcessType.name()));
+		modelData.set("lstTypeOfLocation", DataUtil.getModelList(ModelDataEnum.TypeOfLocation.name()));
+		modelData.set("lstVolunteers", DataUtil.getModelList(ModelDataEnum.Volunteer.name()));
+		modelData.set("lstDoctors", DataUtil.getModelList(ModelDataEnum.Doctor.name()));
 
 		return modelData;
 	}
