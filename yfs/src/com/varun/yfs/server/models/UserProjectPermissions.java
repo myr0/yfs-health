@@ -59,7 +59,6 @@ public class UserProjectPermissions implements Serializable
 	{
 		this.projectName = name;
 	}
-	
 
 	public void setRead(String read)
 	{
@@ -90,7 +89,7 @@ public class UserProjectPermissions implements Serializable
 	{
 		return delete;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{

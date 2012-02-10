@@ -55,7 +55,8 @@ public class ClinicPatientDetail implements Serializable
 	private Clinic clinic;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "CliPatDet_CliPatHis", joinColumns = { @JoinColumn(name = "cliPatDetId") }, inverseJoinColumns = { @JoinColumn(name = "cliPatHisId") })
+	@JoinTable(name = "CliPatDet_CliPatHis", joinColumns = { @JoinColumn(name = "cliPatDetId") },
+			inverseJoinColumns = { @JoinColumn(name = "cliPatHisId") })
 	private List<ClinicPatientHistory> lstPatientHistory;
 
 	public ClinicPatientDetail()

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 public enum YesNoEnum
 {
 	YES, NO;
-	
+
 	@Id
 	@GeneratedValue
 	@Column(name = "yesNoEnumId")
@@ -26,5 +26,5 @@ public enum YesNoEnum
 	{
 		return id;
 	}
-	
+
 };

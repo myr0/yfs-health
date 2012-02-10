@@ -79,10 +79,9 @@ public class LocalityDTO extends BaseModelData
 		if (getClass() != obj.getClass())
 			return false;
 		LocalityDTO other = (LocalityDTO) obj;
-		if(!this.getName().equalsIgnoreCase(other.getName()))
+		if (!this.getName().equalsIgnoreCase(other.getName()))
 			return false;
 		return true;
 	}
 
-	
 }

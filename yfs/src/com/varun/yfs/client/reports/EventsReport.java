@@ -135,14 +135,13 @@ public class EventsReport extends LayoutContainer
 					return;
 
 				mask("Please wait.Generating Report...");
-				
+
 				ModelData model = new BaseModelData();
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
 				model.set("dateTo", dtfldToDate.getValue().getTime());
 
 				reportDetailService.getModel(ReportType.Events, model, new AsyncCallback<ModelData>()
 				{
-					@SuppressWarnings("unchecked")
 					@Override
 					public void onSuccess(ModelData result)
 					{

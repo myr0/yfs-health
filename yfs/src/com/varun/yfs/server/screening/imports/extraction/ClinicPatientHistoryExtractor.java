@@ -17,11 +17,11 @@ public class ClinicPatientHistoryExtractor extends SchoolPatientDataExtractor
 	{
 		super(errorRows);
 		currentDate.setTime(new Date());
-		
-		currentDate.set(Calendar.HOUR_OF_DAY, 0);  
-		currentDate.set(Calendar.MINUTE, 0);  
-		currentDate.set(Calendar.SECOND, 0);  
-		currentDate.set(Calendar.MILLISECOND, 0);  
+
+		currentDate.set(Calendar.HOUR_OF_DAY, 0);
+		currentDate.set(Calendar.MINUTE, 0);
+		currentDate.set(Calendar.SECOND, 0);
+		currentDate.set(Calendar.MILLISECOND, 0);
 	}
 
 	@SuppressWarnings("unchecked")

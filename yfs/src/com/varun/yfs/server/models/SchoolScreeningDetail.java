@@ -76,15 +76,18 @@ public class SchoolScreeningDetail implements Serializable
 	private TypeOfLocation typeOfLocation;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "SchScrDet_Volunt", joinColumns = { @JoinColumn(name = "schScrId") }, inverseJoinColumns = { @JoinColumn(name = "volId") })
+	@JoinTable(name = "SchScrDet_Volunt", joinColumns = { @JoinColumn(name = "schScrId") },
+			inverseJoinColumns = { @JoinColumn(name = "volId") })
 	private List<Volunteer> lstVolunteers;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "SchScrDet_Doct", joinColumns = { @JoinColumn(name = "schScrId") }, inverseJoinColumns = { @JoinColumn(name = "docId") })
+	@JoinTable(name = "SchScrDet_Doct", joinColumns = { @JoinColumn(name = "schScrId") },
+			inverseJoinColumns = { @JoinColumn(name = "docId") })
 	private List<Doctor> lstDoctors;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "SchoolScrDet_PatDet", joinColumns = { @JoinColumn(name = "schScrId") }, inverseJoinColumns = { @JoinColumn(name = "patId") })
+	@JoinTable(name = "SchoolScrDet_PatDet", joinColumns = { @JoinColumn(name = "schScrId") },
+			inverseJoinColumns = { @JoinColumn(name = "patId") })
 	private List<SchoolPatientDetail> lstPatientDetails;
 
 	public SchoolScreeningDetail()

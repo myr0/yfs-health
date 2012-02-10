@@ -17,7 +17,7 @@ public class UploadServlet extends UploadAction
 
 	private static final long serialVersionUID = 1L;
 
-	private static  final Logger LOGGER = Logger.getLogger(UploadServlet.class);
+	private static final Logger LOGGER = Logger.getLogger(UploadServlet.class);
 	private Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
 	private Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
 

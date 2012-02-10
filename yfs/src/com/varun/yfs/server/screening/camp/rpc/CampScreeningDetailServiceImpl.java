@@ -10,7 +10,6 @@ import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.screening.camp.rpc.CampScreeningDetailService;
 import com.varun.yfs.dto.CampScreeningDetailDTO;
-import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
 import com.varun.yfs.server.common.data.DataUtil;
 
 public class CampScreeningDetailServiceImpl extends RemoteServiceServlet implements CampScreeningDetailService

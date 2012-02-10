@@ -60,7 +60,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		if (usrIdx >= 0) // user-name exists
 		{
 			UserDTO userDTO = modelList.get(usrIdx);
-			
+
 			userDTO.setPassword(newPassword);
 
 			DataUtil.saveUser(userDTO);

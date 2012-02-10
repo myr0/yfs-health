@@ -223,7 +223,10 @@ public class ClinicPatientHistoryDTO extends BaseModelData
 	{
 		// don't touch the order - just append to the last -- fragile code -
 		// export will get screwed
-		return id + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + "," + Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + "," + Util.safeCsvString(referral3) + "," + Util.safeCsvString(emergency) + "," + Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed);
+		return id + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + ","
+				+ Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + ","
+				+ Util.safeCsvString(referral3) + "," + Util.safeCsvString(emergency) + ","
+				+ Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed);
 	}
 
 }

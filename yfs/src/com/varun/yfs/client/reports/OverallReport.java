@@ -47,13 +47,14 @@ public class OverallReport extends LayoutContainer
 		final ListStore<ChartData> store = new ListStore<ChartData>();
 		ChartData tmSales = new ChartData("Requirement Analysis", 0, 10, 20, 2, 3);
 		store.add(tmSales);
-		
+
 		String url = "open-flash-chart.swf";
 		final Chart chart = new Chart(url);
 		chart.setSwfHeight("40%");
 		chart.setSwfWidth("40%");
 
-		ChartModel model = new ChartModel("Project progress report", "font-size: 14px; font-family: Verdana; text-align: center;");
+		ChartModel model = new ChartModel("Project progress report",
+				"font-size: 14px; font-family: Verdana; text-align: center;");
 		model.setBackgroundColour("fefefe");
 		model.setLegend(new Legend(Position.TOP, true));
 		model.setScaleProvider(ScaleProvider.ROUNDED_NEAREST_SCALE_PROVIDER);
@@ -145,7 +146,8 @@ public class OverallReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("id", "Total", 150);
 		configs.add(clmncnfgNewColumn_3);
 
-		Grid<ModelData> gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configs));
+		Grid<ModelData> gridStatusOfTreatment = new Grid<ModelData>(new ListStore<ModelData>(),
+				new ColumnModel(configs));
 		gridStatusOfTreatment.setHeight("150");
 		gridStatusOfTreatment.setBorders(true);
 
@@ -157,7 +159,8 @@ public class OverallReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_5 = new ColumnConfig("id", "Total", 150);
 		configsBreakupOfTreatments.add(clmncnfgNewColumn_5);
 
-		Grid<ModelData> gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(configsBreakupOfTreatments));
+		Grid<ModelData> gridBreakupOfTreatments = new Grid<ModelData>(new ListStore<ModelData>(), new ColumnModel(
+				configsBreakupOfTreatments));
 		gridBreakupOfTreatments.setBorders(true);
 
 		FormData fd_gridStatusOfTreatment = new FormData("100%");

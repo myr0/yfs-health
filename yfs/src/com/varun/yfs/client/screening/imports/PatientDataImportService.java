@@ -9,26 +9,31 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.varun.yfs.dto.ProgressDTO;
 
 @RemoteServiceRelativePath("PatientDataImportService")
-public interface PatientDataImportService extends RemoteService {
+public interface PatientDataImportService extends RemoteService
+{
 	/**
 	 * Utility class for simplifying access to the instance of async service.
 	 */
-	public static class Util {
+	public static class Util
+	{
 		private static PatientDataImportServiceAsync instance;
-		public static PatientDataImportServiceAsync getInstance(){
-			if (instance == null) {
+
+		public static PatientDataImportServiceAsync getInstance()
+		{
+			if (instance == null)
+			{
 				instance = GWT.create(PatientDataImportService.class);
 			}
 			return instance;
 		}
 	}
-	
+
 	String startProcessing(ImportType type, String path, boolean readId);
-	
+
 	public ProgressDTO getProgress();
-	
+
 	public List<? extends BaseModelData> getProcessedRecords();
-	
+
 	public List<String> getErrorRecords();
-	
+
 }

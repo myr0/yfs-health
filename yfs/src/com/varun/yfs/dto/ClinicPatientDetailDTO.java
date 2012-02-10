@@ -223,7 +223,8 @@ public class ClinicPatientDetailDTO extends BaseModelData
 	{
 		// don't touch the order - just append to the last -- fragile code -
 		// export will get screwed
-		return id + "," + name + "," + sex + "," + occupation + "," + age + "," + address + "," + contactNo + "," + height + "," + weight;
+		return id + "," + name + "," + sex + "," + occupation + "," + age + "," + address + "," + contactNo + ","
+				+ height + "," + weight;
 	}
 
 }

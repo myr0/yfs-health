@@ -50,28 +50,27 @@ public class CityDTO extends BaseModelData
 	{
 		return state;
 	}
-	
+
 	public void setState(StateDTO state)
 	{
 		set("stateName", state);
 		this.state = state;
 	}
-	
+
 	public void setLocality(Set<LocalityDTO> locality)
 	{
 		this.locality = locality;
 	}
-	
+
 	public Set<LocalityDTO> getLocality()
 	{
 		return locality;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return getName();
 	}
 
-	
 }

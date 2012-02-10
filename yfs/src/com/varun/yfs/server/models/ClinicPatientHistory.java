@@ -43,10 +43,10 @@ public class ClinicPatientHistory implements Serializable
 
 	@Column(nullable = true)
 	private String surgeryCase;
-	
+
 	@Column(nullable = true)
 	private String medicines;
-	
+
 	@Column(nullable = true)
 	private Long screeningDate;
 

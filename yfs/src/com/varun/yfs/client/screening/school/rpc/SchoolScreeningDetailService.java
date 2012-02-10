@@ -13,5 +13,4 @@ public interface SchoolScreeningDetailService extends RemoteService
 
 	RpcStatusEnum saveModel(String entityName, SchoolScreeningDetailDTO model);
 
-
 }

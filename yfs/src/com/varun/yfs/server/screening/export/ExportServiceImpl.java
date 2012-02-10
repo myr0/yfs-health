@@ -46,7 +46,8 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 		{
 			int index = myWorkBook.addPicture(Base64.decode(base64Image), Workbook.PICTURE_TYPE_PNG);
 
-			HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short) START_CELL_NO, rowNum, (short) (START_CELL_NO + 5), rowNum + 15);
+			HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short) START_CELL_NO, rowNum,
+					(short) (START_CELL_NO + 5), rowNum + 15);
 			HSSFPatriarch patriarch = mySheet.createDrawingPatriarch();
 			patriarch.createPicture(anchor, index);
 			anchor.setAnchorType(2);
@@ -74,7 +75,7 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 				// empty row
 				myRow = mySheet.createRow(rowNum++);
 			}
-			
+
 			cellNum = START_CELL_NO;
 			myRow = mySheet.createRow(rowNum++);
 			for (String header : colHeaders)

@@ -11,7 +11,7 @@ import org.hibernate.Transaction;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.varun.yfs.server.admin.rpc.ModelDataEnum;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Village;
@@ -19,7 +19,7 @@ import com.varun.yfs.server.models.Village;
 public class VillageData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(VillageData.class);
-	
+
 	public ModelData getModel()
 	{
 		ModelData modelData = new BaseModelData();
@@ -34,9 +34,9 @@ public class VillageData extends AbstractData
 		return modelData;
 	}
 
-	public String saveModel(ModelData model)
+	public RpcStatusEnum saveModel(ModelData model)
 	{
-		String status = "Failed";
+		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transact = session.beginTransaction();
 		try
@@ -65,7 +65,7 @@ public class VillageData extends AbstractData
 			transact.commit();
 			session.flush();
 			session.close();
-			status = "Success";
+			status = RpcStatusEnum.SUCCESS;
 		} catch (HibernateException ex)
 		{
 			if (session != null)
@@ -74,12 +74,8 @@ public class VillageData extends AbstractData
 				session.close();
 			}
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());
+			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
-	}
-
-	public List<ModelData> getModelList()
-	{
-		return DataUtil.getModelList("Village");
 	}
 }

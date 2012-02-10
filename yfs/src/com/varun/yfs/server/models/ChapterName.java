@@ -30,37 +30,49 @@ public class ChapterName implements Serializable
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "countryId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_Country", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "countryId", nullable = true, updatable = true, insertable = true))
+	@JoinTable(name = "Chapter_Country", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true,
+			updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "countryId", nullable = true,
+			updatable = true, insertable = true))
 	private Country country;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "stateId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_State", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "stateId", nullable = true, updatable = true, insertable = true))
+	@JoinTable(name = "Chapter_State", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true,
+			updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "stateId", nullable = true,
+			updatable = true, insertable = true))
 	private State state;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "villageId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_Village", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "villageId", nullable = true, updatable = true, insertable = true))
+	@JoinTable(name = "Chapter_Village", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true,
+			updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "villageId", nullable = true,
+			updatable = true, insertable = true))
 	private Village village;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "townId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_Town", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "townId", nullable = true, updatable = true, insertable = true))
+	@JoinTable(name = "Chapter_Town", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true,
+			updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "townId", nullable = true,
+			updatable = true, insertable = true))
 	private Town town;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "cityId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_City", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "cityId", nullable = true, updatable = true, insertable = true))
+	@JoinTable(name = "Chapter_City", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true,
+			updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "cityId", nullable = true,
+			updatable = true, insertable = true))
 	private City city;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "localityId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Chapter_Locality", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "localityId", nullable = true, updatable = true, insertable = true))
+	@JoinTable(name = "Chapter_Locality", joinColumns = @JoinColumn(name = "chapterNameId", nullable = true,
+			updatable = true, insertable = true), inverseJoinColumns = @JoinColumn(name = "localityId",
+			nullable = true, updatable = true, insertable = true))
 	private Locality locality;
 
 	public ChapterName()
@@ -89,7 +101,7 @@ public class ChapterName implements Serializable
 		return name;
 	}
 
-	public  final void setName(String name)
+	public final void setName(String name)
 	{
 		this.name = name;
 	}
@@ -99,7 +111,7 @@ public class ChapterName implements Serializable
 		return deleted;
 	}
 
-	public final  void setDeleted(String deleted)
+	public final void setDeleted(String deleted)
 	{
 		this.deleted = deleted;
 	}

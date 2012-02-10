@@ -5,14 +5,18 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.dto.CampScreeningDetailDTO;
 import com.varun.yfs.dto.ChapterNameDTO;
 
 public class CampScreeningLocationsData extends AbstractData
 {
-	public List<ModelData> getModelList()
+	public ModelData getModel()
 	{
 		List<ModelData> nodes = new ArrayList<ModelData>();
+
+		ModelData model = new BaseModelData();
+		model.set("data", nodes);
 
 		List<ChapterNameDTO> rootNodes = DataUtil.<ChapterNameDTO> getModelList("ChapterName");
 		for (ChapterNameDTO chapterNameDTO : rootNodes)
@@ -25,7 +29,8 @@ public class CampScreeningLocationsData extends AbstractData
 			List<ModelData> chapterNodes = new ArrayList<ModelData>();
 			rootNode.set("children", chapterNodes);
 
-			List<CampScreeningDetailDTO> lstScrDet = DataUtil.getCampScreeningDetail("ChapterName", "id", String.valueOf(chapterNameDTO.getId()));
+			List<CampScreeningDetailDTO> lstScrDet = DataUtil.getCampScreeningDetail("ChapterName", "id",
+					String.valueOf(chapterNameDTO.getId()));
 			for (CampScreeningDetailDTO screeningDetailDTO : lstScrDet)
 			{
 				ModelData scrNode = new BaseModelData();
@@ -36,6 +41,12 @@ public class CampScreeningLocationsData extends AbstractData
 			}
 		}
 
-		return nodes;
+		return model;
+	}
+
+	@Override
+	public RpcStatusEnum saveModel(ModelData model)
+	{
+		return RpcStatusEnum.FAILURE;
 	}
 }

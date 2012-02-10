@@ -52,7 +52,8 @@ public class PatientDetailImporter
 			extractor.convertToPatientDetailDTO(lstCols, processIds);
 
 			if (extractor.getPatientData().size() > 0)
-				LOGGER.debug("Current row processed: " + extractor.getPatientData().get(extractor.getPatientData().size() - 1));
+				LOGGER.debug("Current row processed: "
+						+ extractor.getPatientData().get(extractor.getPatientData().size() - 1));
 		}
 	}
 

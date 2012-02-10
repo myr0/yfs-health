@@ -41,23 +41,23 @@ public class ReferralTypeDTO extends BaseModelData
 	{
 		set("deleted", deleted);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj)
 	{
-		if(obj == null)
-			 return false;
-		if(this.getClass() != obj.getClass())
+		if (obj == null)
 			return false;
-		
-		ReferralTypeDTO refType  = (ReferralTypeDTO) obj;
-		
-		if(this.getName().equalsIgnoreCase(refType.getName()))
+		if (this.getClass() != obj.getClass())
+			return false;
+
+		ReferralTypeDTO refType = (ReferralTypeDTO) obj;
+
+		if (this.getName().equalsIgnoreCase(refType.getName()))
 			return true;
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public String toString()
 	{

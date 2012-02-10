@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.hibernate.Criteria;

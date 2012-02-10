@@ -13,5 +13,4 @@ public interface CampScreeningDetailService extends RemoteService
 
 	RpcStatusEnum saveModel(String entityName, CampScreeningDetailDTO model);
 
-
 }

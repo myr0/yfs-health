@@ -11,6 +11,7 @@ import org.hibernate.Transaction;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.util.Util;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.ChapterName;
@@ -25,11 +26,6 @@ public class ChapterNameData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(ChapterNameData.class);
 
-	public List<ModelData> getModelList()
-	{
-		return DataUtil.getModelList("ChapterName");
-	}
-
 	public ModelData getModel()
 	{
 		ModelData modelData = new BaseModelData();
@@ -43,17 +39,19 @@ public class ChapterNameData extends AbstractData
 		modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
 		modelData.set("parentStoreLocality", DataUtil.<ModelData> getModelList("Locality"));
 
-		modelData.set("configIds", Arrays.asList("chapterName", "countryName", "stateName", "villageName", "townName", "cityName", "localityName"));
-		modelData.set("configCols", Arrays.asList("Chapter Name", "Country", "State", "Village", "Town", "City", "Locality"));
+		modelData.set("configIds", Arrays.asList("chapterName", "countryName", "stateName", "villageName", "townName",
+				"cityName", "localityName"));
+		modelData.set("configCols",
+				Arrays.asList("Chapter Name", "Country", "State", "Village", "Town", "City", "Locality"));
 		modelData.set("configType", Arrays.asList("Text", "combo", "combo", "combo", "combo", "combo", "combo"));
 		return modelData;
 	}
 
-	public String saveModel(ModelData model)
+	public RpcStatusEnum saveModel(ModelData model)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transact = session.beginTransaction();
-		String status = "Failed";
+		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		try
 		{
 			List<Country> lstCountry = DataUtil.<Country> getRawList("Country");
@@ -96,7 +94,7 @@ public class ChapterNameData extends AbstractData
 			transact.commit();
 			session.flush();
 			session.close();
-			status = "Success";
+			status = RpcStatusEnum.SUCCESS;
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());
@@ -105,6 +103,7 @@ public class ChapterNameData extends AbstractData
 				transact.rollback();
 				session.close();
 			}
+			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
 	}

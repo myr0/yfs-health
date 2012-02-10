@@ -24,7 +24,7 @@ public class CampPatientDetail implements Serializable
 
 	@Column(nullable = true)
 	private String age;
-	
+
 	@Column(nullable = true)
 	private String sex;
 
@@ -42,19 +42,19 @@ public class CampPatientDetail implements Serializable
 
 	@Column(nullable = true)
 	private String contactNo;
-	
+
 	@Column(nullable = true)
 	private String findings;
-	
+
 	@Column(nullable = true)
 	private String treatment;
-	
+
 	@Column(nullable = true)
 	private String referral1;
-	
+
 	@Column(nullable = true)
 	private String referral2;
-	
+
 	@Column(nullable = true)
 	private String referral3;
 
@@ -66,13 +66,13 @@ public class CampPatientDetail implements Serializable
 
 	@Column(nullable = true)
 	private String surgeryCase;
-	
+
 	@Column(nullable = true)
 	private String bloodPressure;
-	
+
 	@Column(nullable = true)
 	private String medicines;
-	
+
 	@Column(nullable = true)
 	private String referralUpdates;
 
@@ -270,7 +270,7 @@ public class CampPatientDetail implements Serializable
 	{
 		return bloodPressure;
 	}
-	
+
 	public void setMedicines(String medicines)
 	{
 		this.medicines = medicines;

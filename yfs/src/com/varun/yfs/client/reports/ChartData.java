@@ -7,7 +7,8 @@ public class ChartData extends BaseModel
 
 	private static final long serialVersionUID = 2103699184769341265L;
 
-	public ChartData(String month, int screened, int surgeryCaseClosed, int pendingCases, Integer followUpMedicines, Integer referredToHospital)
+	public ChartData(String month, int screened, int surgeryCaseClosed, int pendingCases, Integer followUpMedicines,
+			Integer referredToHospital)
 	{
 		setMonth(month);
 		setTotalScreened(screened);

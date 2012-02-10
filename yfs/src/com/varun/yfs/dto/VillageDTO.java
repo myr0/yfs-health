@@ -42,18 +42,18 @@ public class VillageDTO extends BaseModelData
 	{
 		set("deleted", deleted);
 	}
-	
+
 	public StateDTO getState()
 	{
 		return state;
 	}
-	
+
 	public void setState(StateDTO state)
 	{
 		set("stateName", state);
 		this.state = state;
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -80,10 +80,9 @@ public class VillageDTO extends BaseModelData
 		if (getClass() != obj.getClass())
 			return false;
 		VillageDTO other = (VillageDTO) obj;
-		if(!this.getName().equalsIgnoreCase(other.getName()))
+		if (!this.getName().equalsIgnoreCase(other.getName()))
 			return false;
 		return true;
 	}
-	
-	
+
 }

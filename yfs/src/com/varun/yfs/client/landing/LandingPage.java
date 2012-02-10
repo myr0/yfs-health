@@ -24,20 +24,20 @@ public class LandingPage extends LayoutContainer
 		LayoutContainer lp = new LayoutContainer();
 		lp.setLayout(new TableLayout(1));
 
-
 		Image image = new Image(YfsImageBundle.INSTANCE.dfsLogoImage());
 		TableData td_cpPart2 = new TableData();
 		td_cpPart2.setPadding(5);
-		td_cpPart2.setStyle("padding-left: 50%");	
+		td_cpPart2.setStyle("padding-left: 50%");
 		lp.add(image, td_cpPart2);
 
 		Label lblSplash = new Label();
 		TableData td_cpPart1 = new TableData();
 		td_cpPart1.setPadding(5);
-		td_cpPart1.setStyle("padding-left: 10%");	
-		lblSplash.setText("Click on the corresponding accordion panel(s) to your left to create/access Patient Health Data and View Reports");
+		td_cpPart1.setStyle("padding-left: 10%");
+		lblSplash
+				.setText("Click on the corresponding accordion panel(s) to your left to create/access Patient Health Data and View Reports");
 		lp.add(lblSplash, td_cpPart1);
-		
+
 		setLayout(new FitLayout());
 
 		add(lp);

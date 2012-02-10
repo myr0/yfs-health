@@ -56,12 +56,14 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 			return statusMessage;
 		} catch (IllegalArgumentException e)
 		{
-			statusMessage = "The uploaded file doesn't follow the set template. Please retry the import using the specified template." + e.getMessage();
+			statusMessage = "The uploaded file doesn't follow the set template. Please retry the import using the specified template."
+					+ e.getMessage();
 			LOGGER.error(statusMessage + e.getMessage());
 			return statusMessage;
 		} catch (IOException e)
 		{
-			statusMessage = "Internal Error has occured that prevents the file from being read/accessed. Details :" + e.getMessage();
+			statusMessage = "Internal Error has occured that prevents the file from being read/accessed. Details :"
+					+ e.getMessage();
 			LOGGER.error(statusMessage + e.getMessage());
 			return statusMessage;
 		}
@@ -81,7 +83,8 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 			progressDto.setStatus(RpcStatusEnum.RUNNING);
 		else
 			progressDto.setStatus(status);
-		progressDto.setProgress(patientDetailImporter.getProcessedRecordsCount() + "/" + excelConverter.getMaxRecords());
+		progressDto
+				.setProgress(patientDetailImporter.getProcessedRecordsCount() + "/" + excelConverter.getMaxRecords());
 		return progressDto;
 	}
 
@@ -119,7 +122,8 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 					patientDetailImporter.convertRecords(processIds);
 				} catch (Exception ex)
 				{
-					String errorMesssage = "Error encountered trying to convert excel rows to file contents." + ex.getMessage();
+					String errorMesssage = "Error encountered trying to convert excel rows to file contents."
+							+ ex.getMessage();
 					LOGGER.error(errorMesssage);
 					errorRows.add(errorMesssage);
 					status = RpcStatusEnum.FAILURE;

@@ -193,12 +193,14 @@ public class ImportDetail extends LayoutContainer
 									{
 										cancel();
 										box.close();
-//										Info.display("Screening Detail Import", "Processing failed", "");
+										// Info.display("Screening Detail Import",
+										// "Processing failed", "");
 									} else if (curProcessed >= totalProcessed)
 									{
 										cancel();
 										box.close();
-//										Info.display("Import Completed", "Processing completed", "");
+										// Info.display("Import Completed",
+										// "Processing completed", "");
 
 										patientDetailGrid.mask("Loading ...");
 										updateProcessedRecords();
@@ -225,12 +227,13 @@ public class ImportDetail extends LayoutContainer
 						@Override
 						public void onFailure(Throwable caught)
 						{
-							MessageBox.info("Preview Failed", "Failed to retrieve records. Please retry the operation again. Additional Details: " + caught.getMessage(), l);
+							MessageBox.info("Preview Failed",
+									"Failed to retrieve records. Please retry the operation again. Additional Details: "
+											+ caught.getMessage(), l);
 							patientDetailGrid.unmask();
 							return;
 						}
 
-						@SuppressWarnings("unchecked")
 						@Override
 						public void onSuccess(List<? extends BaseModelData> result)
 						{

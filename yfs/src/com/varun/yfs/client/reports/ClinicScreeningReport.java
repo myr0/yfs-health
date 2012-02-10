@@ -178,7 +178,6 @@ public class ClinicScreeningReport extends LayoutContainer
 				model.set("clinicId", ((ClinicDTO) clinics.getSelection().get(0)).getId());
 				reportDetailService.getModel(ReportType.Clinic, model, new AsyncCallback<ModelData>()
 				{
-					@SuppressWarnings("unchecked")
 					@Override
 					public void onSuccess(ModelData result)
 					{

@@ -61,7 +61,6 @@ public class Volunteer implements Serializable
 		this.deleted = deleted;
 	}
 
-
 	@Override
 	public int hashCode()
 	{

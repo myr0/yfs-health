@@ -15,5 +15,4 @@ public interface ClinicScreeningDetailService extends RemoteService
 
 	RpcStatusEnum saveModel(String entityName, List<ClinicPatientDetailDTO> model);
 
-
 }

@@ -205,7 +205,7 @@ public class LocationAdministration extends LayoutContainer
 							lstValues.add(modelData.toString());
 						}
 						final SimpleComboBox<String> field = new SimpleComboBox<String>();
-//						field.setDisplayField(lstConfigsId.get(i));
+						// field.setDisplayField(lstConfigsId.get(i));
 						field.setTriggerAction(TriggerAction.ALL);
 						CellEditor editor = new CellEditor(field)
 						{

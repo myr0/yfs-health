@@ -53,7 +53,8 @@ public class ExcelReader
 		// this.errorRows = errorRows;
 	}
 
-	public void readContentsAsCSV(String strSource) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException
+	public void readContentsAsCSV(String strSource) throws FileNotFoundException, IOException,
+			IllegalArgumentException, InvalidFormatException
 	{
 		this.processedRowCount = 0;
 		extractContents();
@@ -69,7 +70,8 @@ public class ExcelReader
 		return this.processedRowCount;
 	}
 
-	public void validateFile(String filePath) throws FileNotFoundException, IOException, InvalidFormatException, IllegalArgumentException
+	public void validateFile(String filePath) throws FileNotFoundException, IOException, InvalidFormatException,
+			IllegalArgumentException
 	{
 		if (filePath == null)
 			throw new IllegalArgumentException("The source for the Excel file(s) cannot be found.");

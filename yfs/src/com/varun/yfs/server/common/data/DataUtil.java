@@ -41,7 +41,9 @@ import com.varun.yfs.server.models.User;
 
 public class DataUtil
 {
-	public static final List<String> ENTITIES = Arrays.asList(new String[] { "Entities", "Chapter Name", "City", "Country", "Doctor", "Locality", "Process Type", "State", "Town", "Type Of Location", "Village", "Volunteer", "User", "Referral Type", "Project", "Clinic" });
+	public static final List<String> ENTITIES = Arrays.asList(new String[] { "Entities", "Chapter Name", "City",
+			"Country", "Doctor", "Locality", "Process Type", "State", "Town", "Type Of Location", "Village",
+			"Volunteer", "User", "Referral Type", "Project", "Clinic" });
 	@SuppressWarnings("rawtypes")
 	private static Map<String, Class> nameToHibernateModelClass = new HashMap<String, Class>();
 	@SuppressWarnings("rawtypes")
@@ -178,7 +180,8 @@ public class DataUtil
 		{
 			Clinic clinic = null;
 			if (!clinicId.isEmpty())
-				clinic = (Clinic) session.createCriteria(Clinic.class).add(Restrictions.eq("id", Long.parseLong(clinicId))).uniqueResult();
+				clinic = (Clinic) session.createCriteria(Clinic.class)
+						.add(Restrictions.eq("id", Long.parseLong(clinicId))).uniqueResult();
 
 			final Calendar currentDate = Calendar.getInstance();
 			currentDate.setTime(new Date());
@@ -198,7 +201,8 @@ public class DataUtil
 				if (lstPatientHistory != null)
 					for (ClinicPatientHistory clinicPatientHistory : lstPatientHistory)
 					{
-						ClinicPatientHistoryDTO clinicPatientHistoryDTO = clinicPatientDetailDTO.getLstPatientHistory().get(index++);
+						ClinicPatientHistoryDTO clinicPatientHistoryDTO = clinicPatientDetailDTO.getLstPatientHistory()
+								.get(index++);
 						extractPatientHistory(clinicPatientHistory, clinicPatientHistoryDTO, currentDate);
 					}
 				if (id == null)
@@ -224,7 +228,8 @@ public class DataUtil
 		}
 	}
 
-	private static void extractPatientHistory(ClinicPatientHistory clinicPatientHistory, ClinicPatientHistoryDTO clinicPatientHistoryDTO, Calendar currentDate)
+	private static void extractPatientHistory(ClinicPatientHistory clinicPatientHistory,
+			ClinicPatientHistoryDTO clinicPatientHistoryDTO, Calendar currentDate)
 	{
 
 		Object object;
@@ -242,7 +247,7 @@ public class DataUtil
 		object = clinicPatientHistoryDTO.get("referral3");
 		if (object != null)
 			clinicPatientHistory.setReferral3(object.toString());
-		
+
 		object = clinicPatientHistoryDTO.get("emergency");
 		if (object != null)
 			clinicPatientHistory.setEmergency(object.toString());
@@ -262,7 +267,8 @@ public class DataUtil
 		clinicPatientHistory.setScreeningDate(currentDate.getTimeInMillis());
 	}
 
-	private static void extractPatientDetail(Clinic clinic, ClinicPatientDetailDTO clinicPatientDetailDTO, ClinicPatientDetail scrDetHibObj)
+	private static void extractPatientDetail(Clinic clinic, ClinicPatientDetailDTO clinicPatientDetailDTO,
+			ClinicPatientDetail scrDetHibObj)
 	{
 		scrDetHibObj.setName(Util.safeToString(clinicPatientDetailDTO.get("name")));
 		scrDetHibObj.setAge(Util.safeToString(clinicPatientDetailDTO.get("age")));
@@ -374,10 +380,13 @@ public class DataUtil
 		return dtoObject;
 	}
 
-	public static List<CampScreeningDetailDTO> getCampScreeningDetail(String joinTableName, String propertyName, String value)
+	public static List<CampScreeningDetailDTO> getCampScreeningDetail(String joinTableName, String propertyName,
+			String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from CampScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value + " and sd.deleted = 'N'");
+		Query filter = session.createQuery("select sd from CampScreeningDetail sd, " + joinTableName + " tb where sd."
+				+ Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb."
+				+ propertyName + " = " + value + " and sd.deleted = 'N'");
 		List<CampScreeningDetailDTO> lstScreening = new ArrayList<CampScreeningDetailDTO>();
 		try
 		{
@@ -385,7 +394,8 @@ public class DataUtil
 			Calendar cal = Calendar.getInstance();
 			for (Object entity : filter.list())
 			{
-				CampScreeningDetailDTO dtoObject = (CampScreeningDetailDTO) dozerMapper.map(entity, CampScreeningDetailDTO.class);
+				CampScreeningDetailDTO dtoObject = (CampScreeningDetailDTO) dozerMapper.map(entity,
+						CampScreeningDetailDTO.class);
 				cal.setTimeInMillis(Long.parseLong(dtoObject.getScreeningDate()));
 				dtoObject.set("name", DateFormat.getDateInstance(DateFormat.SHORT).format(cal.getTime()));
 				lstScreening.add(dtoObject);
@@ -402,10 +412,13 @@ public class DataUtil
 		return lstScreening;
 	}
 
-	public static List<SchoolScreeningDetailDTO> getSchoolScreeningDetail(String joinTableName, String propertyName, String value)
+	public static List<SchoolScreeningDetailDTO> getSchoolScreeningDetail(String joinTableName, String propertyName,
+			String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from SchoolScreeningDetail sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value + " and sd.deleted = 'N'");
+		Query filter = session.createQuery("select sd from SchoolScreeningDetail sd, " + joinTableName
+				+ " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName
+				+ " and tb." + propertyName + " = " + value + " and sd.deleted = 'N'");
 		List<SchoolScreeningDetailDTO> lstScreening = new ArrayList<SchoolScreeningDetailDTO>();
 		try
 		{
@@ -413,7 +426,8 @@ public class DataUtil
 			Calendar cal = Calendar.getInstance();
 			for (Object entity : filter.list())
 			{
-				SchoolScreeningDetailDTO dtoObject = (SchoolScreeningDetailDTO) dozerMapper.map(entity, SchoolScreeningDetailDTO.class);
+				SchoolScreeningDetailDTO dtoObject = (SchoolScreeningDetailDTO) dozerMapper.map(entity,
+						SchoolScreeningDetailDTO.class);
 				cal.setTimeInMillis(Long.parseLong(dtoObject.getScreeningDate()));
 				dtoObject.set("name", DateFormat.getDateInstance(DateFormat.SHORT).format(cal.getTime()));
 				lstScreening.add(dtoObject);
@@ -541,7 +555,9 @@ public class DataUtil
 	public static List<ClinicDTO> getClinics(String joinTableName, String propertyName, String value)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		Query filter = session.createQuery("select sd from Clinic sd, " + joinTableName + " tb where sd." + Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb." + propertyName + " = " + value);
+		Query filter = session.createQuery("select sd from Clinic sd, " + joinTableName + " tb where sd."
+				+ Util.firstCharLower(joinTableName) + "." + propertyName + " = tb." + propertyName + " and tb."
+				+ propertyName + " = " + value);
 		List<ClinicDTO> lstClinics = new ArrayList<ClinicDTO>();
 		try
 		{
@@ -613,7 +629,8 @@ public class DataUtil
 		return lst.get(cntIndex);
 	}
 
-	private static void extractPatientDetailData(Session session, CampScreeningDetailDTO screeningDetailDto, CampScreeningDetail scrDetHibObj)
+	private static void extractPatientDetailData(Session session, CampScreeningDetailDTO screeningDetailDto,
+			CampScreeningDetail scrDetHibObj)
 	{
 		int index = 0;
 		for (ModelData modelData : screeningDetailDto.getPatientDetails())
@@ -677,7 +694,8 @@ public class DataUtil
 		}
 	}
 
-	private static void extractPatientDetailData(Session session, SchoolScreeningDetailDTO screeningDetailDto, SchoolScreeningDetail scrDetHibObj)
+	private static void extractPatientDetailData(Session session, SchoolScreeningDetailDTO screeningDetailDto,
+			SchoolScreeningDetail scrDetHibObj)
 	{
 		int index = 0;
 		for (ModelData modelData : screeningDetailDto.getPatientDetails())

@@ -6,19 +6,24 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("ReportDetailService")
-public interface ReportDetailService extends RemoteService {
+public interface ReportDetailService extends RemoteService
+{
 	/**
 	 * Utility class for simplifying access to the instance of async service.
 	 */
-	public static class Util {
+	public static class Util
+	{
 		private static ReportDetailServiceAsync instance;
-		public static ReportDetailServiceAsync getInstance(){
-			if (instance == null) {
+
+		public static ReportDetailServiceAsync getInstance()
+		{
+			if (instance == null)
+			{
 				instance = GWT.create(ReportDetailService.class);
 			}
 			return instance;
 		}
 	}
-	
+
 	public ModelData getModel(ReportType report, ModelData params);
 }

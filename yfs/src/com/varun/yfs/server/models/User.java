@@ -37,13 +37,15 @@ public class User implements Serializable
 	private String role;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_ChapterPermissions", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "chapterPermId") })
+	@JoinTable(name = "User_ChapterPermissions", joinColumns = { @JoinColumn(name = "userId") },
+			inverseJoinColumns = { @JoinColumn(name = "chapterPermId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserChapterPermissions> chapterPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_ProjectPermissions", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns = { @JoinColumn(name = "projPermId") })
+	@JoinTable(name = "User_ProjectPermissions", joinColumns = { @JoinColumn(name = "userId") },
+			inverseJoinColumns = { @JoinColumn(name = "projPermId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserProjectPermissions> projectPermissions;
@@ -123,7 +125,6 @@ public class User implements Serializable
 		return projectPermissions;
 	}
 
-	
 	public void setRole(String role)
 	{
 		this.role = role;

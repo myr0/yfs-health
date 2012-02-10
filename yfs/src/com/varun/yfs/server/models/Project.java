@@ -30,7 +30,8 @@ public class Project implements Serializable
 	@ManyToOne(cascade = { CascadeType.ALL })
 	// @JoinColumn(name = "chapterNameId", nullable = true, updatable = true,
 	// insertable = true)
-	@JoinTable(name = "Project_Chapter", joinColumns = @JoinColumn(name = "projectId"), inverseJoinColumns = @JoinColumn(name = "chapterNameId"))
+	@JoinTable(name = "Project_Chapter", joinColumns = @JoinColumn(name = "projectId"),
+			inverseJoinColumns = @JoinColumn(name = "chapterNameId"))
 	private ChapterName chapterName;
 
 	public Project()

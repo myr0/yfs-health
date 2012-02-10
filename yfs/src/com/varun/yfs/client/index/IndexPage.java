@@ -42,7 +42,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.varun.yfs.client.admin.common.AdministrationPage;
 import com.varun.yfs.client.admin.location.LocationAdministration;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
@@ -347,7 +346,7 @@ public class IndexPage extends LayoutContainer
 
 		});
 		tree.setDisplayProperty("name");
-		final AdministrationPage widget = new AdministrationPage();
+		// final AdministrationPage widget = new AdministrationPage();
 
 		tree.addListener(Events.OnClick, new Listener<BaseEvent>()
 		{
@@ -362,18 +361,21 @@ public class IndexPage extends LayoutContainer
 					layoutContainerCenter.removeAll();
 
 					String adminEntityEdit = Util.stripSpace(selectedItem.get("name").toString());
-					if (ModelDataEnum.isLocationAdmin(adminEntityEdit))
-					{
-						LocationAdministration widget = new LocationAdministration();
-						widget.reinitPage(adminEntityEdit);
-						layoutContainerCenter.add(widget);
-					} else if (adminEntityEdit.equalsIgnoreCase("Users"))
+					// if (ModelDataEnum.isLocationAdmin(adminEntityEdit))
+					// {
+					// LocationAdministration widget = new
+					// LocationAdministration();
+					// widget.reinitPage(adminEntityEdit);
+					// layoutContainerCenter.add(widget);
+					// } else
+					if (adminEntityEdit.equalsIgnoreCase("Users"))
 					{
 						UserAdministration widget = new UserAdministration();
 						widget.reinitPage(adminEntityEdit);
 						layoutContainerCenter.add(widget);
 					} else
 					{
+						LocationAdministration widget = new LocationAdministration();
 						widget.reinitPage(adminEntityEdit);
 						layoutContainerCenter.add(widget);
 					}
@@ -384,22 +386,23 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		storeLoader.getListStore(MainPanelEnum.Administration.name(), new AsyncCallback<List<ModelData>>()
+		storeLoader.getModel(MainPanelEnum.Administration.name(), new AsyncCallback<ModelData>()
 		{
 
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(), DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(),
+						DUMMYLISTENER);
 				// System.out.println(caught.getMessage());
 			}
 
 			@Override
-			public void onSuccess(List<ModelData> result)
+			public void onSuccess(ModelData result)
 			{
 				final Map<String, List<ModelData>> mapGrpName2Model = new HashMap<String, List<ModelData>>();
-
-				for (ModelData modelData : result)
+				List<ModelData> dataLst = (List<ModelData>) result.get("data");
+				for (ModelData modelData : dataLst)
 				{
 					String key = modelData.get("groupName").toString();
 					if (mapGrpName2Model.containsKey(key))
@@ -421,7 +424,7 @@ public class IndexPage extends LayoutContainer
 
 					tree.getStore().add(rootNode, mapGrpName2Model.get(groupName), false);
 				}
-				for (ModelData modelData : result)
+				for (ModelData modelData : dataLst)
 				{
 					tree.setExpanded(modelData, true);
 				}
@@ -490,21 +493,23 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		storeLoader.getListStore(MainPanelEnum.Reports.name(), new AsyncCallback<List<ModelData>>()
+		storeLoader.getModel(MainPanelEnum.Reports.name(), new AsyncCallback<ModelData>()
 		{
 
 			@Override
 			public void onFailure(Throwable caught)
 			{
 				// System.out.println(caught.getMessage());
-				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(), DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(),
+						DUMMYLISTENER);
 			}
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void onSuccess(List<ModelData> result)
+			public void onSuccess(ModelData result)
 			{
-				for (ModelData modelData : result)
+				List<ModelData> resModel = result.get("data");
+				for (ModelData modelData : resModel)
 				{
 					tree.getStore().add(modelData, false);
 					Object object = modelData.get("children");
@@ -546,7 +551,8 @@ public class IndexPage extends LayoutContainer
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
-			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property,
+					String filter)
 			{
 				String name = record.get("name");
 				name = name.toLowerCase();
@@ -608,7 +614,8 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 		cpCampScreening.setTopComponent(toolbar);
 
-		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.addButtonIcon()));
 		toolbar.add(newScreening);
 		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -628,7 +635,8 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.deleteButtonIcon()));
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(removeScreening);
 		removeScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
@@ -665,7 +673,8 @@ public class IndexPage extends LayoutContainer
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
-			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property,
+					String filter)
 			{
 				String name = record.get("name");
 				name = name.toLowerCase();
@@ -756,7 +765,9 @@ public class IndexPage extends LayoutContainer
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
+						MessageBox.info("Error",
+								"Encountered an error while removing the selected entry. Please try again.",
+								DUMMYLISTENER);
 					}
 
 					@Override
@@ -765,7 +776,9 @@ public class IndexPage extends LayoutContainer
 						if (result.equals(RpcStatusEnum.SUCCESS))
 							refreshIndexPanel(true);
 						else
-							MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
+							MessageBox.info("Error",
+									"Encountered an error while removing the selected entry. Please try again.",
+									DUMMYLISTENER);
 					}
 				});
 		}
@@ -781,7 +794,8 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 		cpSchoolScreening.setTopComponent(toolbar);
 
-		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.addButtonIcon()));
 		toolbar.add(newScreening);
 		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -800,7 +814,8 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.deleteButtonIcon()));
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(removeScreening);
 		removeScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
@@ -837,7 +852,8 @@ public class IndexPage extends LayoutContainer
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
-			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property,
+					String filter)
 			{
 				String name = record.get("name");
 				name = name.toLowerCase();
@@ -927,21 +943,22 @@ public class IndexPage extends LayoutContainer
 			treeClinicScreeningPanel.getStore().removeAll();
 		}
 
-		storeLoader.getListStore(MainPanelEnum.SchoolScreeningLocations.name(), new AsyncCallback<List<ModelData>>()
+		storeLoader.getModel(MainPanelEnum.SchoolScreeningLocations.name(), new AsyncCallback<ModelData>()
 		{
 			@Override
 			public void onFailure(Throwable caught)
 			{
 				// System.out.println(caught.getMessage());
-				MessageBox.info("Error", "Error Encountered while loading School Screening Panel" + caught.getMessage(), DUMMYLISTENER);
+				MessageBox.info("Error",
+						"Error Encountered while loading School Screening Panel" + caught.getMessage(), DUMMYLISTENER);
 			}
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void onSuccess(List<ModelData> result)
+			public void onSuccess(ModelData result)
 			{
-
-				for (ModelData modelData : result)
+				List<ModelData> lst = (List<ModelData>) result.get("data");
+				for (ModelData modelData : lst)
 				{
 					treeSchoolScreeningPanel.getStore().add(modelData, true); // chapter-name
 					List<ModelData> children = (List<ModelData>) modelData.get("children"); // screening
@@ -953,21 +970,22 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		storeLoader.getListStore(MainPanelEnum.ClinicScreeningLocations.name(), new AsyncCallback<List<ModelData>>()
+		storeLoader.getModel(MainPanelEnum.ClinicScreeningLocations.name(), new AsyncCallback<ModelData>()
 		{
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(), DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(),
+						DUMMYLISTENER);
 				// System.out.println(caught.getMessage());
 			}
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void onSuccess(List<ModelData> result)
+			public void onSuccess(ModelData result)
 			{
-
-				for (ModelData modelData : result)
+				List<ModelData> lst = (List<ModelData>) result.get("data");
+				for (ModelData modelData : lst)
 				{
 					treeClinicScreeningPanel.getStore().add(modelData, true); // chapter-name
 					List<ModelData> children = (List<ModelData>) modelData.get("children"); // screening
@@ -981,21 +999,22 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		storeLoader.getListStore(MainPanelEnum.CampScreeningLocations.name(), new AsyncCallback<List<ModelData>>()
+		storeLoader.getModel(MainPanelEnum.CampScreeningLocations.name(), new AsyncCallback<ModelData>()
 		{
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Camp Panel" + caught.getMessage(), DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Camp Panel" + caught.getMessage(),
+						DUMMYLISTENER);
 				// System.out.println(caught.getMessage());
 			}
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void onSuccess(List<ModelData> result)
+			public void onSuccess(ModelData result)
 			{
-
-				for (ModelData modelData : result)
+				List<ModelData> lst = (List<ModelData>) result.get("data");
+				for (ModelData modelData : lst)
 				{
 					treeCampScreeningPanel.getStore().add(modelData, true); // chapter-name
 					List<ModelData> children = (List<ModelData>) modelData.get("children"); // screening

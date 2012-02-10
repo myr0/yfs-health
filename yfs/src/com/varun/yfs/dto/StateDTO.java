@@ -4,7 +4,8 @@ import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-public class StateDTO extends BaseModelData {
+public class StateDTO extends BaseModelData
+{
 	private static final long serialVersionUID = -7162436929563087934L;
 	private long id;
 	private CountryDTO country;
@@ -12,67 +13,82 @@ public class StateDTO extends BaseModelData {
 	private Set<TownDTO> towns;
 	private Set<VillageDTO> villages;
 
-	public StateDTO() {
+	public StateDTO()
+	{
 		set("deleted", "N");
 	}
 
-	public long getId() {
+	public long getId()
+	{
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(long id)
+	{
 		this.id = id;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return get("stateName");
 	}
 
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		set("stateName", name);
 	}
 
-	public String getDeleted() {
+	public String getDeleted()
+	{
 		return get("deleted");
 	}
 
-	public void setDeleted(String deleted) {
+	public void setDeleted(String deleted)
+	{
 		set("deleted", deleted);
 	}
 
-	public void setCountry(CountryDTO country) {
+	public void setCountry(CountryDTO country)
+	{
 		set("countryName", country);
 		this.country = country;
 	}
 
-	public CountryDTO getCountry() {
+	public CountryDTO getCountry()
+	{
 		return this.country;
 	}
-	
-	public Set<CityDTO> getCities() {
+
+	public Set<CityDTO> getCities()
+	{
 		return cities;
 	}
 
-	public void setCities(Set<CityDTO> cities) {
+	public void setCities(Set<CityDTO> cities)
+	{
 		this.cities = cities;
 	}
 
-	public Set<TownDTO> getTowns() {
+	public Set<TownDTO> getTowns()
+	{
 		return towns;
 	}
 
-	public void setTowns(Set<TownDTO> towns) {
+	public void setTowns(Set<TownDTO> towns)
+	{
 		this.towns = towns;
 	}
 
-	public Set<VillageDTO> getVillages() {
+	public Set<VillageDTO> getVillages()
+	{
 		return villages;
 	}
 
-	public void setVillages(Set<VillageDTO> villages) {
+	public void setVillages(Set<VillageDTO> villages)
+	{
 		this.villages = villages;
 	}
-	
+
 	@Override
 	public String toString()
 	{

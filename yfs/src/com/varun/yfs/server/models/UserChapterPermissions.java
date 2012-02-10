@@ -64,7 +64,7 @@ public class UserChapterPermissions implements Serializable
 	{
 		this.chapterName = name;
 	}
-	
+
 	public void setRead(String read)
 	{
 		this.read = read;
@@ -94,7 +94,7 @@ public class UserChapterPermissions implements Serializable
 	{
 		return delete;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
@@ -118,6 +118,5 @@ public class UserChapterPermissions implements Serializable
 			return false;
 		return true;
 	}
-
 
 }

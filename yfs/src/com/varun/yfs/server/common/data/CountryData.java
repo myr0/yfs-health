@@ -11,13 +11,14 @@ import org.hibernate.Transaction;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.Country;
 
 public class CountryData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(CountryData.class);
-	
+
 	public ModelData getModel()
 	{
 		ModelData modelData = new BaseModelData();
@@ -31,9 +32,9 @@ public class CountryData extends AbstractData
 		return modelData;
 	}
 
-	public String saveModel(ModelData model)
+	public RpcStatusEnum saveModel(ModelData model)
 	{
-		String status = "Failed";
+		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		try
 		{
 			List<ModelData> lstModels = model.get("data");
@@ -57,16 +58,13 @@ public class CountryData extends AbstractData
 			}
 			transact.commit();
 			session.close();
-			status = "Success";
+			status = RpcStatusEnum.SUCCESS;
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());
+			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
 	}
 
-	public List<ModelData> getModelList()
-	{
-		return DataUtil.getModelList("Country");
-	}
 }

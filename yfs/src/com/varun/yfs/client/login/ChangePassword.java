@@ -78,20 +78,21 @@ public class ChangePassword extends LayoutContainer
 				status.setVisible(true);
 				txtfldPassword.clearInvalid();
 				status.setBusy("Attempting password change...");
-				LoginService.Util.getInstance().changePassword(userName, txtfldPassword.getValue(), new AsyncCallback<Boolean>()
-				{
-					@Override
-					public void onFailure(Throwable caught)
-					{
-						status.clearStatus("Error in saving the Password. Please try again.");
-					}
+				LoginService.Util.getInstance().changePassword(userName, txtfldPassword.getValue(),
+						new AsyncCallback<Boolean>()
+						{
+							@Override
+							public void onFailure(Throwable caught)
+							{
+								status.clearStatus("Error in saving the Password. Please try again.");
+							}
 
-					@Override
-					public void onSuccess(Boolean result)
-					{
-						status.clearStatus("Password change successful.");
-					}
-				});
+							@Override
+							public void onSuccess(Boolean result)
+							{
+								status.clearStatus("Password change successful.");
+							}
+						});
 			}
 		});
 

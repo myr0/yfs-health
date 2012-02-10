@@ -39,7 +39,7 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
-			DataUtil.saveScreeningDetail(clinicId,modelData);
+			DataUtil.saveScreeningDetail(clinicId, modelData);
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error trying to save the model." + ex.getCause());

@@ -11,7 +11,7 @@ import org.hibernate.Transaction;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.varun.yfs.server.admin.rpc.ModelDataEnum;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.Country;
 import com.varun.yfs.server.models.State;
@@ -19,7 +19,7 @@ import com.varun.yfs.server.models.State;
 public class StateData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(StateData.class);
-	
+
 	public ModelData getModel()
 	{
 		ModelData modelData = new BaseModelData();
@@ -34,9 +34,9 @@ public class StateData extends AbstractData
 		return modelData;
 	}
 
-	public String saveModel(ModelData model)
+	public RpcStatusEnum saveModel(ModelData model)
 	{
-		String status = "Failed";
+		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		try
 		{
 			List<ModelData> lstModels = model.get("data");
@@ -64,16 +64,12 @@ public class StateData extends AbstractData
 			transact.commit();
 			session.flush();
 			session.close();
-			status = "Success";
+			status = RpcStatusEnum.SUCCESS;
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());
+			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
-	}
-
-	public List<ModelData> getModelList()
-	{
-		return DataUtil.getModelList("State");
 	}
 }

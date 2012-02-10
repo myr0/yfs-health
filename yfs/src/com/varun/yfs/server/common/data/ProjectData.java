@@ -11,8 +11,8 @@ import org.hibernate.Transaction;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.util.Util;
-import com.varun.yfs.server.admin.rpc.ModelDataEnum;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.ChapterName;
 import com.varun.yfs.server.models.Project;
@@ -20,11 +20,6 @@ import com.varun.yfs.server.models.Project;
 public class ProjectData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(ProjectData.class);
-	
-	public List<ModelData> getModelList()
-	{
-		return DataUtil.getModelList("Project");
-	}
 
 	public ModelData getModel()
 	{
@@ -40,9 +35,9 @@ public class ProjectData extends AbstractData
 		return modelData;
 	}
 
-	public String saveModel(ModelData model)
+	public RpcStatusEnum saveModel(ModelData model)
 	{
-		String status = "Failed";
+		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transact = session.beginTransaction();
 		try
@@ -72,7 +67,7 @@ public class ProjectData extends AbstractData
 			transact.commit();
 			session.flush();
 			session.close();
-			status = "Success";
+			status = RpcStatusEnum.SUCCESS;
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());
@@ -81,6 +76,7 @@ public class ProjectData extends AbstractData
 				transact.rollback();
 				session.close();
 			}
+			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
 	}

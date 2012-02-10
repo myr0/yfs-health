@@ -95,33 +95,34 @@ public class Login extends LayoutContainer
 					return;
 				}
 
-				LoginService.Util.getInstance().loginServer(txtfldUserName.getValue(), txtfldPassword.getValue(), new AsyncCallback<UserDTO>()
-				{
-					@Override
-					public void onSuccess(UserDTO result)
-					{
-						if (result.getLoggedIn())
+				LoginService.Util.getInstance().loginServer(txtfldUserName.getValue(), txtfldPassword.getValue(),
+						new AsyncCallback<UserDTO>()
 						{
-							RootPanel.get().clear();
-							RootPanel.get().add(new IndexPage(result.getName()));
+							@Override
+							public void onSuccess(UserDTO result)
+							{
+								if (result.getLoggedIn())
+								{
+									RootPanel.get().clear();
+									RootPanel.get().add(new IndexPage(result.getName()));
 
-							String sessionID = result.getSessionId();
-							final long DURATION = 1000 * 60 * 60 * 24 * 1;
-							Date expires = new Date(System.currentTimeMillis() + DURATION);
-							Cookies.setCookie("sid", sessionID, expires, null, "/", false);
-						} else
-						{
-							Window.alert("Access Denied. Check your user-name and password.");
-						}
+									String sessionID = result.getSessionId();
+									final long DURATION = 1000 * 60 * 60 * 24 * 1;
+									Date expires = new Date(System.currentTimeMillis() + DURATION);
+									Cookies.setCookie("sid", sessionID, expires, null, "/", false);
+								} else
+								{
+									Window.alert("Access Denied. Check your user-name and password.");
+								}
 
-					}
+							}
 
-					@Override
-					public void onFailure(Throwable caught)
-					{
-						Window.alert("Access Denied. Check your user-name and password.");
-					}
-				});
+							@Override
+							public void onFailure(Throwable caught)
+							{
+								Window.alert("Access Denied. Check your user-name and password.");
+							}
+						});
 			}
 		});
 

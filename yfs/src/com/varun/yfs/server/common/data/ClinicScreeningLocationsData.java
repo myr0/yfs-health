@@ -5,14 +5,18 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.dto.CityDTO;
 import com.varun.yfs.dto.ClinicDTO;
 
 public class ClinicScreeningLocationsData extends AbstractData
 {
-	public List<ModelData> getModelList()
+	public ModelData getModel()
 	{
 		List<ModelData> nodes = new ArrayList<ModelData>();
+
+		ModelData model = new BaseModelData();
+		model.set("data", nodes);
 
 		List<CityDTO> rootNodes = DataUtil.<CityDTO> getModelList("City");
 		for (CityDTO cityDTO : rootNodes)
@@ -36,6 +40,12 @@ public class ClinicScreeningLocationsData extends AbstractData
 			}
 		}
 
-		return nodes;
+		return model;
+	}
+
+	@Override
+	public RpcStatusEnum saveModel(ModelData model)
+	{
+		return RpcStatusEnum.SUCCESS;
 	}
 }

@@ -79,5 +79,5 @@ public class UserProjectPermissionsDTO extends BaseModelData
 	{
 		return get("delete");
 	}
-	
+
 }

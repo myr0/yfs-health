@@ -357,7 +357,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -401,7 +402,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		MenuItem exportReferral = new MenuItem("Export Referrals", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportReferral = new MenuItem("Export Referrals",
+				AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -418,7 +420,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 				StoreFilter<SchoolPatientDetailDTO> filterReferrals = new StoreFilter<SchoolPatientDetailDTO>()
 				{
 					@Override
-					public boolean select(Store<SchoolPatientDetailDTO> store, SchoolPatientDetailDTO parent, SchoolPatientDetailDTO item, String property)
+					public boolean select(Store<SchoolPatientDetailDTO> store, SchoolPatientDetailDTO parent,
+							SchoolPatientDetailDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
@@ -468,7 +471,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportReferral);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -480,7 +484,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(ImportType.SCHOOL, editorGrid, dialogImport, processIds), new FitData(5));
+				dialogImport.add(new ImportDetail(ImportType.SCHOOL, editorGrid, dialogImport, processIds),
+						new FitData(5));
 				dialogImport.show();
 			}
 		});
@@ -1021,7 +1026,9 @@ public class SchoolScreeningDetail extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.alert("Alert", "Error encountered while loading the screen. Please retry the operation. Additional Details: " + caught.getMessage(), l);
+				MessageBox.alert("Alert",
+						"Error encountered while loading the screen. Please retry the operation. Additional Details: "
+								+ caught.getMessage(), l);
 			}
 		});
 

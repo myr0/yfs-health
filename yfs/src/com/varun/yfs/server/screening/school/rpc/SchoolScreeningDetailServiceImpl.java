@@ -10,14 +10,13 @@ import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.screening.school.rpc.SchoolScreeningDetailService;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
-import com.varun.yfs.server.admin.rpc.ListModelDataEnum;
 import com.varun.yfs.server.common.data.DataUtil;
 
 public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet implements SchoolScreeningDetailService
 {
-	private static final  Logger LOGGER = Logger.getLogger(SchoolScreeningDetailServiceImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(SchoolScreeningDetailServiceImpl.class);
 	private static final long serialVersionUID = 4397970043413666183L;
-	
+
 	@Override
 	public ModelData getModel(String scrId)
 	{
@@ -53,7 +52,7 @@ public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		{
 			if (scrId != null)
 				modelData.set("id", scrId);
-			
+
 			DataUtil.saveScreeningDetail(modelData);
 		} catch (HibernateException ex)
 		{

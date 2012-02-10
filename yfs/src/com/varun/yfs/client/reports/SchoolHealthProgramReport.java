@@ -92,7 +92,8 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		String url = "open-flash-chart.swf";
 		chart = new Chart(url);
 
-		ChartModel model = new ChartModel("School Screening", "font-size: 14px; font-family: Verdana; text-align: center;");
+		ChartModel model = new ChartModel("School Screening",
+				"font-size: 14px; font-family: Verdana; text-align: center;");
 		model.setBackgroundColour("fefefe");
 		model.setLegend(new Legend(Position.RIGHT, true));
 		model.setScaleProvider(ScaleProvider.ROUNDED_NEAREST_SCALE_PROVIDER);
@@ -214,7 +215,6 @@ public class SchoolHealthProgramReport extends LayoutContainer
 
 				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
 				{
-					@SuppressWarnings("unchecked")
 					@Override
 					public void onSuccess(ModelData result)
 					{
@@ -257,36 +257,40 @@ public class SchoolHealthProgramReport extends LayoutContainer
 						expTab.setColHeaderTags(headerTags);
 						lstExportTableDto.add(expTab);
 
-						exportServiceAsync.createExportFile(lstExportTableDto, getImageData(chart.getSwfId()), new AsyncCallback<String>()
-						{
-							@Override
-							public void onFailure(Throwable caught)
-							{
-								unmask();
-								MessageBox.alert("Alert", "Error encountered while exporting." + caught.getMessage(), DUMMYLISTENER);
-							}
+						exportServiceAsync.createExportFile(lstExportTableDto, getImageData(chart.getSwfId()),
+								new AsyncCallback<String>()
+								{
+									@Override
+									public void onFailure(Throwable caught)
+									{
+										unmask();
+										MessageBox.alert("Alert",
+												"Error encountered while exporting." + caught.getMessage(),
+												DUMMYLISTENER);
+									}
 
-							@Override
-							public void onSuccess(String result)
-							{
-								exportedFileName.setValue(result);
+									@Override
+									public void onSuccess(String result)
+									{
+										exportedFileName.setValue(result);
 
-								String url = GWT.getModuleBaseURL();
-								url = url + "exportServlet";
+										String url = GWT.getModuleBaseURL();
+										url = url + "exportServlet";
 
-								formPanel.setAction(url);
-								formPanel.submit();
-								unmask();
-							}
+										formPanel.setAction(url);
+										formPanel.submit();
+										unmask();
+									}
 
-						});
+								});
 					}
 
 					@Override
 					public void onFailure(Throwable caught)
 					{
 						unmask();
-						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(),
+								DUMMYLISTENER);
 					}
 				});
 
@@ -309,7 +313,6 @@ public class SchoolHealthProgramReport extends LayoutContainer
 
 				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
 				{
-					@SuppressWarnings("unchecked")
 					@Override
 					public void onSuccess(ModelData result)
 					{
@@ -321,7 +324,8 @@ public class SchoolHealthProgramReport extends LayoutContainer
 					public void onFailure(Throwable caught)
 					{
 						unmask();
-						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(), DUMMYLISTENER);
+						MessageBox.info("Error", "Error encountered while loading the report." + caught.getMessage(),
+								DUMMYLISTENER);
 					}
 				});
 			}
@@ -357,7 +361,8 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		ColumnConfig clmncnfgNewColumn_3 = new ColumnConfig("pendingCases", "Pending Cases", 150);
 		configs.add(clmncnfgNewColumn_3);
 
-		gridStatusOfTreatment = new Grid<ExportTableDataDTO>(new ListStore<ExportTableDataDTO>(), new ColumnModel(configs));
+		gridStatusOfTreatment = new Grid<ExportTableDataDTO>(new ListStore<ExportTableDataDTO>(), new ColumnModel(
+				configs));
 		gridStatusOfTreatment.setHeight("100");
 		gridStatusOfTreatment.setBorders(true);
 		gridStatusOfTreatment.getView().setForceFit(true);
@@ -395,7 +400,8 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		ColumnConfig pendingCases = new ColumnConfig("pendingCases", "Pending Cases", 60);
 		configsBreakupOfTreatments.add(pendingCases);
 
-		gridBreakupOfTreatments = new Grid<ExportTableDataDTO>(new ListStore<ExportTableDataDTO>(), new ColumnModel(configsBreakupOfTreatments));
+		gridBreakupOfTreatments = new Grid<ExportTableDataDTO>(new ListStore<ExportTableDataDTO>(), new ColumnModel(
+				configsBreakupOfTreatments));
 		gridBreakupOfTreatments.setBorders(true);
 		gridBreakupOfTreatments.setHeight("250");
 		gridBreakupOfTreatments.getView().setForceFit(true);
@@ -488,7 +494,8 @@ public class SchoolHealthProgramReport extends LayoutContainer
 			obj = model.get("referredToHospital");
 			referredToHospital = (obj == null) ? 0 : (Integer) obj;
 
-			ChartData tmSales = new ChartData(breakupOfTreatment, screened, surgeryCaseClosed, pendingCases, followUpMedicines, referredToHospital);
+			ChartData tmSales = new ChartData(breakupOfTreatment, screened, surgeryCaseClosed, pendingCases,
+					followUpMedicines, referredToHospital);
 			store.add(tmSales);
 		}
 

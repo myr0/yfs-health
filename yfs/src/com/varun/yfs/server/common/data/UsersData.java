@@ -7,12 +7,13 @@ import org.hibernate.HibernateException;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.varun.yfs.server.admin.rpc.ModelDataEnum;
+import com.varun.yfs.client.common.RpcStatusEnum;
 
 public class UsersData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(UsersData.class);
-	
+
+	@SuppressWarnings("unchecked")
 	public ModelData getModel()
 	{
 		ModelData modelData = new BaseModelData();
@@ -26,23 +27,18 @@ public class UsersData extends AbstractData
 		return modelData;
 	}
 
-	public String saveModel(ModelData model)
+	public RpcStatusEnum saveModel(ModelData model)
 	{
-		String status = "Failed";
+		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		try
 		{
 			DataUtil.saveUserDetail(model);
-			status = "Success";
+			status = RpcStatusEnum.SUCCESS;
 		} catch (HibernateException ex)
 		{
-			ex.printStackTrace();
-			throw ex;
+			status = RpcStatusEnum.FAILURE;
+			LOGGER.error("Encountered error saving the model." + ex.getMessage());
 		}
 		return status;
-	}
-
-	public List<ModelData> getModelList()
-	{
-		return DataUtil.getModelList("User");
 	}
 }
