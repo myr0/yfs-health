@@ -37,15 +37,13 @@ public class ClinicData extends AbstractData
 	public RpcStatusEnum saveModel(ModelData model)
 	{
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Mapper dozerMapper = HibernateUtil.getDozerMapper();
+		Transaction transact = session.beginTransaction();
 		try
 		{
 			List<City> lstCities = DataUtil.<City> getRawList("City");
 			List<ModelData> lstModels = model.get("data");
-
-			Session session = HibernateUtil.getSessionFactory().openSession();
-			Mapper dozerMapper = HibernateUtil.getDozerMapper();
-
-			Transaction transact = session.beginTransaction();
 
 			for (ModelData modelData : lstModels)
 			{
@@ -71,6 +69,11 @@ public class ClinicData extends AbstractData
 		{
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());
 			status = RpcStatusEnum.FAILURE;
+			if (session != null)
+			{
+				transact.rollback();
+				session.close();
+			}
 		}
 		return status;
 	}

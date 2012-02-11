@@ -192,7 +192,7 @@ public class UserAdministration extends LayoutContainer
 				txtfldUsrName.clear();
 				txtfldPassword.clear();
 
-				userDetailsViewHolder.setVisible(true);
+//				userDetailsViewHolder.setVisible(true);
 				userDetailsViewHolder.focus();
 
 				isAdd = true;
@@ -227,7 +227,7 @@ public class UserAdministration extends LayoutContainer
 	private void buildBasicUserInfoPanel()
 	{
 		userDetailsViewHolder.setHeading("User Details");
-		userDetailsViewHolder.setVisible(false);
+//		userDetailsViewHolder.setVisible(false);
 
 		FormPanel frmpanelUserBasic = new FormPanel();
 		frmpanelUserBasic.setHeaderVisible(false);
@@ -262,7 +262,7 @@ public class UserAdministration extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				reinitPage(curAdminEntity);
-				userDetailsViewHolder.setVisible(false);
+//				userDetailsViewHolder.setVisible(false);
 			}
 		}));
 
@@ -421,7 +421,7 @@ public class UserAdministration extends LayoutContainer
 								userRole.setValue(userRole.findModel(role.toString()));
 							}
 
-							userDetailsViewHolder.setVisible(true);
+//							userDetailsViewHolder.setVisible(true);
 							userDetailsViewHolder.focus();
 
 							editorGridChapter.getStore().removeAll();
@@ -567,7 +567,7 @@ public class UserAdministration extends LayoutContainer
 
 		editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(new ListStore<UserChapterPermissionsDTO>(),
 				new ColumnModel(configsChapter));
-		editorGridChapter.setHeight(200);
+		editorGridChapter.setHeight(120);
 		editorGridChapter.setLoadMask(true);
 		editorGridChapter.setColumnLines(true);
 		editorGridChapter.setBorders(true);
@@ -744,7 +744,7 @@ public class UserAdministration extends LayoutContainer
 
 		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(),
 				new ColumnModel(configsProjectGrid));
-		editorGridProject.setHeight(200);
+		editorGridProject.setHeight(120);
 		editorGridProject.setLoadMask(true);
 		editorGridProject.setColumnLines(true);
 		editorGridProject.setBorders(true);

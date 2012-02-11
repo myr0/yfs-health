@@ -205,7 +205,6 @@ public class LocationAdministration extends LayoutContainer
 							lstValues.add(modelData.toString());
 						}
 						final SimpleComboBox<String> field = new SimpleComboBox<String>();
-						// field.setDisplayField(lstConfigsId.get(i));
 						field.setTriggerAction(TriggerAction.ALL);
 						CellEditor editor = new CellEditor(field)
 						{
@@ -263,6 +262,7 @@ public class LocationAdministration extends LayoutContainer
 				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
 				{
 					MessageBox.alert("Alert", "Failed to save the Data", l);
+					editorGrid.unmask();
 				}
 
 				reinitPage(curAdminEntity);

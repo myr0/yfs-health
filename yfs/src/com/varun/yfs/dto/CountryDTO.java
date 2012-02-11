@@ -62,15 +62,8 @@ public class CountryDTO extends BaseModelData
 		String countryName = null;
 		if (obj == null)
 			return false;
-		if (obj.getClass() != this.getClass())
-		{
-			countryName = ((ModelData) obj).get("countryName");
-		} else
-		{
-			CountryDTO countryDTO = (CountryDTO) obj;
-			countryName = countryDTO.getName();
-		}
-		return this.getName().equalsIgnoreCase(countryName);
+
+		return this.getName().equalsIgnoreCase(obj.toString());
 	}
 
 	@Override

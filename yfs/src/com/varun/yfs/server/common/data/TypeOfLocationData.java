@@ -10,9 +10,9 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 
-public class TypeOfLocation extends AbstractData
+public class TypeOfLocationData extends AbstractData
 {
-	private static final Logger LOGGER = Logger.getLogger(TypeOfLocation.class);
+	private static final Logger LOGGER = Logger.getLogger(TypeOfLocationData.class);
 	
 	public ModelData getModel()
 	{
