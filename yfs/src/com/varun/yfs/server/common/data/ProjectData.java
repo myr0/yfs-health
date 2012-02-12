@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.util.Util;
+import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.ChapterName;
 import com.varun.yfs.server.models.Project;
@@ -21,7 +22,7 @@ public class ProjectData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(ProjectData.class);
 
-	public ModelData getModel()
+	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
 

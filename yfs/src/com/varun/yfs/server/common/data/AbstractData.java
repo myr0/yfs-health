@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.dto.UserDTO;
 
 public abstract class AbstractData
 {
@@ -14,8 +15,8 @@ public abstract class AbstractData
 			return null;
 		return lst.get(cntIndex);
 	}
-
-	public abstract ModelData getModel();
+	
+	public abstract ModelData getModel(UserDTO userDto);
 
 	public abstract RpcStatusEnum saveModel(ModelData model);
 }

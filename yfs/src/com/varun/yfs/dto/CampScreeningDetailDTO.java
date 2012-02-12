@@ -17,6 +17,7 @@ public class CampScreeningDetailDTO extends BaseModelData
 	private TownDTO townDTO;
 	private VillageDTO villageDTO;
 	private ChapterNameDTO chapterNameDTO;
+	private ProjectDTO projectDTO;
 	private LocalityDTO localityDTO;
 	private VolunteerDTO volunteerDTO;
 	private DoctorDTO doctorDTO;
@@ -113,6 +114,16 @@ public class CampScreeningDetailDTO extends BaseModelData
 	public void setChapterName(ChapterNameDTO chapterName)
 	{
 		set("chapterName", chapterName);
+	}
+
+	public ProjectDTO getProjectName()
+	{
+		return get("projectName");
+	}
+
+	public void setProjectName(ProjectDTO projectName)
+	{
+		set("projectName", projectName);
 	}
 
 	public LocalityDTO getLocality()

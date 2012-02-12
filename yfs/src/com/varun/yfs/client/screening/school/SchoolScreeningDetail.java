@@ -29,7 +29,6 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -71,6 +70,7 @@ import com.varun.yfs.dto.ExportTableDTO;
 import com.varun.yfs.dto.GenderDTO;
 import com.varun.yfs.dto.LocalityDTO;
 import com.varun.yfs.dto.ProcessTypeDTO;
+import com.varun.yfs.dto.ProjectDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
 import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
@@ -94,6 +94,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 	private final ComboBox<ModelData> town = new ComboBox<ModelData>();
 	private final ComboBox<ModelData> village = new ComboBox<ModelData>();
 	private final ComboBox<ModelData> chapterName = new ComboBox<ModelData>();
+	private final ComboBox<ModelData> projectName = new ComboBox<ModelData>();
 	private final ComboBox<ModelData> locality = new ComboBox<ModelData>();
 	private final ComboBox<ModelData> processType = new ComboBox<ModelData>();
 	private final ComboBox<ModelData> typeOfLocation = new ComboBox<ModelData>();
@@ -201,6 +202,14 @@ public class SchoolScreeningDetail extends LayoutContainer
 		chapterName.setTriggerAction(TriggerAction.ALL);
 		chapterName.setStore(new ListStore<ModelData>());
 		chapterName.setAllowBlank(false);
+
+		projectName.setFieldLabel("Project Name");
+		cpPart1.add(projectName, new FormData("90%"));
+		projectName.setSize("150", "22");
+		projectName.setDisplayField("projectName");
+		projectName.setTriggerAction(TriggerAction.ALL);
+		projectName.setStore(new ListStore<ModelData>());
+		projectName.setAllowBlank(false);
 
 		mainContainerPanel.add(cpMain);
 		cpPart1.setSize("33%", "280px");
@@ -557,6 +566,9 @@ public class SchoolScreeningDetail extends LayoutContainer
 		if (!chapterName.validate())
 			return false;
 
+		if (!projectName.validate())
+			return false;
+
 		if (!locality.validate())
 			return false;
 
@@ -590,6 +602,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		modelData.setLocality((LocalityDTO) locality.getSelection().get(0));
 
 		modelData.setChapterName((ChapterNameDTO) chapterName.getSelection().get(0));
+		modelData.setProjectName((ProjectDTO) projectName.getSelection().get(0));
 		modelData.setProcessType((ProcessTypeDTO) processType.getSelection().get(0));
 		modelData.setTypeOfLocation((TypeOfLocationDTO) typeOfLocation.getSelection().get(0));
 		modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
@@ -885,6 +898,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 				locality.getStore().add((List<ModelData>) modelData.get("lstLocality"));
 
 				chapterName.getStore().add((List<ModelData>) modelData.get("lstChapterName"));
+				projectName.getStore().add((List<ModelData>) modelData.get("lstProjectName"));
 				processType.getStore().add((List<ModelData>) modelData.get("lstProcessType"));
 				typeOfLocation.getStore().add((List<ModelData>) modelData.get("lstTypeOfLocation"));
 				volunteers.getStore().add((List<VolunteerDTO>) modelData.get("lstVolunteers"));
@@ -955,42 +969,12 @@ public class SchoolScreeningDetail extends LayoutContainer
 				columnById.setEditor(editorReferral2);
 				fieldReferral2.add(lstReferrals);
 
-				// columnById =
-				// editorGrid.getColumnModel().getColumnById("referral3");
-				// final SimpleComboBox<String> fieldReferral3 = new
-				// SimpleComboBox<String>();
-				// fieldReferral3.setEditable(false);
-				// fieldReferral3.setTriggerAction(TriggerAction.ALL);
-				// CellEditor editorReferral3 = new CellEditor(fieldReferral3)
-				// {
-				// @Override
-				// public Object preProcessValue(Object value)
-				// {
-				// if (value == null)
-				// {
-				// return value;
-				// }
-				// return fieldReferral3.findModel(value.toString());
-				// }
-				//
-				// @Override
-				// public Object postProcessValue(Object value)
-				// {
-				// if (value == null)
-				// {
-				// return value;
-				// }
-				// return ((ModelData) value).get("value");
-				// }
-				// };
-				// columnById.setEditor(editorReferral3);
-				// fieldReferral3.add(lstReferrals);
-
 				SchoolScreeningDetailDTO scrDto = modelData.get("data");
 				if (scrDto != null)
 				{
 					address.setValue(scrDto.getAddress());
 					chapterName.setValue(scrDto.getChapterName());
+					projectName.setValue(scrDto.getProjectName());
 					city.setValue(scrDto.getCity());
 					contactInformation.setValue(scrDto.getContactInformation());
 					country.setValue(scrDto.getCountry());
@@ -1075,6 +1059,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		village.clearSelections();
 		locality.clearSelections();
 		chapterName.clearSelections();
+		projectName.clearSelections();
 		processType.clearSelections();
 		typeOfLocation.clearSelections();
 		address.clear();

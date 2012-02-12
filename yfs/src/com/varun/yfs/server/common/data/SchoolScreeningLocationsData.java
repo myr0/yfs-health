@@ -8,10 +8,11 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
+import com.varun.yfs.dto.UserDTO;
 
 public class SchoolScreeningLocationsData extends AbstractData
 {
-	public ModelData getModel()
+	public ModelData getModel(UserDTO userDto)
 	{
 		List<ModelData> nodes = new ArrayList<ModelData>();
 

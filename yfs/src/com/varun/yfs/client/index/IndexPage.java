@@ -157,6 +157,7 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 
 		Button home = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.homeButtonIcon()));
+		home.setToolTip("Refresh/Reload application");
 		home.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -174,6 +175,7 @@ public class IndexPage extends LayoutContainer
 		});
 
 		Button help = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.helpButtonIcon()));
+		help.setToolTip("Show Help Dialog");
 		help.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -193,6 +195,7 @@ public class IndexPage extends LayoutContainer
 		userName.setLabel("Welcome, " + this.userName);
 
 		Button logout = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exitButtonIcon()));
+		logout.setToolTip("Logout");
 		logout.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -234,7 +237,8 @@ public class IndexPage extends LayoutContainer
 				dialog.show();
 			}
 		});
-
+		changePassword.setToolTip("Change Password");
+		
 		toolbar.add(home);
 		toolbar.add(new SeparatorToolItem());
 

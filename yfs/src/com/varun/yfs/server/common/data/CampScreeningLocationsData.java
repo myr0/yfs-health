@@ -8,10 +8,11 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.dto.CampScreeningDetailDTO;
 import com.varun.yfs.dto.ChapterNameDTO;
+import com.varun.yfs.dto.UserDTO;
 
 public class CampScreeningLocationsData extends AbstractData
 {
-	public ModelData getModel()
+	public ModelData getModel(UserDTO userDto)
 	{
 		List<ModelData> nodes = new ArrayList<ModelData>();
 
@@ -28,6 +29,8 @@ public class CampScreeningLocationsData extends AbstractData
 
 			List<ModelData> chapterNodes = new ArrayList<ModelData>();
 			rootNode.set("children", chapterNodes);
+			
+			// get projects under the chapter
 
 			List<CampScreeningDetailDTO> lstScrDet = DataUtil.getCampScreeningDetail("ChapterName", "id",
 					String.valueOf(chapterNameDTO.getId()));

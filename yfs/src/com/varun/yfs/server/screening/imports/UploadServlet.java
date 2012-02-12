@@ -36,8 +36,9 @@ public class UploadServlet extends UploadAction
 
 					LOGGER.debug("Writing the file to temporary folder." + file.getAbsolutePath());
 
-					receivedFiles.put(item.getFieldName(), file);
-					receivedContentTypes.put(item.getFieldName(), item.getContentType());
+					// receivedFiles.put(item.getFieldName(), file);
+					// receivedContentTypes.put(item.getFieldName(),
+					// item.getContentType());
 
 					response += file.getAbsolutePath();
 
@@ -49,7 +50,7 @@ public class UploadServlet extends UploadAction
 			}
 		}
 
-		removeSessionFileItems(request);
+//		removeSessionFileItems(request, false);
 
 		return response;
 	}

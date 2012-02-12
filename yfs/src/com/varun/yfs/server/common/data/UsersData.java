@@ -8,13 +8,14 @@ import org.hibernate.HibernateException;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.dto.UserDTO;
 
 public class UsersData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(UsersData.class);
 
 	@SuppressWarnings("unchecked")
-	public ModelData getModel()
+	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
 		List<ModelData> modelList = DataUtil.<ModelData> getModelList("User");

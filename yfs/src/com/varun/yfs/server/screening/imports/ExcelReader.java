@@ -74,13 +74,13 @@ public class ExcelReader
 			IllegalArgumentException
 	{
 		if (filePath == null)
-			throw new IllegalArgumentException("The source for the Excel file(s) cannot be found.");
+			throw new FileNotFoundException("The source for the Excel file(s) cannot be found.");
 
 		File source = new File(filePath);
 
 		if (!source.exists())
 		{
-			throw new IllegalArgumentException("The source for the Excel file(s) cannot be found.");
+			throw new FileNotFoundException("The source for the Excel file(s) cannot be found.");
 		}
 
 		if (source.isDirectory())

@@ -3,7 +3,6 @@ package com.varun.yfs.dto;
 import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
 
 public class CountryDTO extends BaseModelData
 {

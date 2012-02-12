@@ -53,6 +53,10 @@ public class SchoolScreeningDetail implements Serializable
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true)
 	private ChapterName chapterName;
+	
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "projectId", nullable = true, updatable = true, insertable = true)
+	private Project projectName;
 
 	@Column(nullable = true)
 	private String address;
@@ -178,6 +182,16 @@ public class SchoolScreeningDetail implements Serializable
 	public void setChapterName(ChapterName chapterName)
 	{
 		this.chapterName = chapterName;
+	}
+
+	public Project getProjectName()
+	{
+		return this.projectName;
+	}
+
+	public void setProjectName(Project projectName)
+	{
+		this.projectName = projectName;
 	}
 
 	public Locality getLocality()

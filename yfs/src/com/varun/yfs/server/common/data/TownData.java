@@ -12,6 +12,7 @@ import org.hibernate.Transaction;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.State;
 import com.varun.yfs.server.models.Town;
@@ -20,7 +21,7 @@ public class TownData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(TownData.class);
 
-	public ModelData getModel()
+	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
 

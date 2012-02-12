@@ -18,6 +18,7 @@ public class SchoolScreeningDetailDTO extends BaseModelData
 	private LocalityDTO locality;
 	private ProcessTypeDTO processType;
 	private TypeOfLocationDTO typeOfLocation;
+	private ProjectDTO projectDTO;
 	private List<VolunteerDTO> lstVolunteers;
 	private List<DoctorDTO> lstDoctors;
 	private List<SchoolPatientDetailDTO> lstPatientDetails;
@@ -113,6 +114,16 @@ public class SchoolScreeningDetailDTO extends BaseModelData
 		set("chapterName", chapterName);
 	}
 
+	public ProjectDTO getProjectName()
+	{
+		return get("projectName");
+	}
+
+	public void setProjectName(ProjectDTO projectName)
+	{
+		set("projectName", projectName);
+	}
+
 	public LocalityDTO getLocality()
 	{
 		return get("locality");
@@ -165,7 +176,7 @@ public class SchoolScreeningDetailDTO extends BaseModelData
 
 	public List<VolunteerDTO> getVolunteers()
 	{
-		return get("lstVolunteers");
+		return get("volunteers");
 	}
 
 	public void setVolunteers(List<VolunteerDTO> setVolunteers)
@@ -175,7 +186,7 @@ public class SchoolScreeningDetailDTO extends BaseModelData
 
 	public List<DoctorDTO> getDoctors()
 	{
-		return get("lstDoctors");
+		return get("doctors");
 	}
 
 	public void setDoctors(List<DoctorDTO> setDoctors)

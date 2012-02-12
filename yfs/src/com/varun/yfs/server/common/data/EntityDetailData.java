@@ -6,10 +6,11 @@ import java.util.Collections;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.dto.UserDTO;
 
 public class EntityDetailData extends AbstractData
 {
-	public ModelData getModel()
+	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();
 		model.set("data", Collections.EMPTY_LIST);

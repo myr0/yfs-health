@@ -9,12 +9,13 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
+import com.varun.yfs.dto.UserDTO;
 
 public class ProcessTypeData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(ProcessTypeData.class);
 	
-	public ModelData getModel()
+	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();
 		model.set("data", DataUtil.getModelList(ModelDataEnum.ProcessType.name()));

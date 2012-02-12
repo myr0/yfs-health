@@ -120,6 +120,7 @@ public class ImportDetail extends LayoutContainer
 		}
 		store.removeAll();
 		store.add(resultTemp);
+		store.commitChanges();
 		patientDetailGrid.unmask();
 	}
 
@@ -136,11 +137,11 @@ public class ImportDetail extends LayoutContainer
 
 				IndexPage.maskCenterComponent("Please wait...");
 
+				startProcessing();
+
 				defaultUploader.reset();
 				defaultUploader.clear();
 				dialogImport.hide();
-
-				startProcessing();
 			}
 		}
 

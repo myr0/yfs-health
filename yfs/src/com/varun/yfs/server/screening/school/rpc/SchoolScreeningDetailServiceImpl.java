@@ -35,6 +35,7 @@ public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		modelData.set("lstLocality", DataUtil.getModelList(ModelDataEnum.Locality.name()));
 
 		modelData.set("lstChapterName", DataUtil.getModelList(ModelDataEnum.ChapterName.name()));
+		modelData.set("lstProjectName", DataUtil.getModelList(ModelDataEnum.Project.name()));
 		modelData.set("lstReferralTypes", DataUtil.getModelList(ModelDataEnum.ReferralType.name()));
 		modelData.set("lstProcessType", DataUtil.getModelList(ModelDataEnum.ProcessType.name()));
 		modelData.set("lstTypeOfLocation", DataUtil.getModelList(ModelDataEnum.TypeOfLocation.name()));
