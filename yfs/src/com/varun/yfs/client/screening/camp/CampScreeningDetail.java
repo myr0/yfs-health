@@ -650,12 +650,11 @@ public class CampScreeningDetail extends LayoutContainer
 		configs.add(sexColumn);
 
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
-		NumberField numField = new NumberField();
-		numField.setAllowBlank(false);
-		numField.setMinLength(1);
-		numField.setMaxLength(3);
-		numField.setPropertyEditorType(Integer.class);
-		ageColumn.setEditor(new CellEditor(numField));
+		textField = new TextField<String>();
+		textField.setAllowBlank(false);
+		textField.setMinLength(1);
+		textField.setMaxLength(3);
+		ageColumn.setEditor(new CellEditor(textField));
 		configs.add(ageColumn);
 
 		ColumnConfig occupationColumn = new ColumnConfig("occupation", "Occupation", 100);
@@ -973,15 +972,17 @@ public class CampScreeningDetail extends LayoutContainer
 					screeningDate.setReadOnly(true);
 					chapterName.setReadOnly(true);
 
-					for (DoctorDTO doctor : scrDto.getDoctors())
-					{
-						doctors.setChecked(doctor, true);
-					}
+					if (scrDto.getDoctors() != null)
+						for (DoctorDTO doctor : scrDto.getDoctors())
+						{
+							doctors.setChecked(doctor, true);
+						}
 
-					for (VolunteerDTO volunteer : scrDto.getVolunteers())
-					{
-						volunteers.setChecked(volunteer, true);
-					}
+					if (scrDto.getVolunteers() != null)
+						for (VolunteerDTO volunteer : scrDto.getVolunteers())
+						{
+							volunteers.setChecked(volunteer, true);
+						}
 
 					editorGridStore.removeAll();
 					List<CampPatientDetailDTO> patientDetails = scrDto.getPatientDetails();

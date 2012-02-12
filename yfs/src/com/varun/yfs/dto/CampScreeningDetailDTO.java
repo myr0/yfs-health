@@ -6,25 +6,23 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 
 public class CampScreeningDetailDTO extends BaseModelData
 {
-	private static final long serialVersionUID = 7504451639139702860L;
+	private static final long serialVersionUID = -5102819903541475588L;
 
 	private long id;
-	private String deleted;
-	private CountryDTO country;
-	private StateDTO state;
-	private CityDTO city;
-	private TownDTO town;
-	private VillageDTO village;
-	private ChapterNameDTO chapterName;
-	private String address;
-	private LocalityDTO locality;
-	private String screeningDate;
-	private ProcessTypeDTO processType;
-	private String contactInformation;
-	private TypeOfLocationDTO typeOfLocation;
-	private List<VolunteerDTO> lstVolunteers;
-	private List<DoctorDTO> lstDoctors;
-	private List<CampPatientDetailDTO> lstPatientDetails;
+
+	private VolunteerDTO volunteer;
+	private StateDTO stateDTO;
+	private CountryDTO countryDTO;
+	private CityDTO cityDTO;
+	private TownDTO townDTO;
+	private VillageDTO villageDTO;
+	private ChapterNameDTO chapterNameDTO;
+	private LocalityDTO localityDTO;
+	private VolunteerDTO volunteerDTO;
+	private DoctorDTO doctorDTO;
+	private CampPatientDetailDTO campPatientDetailDTO;
+	private TypeOfLocationDTO typeOfLocationDTO;
+	private ProcessTypeDTO processTypeDTO;
 
 	public CampScreeningDetailDTO()
 	{
@@ -49,178 +47,162 @@ public class CampScreeningDetailDTO extends BaseModelData
 
 	public String getDeleted()
 	{
-		return deleted;
+		return get("deleted");
 	}
 
 	public final void setDeleted(String deleted)
 	{
 		set("deleted", deleted);
-		this.deleted = deleted;
 	}
 
 	public CountryDTO getCountry()
 	{
-		return country;
+		return get("country");
 	}
 
 	public void setCountry(CountryDTO country)
 	{
 		set("country", country);
-		this.country = country;
 	}
 
 	public StateDTO getState()
 	{
-		return state;
+		return get("state");
 	}
 
 	public void setState(StateDTO state)
 	{
 		set("state", state);
-		this.state = state;
 	}
 
 	public CityDTO getCity()
 	{
-		return city;
+		return get("city");
 	}
 
 	public void setCity(CityDTO city)
 	{
 		set("city", city);
-		this.city = city;
 	}
 
 	public TownDTO getTown()
 	{
-		return town;
+		return get("town");
 	}
 
 	public void setTown(TownDTO town)
 	{
 		set("town", town);
-		this.town = town;
 	}
 
 	public VillageDTO getVillage()
 	{
-		return village;
+		return get("village");
 	}
 
 	public void setVillage(VillageDTO village)
 	{
 		set("village", village);
-		this.village = village;
 	}
 
 	public ChapterNameDTO getChapterName()
 	{
-		return chapterName;
+		return get("chapterName");
 	}
 
 	public void setChapterName(ChapterNameDTO chapterName)
 	{
 		set("chapterName", chapterName);
-		this.chapterName = chapterName;
 	}
 
 	public LocalityDTO getLocality()
 	{
-		return locality;
+		return get("locality");
 	}
 
 	public void setLocality(LocalityDTO locality)
 	{
 		set("locality", locality);
-		this.locality = locality;
 	}
 
 	public String getAddress()
 	{
-		return address;
+		return get("address");
 	}
 
 	public void setAddress(String address)
 	{
 		set("address", address);
-		this.address = address;
 	}
 
 	public String getScreeningDate()
 	{
-		return screeningDate;
+		return get("screeningDate");
 	}
 
 	public void setScreeningDate(String screeningDate)
 	{
 		set("screeningDate", screeningDate);
-		this.screeningDate = screeningDate;
 	}
 
 	public ProcessTypeDTO getProcessType()
 	{
-		return processType;
+		return get("processType");
 	}
 
 	public void setProcessType(ProcessTypeDTO processType)
 	{
 		set("processType", processType);
-		this.processType = processType;
 	}
 
 	public TypeOfLocationDTO getTypeOfLocation()
 	{
-		return typeOfLocation;
+		return get("typeOfLocation");
 	}
 
 	public void setTypeOfLocation(TypeOfLocationDTO typeOfLocation)
 	{
 		set("typeOfLocation", typeOfLocation);
-		this.typeOfLocation = typeOfLocation;
 	}
 
 	public List<VolunteerDTO> getVolunteers()
 	{
-		return lstVolunteers;
+		return get("volunteers");
 	}
 
 	public void setVolunteers(List<VolunteerDTO> setVolunteers)
 	{
 		set("volunteers", setVolunteers);
-		this.lstVolunteers = setVolunteers;
 	}
 
 	public List<DoctorDTO> getDoctors()
 	{
-		return lstDoctors;
+		return get("doctors");
 	}
 
 	public void setDoctors(List<DoctorDTO> setDoctors)
 	{
 		set("doctors", setDoctors);
-		this.lstDoctors = setDoctors;
 	}
 
 	public String getContactInformation()
 	{
-		return contactInformation;
+		return get("contactInformation");
 	}
 
 	public void setContactInformation(String contactInformation)
 	{
 		set("contactInformation", contactInformation);
-		this.contactInformation = contactInformation;
 	}
 
 	public void setPatientDetails(List<CampPatientDetailDTO> lstPatientDetails)
 	{
 		set("lstPatientDetails", lstPatientDetails);
-		this.lstPatientDetails = lstPatientDetails;
 	}
 
 	public List<CampPatientDetailDTO> getPatientDetails()
 	{
-		return lstPatientDetails;
+		return get("lstPatientDetails");
 	}
 
 	@Override

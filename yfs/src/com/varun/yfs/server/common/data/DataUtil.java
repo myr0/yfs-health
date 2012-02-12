@@ -296,7 +296,8 @@ public class DataUtil
 		{
 			CampScreeningDetail scrDetHibObj = dozerMapper.map(screeningDetailDto, CampScreeningDetail.class);
 			String id = screeningDetailDto.get("id");
-			extractPatientDetailData(session, screeningDetailDto, scrDetHibObj);
+			// extractPatientDetailData(session, screeningDetailDto,
+			// scrDetHibObj);
 			if (id == null)
 			{
 				session.save(scrDetHibObj);
@@ -327,7 +328,8 @@ public class DataUtil
 		{
 			SchoolScreeningDetail scrDetHibObj = dozerMapper.map(screeningDetailDto, SchoolScreeningDetail.class);
 			String id = screeningDetailDto.get("id");
-			extractPatientDetailData(session, screeningDetailDto, scrDetHibObj);
+			// extractPatientDetailData(session, screeningDetailDto,
+			// scrDetHibObj);
 			if (id == null)
 			{
 				session.save(scrDetHibObj);
@@ -629,133 +631,137 @@ public class DataUtil
 		return lst.get(cntIndex);
 	}
 
-	private static void extractPatientDetailData(Session session, CampScreeningDetailDTO screeningDetailDto,
-			CampScreeningDetail scrDetHibObj)
-	{
-		int index = 0;
-		for (ModelData modelData : screeningDetailDto.getPatientDetails())
-		{
-			CampPatientDetail patientDetail = scrDetHibObj.getPatientDetails().get(index++);
+	// private static void extractPatientDetailData(Session session,
+	// CampScreeningDetailDTO screeningDetailDto,
+	// CampScreeningDetail scrDetHibObj)
+	// {
+	// int index = 0;
+	// for (ModelData modelData : screeningDetailDto.getPatientDetails())
+	// {
+	// CampPatientDetail patientDetail =
+	// scrDetHibObj.getPatientDetails().get(index++);
+	//
+	// patientDetail.setName(Util.safeToString(modelData.get("name")));
+	// patientDetail.setAge(Util.safeToString(modelData.get("age")));
+	//
+	// Object object = modelData.get("sex");
+	// if (object != null)
+	// patientDetail.setSex(object.toString());
+	//
+	// patientDetail.setOccupation(Util.safeToString(modelData.get("occupation")));
+	// patientDetail.setHeight(Util.safeToString(modelData.get("height")));
+	// patientDetail.setWeight(Util.safeToString(modelData.get("weight")));
+	// patientDetail.setAddress(Util.safeToString(modelData.get("address")));
+	// patientDetail.setContactNo(Util.safeToString(modelData.get("contactNo")));
+	// patientDetail.setDeleted(modelData.get("deleted").toString());
+	// patientDetail.setBloodPressure(Util.safeToString(modelData.get("bloodPressure")));
+	//
+	// patientDetail.setFindings(Util.safeToString(modelData.get("findings")));
+	// patientDetail.setTreatment(Util.safeToString(modelData.get("treatment")));
+	//
+	// object = modelData.get("referral1");
+	// if (object != null)
+	// patientDetail.setReferral1(object.toString());
+	//
+	// object = modelData.get("referral2");
+	// if (object != null)
+	// patientDetail.setReferral2(object.toString());
+	//
+	// object = modelData.get("referral3");
+	// if (object != null)
+	// patientDetail.setReferral3(object.toString());
+	//
+	// object = modelData.get("emergency");
+	// if (object != null)
+	// patientDetail.setEmergency(object.toString());
+	//
+	// object = modelData.get("medicines");
+	// if (object != null)
+	// patientDetail.setMedicines(object.toString());
+	//
+	// object = modelData.get("caseClosed");
+	// if (object != null)
+	// patientDetail.setCaseClosed(object.toString());
+	//
+	// object = modelData.get("surgeryCase");
+	// if (object != null)
+	// patientDetail.setSurgeryCase(object.toString());
+	//
+	// if (patientDetail.getId() > 0)
+	// {
+	// session.saveOrUpdate(patientDetail);
+	// } else
+	// {
+	// session.save(patientDetail);
+	// }
+	// session.flush();
+	// }
+	// }
 
-			patientDetail.setName(Util.safeToString(modelData.get("name")));
-			patientDetail.setAge(Util.safeToString(modelData.get("age")));
-
-			Object object = modelData.get("sex");
-			if (object != null)
-				patientDetail.setSex(object.toString());
-
-			patientDetail.setOccupation(Util.safeToString(modelData.get("occupation")));
-			patientDetail.setHeight(Util.safeToString(modelData.get("height")));
-			patientDetail.setWeight(Util.safeToString(modelData.get("weight")));
-			patientDetail.setAddress(Util.safeToString(modelData.get("address")));
-			patientDetail.setContactNo(Util.safeToString(modelData.get("contactNo")));
-			patientDetail.setDeleted(modelData.get("deleted").toString());
-			patientDetail.setBloodPressure(Util.safeToString(modelData.get("bloodPressure")));
-
-			patientDetail.setFindings(Util.safeToString(modelData.get("findings")));
-			patientDetail.setTreatment(Util.safeToString(modelData.get("treatment")));
-
-			object = modelData.get("referral1");
-			if (object != null)
-				patientDetail.setReferral1(object.toString());
-
-			object = modelData.get("referral2");
-			if (object != null)
-				patientDetail.setReferral2(object.toString());
-
-			object = modelData.get("referral3");
-			if (object != null)
-				patientDetail.setReferral3(object.toString());
-
-			object = modelData.get("emergency");
-			if (object != null)
-				patientDetail.setEmergency(object.toString());
-
-			object = modelData.get("medicines");
-			if (object != null)
-				patientDetail.setMedicines(object.toString());
-
-			object = modelData.get("caseClosed");
-			if (object != null)
-				patientDetail.setCaseClosed(object.toString());
-
-			object = modelData.get("surgeryCase");
-			if (object != null)
-				patientDetail.setSurgeryCase(object.toString());
-
-			if (patientDetail.getId() > 0)
-			{
-				session.saveOrUpdate(patientDetail);
-			} else
-			{
-				session.save(patientDetail);
-			}
-			session.flush();
-		}
-	}
-
-	private static void extractPatientDetailData(Session session, SchoolScreeningDetailDTO screeningDetailDto,
-			SchoolScreeningDetail scrDetHibObj)
-	{
-		int index = 0;
-		for (ModelData modelData : screeningDetailDto.getPatientDetails())
-		{
-			SchoolPatientDetail patientDetail = scrDetHibObj.getPatientDetails().get(index++);
-
-			patientDetail.setName(Util.safeToString(modelData.get("name")));
-			patientDetail.setAge(Util.safeToString(modelData.get("age")));
-
-			Object object = modelData.get("sex");
-			if (object != null)
-				patientDetail.setSex(object.toString());
-
-			patientDetail.setStandard(Util.safeToString(modelData.get("standard")));
-			patientDetail.setHeight(Util.safeToString(modelData.get("height")));
-			patientDetail.setWeight(Util.safeToString(modelData.get("weight")));
-			patientDetail.setAddress(Util.safeToString(modelData.get("address")));
-			patientDetail.setContactNo(Util.safeToString(modelData.get("contactNo")));
-			patientDetail.setDeleted(modelData.get("deleted").toString());
-
-			patientDetail.setFindings(Util.safeToString(modelData.get("findings")));
-			patientDetail.setTreatment(Util.safeToString(modelData.get("treatment")));
-
-			object = modelData.get("referral1");
-			if (object != null)
-				patientDetail.setReferral1(object.toString());
-
-			object = modelData.get("referral2");
-			if (object != null)
-				patientDetail.setReferral2(object.toString());
-
-			object = modelData.get("referral3");
-			if (object != null)
-				patientDetail.setReferral3(object.toString());
-
-			object = modelData.get("emergency");
-			if (object != null)
-				patientDetail.setEmergency(object.toString());
-
-			object = modelData.get("medicines");
-			if (object != null)
-				patientDetail.setMedicines(object.toString());
-
-			object = modelData.get("caseClosed");
-			if (object != null)
-				patientDetail.setCaseClosed(object.toString());
-
-			object = modelData.get("surgeryCase");
-			if (object != null)
-				patientDetail.setSurgeryCase(object.toString());
-
-			if (patientDetail.getId() > 0)
-			{
-				session.saveOrUpdate(patientDetail);
-			} else
-			{
-				session.save(patientDetail);
-			}
-			session.flush();
-		}
-	}
+	// private static void extractPatientDetailData(Session session,
+	// SchoolScreeningDetailDTO screeningDetailDto,
+	// SchoolScreeningDetail scrDetHibObj)
+	// {
+	// int index = 0;
+	// for (ModelData modelData : screeningDetailDto.getPatientDetails())
+	// {
+	// SchoolPatientDetail patientDetail =
+	// scrDetHibObj.getPatientDetails().get(index++);
+	//
+	// patientDetail.setName(Util.safeToString(modelData.get("name")));
+	// patientDetail.setAge(Util.safeToString(modelData.get("age")));
+	//
+	// Object object = modelData.get("sex");
+	// if (object != null)
+	// patientDetail.setSex(object.toString());
+	//
+	// patientDetail.setStandard(Util.safeToString(modelData.get("standard")));
+	// patientDetail.setHeight(Util.safeToString(modelData.get("height")));
+	// patientDetail.setWeight(Util.safeToString(modelData.get("weight")));
+	// patientDetail.setAddress(Util.safeToString(modelData.get("address")));
+	// patientDetail.setContactNo(Util.safeToString(modelData.get("contactNo")));
+	// patientDetail.setDeleted(modelData.get("deleted").toString());
+	//
+	// patientDetail.setFindings(Util.safeToString(modelData.get("findings")));
+	// patientDetail.setTreatment(Util.safeToString(modelData.get("treatment")));
+	//
+	// object = modelData.get("referral1");
+	// if (object != null)
+	// patientDetail.setReferral1(object.toString());
+	//
+	// object = modelData.get("referral2");
+	// if (object != null)
+	// patientDetail.setReferral2(object.toString());
+	//
+	// object = modelData.get("referral3");
+	// if (object != null)
+	// patientDetail.setReferral3(object.toString());
+	//
+	// object = modelData.get("emergency");
+	// if (object != null)
+	// patientDetail.setEmergency(object.toString());
+	//
+	// object = modelData.get("medicines");
+	// if (object != null)
+	// patientDetail.setMedicines(object.toString());
+	//
+	// object = modelData.get("caseClosed");
+	// if (object != null)
+	// patientDetail.setCaseClosed(object.toString());
+	//
+	// object = modelData.get("surgeryCase");
+	// if (object != null)
+	// patientDetail.setSurgeryCase(object.toString());
+	//
+	// if (patientDetail.getId() > 0)
+	// {
+	// session.saveOrUpdate(patientDetail);
+	// } else
+	// {
+	// session.save(patientDetail);
+	// }
+	// session.flush();
+	// }
+	// }
 
 }

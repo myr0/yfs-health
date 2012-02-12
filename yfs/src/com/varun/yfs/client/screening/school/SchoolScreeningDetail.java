@@ -668,11 +668,10 @@ public class SchoolScreeningDetail extends LayoutContainer
 		configs.add(classColumn);
 
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
-		NumberField numField = new NumberField();
+		TextField<String> numField = new TextField<String>();
 		numField.setAllowBlank(false);
 		numField.setMinLength(1);
 		numField.setMaxLength(3);
-		numField.setPropertyEditorType(Integer.class);
 		ageColumn.setEditor(new CellEditor(numField));
 		configs.add(ageColumn);
 
@@ -1006,15 +1005,17 @@ public class SchoolScreeningDetail extends LayoutContainer
 					screeningDate.setReadOnly(true);
 					chapterName.setReadOnly(true);
 
-					for (DoctorDTO doctor : scrDto.getDoctors())
-					{
-						doctors.setChecked(doctor, true);
-					}
+					if (scrDto.getDoctors() != null)
+						for (DoctorDTO doctor : scrDto.getDoctors())
+						{
+							doctors.setChecked(doctor, true);
+						}
 
-					for (VolunteerDTO volunteer : scrDto.getVolunteers())
-					{
-						volunteers.setChecked(volunteer, true);
-					}
+					if (scrDto.getVolunteers() != null)
+						for (VolunteerDTO volunteer : scrDto.getVolunteers())
+						{
+							volunteers.setChecked(volunteer, true);
+						}
 
 					editorGridStore.removeAll();
 					List<SchoolPatientDetailDTO> patientDetails = scrDto.getPatientDetails();
