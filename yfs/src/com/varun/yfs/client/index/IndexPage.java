@@ -62,6 +62,7 @@ import com.varun.yfs.client.screening.camp.CampScreeningDetail;
 import com.varun.yfs.client.screening.clinic.ClinicScreeningDetail;
 import com.varun.yfs.client.screening.school.SchoolScreeningDetail;
 import com.varun.yfs.client.util.Util;
+import com.varun.yfs.dto.UserDTO;
 
 public class IndexPage extends LayoutContainer
 {
@@ -86,6 +87,7 @@ public class IndexPage extends LayoutContainer
 	private static TreePanel<ModelData> treeCampScreeningPanel = new TreePanel<ModelData>(campScreeningPanelStore);
 
 	private String userName;
+	private UserDTO currentUser;
 
 	protected final static Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
@@ -94,17 +96,16 @@ public class IndexPage extends LayoutContainer
 		}
 	};
 
-	public IndexPage()
+	public IndexPage(UserDTO result)
 	{
-		this("Anonymous");
+		init();
+		this.currentUser = result;
+		this.userName = result.getName();
 	}
 
-	public IndexPage(String userLoginName)
+	private void init()
 	{
-		// setHeight("100%");
 		setLayout(new FitLayout());
-		this.userName = userLoginName;
-
 		mainContentPanel = new ContentPanel();
 		layoutContainerCenter = new LayoutContainer();
 		layoutContainerCenter.setBorders(true);
@@ -238,7 +239,7 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 		changePassword.setToolTip("Change Password");
-		
+
 		toolbar.add(home);
 		toolbar.add(new SeparatorToolItem());
 
@@ -396,8 +397,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(),
-						DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(), DUMMYLISTENER);
 				// System.out.println(caught.getMessage());
 			}
 
@@ -504,8 +504,7 @@ public class IndexPage extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				// System.out.println(caught.getMessage());
-				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(),
-						DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(), DUMMYLISTENER);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -555,8 +554,7 @@ public class IndexPage extends LayoutContainer
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
-			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property,
-					String filter)
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
 			{
 				String name = record.get("name");
 				name = name.toLowerCase();
@@ -618,8 +616,7 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 		cpCampScreening.setTopComponent(toolbar);
 
-		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.addButtonIcon()));
+		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		toolbar.add(newScreening);
 		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -639,8 +636,7 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.deleteButtonIcon()));
+		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(removeScreening);
 		removeScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
@@ -677,8 +673,7 @@ public class IndexPage extends LayoutContainer
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
-			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property,
-					String filter)
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
 			{
 				String name = record.get("name");
 				name = name.toLowerCase();
@@ -769,9 +764,7 @@ public class IndexPage extends LayoutContainer
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						MessageBox.info("Error",
-								"Encountered an error while removing the selected entry. Please try again.",
-								DUMMYLISTENER);
+						MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
 					}
 
 					@Override
@@ -780,9 +773,7 @@ public class IndexPage extends LayoutContainer
 						if (result.equals(RpcStatusEnum.SUCCESS))
 							refreshIndexPanel(true);
 						else
-							MessageBox.info("Error",
-									"Encountered an error while removing the selected entry. Please try again.",
-									DUMMYLISTENER);
+							MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
 					}
 				});
 		}
@@ -798,8 +789,7 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 		cpSchoolScreening.setTopComponent(toolbar);
 
-		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.addButtonIcon()));
+		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		toolbar.add(newScreening);
 		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -818,8 +808,7 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.deleteButtonIcon()));
+		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(removeScreening);
 		removeScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
@@ -837,6 +826,7 @@ public class IndexPage extends LayoutContainer
 				removeScreeningRecord("schoolscreeningdetail", selected);
 			}
 		});
+		
 
 		treeSchoolScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
 		{
@@ -856,8 +846,7 @@ public class IndexPage extends LayoutContainer
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
-			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property,
-					String filter)
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
 			{
 				String name = record.get("name");
 				name = name.toLowerCase();
@@ -953,8 +942,7 @@ public class IndexPage extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				// System.out.println(caught.getMessage());
-				MessageBox.info("Error",
-						"Error Encountered while loading School Screening Panel" + caught.getMessage(), DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading School Screening Panel" + caught.getMessage(), DUMMYLISTENER);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -968,9 +956,15 @@ public class IndexPage extends LayoutContainer
 					List<ModelData> children = (List<ModelData>) modelData.get("children"); // screening
 					if (children != null)
 					{
-						treeSchoolScreeningPanel.getStore().add(modelData, children, true);
+						for (ModelData model : children)
+						{
+							treeSchoolScreeningPanel.getStore().add(modelData, model, true);
+							List<ModelData> screenings = (List<ModelData>) model.get("children");
+							treeSchoolScreeningPanel.getStore().add(model, screenings, true);
+						}
 					}
 				}
+				treeSchoolScreeningPanel.expandAll();
 			}
 		});
 
@@ -979,8 +973,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(),
-						DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(), DUMMYLISTENER);
 				// System.out.println(caught.getMessage());
 			}
 
@@ -1008,8 +1001,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Camp Panel" + caught.getMessage(),
-						DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Camp Panel" + caught.getMessage(), DUMMYLISTENER);
 				// System.out.println(caught.getMessage());
 			}
 
@@ -1021,10 +1013,15 @@ public class IndexPage extends LayoutContainer
 				for (ModelData modelData : lst)
 				{
 					treeCampScreeningPanel.getStore().add(modelData, true); // chapter-name
-					List<ModelData> children = (List<ModelData>) modelData.get("children"); // screening
+					List<ModelData> children = (List<ModelData>) modelData.get("children"); // project-name
 					if (children != null)
 					{
-						treeCampScreeningPanel.getStore().add(modelData, children, true);
+						for (ModelData model : children)
+						{
+							treeCampScreeningPanel.getStore().add(modelData, model, true);
+							List<ModelData> screenings = (List<ModelData>) model.get("children");
+							treeCampScreeningPanel.getStore().add(model, screenings, true);
+						}
 					}
 				}
 				treeCampScreeningPanel.expandAll();

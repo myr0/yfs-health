@@ -1,5 +1,6 @@
 package com.varun.yfs.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -10,6 +11,9 @@ public class UserDTO extends BaseModelData
 	private long id;
 	private List<UserChapterPermissionsDTO> chapterPermissions;
 	private List<UserProjectPermissionsDTO> projectPermissions;
+	private List<UserClinicPermissionsDTO> clinicPermissions;
+	private List<UserEntityPermissionsDTO> entityPermissions;
+	private List<UserReportPermissionsDTO> reportPermissions;
 
 	public UserDTO()
 	{
@@ -57,23 +61,21 @@ public class UserDTO extends BaseModelData
 	public void setChapterPermissions(List<UserChapterPermissionsDTO> chapterNames)
 	{
 		set("chapterPermissions", chapterNames);
-		this.chapterPermissions = chapterNames;
 	}
 
 	public List<UserChapterPermissionsDTO> getChapterPermissions()
 	{
-		return this.chapterPermissions;
+		return get("chapterPermissions");
 	}
 
-	public void setProjectPermissions(List<UserProjectPermissionsDTO> villages)
+	public void setProjectPermissions(List<UserProjectPermissionsDTO> projects)
 	{
-		set("projectPermissions", villages);
-		this.projectPermissions = villages;
+		set("projectPermissions", projects);
 	}
 
 	public List<UserProjectPermissionsDTO> getProjectPermissions()
 	{
-		return this.projectPermissions;
+		return get("projectPermissions");
 	}
 
 	public String getDeleted()
@@ -114,6 +116,96 @@ public class UserDTO extends BaseModelData
 	public String getRole()
 	{
 		return get("role");
+	}
+
+	public void setClinicPermissions(List<UserClinicPermissionsDTO> clinicPermissions)
+	{
+		set("clinicPermissions", clinicPermissions);
+	}
+
+	public List<UserClinicPermissionsDTO> getClinicPermissions()
+	{
+		return get("clinicPermissions");
+	}
+
+	public void setReportPermissions(List<UserReportPermissionsDTO> reportPermissions)
+	{
+		set("reportPermissions", reportPermissions);
+	}
+
+	public List<UserReportPermissionsDTO> getReportPermissions()
+	{
+		return get("reportPermissions");
+	}
+
+	public void setEntityPermissions(List<UserEntityPermissionsDTO> entityPermissions)
+	{
+		set("entityPermissions", entityPermissions);
+	}
+
+	public List<UserEntityPermissionsDTO> getEntityPermissions()
+	{
+		return get("entityPermissions");
+	}
+
+	public List<String> getChaptersWithPermission(PermissionTypeEnum type)
+	{
+		List<String> chaps = new ArrayList<String>();
+
+		List<UserChapterPermissionsDTO> chapters = getChapterPermissions();
+		for (UserChapterPermissionsDTO chapDto : chapters)
+		{
+			switch (type)
+			{
+			case READ:
+				String read = chapDto.getRead();
+				if (read != null && read.equalsIgnoreCase(type.name()))
+					chaps.add(chapDto.getChapterName());
+				break;
+			case WRITE:
+				String write = chapDto.getWrite();
+				if (write != null && write.equalsIgnoreCase(type.name()))
+					chaps.add(chapDto.getChapterName());
+				break;
+			case DELETE:
+				String delete = chapDto.getDelete();
+				if (delete != null && delete.equalsIgnoreCase(type.name()))
+					chaps.add(chapDto.getChapterName());
+				break;
+			}
+		}
+
+		return chaps;
+	}
+
+	public List<String> getProjectWithPermission(PermissionTypeEnum type)
+	{
+		List<String> chaps = new ArrayList<String>();
+
+		List<UserProjectPermissionsDTO> projects = getProjectPermissions();
+		for (UserProjectPermissionsDTO projectDto : projects)
+		{
+			switch (type)
+			{
+			case READ:
+				String read = projectDto.getRead();
+				if (read != null && read.equalsIgnoreCase(type.name()))
+					chaps.add(projectDto.getProjectName());
+				break;
+			case WRITE:
+				String write = projectDto.getWrite();
+				if (write != null && write.equalsIgnoreCase(type.name()))
+					chaps.add(projectDto.getProjectName());
+				break;
+			case DELETE:
+				String delete = projectDto.getDelete();
+				if (delete != null && delete.equalsIgnoreCase(type.name()))
+					chaps.add(projectDto.getProjectName());
+				break;
+			}
+		}
+
+		return chaps;
 	}
 
 	@Override

@@ -104,7 +104,7 @@ public class Login extends LayoutContainer
 								if (result.getLoggedIn())
 								{
 									RootPanel.get().clear();
-									RootPanel.get().add(new IndexPage(result.getName()));
+									RootPanel.get().add(new IndexPage(result));
 
 									String sessionID = result.getSessionId();
 									final long DURATION = 1000 * 60 * 60 * 24 * 1;

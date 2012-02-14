@@ -43,7 +43,7 @@ public class Yfs implements EntryPoint
 				{
 					if (result.getLoggedIn())
 					{
-						IndexPage w = new IndexPage(result.getName());
+						IndexPage w = new IndexPage(result);
 						RootPanel.get().add(w);
 					} else
 					{

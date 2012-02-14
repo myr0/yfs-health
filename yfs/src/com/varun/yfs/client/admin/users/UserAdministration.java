@@ -19,8 +19,11 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
@@ -46,8 +49,12 @@ import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.dto.UserChapterPermissionsDTO;
+import com.varun.yfs.dto.UserClinicPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
+import com.varun.yfs.dto.UserEntityPermissionsDTO;
 import com.varun.yfs.dto.UserProjectPermissionsDTO;
+import com.varun.yfs.dto.UserReportPermissionsDTO;
+import com.varun.yfs.dto.UserRolesEnum;
 import com.varun.yfs.dto.YesNoDTO;
 
 public class UserAdministration extends LayoutContainer
@@ -57,11 +64,15 @@ public class UserAdministration extends LayoutContainer
 	private final ContentPanel gridPanel = new ContentPanel();
 
 	private final ContentPanel userDetailsViewHolder = new ContentPanel();
+	private TabPanel tabPermissions = new TabPanel();
 	private final TextField<String> txtfldUsrName = new TextField<String>();
 	private final TextField<String> txtfldPassword = new TextField<String>();
 	private SimpleComboBox<String> userRole = new SimpleComboBox<String>();
 	private final SimpleComboBox<String> fieldProject = new SimpleComboBox<String>();
 	private final SimpleComboBox<String> fieldChapter = new SimpleComboBox<String>();
+	private final SimpleComboBox<String> fieldClinic = new SimpleComboBox<String>();
+	private final SimpleComboBox<String> fieldReports = new SimpleComboBox<String>();
+	private final SimpleComboBox<String> fieldEntity = new SimpleComboBox<String>();
 
 	private String curAdminEntity = "Default";
 	private ModelData currentModelData = new BaseModelData();
@@ -69,9 +80,44 @@ public class UserAdministration extends LayoutContainer
 
 	private EditorGrid<UserChapterPermissionsDTO> editorGridChapter;
 	private EditorGrid<UserProjectPermissionsDTO> editorGridProject;
+	private EditorGrid<UserClinicPermissionsDTO> editorGridClinic;
+	private EditorGrid<UserReportPermissionsDTO> editorGridReports;
+	private EditorGrid<UserEntityPermissionsDTO> editorGridEntity;
 
 	public UserAdministration()
 	{
+	}
+
+	private class CellEditorLocal extends CellEditor
+	{
+		private Field<? extends Object> field;
+
+		public CellEditorLocal(Field<? extends Object> field)
+		{
+			super(field);
+			this.field = field;
+		}
+
+		@Override
+		public Object preProcessValue(Object value)
+		{
+			if (value == null)
+			{
+				return value;
+			}
+			return ((SimpleComboBox) field).findModel(value.toString());
+		}
+
+		@Override
+		public Object postProcessValue(Object value)
+		{
+			if (value == null)
+			{
+				return value;
+			}
+			return ((ModelData) value).get("value");
+		}
+
 	}
 
 	final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
@@ -192,7 +238,7 @@ public class UserAdministration extends LayoutContainer
 				txtfldUsrName.clear();
 				txtfldPassword.clear();
 
-//				userDetailsViewHolder.setVisible(true);
+				// userDetailsViewHolder.setVisible(true);
 				userDetailsViewHolder.focus();
 
 				isAdd = true;
@@ -227,7 +273,7 @@ public class UserAdministration extends LayoutContainer
 	private void buildBasicUserInfoPanel()
 	{
 		userDetailsViewHolder.setHeading("User Details");
-//		userDetailsViewHolder.setVisible(false);
+		// userDetailsViewHolder.setVisible(false);
 
 		FormPanel frmpanelUserBasic = new FormPanel();
 		frmpanelUserBasic.setHeaderVisible(false);
@@ -246,9 +292,9 @@ public class UserAdministration extends LayoutContainer
 
 		userRole.setTriggerAction(TriggerAction.ALL);
 		userRole.setFieldLabel("Role");
-		userRole.add("Administrator");
-		userRole.add("Administrator - Chapter");
-		userRole.add("Area Co-Ordinator");
+		userRole.add(UserRolesEnum.Administrator.name());
+		userRole.add(UserRolesEnum.AreaCoOrdinator.name());
+		userRole.add(UserRolesEnum.ChapterAdministrator.name());
 		userRole.setAllowBlank(false);
 
 		frmpanelUserBasic.add(txtfldUsrName, new FormData("80%"));
@@ -262,7 +308,7 @@ public class UserAdministration extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				reinitPage(curAdminEntity);
-//				userDetailsViewHolder.setVisible(false);
+				// userDetailsViewHolder.setVisible(false);
 			}
 		}));
 
@@ -375,6 +421,7 @@ public class UserAdministration extends LayoutContainer
 
 		// userDetailsViewHolder.setSize("300px", "600px");
 		userDetailsViewHolder.add(frmpanelUserBasic, new FitData(5));
+
 	}
 
 	private void buildUserNameAdminPanel()
@@ -399,223 +446,77 @@ public class UserAdministration extends LayoutContainer
 		editorGridUser.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 		gridPanel.add(editorGridUser);
 
-		editorGridUser.getSelectionModel().addListener(Events.SelectionChange,
-				new Listener<SelectionChangedEvent<ModelData>>()
+		editorGridUser.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<ModelData>>()
+		{
+			@SuppressWarnings("unchecked")
+			public void handleEvent(SelectionChangedEvent<ModelData> be)
+			{
+				List<ModelData> selection = be.getSelection();
+				if (selection.size() > 0)
 				{
-					@SuppressWarnings("unchecked")
-					public void handleEvent(SelectionChangedEvent<ModelData> be)
+					txtfldUsrName.clear();
+					txtfldPassword.clear();
+					userRole.clearSelections();
+
+					ModelData modelData = selection.get(0);
+					txtfldUsrName.setValue(modelData.get("name").toString());
+					txtfldPassword.setValue(modelData.get("password").toString());
+					Object role = modelData.get("role");
+					if (role != null && userRole.findModel(role.toString()) != null)
 					{
-						List<ModelData> selection = be.getSelection();
-						if (selection.size() > 0)
-						{
-							txtfldUsrName.clear();
-							txtfldPassword.clear();
-							userRole.clearSelections();
-
-							ModelData modelData = selection.get(0);
-							txtfldUsrName.setValue(modelData.get("name").toString());
-							txtfldPassword.setValue(modelData.get("password").toString());
-							Object role = modelData.get("role");
-							if (role != null && userRole.findModel(role.toString()) != null)
-							{
-								userRole.setValue(userRole.findModel(role.toString()));
-							}
-
-//							userDetailsViewHolder.setVisible(true);
-							userDetailsViewHolder.focus();
-
-							editorGridChapter.getStore().removeAll();
-							editorGridProject.getStore().removeAll();
-
-							editorGridChapter.getStore().add(
-									(List<? extends UserChapterPermissionsDTO>) modelData.get("chapterPermissions"));
-							editorGridProject.getStore().add(
-									(List<? extends UserProjectPermissionsDTO>) modelData.get("projectPermissions"));
-						}
+						userRole.setValue(userRole.findModel(role.toString()));
 					}
-				});
+
+					// userDetailsViewHolder.setVisible(true);
+					userDetailsViewHolder.focus();
+
+					editorGridChapter.getStore().removeAll();
+					editorGridProject.getStore().removeAll();
+
+					editorGridChapter.getStore().add((List<? extends UserChapterPermissionsDTO>) modelData.get("chapterPermissions"));
+					editorGridProject.getStore().add((List<? extends UserProjectPermissionsDTO>) modelData.get("projectPermissions"));
+				}
+			}
+		});
 	}
 
 	private void buildPermissionsGrid()
 	{
+		ContentPanel cpChapterGrid = buildChapterPermissionsGrid();
 
-		ContentPanel cpChapterGrid = new ContentPanel();
-		cpChapterGrid.setLayout(new FitLayout());
-		cpChapterGrid.setHeaderVisible(false);
+		ContentPanel cpProjectGrid = buildProjectPermissionsGrid();
 
-		List<ColumnConfig> configsChapter = new ArrayList<ColumnConfig>();
-		ColumnConfig clmncnfgChapter = new ColumnConfig("chapterName", "Chapter", 120);
-		fieldChapter.setTriggerAction(TriggerAction.ALL);
-		fieldChapter.setAllowBlank(false);
-		CellEditor editor = new CellEditor(fieldChapter)
-		{
-			@Override
-			public Object preProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return fieldChapter.findModel(value.toString());
-			}
+		ContentPanel cpClinicGrid = buildClinicPermissionsGrid();
+		
+		ContentPanel cpReportsGrid = buildReportsPermissionsGrid();
+		
+		ContentPanel cpEntityGrid = buildEntityPermissionsGrid();
 
-			@Override
-			public Object postProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return ((ModelData) value).get("value");
-			}
-		};
-		clmncnfgChapter.setEditor(editor);
-		configsChapter.add(clmncnfgChapter);
+		TabItem chapterTab = new TabItem("Chapter");
+		chapterTab.add(cpChapterGrid);
 
-		ColumnConfig checkColumn = new ColumnConfig("read", "Read", 55);
-		final SimpleComboBox<String> yesNoDtoChapterRead = new SimpleComboBox<String>();
-		yesNoDtoChapterRead.setTriggerAction(TriggerAction.ALL);
-		yesNoDtoChapterRead.setForceSelection(true);
-		yesNoDtoChapterRead.add(YesNoDTO.getStringValues());
-		yesNoDtoChapterRead.setAllowBlank(false);
-		editor = new CellEditor(yesNoDtoChapterRead)
-		{
-			@Override
-			public Object preProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return yesNoDtoChapterRead.findModel(value.toString());
-			}
+		TabItem projectTab = new TabItem("Project");
+		projectTab.add(cpProjectGrid);
 
-			@Override
-			public Object postProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return ((ModelData) value).get("value");
-			}
-		};
-		checkColumn.setEditor(editor);
-		configsChapter.add(checkColumn);
+		TabItem reportTab = new TabItem("Report");
+		projectTab.add(cpReportsGrid);
 
-		checkColumn = new ColumnConfig("write", "Write", 55);
-		final SimpleComboBox<String> yesNoDtoChapterWrite = new SimpleComboBox<String>();
-		yesNoDtoChapterWrite.setTriggerAction(TriggerAction.ALL);
-		yesNoDtoChapterWrite.setForceSelection(true);
-		yesNoDtoChapterWrite.add(YesNoDTO.getStringValues());
-		yesNoDtoChapterWrite.setAllowBlank(false);
-		editor = new CellEditor(yesNoDtoChapterWrite)
-		{
-			@Override
-			public Object preProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return yesNoDtoChapterWrite.findModel(value.toString());
-			}
+		TabItem clinicTab = new TabItem("Clinic");
+		projectTab.add(cpClinicGrid);
 
-			@Override
-			public Object postProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return ((ModelData) value).get("value");
-			}
-		};
-		checkColumn.setEditor(editor);
-		configsChapter.add(checkColumn);
+		TabItem entityTab = new TabItem("Other");
+		projectTab.add(cpEntityGrid);
 
-		checkColumn = new ColumnConfig("delete", "Delete", 55);
-		final SimpleComboBox<String> yesNoDtoDelete = new SimpleComboBox<String>();
-		yesNoDtoDelete.setTriggerAction(TriggerAction.ALL);
-		yesNoDtoDelete.setForceSelection(true);
-		yesNoDtoDelete.add(YesNoDTO.getStringValues());
-		yesNoDtoDelete.setAllowBlank(false);
-		editor = new CellEditor(yesNoDtoDelete)
-		{
-			@Override
-			public Object preProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return yesNoDtoDelete.findModel(value.toString());
-			}
+		tabPermissions.add(chapterTab);
+		tabPermissions.add(projectTab);
+		tabPermissions.add(reportTab);
+		tabPermissions.add(clinicTab);
+		tabPermissions.add(entityTab);
+		userDetailsViewHolder.add(tabPermissions, new FitData(5));
+	}
 
-			@Override
-			public Object postProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return ((ModelData) value).get("value");
-			}
-		};
-		checkColumn.setEditor(editor);
-		configsChapter.add(checkColumn);
-
-		editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(new ListStore<UserChapterPermissionsDTO>(),
-				new ColumnModel(configsChapter));
-		editorGridChapter.setHeight(120);
-		editorGridChapter.setLoadMask(true);
-		editorGridChapter.setColumnLines(true);
-		editorGridChapter.setBorders(true);
-		editorGridChapter.setClicksToEdit(ClicksToEdit.ONE);
-		cpChapterGrid.add(editorGridChapter);
-
-		ToolBar toolBarChapterPerm = new ToolBar();
-		Button addChapterPerm = new Button("Add");
-		addChapterPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
-		addChapterPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
-		{
-			@Override
-			public void componentSelected(ButtonEvent ce)
-			{
-				UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
-				model.setDelete("YES");
-				model.setWrite("YES");
-				model.setRead("YES");
-				editorGridChapter.getStore().add(model);
-				editorGridChapter.startEditing(editorGridChapter.getStore().getCount() - 1, 0);
-			}
-		});
-		toolBarChapterPerm.add(addChapterPerm);
-
-		Button removeChapterPerm = new Button("Remove");
-		removeChapterPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
-		removeChapterPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
-		{
-			@Override
-			public void componentSelected(ButtonEvent ce)
-			{
-				editorGridChapter.stopEditing();
-				UserChapterPermissionsDTO selectedItem = editorGridChapter.getSelectionModel().getSelectedItem();
-				if (selectedItem != null)
-				{
-					selectedItem.set("deleted", "Y");
-
-					List<UserChapterPermissionsDTO> lstModels = editorGridChapter.getStore().getModels();
-					UserDTO curUser = editorGridUser.getSelectionModel().getSelectedItem();
-					curUser.setChapterPermissions(lstModels);
-
-					editorGridChapter.getStore().remove(selectedItem);
-				}
-			}
-		});
-		toolBarChapterPerm.add(removeChapterPerm);
-		cpChapterGrid.setTopComponent(toolBarChapterPerm);
-
+	private ContentPanel buildProjectPermissionsGrid()
+	{
 		ContentPanel cpProjectGrid = new ContentPanel();
 		cpProjectGrid.setLayout(new FitLayout());
 		cpProjectGrid.setHeaderVisible(false);
@@ -624,126 +525,14 @@ public class UserAdministration extends LayoutContainer
 		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
 		fieldProject.setTriggerAction(TriggerAction.ALL);
 		fieldProject.setAllowBlank(false);
-		editor = new CellEditor(fieldProject)
-		{
-			@Override
-			public Object preProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return fieldProject.findModel(value.toString());
-			}
+		CellEditor editor = new CellEditorLocal(fieldProject);
 
-			@Override
-			public Object postProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return ((ModelData) value).get("value");
-			}
-		};
 		clmncnfgProjectName.setEditor(editor);
 		configsProjectGrid.add(clmncnfgProjectName);
 
-		checkColumn = new ColumnConfig("read", "Read", 55);
-		final SimpleComboBox<String> yesNoDto = new SimpleComboBox<String>();
-		yesNoDto.setTriggerAction(TriggerAction.ALL);
-		yesNoDto.setForceSelection(true);
-		yesNoDto.add(YesNoDTO.getStringValues());
-		yesNoDto.setAllowBlank(false);
-		editor = new CellEditor(yesNoDto)
-		{
-			@Override
-			public Object preProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return yesNoDto.findModel(value.toString());
-			}
+		buildPermissionColumns(configsProjectGrid);
 
-			@Override
-			public Object postProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return ((ModelData) value).get("value");
-			}
-		};
-		checkColumn.setEditor(editor);
-		configsProjectGrid.add(checkColumn);
-
-		checkColumn = new ColumnConfig("write", "Write", 55);
-		final SimpleComboBox<String> yesNoDtoWrite = new SimpleComboBox<String>();
-		yesNoDtoWrite.setTriggerAction(TriggerAction.ALL);
-		yesNoDtoWrite.setForceSelection(true);
-		yesNoDtoWrite.add(YesNoDTO.getStringValues());
-		yesNoDtoWrite.setAllowBlank(false);
-		editor = new CellEditor(yesNoDtoWrite)
-		{
-			@Override
-			public Object preProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return yesNoDtoWrite.findModel(value.toString());
-			}
-
-			@Override
-			public Object postProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return ((ModelData) value).get("value");
-			}
-		};
-		checkColumn.setEditor(editor);
-		configsProjectGrid.add(checkColumn);
-
-		checkColumn = new ColumnConfig("delete", "Delete", 55);
-		final SimpleComboBox<String> yesNoDtoProjectDelete = new SimpleComboBox<String>();
-		yesNoDtoProjectDelete.setTriggerAction(TriggerAction.ALL);
-		yesNoDtoProjectDelete.setForceSelection(true);
-		yesNoDtoProjectDelete.add(YesNoDTO.getStringValues());
-		yesNoDtoProjectDelete.setAllowBlank(false);
-		editor = new CellEditor(yesNoDtoProjectDelete)
-		{
-			@Override
-			public Object preProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return yesNoDtoProjectDelete.findModel(value.toString());
-			}
-
-			@Override
-			public Object postProcessValue(Object value)
-			{
-				if (value == null)
-				{
-					return value;
-				}
-				return ((ModelData) value).get("value");
-			}
-		};
-		checkColumn.setEditor(editor);
-		configsProjectGrid.add(checkColumn);
-
-		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(),
-				new ColumnModel(configsProjectGrid));
+		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
 		editorGridProject.setHeight(120);
 		editorGridProject.setLoadMask(true);
 		editorGridProject.setColumnLines(true);
@@ -792,9 +581,380 @@ public class UserAdministration extends LayoutContainer
 		});
 		toolBarProjectPerm.add(removeProjectPerm);
 		cpProjectGrid.setTopComponent(toolBarProjectPerm);
+		return cpProjectGrid;
+	}
 
-		userDetailsViewHolder.add(cpChapterGrid, new FitData(5));
-		userDetailsViewHolder.add(cpProjectGrid, new FitData(5));
+	private ContentPanel buildChapterPermissionsGrid()
+	{
+		ContentPanel cpChapterGrid = new ContentPanel();
+		cpChapterGrid.setLayout(new FitLayout());
+		cpChapterGrid.setHeaderVisible(false);
+
+		List<ColumnConfig> configsChapter = new ArrayList<ColumnConfig>();
+		ColumnConfig clmncnfgChapter = new ColumnConfig("chapterName", "Chapter", 120);
+		fieldChapter.setTriggerAction(TriggerAction.ALL);
+		fieldChapter.setAllowBlank(false);
+		CellEditor editor = new CellEditorLocal(fieldChapter);
+
+		clmncnfgChapter.setEditor(editor);
+		configsChapter.add(clmncnfgChapter);
+
+		buildPermissionColumns(configsChapter);
+
+		editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(new ListStore<UserChapterPermissionsDTO>(), new ColumnModel(configsChapter));
+		editorGridChapter.setHeight(120);
+		editorGridChapter.setLoadMask(true);
+		editorGridChapter.setColumnLines(true);
+		editorGridChapter.setBorders(true);
+		editorGridChapter.setClicksToEdit(ClicksToEdit.ONE);
+		cpChapterGrid.add(editorGridChapter);
+
+		ToolBar toolBarChapterPerm = new ToolBar();
+		Button addChapterPerm = new Button("Add");
+		addChapterPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		addChapterPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
+				model.setDelete("YES");
+				model.setWrite("YES");
+				model.setRead("YES");
+				editorGridChapter.getStore().add(model);
+				editorGridChapter.startEditing(editorGridChapter.getStore().getCount() - 1, 0);
+			}
+		});
+		toolBarChapterPerm.add(addChapterPerm);
+
+		Button removeChapterPerm = new Button("Remove");
+		removeChapterPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		removeChapterPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				editorGridChapter.stopEditing();
+				UserChapterPermissionsDTO selectedItem = editorGridChapter.getSelectionModel().getSelectedItem();
+				if (selectedItem != null)
+				{
+					selectedItem.set("deleted", "Y");
+
+					List<UserChapterPermissionsDTO> lstModels = editorGridChapter.getStore().getModels();
+					UserDTO curUser = editorGridUser.getSelectionModel().getSelectedItem();
+					curUser.setChapterPermissions(lstModels);
+
+					editorGridChapter.getStore().remove(selectedItem);
+				}
+			}
+		});
+		toolBarChapterPerm.add(removeChapterPerm);
+		cpChapterGrid.setTopComponent(toolBarChapterPerm);
+		return cpChapterGrid;
+	}
+
+	private ContentPanel buildReportsPermissionsGrid()
+	{
+		ContentPanel cpProjectGrid = new ContentPanel();
+		cpProjectGrid.setLayout(new FitLayout());
+		cpProjectGrid.setHeaderVisible(false);
+
+		List<ColumnConfig> configsProjectGrid = new ArrayList<ColumnConfig>();
+		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
+		fieldProject.setTriggerAction(TriggerAction.ALL);
+		fieldProject.setAllowBlank(false);
+		CellEditor editor = new CellEditorLocal(fieldProject);
+
+		clmncnfgProjectName.setEditor(editor);
+		configsProjectGrid.add(clmncnfgProjectName);
+
+		buildPermissionColumns(configsProjectGrid);
+
+		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
+		editorGridProject.setHeight(120);
+		editorGridProject.setLoadMask(true);
+		editorGridProject.setColumnLines(true);
+		editorGridProject.setBorders(true);
+		editorGridProject.setClicksToEdit(ClicksToEdit.ONE);
+		cpProjectGrid.add(editorGridProject);
+
+		ToolBar toolBarProjectPerm = new ToolBar();
+		Button addProjectPerm = new Button("Add");
+		addProjectPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		addProjectPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+				model.setDelete("YES");
+				model.setWrite("YES");
+				model.setRead("YES");
+				editorGridProject.getStore().add(model);
+				editorGridProject.startEditing(editorGridProject.getStore().getCount() - 1, 0);
+			}
+		});
+		toolBarProjectPerm.add(addProjectPerm);
+
+		Button removeProjectPerm = new Button("Remove");
+		removeProjectPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		removeProjectPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				editorGridChapter.stopEditing();
+				UserProjectPermissionsDTO selectedItem = editorGridProject.getSelectionModel().getSelectedItem();
+				if (selectedItem != null)
+				{
+					selectedItem.set("deleted", "Y");
+
+					List<UserProjectPermissionsDTO> lstModels = editorGridProject.getStore().getModels();
+					UserDTO curUser = editorGridUser.getSelectionModel().getSelectedItem();
+					curUser.setProjectPermissions(lstModels);
+
+					editorGridProject.getStore().remove(selectedItem);
+				}
+			}
+		});
+		toolBarProjectPerm.add(removeProjectPerm);
+		cpProjectGrid.setTopComponent(toolBarProjectPerm);
+		return cpProjectGrid;
+	}
+
+	private ContentPanel buildClinicPermissionsGrid()
+	{
+		ContentPanel cpProjectGrid = new ContentPanel();
+		cpProjectGrid.setLayout(new FitLayout());
+		cpProjectGrid.setHeaderVisible(false);
+
+		List<ColumnConfig> configsProjectGrid = new ArrayList<ColumnConfig>();
+		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
+		fieldProject.setTriggerAction(TriggerAction.ALL);
+		fieldProject.setAllowBlank(false);
+		CellEditor editor = new CellEditorLocal(fieldProject);
+
+		clmncnfgProjectName.setEditor(editor);
+		configsProjectGrid.add(clmncnfgProjectName);
+
+		buildPermissionColumns(configsProjectGrid);
+
+		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
+		editorGridProject.setHeight(120);
+		editorGridProject.setLoadMask(true);
+		editorGridProject.setColumnLines(true);
+		editorGridProject.setBorders(true);
+		editorGridProject.setClicksToEdit(ClicksToEdit.ONE);
+		cpProjectGrid.add(editorGridProject);
+
+		ToolBar toolBarProjectPerm = new ToolBar();
+		Button addProjectPerm = new Button("Add");
+		addProjectPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		addProjectPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+				model.setDelete("YES");
+				model.setWrite("YES");
+				model.setRead("YES");
+				editorGridProject.getStore().add(model);
+				editorGridProject.startEditing(editorGridProject.getStore().getCount() - 1, 0);
+			}
+		});
+		toolBarProjectPerm.add(addProjectPerm);
+
+		Button removeProjectPerm = new Button("Remove");
+		removeProjectPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		removeProjectPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				editorGridChapter.stopEditing();
+				UserProjectPermissionsDTO selectedItem = editorGridProject.getSelectionModel().getSelectedItem();
+				if (selectedItem != null)
+				{
+					selectedItem.set("deleted", "Y");
+
+					List<UserProjectPermissionsDTO> lstModels = editorGridProject.getStore().getModels();
+					UserDTO curUser = editorGridUser.getSelectionModel().getSelectedItem();
+					curUser.setProjectPermissions(lstModels);
+
+					editorGridProject.getStore().remove(selectedItem);
+				}
+			}
+		});
+		toolBarProjectPerm.add(removeProjectPerm);
+		cpProjectGrid.setTopComponent(toolBarProjectPerm);
+		return cpProjectGrid;
+	}
+
+	private ContentPanel buildEntityPermissionsGrid()
+	{
+		ContentPanel cpProjectGrid = new ContentPanel();
+		cpProjectGrid.setLayout(new FitLayout());
+		cpProjectGrid.setHeaderVisible(false);
+
+		List<ColumnConfig> configsProjectGrid = new ArrayList<ColumnConfig>();
+		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
+		fieldProject.setTriggerAction(TriggerAction.ALL);
+		fieldProject.setAllowBlank(false);
+		CellEditor editor = new CellEditorLocal(fieldProject);
+
+		clmncnfgProjectName.setEditor(editor);
+		configsProjectGrid.add(clmncnfgProjectName);
+
+		buildPermissionColumns(configsProjectGrid);
+
+		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
+		editorGridProject.setHeight(120);
+		editorGridProject.setLoadMask(true);
+		editorGridProject.setColumnLines(true);
+		editorGridProject.setBorders(true);
+		editorGridProject.setClicksToEdit(ClicksToEdit.ONE);
+		cpProjectGrid.add(editorGridProject);
+
+		ToolBar toolBarProjectPerm = new ToolBar();
+		Button addProjectPerm = new Button("Add");
+		addProjectPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		addProjectPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+				model.setDelete("YES");
+				model.setWrite("YES");
+				model.setRead("YES");
+				editorGridProject.getStore().add(model);
+				editorGridProject.startEditing(editorGridProject.getStore().getCount() - 1, 0);
+			}
+		});
+		toolBarProjectPerm.add(addProjectPerm);
+
+		Button removeProjectPerm = new Button("Remove");
+		removeProjectPerm.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		removeProjectPerm.addSelectionListener(new SelectionListener<ButtonEvent>()
+		{
+			@Override
+			public void componentSelected(ButtonEvent ce)
+			{
+				editorGridChapter.stopEditing();
+				UserProjectPermissionsDTO selectedItem = editorGridProject.getSelectionModel().getSelectedItem();
+				if (selectedItem != null)
+				{
+					selectedItem.set("deleted", "Y");
+
+					List<UserProjectPermissionsDTO> lstModels = editorGridProject.getStore().getModels();
+					UserDTO curUser = editorGridUser.getSelectionModel().getSelectedItem();
+					curUser.setProjectPermissions(lstModels);
+
+					editorGridProject.getStore().remove(selectedItem);
+				}
+			}
+		});
+		toolBarProjectPerm.add(removeProjectPerm);
+		cpProjectGrid.setTopComponent(toolBarProjectPerm);
+		return cpProjectGrid;
+	}
+
+	private void buildPermissionColumns(List<ColumnConfig> configs)
+	{
+		CellEditor editor;
+		ColumnConfig checkColumn = new ColumnConfig("read", "Read", 55);
+		final SimpleComboBox<String> yesNoDtoChapterRead = new SimpleComboBox<String>();
+		yesNoDtoChapterRead.setTriggerAction(TriggerAction.ALL);
+		yesNoDtoChapterRead.setForceSelection(true);
+		yesNoDtoChapterRead.add(YesNoDTO.getStringValues());
+		yesNoDtoChapterRead.setAllowBlank(false);
+		editor = new CellEditor(yesNoDtoChapterRead)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoChapterRead.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		checkColumn.setEditor(editor);
+		configs.add(checkColumn);
+
+		checkColumn = new ColumnConfig("write", "Write", 55);
+		final SimpleComboBox<String> yesNoDtoChapterWrite = new SimpleComboBox<String>();
+		yesNoDtoChapterWrite.setTriggerAction(TriggerAction.ALL);
+		yesNoDtoChapterWrite.setForceSelection(true);
+		yesNoDtoChapterWrite.add(YesNoDTO.getStringValues());
+		yesNoDtoChapterWrite.setAllowBlank(false);
+		editor = new CellEditor(yesNoDtoChapterWrite)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoChapterWrite.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		checkColumn.setEditor(editor);
+		configs.add(checkColumn);
+
+		checkColumn = new ColumnConfig("delete", "Delete", 55);
+		final SimpleComboBox<String> yesNoDtoDelete = new SimpleComboBox<String>();
+		yesNoDtoDelete.setTriggerAction(TriggerAction.ALL);
+		yesNoDtoDelete.setForceSelection(true);
+		yesNoDtoDelete.add(YesNoDTO.getStringValues());
+		yesNoDtoDelete.setAllowBlank(false);
+		editor = new CellEditor(yesNoDtoDelete)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return yesNoDtoDelete.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		checkColumn.setEditor(editor);
+		configs.add(checkColumn);
 	}
 
 }

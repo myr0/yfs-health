@@ -49,6 +49,27 @@ public class User implements Serializable
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserProjectPermissions> projectPermissions;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "User_ClinicPermissions", joinColumns = { @JoinColumn(name = "userId") },
+			inverseJoinColumns = { @JoinColumn(name = "clinicPermId") })
+	@Column(nullable = true)
+	@Fetch(FetchMode.SELECT)
+	private List<UserClinicPermissions> clinicPermissions;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "User_ReportPermissions", joinColumns = { @JoinColumn(name = "userId") },
+			inverseJoinColumns = { @JoinColumn(name = "reportPermId") })
+	@Column(nullable = true)
+	@Fetch(FetchMode.SELECT)
+	private List<UserReportPermissions> reportPermissions;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "User_EntityPermissions", joinColumns = { @JoinColumn(name = "userId") },
+			inverseJoinColumns = { @JoinColumn(name = "entityPermId") })
+	@Column(nullable = true)
+	@Fetch(FetchMode.SELECT)
+	private List<UserEntityPermissions> entityPermissions;
 
 	@Column(nullable = false)
 	private String deleted;
@@ -133,6 +154,36 @@ public class User implements Serializable
 	public String getRole()
 	{
 		return role;
+	}
+
+	public void setClinicPermissions(List<UserClinicPermissions> clinicPermissions)
+	{
+		this.clinicPermissions = clinicPermissions;
+	}
+
+	public List<UserClinicPermissions> getClinicPermissions()
+	{
+		return clinicPermissions;
+	}
+
+	public void setReportPermissions(List<UserReportPermissions> reportPermissions)
+	{
+		this.reportPermissions = reportPermissions;
+	}
+
+	public List<UserReportPermissions> getReportPermissions()
+	{
+		return reportPermissions;
+	}
+
+	public void setEntityPermissions(List<UserEntityPermissions> entityPermissions)
+	{
+		this.entityPermissions = entityPermissions;
+	}
+
+	public List<UserEntityPermissions> getEntityPermissions()
+	{
+		return entityPermissions;
 	}
 
 	@Override
