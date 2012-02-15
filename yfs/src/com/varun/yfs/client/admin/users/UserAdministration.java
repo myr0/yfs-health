@@ -1,7 +1,6 @@
 package com.varun.yfs.client.admin.users;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -13,7 +12,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -26,7 +24,6 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -54,7 +51,6 @@ import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.dto.UserEntityPermissionsDTO;
 import com.varun.yfs.dto.UserProjectPermissionsDTO;
 import com.varun.yfs.dto.UserReportPermissionsDTO;
-import com.varun.yfs.dto.UserRolesEnum;
 import com.varun.yfs.dto.YesNoDTO;
 
 public class UserAdministration extends LayoutContainer
@@ -67,7 +63,7 @@ public class UserAdministration extends LayoutContainer
 	private TabPanel tabPermissions = new TabPanel();
 	private final TextField<String> txtfldUsrName = new TextField<String>();
 	private final TextField<String> txtfldPassword = new TextField<String>();
-	private SimpleComboBox<String> userRole = new SimpleComboBox<String>();
+	// private SimpleComboBox<String> userRole = new SimpleComboBox<String>();
 	private final SimpleComboBox<String> fieldProject = new SimpleComboBox<String>();
 	private final SimpleComboBox<String> fieldChapter = new SimpleComboBox<String>();
 	private final SimpleComboBox<String> fieldClinic = new SimpleComboBox<String>();
@@ -138,6 +134,9 @@ public class UserAdministration extends LayoutContainer
 			{
 				editorGridChapter.getStore().commitChanges();
 				editorGridProject.getStore().commitChanges();
+				editorGridClinic.getStore().commitChanges();
+				editorGridReports.getStore().commitChanges();
+				editorGridEntity.getStore().commitChanges();
 				reinitPage(curAdminEntity);
 				if (result.compareTo(RpcStatusEnum.FAILURE) == 0)
 				{
@@ -173,6 +172,9 @@ public class UserAdministration extends LayoutContainer
 
 				fieldChapter.add((List<String>) currentModelData.get("lstChapterNames"));
 				fieldProject.add((List<String>) currentModelData.get("lstProjects"));
+				fieldClinic.add((List<String>) currentModelData.get("lstClinicNames"));
+				fieldReports.add((List<String>) currentModelData.get("lstReportNames"));
+				fieldEntity.add((List<String>) currentModelData.get("lstEntityNames"));
 			}
 
 			@Override
@@ -290,16 +292,16 @@ public class UserAdministration extends LayoutContainer
 		txtfldPassword.setMaxLength(255);
 		txtfldPassword.setFieldLabel("Password");
 
-		userRole.setTriggerAction(TriggerAction.ALL);
-		userRole.setFieldLabel("Role");
-		userRole.add(UserRolesEnum.Administrator.name());
-		userRole.add(UserRolesEnum.AreaCoOrdinator.name());
-		userRole.add(UserRolesEnum.ChapterAdministrator.name());
-		userRole.setAllowBlank(false);
+		// userRole.setTriggerAction(TriggerAction.ALL);
+		// userRole.setFieldLabel("Role");
+		// userRole.add(UserRolesEnum.Administrator.name());
+		// userRole.add(UserRolesEnum.AreaCoOrdinator.name());
+		// userRole.add(UserRolesEnum.ChapterAdministrator.name());
+		// userRole.setAllowBlank(false);
 
 		frmpanelUserBasic.add(txtfldUsrName, new FormData("80%"));
 		frmpanelUserBasic.add(txtfldPassword, new FormData("80%"));
-		frmpanelUserBasic.add(userRole, new FormData("80%"));
+		// frmpanelUserBasic.add(userRole, new FormData("80%"));
 
 		userDetailsViewHolder.setButtonAlign(HorizontalAlignment.CENTER);
 		userDetailsViewHolder.addButton(new Button("Reset", new SelectionListener<ButtonEvent>()
@@ -319,105 +321,112 @@ public class UserAdministration extends LayoutContainer
 			{
 				// userDetailsViewHolder.setVisible(false);
 				List<UserDTO> models = editorGridUser.getStore().getModels();
-
+				UserDTO modelData = null;
 				if (isAdd)
 				{
-					UserDTO modelData = new UserDTO();
-					models.add(modelData);
-					modelData.setName(txtfldUsrName.getValue());
-					modelData.setPassword(txtfldPassword.getValue());
-					modelData.setRole(userRole.getSimpleValue());
-					modelData.setChapterPermissions(editorGridChapter.getStore().getModels());
-					modelData.setProjectPermissions(editorGridProject.getStore().getModels());
+					modelData = new UserDTO();
+
 				} else
 				{
-					UserDTO modelData = editorGridUser.getSelectionModel().getSelectedItem();
-					if (modelData != null)
-					{
-						modelData.setName(txtfldUsrName.getValue());
-						modelData.setPassword(txtfldPassword.getValue());
-						modelData.setRole(userRole.getSimpleValue());
-						modelData.setChapterPermissions(editorGridChapter.getStore().getModels());
-						modelData.setProjectPermissions(editorGridProject.getStore().getModels());
-					}
+					modelData = editorGridUser.getSelectionModel().getSelectedItem();
+					// if (modelData != null)
+					// {
+					// modelData.setName(txtfldUsrName.getValue());
+					// modelData.setPassword(txtfldPassword.getValue());
+					// // modelData.setRole(userRole.getSimpleValue());
+					// modelData.setChapterPermissions(editorGridChapter.getStore().getModels());
+					// modelData.setProjectPermissions(editorGridProject.getStore().getModels());
+					// }
 				}
+
+				models.add(modelData);
+				modelData.setName(txtfldUsrName.getValue());
+				modelData.setPassword(txtfldPassword.getValue());
+				// modelData.setRole(userRole.getSimpleValue());
+				modelData.setChapterPermissions(editorGridChapter.getStore().getModels());
+				modelData.setProjectPermissions(editorGridProject.getStore().getModels());
+
 				savePage(models);
 			}
 		}));
 
-		userRole.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>()
-		{
-			@Override
-			public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se)
-			{
-				List<String> chapters = (List<String>) currentModelData.get("lstChapterNames");
-				List<String> projects = (List<String>) currentModelData.get("lstProjects");
-
-				if (projects == null)
-					projects = Collections.EMPTY_LIST;
-
-				if (chapters == null)
-					chapters = Collections.EMPTY_LIST;
-
-				editorGridChapter.getStore().removeAll();
-				editorGridProject.getStore().removeAll();
-
-				String selectedValue = se.getSelectedItem().getValue();
-				if (selectedValue.isEmpty() || selectedValue == null)
-					return;
-
-				if (selectedValue.equals("Administrator"))
-				{
-					for (String string : projects)
-					{
-						UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
-						model.setProjectName(string);
-						model.setDelete("YES");
-						model.setWrite("YES");
-						model.setRead("YES");
-						editorGridProject.getStore().add(model);
-					}
-					editorGridProject.getStore().commitChanges();
-
-					for (String string : chapters)
-					{
-						UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
-						model.setChapterName(string);
-						model.setDelete("YES");
-						model.setWrite("YES");
-						model.setRead("YES");
-						editorGridChapter.getStore().add(model);
-					}
-					editorGridChapter.getStore().commitChanges();
-				} else if (selectedValue.equals("Administrator - Chapter"))
-				{
-					for (String string : chapters)
-					{
-						UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
-						model.setChapterName(string);
-						model.setDelete("YES");
-						model.setWrite("YES");
-						model.setRead("YES");
-						editorGridChapter.getStore().add(model);
-					}
-					editorGridProject.getStore().commitChanges();
-
-				} else if (selectedValue.equals("Area Co-Ordinator"))
-				{
-					for (String string : projects)
-					{
-						UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
-						model.setProjectName(string);
-						model.setDelete("YES");
-						model.setWrite("YES");
-						model.setRead("YES");
-						editorGridProject.getStore().add(model);
-					}
-					editorGridProject.getStore().commitChanges();
-				}
-
-			}
-		});
+		// userRole.addSelectionChangedListener(new
+		// SelectionChangedListener<SimpleComboValue<String>>()
+		// {
+		// @Override
+		// public void
+		// selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se)
+		// {
+		// List<String> chapters = (List<String>)
+		// currentModelData.get("lstChapterNames");
+		// List<String> projects = (List<String>)
+		// currentModelData.get("lstProjects");
+		//
+		// if (projects == null)
+		// projects = Collections.EMPTY_LIST;
+		//
+		// if (chapters == null)
+		// chapters = Collections.EMPTY_LIST;
+		//
+		// editorGridChapter.getStore().removeAll();
+		// editorGridProject.getStore().removeAll();
+		//
+		// String selectedValue = se.getSelectedItem().getValue();
+		// if (selectedValue.isEmpty() || selectedValue == null)
+		// return;
+		//
+		// if (selectedValue.equals("Administrator"))
+		// {
+		// for (String string : projects)
+		// {
+		// UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+		// model.setProjectName(string);
+		// model.setDelete("YES");
+		// model.setWrite("YES");
+		// model.setRead("YES");
+		// editorGridProject.getStore().add(model);
+		// }
+		// editorGridProject.getStore().commitChanges();
+		//
+		// for (String string : chapters)
+		// {
+		// UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
+		// model.setChapterName(string);
+		// model.setDelete("YES");
+		// model.setWrite("YES");
+		// model.setRead("YES");
+		// editorGridChapter.getStore().add(model);
+		// }
+		// editorGridChapter.getStore().commitChanges();
+		// } else if (selectedValue.equals("Administrator - Chapter"))
+		// {
+		// for (String string : chapters)
+		// {
+		// UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
+		// model.setChapterName(string);
+		// model.setDelete("YES");
+		// model.setWrite("YES");
+		// model.setRead("YES");
+		// editorGridChapter.getStore().add(model);
+		// }
+		// editorGridProject.getStore().commitChanges();
+		//
+		// } else if (selectedValue.equals("Area Co-Ordinator"))
+		// {
+		// for (String string : projects)
+		// {
+		// UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+		// model.setProjectName(string);
+		// model.setDelete("YES");
+		// model.setWrite("YES");
+		// model.setRead("YES");
+		// editorGridProject.getStore().add(model);
+		// }
+		// editorGridProject.getStore().commitChanges();
+		// }
+		//
+		// }
+		// });
 
 		// userDetailsViewHolder.setSize("300px", "600px");
 		userDetailsViewHolder.add(frmpanelUserBasic, new FitData(5));
@@ -456,25 +465,32 @@ public class UserAdministration extends LayoutContainer
 				{
 					txtfldUsrName.clear();
 					txtfldPassword.clear();
-					userRole.clearSelections();
+					// userRole.clearSelections();
 
 					ModelData modelData = selection.get(0);
 					txtfldUsrName.setValue(modelData.get("name").toString());
 					txtfldPassword.setValue(modelData.get("password").toString());
-					Object role = modelData.get("role");
-					if (role != null && userRole.findModel(role.toString()) != null)
-					{
-						userRole.setValue(userRole.findModel(role.toString()));
-					}
+					// Object role = modelData.get("role");
+					// if (role != null && userRole.findModel(role.toString())
+					// != null)
+					// {
+					// userRole.setValue(userRole.findModel(role.toString()));
+					// }
 
 					// userDetailsViewHolder.setVisible(true);
 					userDetailsViewHolder.focus();
 
 					editorGridChapter.getStore().removeAll();
 					editorGridProject.getStore().removeAll();
+					editorGridClinic.getStore().removeAll();
+					editorGridReports.getStore().removeAll();
+					editorGridEntity.getStore().removeAll();
 
 					editorGridChapter.getStore().add((List<? extends UserChapterPermissionsDTO>) modelData.get("chapterPermissions"));
 					editorGridProject.getStore().add((List<? extends UserProjectPermissionsDTO>) modelData.get("projectPermissions"));
+					editorGridClinic.getStore().add((List<? extends UserClinicPermissionsDTO>) modelData.get("clinicPermissions"));
+					editorGridReports.getStore().add((List<? extends UserReportPermissionsDTO>) modelData.get("reportsPermissions"));
+					editorGridEntity.getStore().add((List<? extends UserEntityPermissionsDTO>) modelData.get("entityPermissions"));
 				}
 			}
 		});
@@ -487,9 +503,9 @@ public class UserAdministration extends LayoutContainer
 		ContentPanel cpProjectGrid = buildProjectPermissionsGrid();
 
 		ContentPanel cpClinicGrid = buildClinicPermissionsGrid();
-		
+
 		ContentPanel cpReportsGrid = buildReportsPermissionsGrid();
-		
+
 		ContentPanel cpEntityGrid = buildEntityPermissionsGrid();
 
 		TabItem chapterTab = new TabItem("Chapter");
@@ -655,28 +671,28 @@ public class UserAdministration extends LayoutContainer
 
 	private ContentPanel buildReportsPermissionsGrid()
 	{
-		ContentPanel cpProjectGrid = new ContentPanel();
-		cpProjectGrid.setLayout(new FitLayout());
-		cpProjectGrid.setHeaderVisible(false);
+		ContentPanel cpReportsGrid = new ContentPanel();
+		cpReportsGrid.setLayout(new FitLayout());
+		cpReportsGrid.setHeaderVisible(false);
 
-		List<ColumnConfig> configsProjectGrid = new ArrayList<ColumnConfig>();
-		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
-		fieldProject.setTriggerAction(TriggerAction.ALL);
-		fieldProject.setAllowBlank(false);
-		CellEditor editor = new CellEditorLocal(fieldProject);
+		List<ColumnConfig> configsReportsGrid = new ArrayList<ColumnConfig>();
+		ColumnConfig clmncnfgReportsName = new ColumnConfig("reportName", "Reports", 120);
+		fieldReports.setTriggerAction(TriggerAction.ALL);
+		fieldReports.setAllowBlank(false);
+		CellEditor editor = new CellEditorLocal(fieldReports);
 
-		clmncnfgProjectName.setEditor(editor);
-		configsProjectGrid.add(clmncnfgProjectName);
+		clmncnfgReportsName.setEditor(editor);
+		configsReportsGrid.add(clmncnfgReportsName);
 
-		buildPermissionColumns(configsProjectGrid);
+		buildPermissionColumns(configsReportsGrid);
 
-		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
-		editorGridProject.setHeight(120);
-		editorGridProject.setLoadMask(true);
-		editorGridProject.setColumnLines(true);
-		editorGridProject.setBorders(true);
-		editorGridProject.setClicksToEdit(ClicksToEdit.ONE);
-		cpProjectGrid.add(editorGridProject);
+		editorGridReports = new EditorGrid<UserReportPermissionsDTO>(new ListStore<UserReportPermissionsDTO>(), new ColumnModel(configsReportsGrid));
+		editorGridReports.setHeight(120);
+		editorGridReports.setLoadMask(true);
+		editorGridReports.setColumnLines(true);
+		editorGridReports.setBorders(true);
+		editorGridReports.setClicksToEdit(ClicksToEdit.ONE);
+		cpReportsGrid.add(editorGridReports);
 
 		ToolBar toolBarProjectPerm = new ToolBar();
 		Button addProjectPerm = new Button("Add");
@@ -686,12 +702,12 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+				UserReportPermissionsDTO model = new UserReportPermissionsDTO();
 				model.setDelete("YES");
 				model.setWrite("YES");
 				model.setRead("YES");
-				editorGridProject.getStore().add(model);
-				editorGridProject.startEditing(editorGridProject.getStore().getCount() - 1, 0);
+				editorGridReports.getStore().add(model);
+				editorGridReports.startEditing(editorGridProject.getStore().getCount() - 1, 0);
 			}
 		});
 		toolBarProjectPerm.add(addProjectPerm);
@@ -703,49 +719,49 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				editorGridChapter.stopEditing();
-				UserProjectPermissionsDTO selectedItem = editorGridProject.getSelectionModel().getSelectedItem();
+				editorGridReports.stopEditing();
+				UserReportPermissionsDTO selectedItem = editorGridReports.getSelectionModel().getSelectedItem();
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
 
-					List<UserProjectPermissionsDTO> lstModels = editorGridProject.getStore().getModels();
+					List<UserReportPermissionsDTO> lstModels = editorGridReports.getStore().getModels();
 					UserDTO curUser = editorGridUser.getSelectionModel().getSelectedItem();
-					curUser.setProjectPermissions(lstModels);
+					curUser.setReportPermissions(lstModels);
 
-					editorGridProject.getStore().remove(selectedItem);
+					editorGridReports.getStore().remove(selectedItem);
 				}
 			}
 		});
 		toolBarProjectPerm.add(removeProjectPerm);
-		cpProjectGrid.setTopComponent(toolBarProjectPerm);
-		return cpProjectGrid;
+		cpReportsGrid.setTopComponent(toolBarProjectPerm);
+		return cpReportsGrid;
 	}
 
 	private ContentPanel buildClinicPermissionsGrid()
 	{
-		ContentPanel cpProjectGrid = new ContentPanel();
-		cpProjectGrid.setLayout(new FitLayout());
-		cpProjectGrid.setHeaderVisible(false);
+		ContentPanel cpClinicGrid = new ContentPanel();
+		cpClinicGrid.setLayout(new FitLayout());
+		cpClinicGrid.setHeaderVisible(false);
 
-		List<ColumnConfig> configsProjectGrid = new ArrayList<ColumnConfig>();
-		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
-		fieldProject.setTriggerAction(TriggerAction.ALL);
-		fieldProject.setAllowBlank(false);
-		CellEditor editor = new CellEditorLocal(fieldProject);
+		List<ColumnConfig> configsClinicGrid = new ArrayList<ColumnConfig>();
+		ColumnConfig clmncnfgClinicName = new ColumnConfig("clinicName", "Clinic", 120);
+		fieldClinic.setTriggerAction(TriggerAction.ALL);
+		fieldClinic.setAllowBlank(false);
+		CellEditor editor = new CellEditorLocal(fieldClinic);
 
-		clmncnfgProjectName.setEditor(editor);
-		configsProjectGrid.add(clmncnfgProjectName);
+		clmncnfgClinicName.setEditor(editor);
+		configsClinicGrid.add(clmncnfgClinicName);
 
-		buildPermissionColumns(configsProjectGrid);
+		buildPermissionColumns(configsClinicGrid);
 
-		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
-		editorGridProject.setHeight(120);
-		editorGridProject.setLoadMask(true);
-		editorGridProject.setColumnLines(true);
-		editorGridProject.setBorders(true);
-		editorGridProject.setClicksToEdit(ClicksToEdit.ONE);
-		cpProjectGrid.add(editorGridProject);
+		editorGridClinic = new EditorGrid<UserClinicPermissionsDTO>(new ListStore<UserClinicPermissionsDTO>(), new ColumnModel(configsClinicGrid));
+		editorGridClinic.setHeight(120);
+		editorGridClinic.setLoadMask(true);
+		editorGridClinic.setColumnLines(true);
+		editorGridClinic.setBorders(true);
+		editorGridClinic.setClicksToEdit(ClicksToEdit.ONE);
+		cpClinicGrid.add(editorGridClinic);
 
 		ToolBar toolBarProjectPerm = new ToolBar();
 		Button addProjectPerm = new Button("Add");
@@ -755,12 +771,12 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+				UserClinicPermissionsDTO model = new UserClinicPermissionsDTO();
 				model.setDelete("YES");
 				model.setWrite("YES");
 				model.setRead("YES");
-				editorGridProject.getStore().add(model);
-				editorGridProject.startEditing(editorGridProject.getStore().getCount() - 1, 0);
+				editorGridClinic.getStore().add(model);
+				editorGridClinic.startEditing(editorGridProject.getStore().getCount() - 1, 0);
 			}
 		});
 		toolBarProjectPerm.add(addProjectPerm);
@@ -773,48 +789,48 @@ public class UserAdministration extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGridChapter.stopEditing();
-				UserProjectPermissionsDTO selectedItem = editorGridProject.getSelectionModel().getSelectedItem();
+				UserClinicPermissionsDTO selectedItem = editorGridClinic.getSelectionModel().getSelectedItem();
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
 
-					List<UserProjectPermissionsDTO> lstModels = editorGridProject.getStore().getModels();
+					List<UserClinicPermissionsDTO> lstModels = editorGridClinic.getStore().getModels();
 					UserDTO curUser = editorGridUser.getSelectionModel().getSelectedItem();
-					curUser.setProjectPermissions(lstModels);
+					curUser.setClinicPermissions(lstModels);
 
-					editorGridProject.getStore().remove(selectedItem);
+					editorGridClinic.getStore().remove(selectedItem);
 				}
 			}
 		});
 		toolBarProjectPerm.add(removeProjectPerm);
-		cpProjectGrid.setTopComponent(toolBarProjectPerm);
-		return cpProjectGrid;
+		cpClinicGrid.setTopComponent(toolBarProjectPerm);
+		return cpClinicGrid;
 	}
 
 	private ContentPanel buildEntityPermissionsGrid()
 	{
-		ContentPanel cpProjectGrid = new ContentPanel();
-		cpProjectGrid.setLayout(new FitLayout());
-		cpProjectGrid.setHeaderVisible(false);
+		ContentPanel cpEntityGrid = new ContentPanel();
+		cpEntityGrid.setLayout(new FitLayout());
+		cpEntityGrid.setHeaderVisible(false);
 
-		List<ColumnConfig> configsProjectGrid = new ArrayList<ColumnConfig>();
-		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
-		fieldProject.setTriggerAction(TriggerAction.ALL);
-		fieldProject.setAllowBlank(false);
-		CellEditor editor = new CellEditorLocal(fieldProject);
+		List<ColumnConfig> configsEntityGrid = new ArrayList<ColumnConfig>();
+		ColumnConfig clmncnfgEntityName = new ColumnConfig("entityName", "Entity", 120);
+		fieldEntity.setTriggerAction(TriggerAction.ALL);
+		fieldEntity.setAllowBlank(false);
+		CellEditor editor = new CellEditorLocal(fieldEntity);
 
-		clmncnfgProjectName.setEditor(editor);
-		configsProjectGrid.add(clmncnfgProjectName);
+		clmncnfgEntityName.setEditor(editor);
+		configsEntityGrid.add(clmncnfgEntityName);
 
-		buildPermissionColumns(configsProjectGrid);
+		buildPermissionColumns(configsEntityGrid);
 
-		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
-		editorGridProject.setHeight(120);
-		editorGridProject.setLoadMask(true);
-		editorGridProject.setColumnLines(true);
-		editorGridProject.setBorders(true);
-		editorGridProject.setClicksToEdit(ClicksToEdit.ONE);
-		cpProjectGrid.add(editorGridProject);
+		editorGridEntity = new EditorGrid<UserEntityPermissionsDTO>(new ListStore<UserEntityPermissionsDTO>(), new ColumnModel(configsEntityGrid));
+		editorGridEntity.setHeight(120);
+		editorGridEntity.setLoadMask(true);
+		editorGridEntity.setColumnLines(true);
+		editorGridEntity.setBorders(true);
+		editorGridEntity.setClicksToEdit(ClicksToEdit.ONE);
+		cpEntityGrid.add(editorGridEntity);
 
 		ToolBar toolBarProjectPerm = new ToolBar();
 		Button addProjectPerm = new Button("Add");
@@ -824,12 +840,12 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
+				UserEntityPermissionsDTO model = new UserEntityPermissionsDTO();
 				model.setDelete("YES");
 				model.setWrite("YES");
 				model.setRead("YES");
-				editorGridProject.getStore().add(model);
-				editorGridProject.startEditing(editorGridProject.getStore().getCount() - 1, 0);
+				editorGridEntity.getStore().add(model);
+				editorGridEntity.startEditing(editorGridEntity.getStore().getCount() - 1, 0);
 			}
 		});
 		toolBarProjectPerm.add(addProjectPerm);
@@ -841,23 +857,23 @@ public class UserAdministration extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				editorGridChapter.stopEditing();
-				UserProjectPermissionsDTO selectedItem = editorGridProject.getSelectionModel().getSelectedItem();
+				editorGridEntity.stopEditing();
+				UserEntityPermissionsDTO selectedItem = editorGridEntity.getSelectionModel().getSelectedItem();
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
 
-					List<UserProjectPermissionsDTO> lstModels = editorGridProject.getStore().getModels();
+					List<UserEntityPermissionsDTO> lstModels = editorGridEntity.getStore().getModels();
 					UserDTO curUser = editorGridUser.getSelectionModel().getSelectedItem();
-					curUser.setProjectPermissions(lstModels);
+					curUser.setEntityPermissions(lstModels);
 
-					editorGridProject.getStore().remove(selectedItem);
+					editorGridEntity.getStore().remove(selectedItem);
 				}
 			}
 		});
 		toolBarProjectPerm.add(removeProjectPerm);
-		cpProjectGrid.setTopComponent(toolBarProjectPerm);
-		return cpProjectGrid;
+		cpEntityGrid.setTopComponent(toolBarProjectPerm);
+		return cpEntityGrid;
 	}
 
 	private void buildPermissionColumns(List<ColumnConfig> configs)

@@ -43,6 +43,9 @@
 		<mapping class="com.varun.yfs.server.models.User" />
 		<mapping class="com.varun.yfs.server.models.UserProjectPermissions" />
 		<mapping class="com.varun.yfs.server.models.UserChapterPermissions" />
+		<mapping class="com.varun.yfs.server.models.UserClinicPermissions" />
+		<mapping class="com.varun.yfs.server.models.UserReportPermissions" />
+		<mapping class="com.varun.yfs.server.models.UserEntityPermissions" />
 
 	</session-factory>
 </hibernate-configuration>
