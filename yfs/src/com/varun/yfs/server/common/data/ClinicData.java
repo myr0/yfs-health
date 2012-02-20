@@ -1,5 +1,6 @@
 package com.varun.yfs.server.common.data;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +13,9 @@ import org.hibernate.Transaction;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.dto.UserClinicPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
+import com.varun.yfs.dto.YesNoDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.City;
 import com.varun.yfs.server.models.Clinic;
@@ -26,7 +29,7 @@ public class ClinicData extends AbstractData
 		ModelData modelData = new BaseModelData();
 
 		List<ModelData> list = DataUtil.<ModelData> getModelList("Clinic");
-		modelData.set("data", list);
+		modelData.set("data", this.applyPermission(userDto, list));
 		modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
 
 		modelData.set("configIds", Arrays.asList("clinicName", "cityName"));
@@ -77,6 +80,31 @@ public class ClinicData extends AbstractData
 			}
 		}
 		return status;
+	}
+
+	protected List<ModelData> applyPermission(UserDTO userDto, List<ModelData> modelList)
+	{
+		List<ModelData> lstModels = new ArrayList<ModelData>();
+		if (!userDto.isAdmin())
+		{
+			List<UserClinicPermissionsDTO> lstChapterPermissions = userDto.getClinicPermissions();
+			for (UserClinicPermissionsDTO userClinicPermissionsDTO : lstChapterPermissions)
+			{
+				if (userClinicPermissionsDTO.getRead().equalsIgnoreCase(YesNoDTO.YES.toString()))
+				{
+					String entityName = userClinicPermissionsDTO.getClinicName();
+
+					ModelData tempModel = new BaseModelData();
+					tempModel.set("name", entityName);
+
+					int idx = modelList.indexOf(tempModel);
+					if (idx >= 0)
+						lstModels.add(modelList.get(idx));
+				}
+			}
+		} else
+			lstModels = modelList;
+		return lstModels;
 	}
 
 }

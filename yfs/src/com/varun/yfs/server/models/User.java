@@ -49,21 +49,21 @@ public class User implements Serializable
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserProjectPermissions> projectPermissions;
-	
+
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_ClinicPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "clinicPermId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserClinicPermissions> clinicPermissions;
-	
+
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_ReportPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "reportPermId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserReportPermissions> reportPermissions;
-	
+
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_EntityPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "entityPermId") })

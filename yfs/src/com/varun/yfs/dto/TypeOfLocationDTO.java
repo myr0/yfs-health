@@ -41,7 +41,7 @@ public class TypeOfLocationDTO extends BaseModelData
 	{
 		set("deleted", deleted);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj)
 	{

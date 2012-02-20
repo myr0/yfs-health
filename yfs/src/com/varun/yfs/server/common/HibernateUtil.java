@@ -154,7 +154,7 @@ public class HibernateUtil
 		session.save(users);
 
 		session.save(new User("Krishna", "pass"));
-		
+
 		session.save(new User("admin", "admin"));
 
 		session.flush();

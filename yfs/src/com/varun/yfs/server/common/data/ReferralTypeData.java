@@ -14,7 +14,7 @@ import com.varun.yfs.dto.UserDTO;
 public class ReferralTypeData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(ReferralTypeData.class);
-	
+
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();

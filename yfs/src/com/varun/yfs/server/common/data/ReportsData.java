@@ -1,7 +1,6 @@
 package com.varun.yfs.server.common.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
@@ -10,8 +9,6 @@ import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.reports.rpc.ReportType;
 import com.varun.yfs.dto.PermissionTypeEnum;
 import com.varun.yfs.dto.UserDTO;
-import com.varun.yfs.dto.UserReportPermissionsDTO;
-import com.varun.yfs.dto.YesNoDTO;
 
 public class ReportsData extends AbstractData
 {

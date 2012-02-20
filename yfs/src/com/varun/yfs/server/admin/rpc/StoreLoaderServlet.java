@@ -37,8 +37,8 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 			Class clasLoaded = Class
 					.forName("com.varun.yfs.server.common.data." + Util.stripSpace(entityName) + "Data");
 			Object obj = clasLoaded.newInstance();
-			Method method = clasLoaded.getDeclaredMethod("getModel", new Class[] {UserDTO.class});
-			modelStore = (ModelData) method.invoke(obj, new Object[] {user});
+			Method method = clasLoaded.getDeclaredMethod("getModel", new Class[] { UserDTO.class });
+			modelStore = (ModelData) method.invoke(obj, new Object[] { user });
 		} catch (ClassNotFoundException e)
 		{
 			e.printStackTrace();

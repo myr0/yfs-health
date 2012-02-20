@@ -16,7 +16,7 @@ public class AdministrationData extends AbstractData
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();
-		
+
 		List<Object> modelList = DataUtil.getModelList("Entities");
 
 		List<Object> lstModels = null;

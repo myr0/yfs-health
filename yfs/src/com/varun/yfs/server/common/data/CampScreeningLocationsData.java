@@ -49,7 +49,8 @@ public class CampScreeningLocationsData extends AbstractData
 			// get projects under the chapter
 			Map<String, List<ModelData>> mapChap2Screening = new HashMap<String, List<ModelData>>();
 
-			List<CampScreeningDetailDTO> lstScrDet = DataUtil.getCampScreeningDetail("ChapterName", "id", String.valueOf(chapterNameDTO.getId()));
+			List<CampScreeningDetailDTO> lstScrDet = DataUtil.getCampScreeningDetail("ChapterName", "id",
+					String.valueOf(chapterNameDTO.getId()));
 
 			for (CampScreeningDetailDTO scrDto : lstScrDet)
 			{

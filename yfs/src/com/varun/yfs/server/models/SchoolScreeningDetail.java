@@ -53,7 +53,7 @@ public class SchoolScreeningDetail implements Serializable
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "chapterNameId", nullable = true, updatable = true, insertable = true)
 	private ChapterName chapterName;
-	
+
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "projectId", nullable = true, updatable = true, insertable = true)
 	private Project projectName;

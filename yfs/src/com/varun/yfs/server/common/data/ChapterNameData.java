@@ -43,8 +43,10 @@ public class ChapterNameData extends AbstractData
 		modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
 		modelData.set("parentStoreLocality", DataUtil.<ModelData> getModelList("Locality"));
 
-		modelData.set("configIds", Arrays.asList("chapterName", "countryName", "stateName", "villageName", "townName", "cityName", "localityName"));
-		modelData.set("configCols", Arrays.asList("Chapter Name", "Country", "State", "Village", "Town", "City", "Locality"));
+		modelData.set("configIds", Arrays.asList("chapterName", "countryName", "stateName", "villageName", "townName",
+				"cityName", "localityName"));
+		modelData.set("configCols",
+				Arrays.asList("Chapter Name", "Country", "State", "Village", "Town", "City", "Locality"));
 		modelData.set("configType", Arrays.asList("Text", "combo", "combo", "combo", "combo", "combo", "combo"));
 		return modelData;
 	}
@@ -113,21 +115,25 @@ public class ChapterNameData extends AbstractData
 	protected List<ModelData> applyPermission(UserDTO userDto, List<ModelData> modelList)
 	{
 		List<ModelData> lstModels = new ArrayList<ModelData>();
-		List<UserChapterPermissionsDTO> lstChapterPermissions = userDto.getChapterPermissions();
-		for (UserChapterPermissionsDTO userChapterPermissionsDTO : lstChapterPermissions)
+		if (!userDto.isAdmin())
 		{
-			if (userChapterPermissionsDTO.getRead().equalsIgnoreCase(YesNoDTO.YES.toString()))
+			List<UserChapterPermissionsDTO> lstChapterPermissions = userDto.getChapterPermissions();
+			for (UserChapterPermissionsDTO userChapterPermissionsDTO : lstChapterPermissions)
 			{
-				String entityName = userChapterPermissionsDTO.getChapterName();
+				if (userChapterPermissionsDTO.getRead().equalsIgnoreCase(YesNoDTO.YES.toString()))
+				{
+					String entityName = userChapterPermissionsDTO.getChapterName();
 
-				ModelData tempModel = new BaseModelData();
-				tempModel.set("name", entityName);
+					ModelData tempModel = new BaseModelData();
+					tempModel.set("name", entityName);
 
-				int idx = modelList.indexOf(tempModel);
-				if (idx >= 0)
-					lstModels.add(modelList.get(idx));
+					int idx = modelList.indexOf(tempModel);
+					if (idx >= 0)
+						lstModels.add(modelList.get(idx));
+				}
 			}
-		}
+		} else
+			lstModels = modelList;
 		return lstModels;
 	}
 

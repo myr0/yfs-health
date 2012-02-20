@@ -94,7 +94,7 @@ public class StateDTO extends BaseModelData
 	{
 		return getName();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj)
 	{

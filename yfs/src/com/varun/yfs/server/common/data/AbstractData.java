@@ -15,7 +15,7 @@ public abstract class AbstractData
 			return null;
 		return lst.get(cntIndex);
 	}
-	
+
 	public abstract ModelData getModel(UserDTO userDto);
 
 	public abstract RpcStatusEnum saveModel(ModelData model);

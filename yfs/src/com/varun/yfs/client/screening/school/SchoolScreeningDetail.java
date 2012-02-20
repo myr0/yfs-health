@@ -357,7 +357,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -401,7 +402,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		MenuItem exportReferral = new MenuItem("Export Referrals", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportReferral = new MenuItem("Export Referrals",
+				AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -418,7 +420,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 				StoreFilter<SchoolPatientDetailDTO> filterReferrals = new StoreFilter<SchoolPatientDetailDTO>()
 				{
 					@Override
-					public boolean select(Store<SchoolPatientDetailDTO> store, SchoolPatientDetailDTO parent, SchoolPatientDetailDTO item, String property)
+					public boolean select(Store<SchoolPatientDetailDTO> store, SchoolPatientDetailDTO parent,
+							SchoolPatientDetailDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
@@ -468,7 +471,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportReferral);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -480,7 +484,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(ImportType.SCHOOL, editorGrid, dialogImport, processIds), new FitData(5));
+				dialogImport.add(new ImportDetail(ImportType.SCHOOL, editorGrid, dialogImport, processIds),
+						new FitData(5));
 				dialogImport.show();
 			}
 		});
@@ -534,20 +539,20 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 	private boolean validateFormEntry()
 	{
-//		if (!country.validate())
-//			return false;
-//
-//		if (!state.validate())
-//			return false;
-//
-//		if (!city.validate())
-//			return false;
-//
-//		if (!town.validate())
-//			return false;
-//
-//		if (!village.validate())
-//			return false;
+		// if (!country.validate())
+		// return false;
+		//
+		// if (!state.validate())
+		// return false;
+		//
+		// if (!city.validate())
+		// return false;
+		//
+		// if (!town.validate())
+		// return false;
+		//
+		// if (!village.validate())
+		// return false;
 
 		if (!chapterName.validate())
 			return false;
@@ -555,23 +560,23 @@ public class SchoolScreeningDetail extends LayoutContainer
 		if (!projectName.validate())
 			return false;
 
-//		if (!locality.validate())
-//			return false;
+		// if (!locality.validate())
+		// return false;
 
 		if (!screeningDate.validate())
 			return false;
 
-//		if (!processType.validate())
-//			return false;
-//
-//		if (!typeOfLocation.validate())
-//			return false;
-//
-//		if (!address.validate())
-//			return false;
-//
-//		if (!contactInformation.validate())
-//			return false;
+		// if (!processType.validate())
+		// return false;
+		//
+		// if (!typeOfLocation.validate())
+		// return false;
+		//
+		// if (!address.validate())
+		// return false;
+		//
+		// if (!contactInformation.validate())
+		// return false;
 
 		return true;
 	}
@@ -583,7 +588,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		modelData.setChapterName((ChapterNameDTO) chapterName.getSelection().get(0));
 		modelData.setProjectName((ProjectDTO) projectName.getSelection().get(0));
 		modelData.setScreeningDate(String.valueOf(screeningDate.getValue().getTime()));
-		
+
 		if (country.getSelection().size() > 0)
 			modelData.setCountry((CountryDTO) country.getSelection().get(0));
 
@@ -613,7 +618,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 		if (address.getValue() != null)
 			modelData.setAddress(address.getValue());
-		
+
 		modelData.setVolunteers(volunteers.getChecked());
 		modelData.setDoctors(doctors.getChecked());
 
@@ -1017,7 +1022,9 @@ public class SchoolScreeningDetail extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.alert("Alert", "Error encountered while loading the screen. Please retry the operation. Additional Details: " + caught.getMessage(), l);
+				MessageBox.alert("Alert",
+						"Error encountered while loading the screen. Please retry the operation. Additional Details: "
+								+ caught.getMessage(), l);
 			}
 		});
 

@@ -49,7 +49,8 @@ public class SchoolScreeningLocationsData extends AbstractData
 			// get projects under the chapter
 			Map<String, List<ModelData>> mapChap2Screening = new HashMap<String, List<ModelData>>();
 
-			List<SchoolScreeningDetailDTO> lstScrDet = DataUtil.getSchoolScreeningDetail("ChapterName", "id", String.valueOf(chapterNameDTO.getId()));
+			List<SchoolScreeningDetailDTO> lstScrDet = DataUtil.getSchoolScreeningDetail("ChapterName", "id",
+					String.valueOf(chapterNameDTO.getId()));
 			for (SchoolScreeningDetailDTO scrDto : lstScrDet)
 			{
 				ModelData scrNode = new BaseModelData();

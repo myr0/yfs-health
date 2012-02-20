@@ -14,7 +14,7 @@ import com.varun.yfs.dto.UserDTO;
 public class TypeOfLocationData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(TypeOfLocationData.class);
-	
+
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();

@@ -88,22 +88,25 @@ public class ProjectData extends AbstractData
 	protected List<ModelData> applyPermission(UserDTO userDto, List<ModelData> modelList)
 	{
 		List<ModelData> lstModels = new ArrayList<ModelData>();
-		List<UserProjectPermissionsDTO> lstChapterPermissions = userDto.getProjectPermissions();
-		for (UserProjectPermissionsDTO userProjectPermissionsDTO : lstChapterPermissions)
+		if (!userDto.isAdmin())
 		{
-			if (userProjectPermissionsDTO.getRead().equalsIgnoreCase(YesNoDTO.YES.toString()))
+			List<UserProjectPermissionsDTO> lstChapterPermissions = userDto.getProjectPermissions();
+			for (UserProjectPermissionsDTO userProjectPermissionsDTO : lstChapterPermissions)
 			{
-				String entityName = userProjectPermissionsDTO.getProjectName();
+				if (userProjectPermissionsDTO.getRead().equalsIgnoreCase(YesNoDTO.YES.toString()))
+				{
+					String entityName = userProjectPermissionsDTO.getProjectName();
 
-				ModelData tempModel = new BaseModelData();
-				tempModel.set("name", entityName);
+					ModelData tempModel = new BaseModelData();
+					tempModel.set("name", entityName);
 
-				int idx = modelList.indexOf(tempModel);
-				if (idx >= 0)
-					lstModels.add(modelList.get(idx));
+					int idx = modelList.indexOf(tempModel);
+					if (idx >= 0)
+						lstModels.add(modelList.get(idx));
+				}
 			}
-		}
+		} else
+			lstModels = modelList;
 		return lstModels;
 	}
-
 }

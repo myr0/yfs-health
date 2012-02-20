@@ -50,7 +50,7 @@ public class UserReportPermissions implements Serializable
 	{
 		this.id = id;
 	}
-	
+
 	public String getReportName()
 	{
 		return reportName;

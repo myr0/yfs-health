@@ -43,10 +43,10 @@ public class ClinicScreeningLocationsData extends AbstractData
 			for (ClinicDTO clinicDTO : lstScrDet)
 			{
 				String clinicName = clinicDTO.toString();
-				
+
 				if (!clinicsWithRead.contains(clinicName))
 					continue;
-				
+
 				ModelData scrNode = new BaseModelData();
 				scrNode.set("name", clinicName);
 				scrNode.set("id", String.valueOf(clinicDTO.getId()));

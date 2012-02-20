@@ -1,6 +1,5 @@
 package com.varun.yfs.server.common.data;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -15,21 +14,25 @@ import com.varun.yfs.dto.UserDTO;
 public class UsersData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(UsersData.class);
+	private ChapterNameData chapData = new ChapterNameData();
+	private ProjectData projData = new ProjectData();
 
 	@SuppressWarnings("unchecked")
-	public ModelData getModel(UserDTO userDto)
+	public ModelData getModel(UserDTO user)
 	{
 		ModelData modelData = new BaseModelData();
 		List<ModelData> modelList = DataUtil.<ModelData> getModelList("User");
-		List<String> lstChapterNames = (List<String>) DataUtil.executeQuery("select name from ChapterName");
-		List<String> lstProjects = (List<String>) DataUtil.executeQuery("select name from Project");
+		// List<String> lstChapterNames = (List<String>)
+		// DataUtil.executeQuery("select name from ChapterName");
+		// List<String> lstProjects = (List<String>)
+		// DataUtil.executeQuery("select name from Project");
 		List<String> lstClinics = (List<String>) DataUtil.executeQuery("select clinicName from Clinic");
 
 		modelData.set("users", modelList);
-		modelData.set("lstChapterNames", lstChapterNames);
-		modelData.set("lstProjects", lstProjects);
+		modelData.set("lstChapterNames", chapData.getModel(user).get("data"));
+		modelData.set("lstProjects", projData.getModel(user).get("data"));
 		modelData.set("lstClinicNames", lstClinics);
-		modelData.set("lstReportNames", Arrays.asList(ReportType.getValues()));
+		modelData.set("lstReportNames", ReportType.getValues());
 		modelData.set("lstEntityNames", DataUtil.getEntitiesList());
 		return modelData;
 	}

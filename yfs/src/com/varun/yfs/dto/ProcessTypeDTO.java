@@ -41,7 +41,7 @@ public class ProcessTypeDTO extends BaseModelData
 	{
 		set("deleted", deleted);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj)
 	{

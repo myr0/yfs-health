@@ -50,7 +50,7 @@ public class UploadServlet extends UploadAction
 			}
 		}
 
-//		removeSessionFileItems(request, false);
+		// removeSessionFileItems(request, false);
 
 		return response;
 	}
