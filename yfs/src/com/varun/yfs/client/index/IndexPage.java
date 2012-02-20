@@ -86,6 +86,10 @@ public class IndexPage extends LayoutContainer
 	private static TreeStore<ModelData> campScreeningPanelStore = new TreeStore<ModelData>();
 	private static TreePanel<ModelData> treeCampScreeningPanel = new TreePanel<ModelData>(campScreeningPanelStore);
 
+	private ContentPanel cpReportScreening;
+	private static TreeStore<ModelData> reportScreeningPanelStore = new TreeStore<ModelData>();
+	private static TreePanel<ModelData> treeReportScreeningPanel = new TreePanel<ModelData>(reportScreeningPanelStore);
+
 	private String userName;
 	private UserDTO currentUser;
 
@@ -439,14 +443,14 @@ public class IndexPage extends LayoutContainer
 
 	private void buildReportsPanel()
 	{
-		final ContentPanel cpReports = new ContentPanel();
-		cpReports.setHeading("Reporting");
-		cpReports.setLayout(new FitLayout());
-		layoutContainerWest.add(cpReports);
+		cpReportScreening = new ContentPanel();
+		cpReportScreening.setHeading("Reporting");
+		cpReportScreening.setLayout(new FitLayout());
+		layoutContainerWest.add(cpReportScreening);
 
 		TreeStore<ModelData> store = new TreeStore<ModelData>();
-		final TreePanel<ModelData> tree = new TreePanel<ModelData>(store);
-		tree.setIconProvider(new ModelIconProvider<ModelData>()
+		treeReportScreeningPanel = new TreePanel<ModelData>(store);
+		treeReportScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
 		{
 
 			public AbstractImagePrototype getIcon(ModelData model)
@@ -462,16 +466,16 @@ public class IndexPage extends LayoutContainer
 			}
 
 		});
-		tree.setDisplayProperty("name");
+		treeReportScreeningPanel.setDisplayProperty("name");
 
-		tree.addListener(Events.OnClick, new Listener<BaseEvent>()
+		treeReportScreeningPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
 		{
 			@Override
 			public void handleEvent(BaseEvent be)
 			{
-				ModelData selectedItem = tree.getSelectionModel().getSelectedItem();
-				boolean isLeaf = tree.isLeaf(selectedItem);
-				if (!cpReports.isCollapsed() && isLeaf)
+				ModelData selectedItem = treeReportScreeningPanel.getSelectionModel().getSelectedItem();
+				boolean isLeaf = treeReportScreeningPanel.isLeaf(selectedItem);
+				if (!cpReportScreening.isCollapsed() && isLeaf)
 				{
 					layoutContainerCenter.removeAll();
 					layoutContainerCenter.setLayoutData(new FitData(15));
@@ -497,33 +501,33 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		storeLoader.getModel(MainPanelEnum.Reports.name(), new AsyncCallback<ModelData>()
-		{
+//		storeLoader.getModel(MainPanelEnum.Reports.name(), new AsyncCallback<ModelData>()
+//		{
+//
+//			@Override
+//			public void onFailure(Throwable caught)
+//			{
+//				// System.out.println(caught.getMessage());
+//				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(), DUMMYLISTENER);
+//			}
+//
+//			@SuppressWarnings("unchecked")
+//			@Override
+//			public void onSuccess(ModelData result)
+//			{
+//				List<ModelData> resModel = result.get("data");
+//				for (ModelData modelData : resModel)
+//				{
+//					treeReportScreeningPanel.getStore().add(modelData, false);
+//					Object object = modelData.get("children");
+//					if (object != null)
+//						treeReportScreeningPanel.getStore().add(modelData, (List<ModelData>) object, false);
+//					treeReportScreeningPanel.setExpanded(modelData, true);
+//				}
+//			}
+//		});
 
-			@Override
-			public void onFailure(Throwable caught)
-			{
-				// System.out.println(caught.getMessage());
-				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(), DUMMYLISTENER);
-			}
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void onSuccess(ModelData result)
-			{
-				List<ModelData> resModel = result.get("data");
-				for (ModelData modelData : resModel)
-				{
-					tree.getStore().add(modelData, false);
-					Object object = modelData.get("children");
-					if (object != null)
-						tree.getStore().add(modelData, (List<ModelData>) object, false);
-					tree.setExpanded(modelData, true);
-				}
-			}
-		});
-
-		cpReports.add(tree);
+		cpReportScreening.add(treeReportScreeningPanel);
 	}
 
 	private void buildClinicScreeningPanel()
@@ -826,7 +830,6 @@ public class IndexPage extends LayoutContainer
 				removeScreeningRecord("schoolscreeningdetail", selected);
 			}
 		});
-		
 
 		treeSchoolScreeningPanel.setIconProvider(new ModelIconProvider<ModelData>()
 		{
@@ -1025,6 +1028,32 @@ public class IndexPage extends LayoutContainer
 					}
 				}
 				treeCampScreeningPanel.expandAll();
+			}
+		});
+
+		storeLoader.getModel(MainPanelEnum.Reports.name(), new AsyncCallback<ModelData>()
+		{
+
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				// System.out.println(caught.getMessage());
+				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(), DUMMYLISTENER);
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void onSuccess(ModelData result)
+			{
+				List<ModelData> resModel = result.get("data");
+				for (ModelData modelData : resModel)
+				{
+					treeReportScreeningPanel.getStore().add(modelData, false);
+					Object object = modelData.get("children");
+					if (object != null)
+						treeReportScreeningPanel.getStore().add(modelData, (List<ModelData>) object, false);
+					treeReportScreeningPanel.setExpanded(modelData, true);
+				}
 			}
 		});
 	}

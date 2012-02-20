@@ -9,25 +9,24 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.dto.ChapterNameDTO;
+import com.varun.yfs.dto.PermissionTypeEnum;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
-import com.varun.yfs.dto.UserChapterPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
-import com.varun.yfs.dto.YesNoDTO;
 
 public class SchoolScreeningLocationsData extends AbstractData
 {
 	public ModelData getModel(UserDTO userDto)
 	{
 		List<ModelData> nodes = new ArrayList<ModelData>();
-		
-		List<UserChapterPermissionsDTO> lstChapterPermissions = userDto.getChapterPermissions();
-		List<String> chapsWithRead = new ArrayList<String>();
-		for (UserChapterPermissionsDTO userChapterPermissionsDTO : lstChapterPermissions)
-		{
-			if (userChapterPermissionsDTO.getRead().equalsIgnoreCase(YesNoDTO.YES.toString()))
-				chapsWithRead.add(userChapterPermissionsDTO.getChapterName());
-		}
-		
+
+		List<String> lstChaptersPermissions = userDto.getChaptersWithPermission(PermissionTypeEnum.READ);
+
+		List<String> chapsWithRead = null;
+		if (userDto.isAdmin())
+			chapsWithRead = (List<String>) DataUtil.executeQuery("select name from ChapterName where deleted = 'N'");
+		else
+			chapsWithRead = lstChaptersPermissions;
+
 		ModelData model = new BaseModelData();
 		model.set("data", nodes);
 
@@ -38,7 +37,7 @@ public class SchoolScreeningLocationsData extends AbstractData
 
 			if (!chapsWithRead.contains(chapName))
 				continue;
-			
+
 			ModelData rootNode = new BaseModelData();
 			rootNode.set("name", chapName);
 			rootNode.set("icon", "");
@@ -50,8 +49,7 @@ public class SchoolScreeningLocationsData extends AbstractData
 			// get projects under the chapter
 			Map<String, List<ModelData>> mapChap2Screening = new HashMap<String, List<ModelData>>();
 
-			List<SchoolScreeningDetailDTO> lstScrDet = DataUtil.getSchoolScreeningDetail("ChapterName", "id",
-					String.valueOf(chapterNameDTO.getId()));
+			List<SchoolScreeningDetailDTO> lstScrDet = DataUtil.getSchoolScreeningDetail("ChapterName", "id", String.valueOf(chapterNameDTO.getId()));
 			for (SchoolScreeningDetailDTO scrDto : lstScrDet)
 			{
 				ModelData scrNode = new BaseModelData();

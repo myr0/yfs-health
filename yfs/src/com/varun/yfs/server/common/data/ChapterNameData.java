@@ -1,5 +1,6 @@
 package com.varun.yfs.server.common.data;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,7 +14,9 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.util.Util;
+import com.varun.yfs.dto.UserChapterPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
+import com.varun.yfs.dto.YesNoDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.ChapterName;
 import com.varun.yfs.server.models.City;
@@ -32,7 +35,7 @@ public class ChapterNameData extends AbstractData
 		ModelData modelData = new BaseModelData();
 
 		List<ModelData> list = DataUtil.<ModelData> getModelList("ChapterName");
-		modelData.set("data", list);
+		modelData.set("data", applyPermission(userDto, list));
 		modelData.set("parentStoreCountry", DataUtil.<ModelData> getModelList("Country"));
 		modelData.set("parentStoreState", DataUtil.<ModelData> getModelList("State"));
 		modelData.set("parentStoreVillage", DataUtil.<ModelData> getModelList("Village"));
@@ -40,10 +43,8 @@ public class ChapterNameData extends AbstractData
 		modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
 		modelData.set("parentStoreLocality", DataUtil.<ModelData> getModelList("Locality"));
 
-		modelData.set("configIds", Arrays.asList("chapterName", "countryName", "stateName", "villageName", "townName",
-				"cityName", "localityName"));
-		modelData.set("configCols",
-				Arrays.asList("Chapter Name", "Country", "State", "Village", "Town", "City", "Locality"));
+		modelData.set("configIds", Arrays.asList("chapterName", "countryName", "stateName", "villageName", "townName", "cityName", "localityName"));
+		modelData.set("configCols", Arrays.asList("Chapter Name", "Country", "State", "Village", "Town", "City", "Locality"));
 		modelData.set("configType", Arrays.asList("Text", "combo", "combo", "combo", "combo", "combo", "combo"));
 		return modelData;
 	}
@@ -107,6 +108,27 @@ public class ChapterNameData extends AbstractData
 			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
+	}
+
+	protected List<ModelData> applyPermission(UserDTO userDto, List<ModelData> modelList)
+	{
+		List<ModelData> lstModels = new ArrayList<ModelData>();
+		List<UserChapterPermissionsDTO> lstChapterPermissions = userDto.getChapterPermissions();
+		for (UserChapterPermissionsDTO userChapterPermissionsDTO : lstChapterPermissions)
+		{
+			if (userChapterPermissionsDTO.getRead().equalsIgnoreCase(YesNoDTO.YES.toString()))
+			{
+				String entityName = userChapterPermissionsDTO.getChapterName();
+
+				ModelData tempModel = new BaseModelData();
+				tempModel.set("name", entityName);
+
+				int idx = modelList.indexOf(tempModel);
+				if (idx >= 0)
+					lstModels.add(modelList.get(idx));
+			}
+		}
+		return lstModels;
 	}
 
 }

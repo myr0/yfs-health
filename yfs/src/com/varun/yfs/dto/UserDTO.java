@@ -82,7 +82,7 @@ public class UserDTO extends BaseModelData
 
 	public List<UserProjectPermissionsDTO> getProjectPermissions()
 	{
-		List<UserChapterPermissionsDTO> list = get("projectPermissions");
+		List<UserProjectPermissionsDTO> list = get("projectPermissions");
 		return list == null ? Collections.EMPTY_LIST : list;
 	}
 
@@ -133,7 +133,7 @@ public class UserDTO extends BaseModelData
 
 	public List<UserClinicPermissionsDTO> getClinicPermissions()
 	{
-		List<UserChapterPermissionsDTO> list = get("clinicPermissions");
+		List<UserClinicPermissionsDTO> list = get("clinicPermissions");
 		return list == null ? Collections.EMPTY_LIST : list;
 	}
 
@@ -144,7 +144,7 @@ public class UserDTO extends BaseModelData
 
 	public List<UserReportPermissionsDTO> getReportPermissions()
 	{
-		List<UserChapterPermissionsDTO> list = get("reportPermissions");
+		List<UserReportPermissionsDTO> list = get("reportPermissions");
 		return list == null ? Collections.EMPTY_LIST : list;
 	}
 
@@ -155,7 +155,7 @@ public class UserDTO extends BaseModelData
 
 	public List<UserEntityPermissionsDTO> getEntityPermissions()
 	{
-		List<UserChapterPermissionsDTO> list = get("entityPermissions");
+		List<UserEntityPermissionsDTO> list = get("entityPermissions");
 		return list == null ? Collections.EMPTY_LIST : list;
 	}
 
@@ -191,7 +191,7 @@ public class UserDTO extends BaseModelData
 
 	public List<String> getProjectWithPermission(PermissionTypeEnum type)
 	{
-		List<String> chaps = new ArrayList<String>();
+		List<String> projs = new ArrayList<String>();
 
 		List<UserProjectPermissionsDTO> projects = getProjectPermissions();
 		for (UserProjectPermissionsDTO projectDto : projects)
@@ -201,22 +201,82 @@ public class UserDTO extends BaseModelData
 			case READ:
 				String read = projectDto.getRead();
 				if (read != null && read.equalsIgnoreCase(type.name()))
-					chaps.add(projectDto.getProjectName());
+					projs.add(projectDto.getProjectName());
 				break;
 			case WRITE:
 				String write = projectDto.getWrite();
 				if (write != null && write.equalsIgnoreCase(type.name()))
-					chaps.add(projectDto.getProjectName());
+					projs.add(projectDto.getProjectName());
 				break;
 			case DELETE:
 				String delete = projectDto.getDelete();
 				if (delete != null && delete.equalsIgnoreCase(type.name()))
-					chaps.add(projectDto.getProjectName());
+					projs.add(projectDto.getProjectName());
 				break;
 			}
 		}
 
-		return chaps;
+		return projs;
+	}
+
+	public List<String> getClinicWithPermission(PermissionTypeEnum type)
+	{
+		List<String> clinic = new ArrayList<String>();
+
+		List<UserClinicPermissionsDTO> clinics = getClinicPermissions();
+		for (UserClinicPermissionsDTO clinicDto : clinics)
+		{
+			switch (type)
+			{
+			case READ:
+				String read = clinicDto.getRead();
+				if (read != null && read.equalsIgnoreCase(type.name()))
+					clinic.add(clinicDto.getClinicName());
+				break;
+			case WRITE:
+				String write = clinicDto.getWrite();
+				if (write != null && write.equalsIgnoreCase(type.name()))
+					clinic.add(clinicDto.getClinicName());
+				break;
+			case DELETE:
+				String delete = clinicDto.getDelete();
+				if (delete != null && delete.equalsIgnoreCase(type.name()))
+					clinic.add(clinicDto.getClinicName());
+				break;
+			}
+		}
+
+		return clinic;
+	}
+
+	public List<String> getReportWithPermission(PermissionTypeEnum type)
+	{
+		List<String> clinic = new ArrayList<String>();
+
+		List<UserReportPermissionsDTO> reports = getReportPermissions();
+		for (UserReportPermissionsDTO reportDto : reports)
+		{
+			switch (type)
+			{
+			case READ:
+				String read = reportDto.getRead();
+				if (read != null && read.equalsIgnoreCase(type.name()))
+					clinic.add(reportDto.getReportName());
+				break;
+			case WRITE:
+				String write = reportDto.getWrite();
+				if (write != null && write.equalsIgnoreCase(type.name()))
+					clinic.add(reportDto.getReportName());
+				break;
+			case DELETE:
+				String delete = reportDto.getDelete();
+				if (delete != null && delete.equalsIgnoreCase(type.name()))
+					clinic.add(reportDto.getReportName());
+				break;
+			}
+		}
+
+		return clinic;
 	}
 
 	@Override

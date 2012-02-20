@@ -10,9 +10,8 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.dto.CampScreeningDetailDTO;
 import com.varun.yfs.dto.ChapterNameDTO;
-import com.varun.yfs.dto.UserChapterPermissionsDTO;
+import com.varun.yfs.dto.PermissionTypeEnum;
 import com.varun.yfs.dto.UserDTO;
-import com.varun.yfs.dto.YesNoDTO;
 
 public class CampScreeningLocationsData extends AbstractData
 {
@@ -20,13 +19,13 @@ public class CampScreeningLocationsData extends AbstractData
 	{
 		List<ModelData> nodes = new ArrayList<ModelData>();
 
-		List<UserChapterPermissionsDTO> lstChapterPermissions = userDto.getChapterPermissions();
-		List<String> chapsWithRead = new ArrayList<String>();
-		for (UserChapterPermissionsDTO userChapterPermissionsDTO : lstChapterPermissions)
-		{
-			if (userChapterPermissionsDTO.getRead().equalsIgnoreCase(YesNoDTO.YES.toString()))
-				chapsWithRead.add(userChapterPermissionsDTO.getChapterName());
-		}
+		List<String> lstChapterPermissions = userDto.getChaptersWithPermission(PermissionTypeEnum.READ);
+
+		List<String> chapsWithRead;
+		if (userDto.isAdmin())
+			chapsWithRead = (List<String>) DataUtil.executeQuery("select name from ChapterName where deleted = 'N'");
+		else
+			chapsWithRead = lstChapterPermissions;
 
 		ModelData model = new BaseModelData();
 		model.set("data", nodes);

@@ -1,11 +1,14 @@
 package com.varun.yfs.server.common.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.reports.rpc.ReportType;
+import com.varun.yfs.dto.PermissionTypeEnum;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.dto.UserReportPermissionsDTO;
 import com.varun.yfs.dto.YesNoDTO;
@@ -14,13 +17,7 @@ public class ReportsData extends AbstractData
 {
 	public ModelData getModel(UserDTO userDto)
 	{
-		List<UserReportPermissionsDTO> lstChapterPermissions = userDto.getReportPermissions();
-		List<String> reportsWithRead = new ArrayList<String>();
-		for (UserReportPermissionsDTO userReportPermissionsDTO : lstChapterPermissions)
-		{
-			if (userReportPermissionsDTO.getRead().equalsIgnoreCase(YesNoDTO.YES.toString()))
-				reportsWithRead.add(userReportPermissionsDTO.getReportName());
-		}
+		List<String> lstReportPermissions = userDto.getReportWithPermission(PermissionTypeEnum.READ);
 
 		List<ModelData> arrayList = new ArrayList<ModelData>();
 
@@ -33,7 +30,13 @@ public class ReportsData extends AbstractData
 		List<ModelData> child = new ArrayList<ModelData>();
 		m1.set("children", child);
 
-		for (String repName : reportsWithRead)
+		List<String> repsWithRead = null;
+		if (userDto.isAdmin())
+			repsWithRead = ReportType.getValues();
+		else
+			repsWithRead = lstReportPermissions;
+
+		for (String repName : repsWithRead)
 		{
 			child.add(newItem(repName, "reportIndividual"));
 		}

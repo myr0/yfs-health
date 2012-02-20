@@ -29,7 +29,7 @@ public class UsersData extends AbstractData
 		modelData.set("lstChapterNames", lstChapterNames);
 		modelData.set("lstProjects", lstProjects);
 		modelData.set("lstClinicNames", lstClinics);
-		modelData.set("lstReportNames", Arrays.asList(ReportType.values()));
+		modelData.set("lstReportNames", Arrays.asList(ReportType.getValues()));
 		modelData.set("lstEntityNames", DataUtil.getEntitiesList());
 		return modelData;
 	}
