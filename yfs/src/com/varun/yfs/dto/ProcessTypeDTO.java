@@ -41,4 +41,19 @@ public class ProcessTypeDTO extends BaseModelData
 	{
 		set("deleted", deleted);
 	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ProcessTypeDTO other = (ProcessTypeDTO) obj;
+		if (!this.getName().equalsIgnoreCase(other.getName()))
+			return false;
+		return true;
+	}
 }

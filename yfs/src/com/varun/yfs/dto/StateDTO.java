@@ -94,5 +94,20 @@ public class StateDTO extends BaseModelData
 	{
 		return getName();
 	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null)
+			return false;
+		if (this.getClass() != obj.getClass())
+			return false;
 
+		StateDTO refType = (StateDTO) obj;
+
+		if (this.getName().equalsIgnoreCase(refType.getName()))
+			return true;
+
+		return false;
+	}
 }

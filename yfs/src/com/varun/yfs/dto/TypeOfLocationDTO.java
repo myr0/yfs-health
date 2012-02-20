@@ -41,4 +41,20 @@ public class TypeOfLocationDTO extends BaseModelData
 	{
 		set("deleted", deleted);
 	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null)
+			return false;
+		if (this.getClass() != obj.getClass())
+			return false;
+
+		TypeOfLocationDTO refType = (TypeOfLocationDTO) obj;
+
+		if (this.getName().equalsIgnoreCase(refType.getName()))
+			return true;
+
+		return false;
+	}
 }

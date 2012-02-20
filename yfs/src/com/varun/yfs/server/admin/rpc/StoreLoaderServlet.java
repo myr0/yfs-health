@@ -19,6 +19,7 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 {
 	private static final long serialVersionUID = -3784282705749642889L;
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public ModelData getModel(String entityName)
 	{

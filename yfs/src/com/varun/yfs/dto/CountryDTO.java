@@ -58,11 +58,14 @@ public class CountryDTO extends BaseModelData
 	@Override
 	public boolean equals(Object obj)
 	{
-		String countryName = null;
 		if (obj == null)
 			return false;
+		if (getName() == null)
+			return false;
+		if (obj.getClass() != this.getClass())
+			return false;
 
-		return this.getName().equalsIgnoreCase(obj.toString());
+		return getName().equalsIgnoreCase(obj.toString());
 	}
 
 	@Override

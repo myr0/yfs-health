@@ -51,9 +51,16 @@ public class EntitiesDTO extends com.extjs.gxt.ui.client.data.BaseModelData
 		return get("groupName");
 	}
 
-	// @Override
-	// public boolean equals(Object obj) {
-	// return this.getName().equalsIgnoreCase(((EntitiesDTO) obj).getName());
-	// }
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null)
+			return false;
+		if (get("name") == null)
+			return false;
+		if (obj.getClass() != this.getClass())
+			return false;
+		return getName().equalsIgnoreCase(((EntitiesDTO) obj).getName());
+	}
 
 }

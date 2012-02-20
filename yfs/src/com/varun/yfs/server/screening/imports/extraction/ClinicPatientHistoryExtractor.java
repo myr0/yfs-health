@@ -10,18 +10,18 @@ import com.varun.yfs.dto.ClinicPatientHistoryDTO;
 
 public class ClinicPatientHistoryExtractor extends SchoolPatientDataExtractor
 {
-	private final static Calendar currentDate = Calendar.getInstance();
+	private final static Calendar CURRENTDATE = Calendar.getInstance();
 	private static final Logger LOGGER = Logger.getLogger(ClinicPatientHistoryExtractor.class);
 
 	public ClinicPatientHistoryExtractor(List<String> errorRows)
 	{
 		super(errorRows);
-		currentDate.setTime(new Date());
+		CURRENTDATE.setTime(new Date());
 
-		currentDate.set(Calendar.HOUR_OF_DAY, 0);
-		currentDate.set(Calendar.MINUTE, 0);
-		currentDate.set(Calendar.SECOND, 0);
-		currentDate.set(Calendar.MILLISECOND, 0);
+		CURRENTDATE.set(Calendar.HOUR_OF_DAY, 0);
+		CURRENTDATE.set(Calendar.MINUTE, 0);
+		CURRENTDATE.set(Calendar.SECOND, 0);
+		CURRENTDATE.set(Calendar.MILLISECOND, 0);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -60,7 +60,7 @@ public class ClinicPatientHistoryExtractor extends SchoolPatientDataExtractor
 
 		patientDetailDTO.setCaseClosed(decodeYesNo(lstCols.get(8)));
 
-		patientDetailDTO.setScreeningDate(currentDate.getTimeInMillis());
+		patientDetailDTO.setScreeningDate(CURRENTDATE.getTimeInMillis());
 
 		int endErrorCount = errorRows.size();
 

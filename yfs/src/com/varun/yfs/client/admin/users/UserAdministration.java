@@ -529,6 +529,7 @@ public class UserAdministration extends LayoutContainer
 		tabPermissions.add(clinicTab);
 		tabPermissions.add(entityTab);
 		userDetailsViewHolder.add(tabPermissions, new FitData(5));
+		tabPermissions.setHeight(300);
 	}
 
 	private ContentPanel buildProjectPermissionsGrid()

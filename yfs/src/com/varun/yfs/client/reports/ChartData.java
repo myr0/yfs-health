@@ -48,7 +48,7 @@ public class ChartData extends BaseModel
 		return get("followUpMedicines");
 	}
 
-	public void setTotalScreened(int sales)
+	final public void setTotalScreened(int sales)
 	{
 		set("screened", sales);
 	}
@@ -63,17 +63,17 @@ public class ChartData extends BaseModel
 		set("followUpMedicines", followUpMedicines);
 	}
 
-	public void setSurgeryCasesClosed(int sales)
+	final public void setSurgeryCasesClosed(int sales)
 	{
 		set("surgeryCasesClosed", sales);
 	}
 
-	public void setPendingCases(int sales)
+	final public void setPendingCases(int sales)
 	{
 		set("pendingCases", sales);
 	}
 
-	public void setMonth(String month)
+	final public void setMonth(String month)
 	{
 		set("month", month);
 	}

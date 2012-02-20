@@ -1,9 +1,11 @@
 package com.varun.yfs.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.varun.yfs.client.reports.rpc.ReportType;
 
 public class UserDTO extends BaseModelData
 {
@@ -14,6 +16,10 @@ public class UserDTO extends BaseModelData
 	private List<UserClinicPermissionsDTO> clinicPermissions;
 	private List<UserEntityPermissionsDTO> entityPermissions;
 	private List<UserReportPermissionsDTO> reportPermissions;
+
+	private ReportType reportType;
+
+	private static final String ADMIN_USER = "admin";
 
 	public UserDTO()
 	{
@@ -65,7 +71,8 @@ public class UserDTO extends BaseModelData
 
 	public List<UserChapterPermissionsDTO> getChapterPermissions()
 	{
-		return get("chapterPermissions");
+		List<UserChapterPermissionsDTO> list = get("chapterPermissions");
+		return list == null ? Collections.EMPTY_LIST : list;
 	}
 
 	public void setProjectPermissions(List<UserProjectPermissionsDTO> projects)
@@ -75,7 +82,8 @@ public class UserDTO extends BaseModelData
 
 	public List<UserProjectPermissionsDTO> getProjectPermissions()
 	{
-		return get("projectPermissions");
+		List<UserChapterPermissionsDTO> list = get("projectPermissions");
+		return list == null ? Collections.EMPTY_LIST : list;
 	}
 
 	public String getDeleted()
@@ -125,7 +133,8 @@ public class UserDTO extends BaseModelData
 
 	public List<UserClinicPermissionsDTO> getClinicPermissions()
 	{
-		return get("clinicPermissions");
+		List<UserChapterPermissionsDTO> list = get("clinicPermissions");
+		return list == null ? Collections.EMPTY_LIST : list;
 	}
 
 	public void setReportPermissions(List<UserReportPermissionsDTO> reportPermissions)
@@ -135,7 +144,8 @@ public class UserDTO extends BaseModelData
 
 	public List<UserReportPermissionsDTO> getReportPermissions()
 	{
-		return get("reportPermissions");
+		List<UserChapterPermissionsDTO> list = get("reportPermissions");
+		return list == null ? Collections.EMPTY_LIST : list;
 	}
 
 	public void setEntityPermissions(List<UserEntityPermissionsDTO> entityPermissions)
@@ -145,7 +155,8 @@ public class UserDTO extends BaseModelData
 
 	public List<UserEntityPermissionsDTO> getEntityPermissions()
 	{
-		return get("entityPermissions");
+		List<UserChapterPermissionsDTO> list = get("entityPermissions");
+		return list == null ? Collections.EMPTY_LIST : list;
 	}
 
 	public List<String> getChaptersWithPermission(PermissionTypeEnum type)
@@ -217,5 +228,10 @@ public class UserDTO extends BaseModelData
 			return false;
 		UserDTO user = (UserDTO) obj;
 		return user.getName().equalsIgnoreCase(this.getName());
+	}
+
+	public boolean isAdmin()
+	{
+		return this.getName().equalsIgnoreCase(ADMIN_USER);
 	}
 }
