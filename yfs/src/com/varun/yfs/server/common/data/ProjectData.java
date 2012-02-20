@@ -1,5 +1,6 @@
 package com.varun.yfs.server.common.data;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.UserDTO;
+import com.varun.yfs.dto.UserProjectPermissionsDTO;
+import com.varun.yfs.dto.YesNoDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.ChapterName;
 import com.varun.yfs.server.models.Project;
@@ -27,7 +30,7 @@ public class ProjectData extends AbstractData
 		ModelData modelData = new BaseModelData();
 
 		List<ModelData> list = DataUtil.<ModelData> getModelList("Project");
-		modelData.set("data", list);
+		modelData.set("data", this.applyPermission(userDto, list));
 		modelData.set("parentStoreChapter", DataUtil.<ModelData> getModelList("ChapterName"));
 
 		modelData.set("configIds", Arrays.asList("projectName", "chapterName"));
@@ -80,6 +83,27 @@ public class ProjectData extends AbstractData
 			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
+	}
+
+	protected List<ModelData> applyPermission(UserDTO userDto, List<ModelData> modelList)
+	{
+		List<ModelData> lstModels = new ArrayList<ModelData>();
+		List<UserProjectPermissionsDTO> lstChapterPermissions = userDto.getProjectPermissions();
+		for (UserProjectPermissionsDTO userProjectPermissionsDTO : lstChapterPermissions)
+		{
+			if (userProjectPermissionsDTO.getRead().equalsIgnoreCase(YesNoDTO.YES.toString()))
+			{
+				String entityName = userProjectPermissionsDTO.getProjectName();
+
+				ModelData tempModel = new BaseModelData();
+				tempModel.set("name", entityName);
+
+				int idx = modelList.indexOf(tempModel);
+				if (idx >= 0)
+					lstModels.add(modelList.get(idx));
+			}
+		}
+		return lstModels;
 	}
 
 }
