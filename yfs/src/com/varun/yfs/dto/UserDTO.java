@@ -16,11 +16,16 @@ public class UserDTO extends BaseModelData
 	// private List<UserEntityPermissionsDTO> entityPermissions;
 	// private List<UserReportPermissionsDTO> reportPermissions;
 
-	private List<UserChapterPermissionsDTO> chapterPermissions = new ArrayList<UserChapterPermissionsDTO>();
-	private List<UserProjectPermissionsDTO> projectPermissions = new ArrayList<UserProjectPermissionsDTO>();
-	private List<UserClinicPermissionsDTO> clinicPermissions = new ArrayList<UserClinicPermissionsDTO>();
-	private List<UserEntityPermissionsDTO> entityPermissions = new ArrayList<UserEntityPermissionsDTO>();
-	private List<UserReportPermissionsDTO> reportPermissions = new ArrayList<UserReportPermissionsDTO>();
+	// private List<UserChapterPermissionsDTO> chapterPermissions = new
+	// ArrayList<UserChapterPermissionsDTO>();
+	// private List<UserProjectPermissionsDTO> projectPermissions = new
+	// ArrayList<UserProjectPermissionsDTO>();
+	// private List<UserClinicPermissionsDTO> clinicPermissions = new
+	// ArrayList<UserClinicPermissionsDTO>();
+	// private List<UserEntityPermissionsDTO> entityPermissions = new
+	// ArrayList<UserEntityPermissionsDTO>();
+	// private List<UserReportPermissionsDTO> reportPermissions = new
+	// ArrayList<UserReportPermissionsDTO>();
 
 	private ReportType reportType;
 
@@ -77,7 +82,8 @@ public class UserDTO extends BaseModelData
 	public List<UserChapterPermissionsDTO> getChapterPermissions()
 	{
 		List<UserChapterPermissionsDTO> list = get("chapterPermissions");
-		return list == null ? chapterPermissions : list;
+		return get("chapterPermissions");// list == null ? chapterPermissions :
+											// list;
 	}
 
 	public void setProjectPermissions(List<UserProjectPermissionsDTO> projects)
@@ -88,7 +94,44 @@ public class UserDTO extends BaseModelData
 	public List<UserProjectPermissionsDTO> getProjectPermissions()
 	{
 		List<UserProjectPermissionsDTO> list = get("projectPermissions");
-		return list == null ? projectPermissions : list;
+		return get("projectPermissions");// list == null ? projectPermissions :
+											// list;
+	}
+
+	public void setClinicPermissions(List<UserClinicPermissionsDTO> clinicPermissions)
+	{
+		set("clinicPermissions", clinicPermissions);
+	}
+
+	public List<UserClinicPermissionsDTO> getClinicPermissions()
+	{
+		List<UserClinicPermissionsDTO> list = get("clinicPermissions");
+		return get("clinicPermissions");// list == null ? clinicPermissions :
+										// list;
+	}
+
+	public void setReportPermissions(List<UserReportPermissionsDTO> reportPermissions)
+	{
+		set("reportPermissions", reportPermissions);
+	}
+
+	public List<UserReportPermissionsDTO> getReportPermissions()
+	{
+		List<UserReportPermissionsDTO> list = get("reportPermissions");
+		return get("reportPermissions");// list == null ? reportPermissions :
+										// list;
+	}
+
+	public void setEntityPermissions(List<UserEntityPermissionsDTO> entityPermissions)
+	{
+		set("entityPermissions", entityPermissions);
+	}
+
+	public List<UserEntityPermissionsDTO> getEntityPermissions()
+	{
+		List<UserEntityPermissionsDTO> list = get("entityPermissions");
+		return get("entityPermissions");// list == null ? entityPermissions :
+										// list;
 	}
 
 	public String getDeleted()
@@ -131,44 +174,13 @@ public class UserDTO extends BaseModelData
 		return get("role");
 	}
 
-	public void setClinicPermissions(List<UserClinicPermissionsDTO> clinicPermissions)
-	{
-		set("clinicPermissions", clinicPermissions);
-	}
-
-	public List<UserClinicPermissionsDTO> getClinicPermissions()
-	{
-		List<UserClinicPermissionsDTO> list = get("clinicPermissions");
-		return list == null ? clinicPermissions : list;
-	}
-
-	public void setReportPermissions(List<UserReportPermissionsDTO> reportPermissions)
-	{
-		set("reportPermissions", reportPermissions);
-	}
-
-	public List<UserReportPermissionsDTO> getReportPermissions()
-	{
-		List<UserReportPermissionsDTO> list = get("reportPermissions");
-		return list == null ? reportPermissions : list;
-	}
-
-	public void setEntityPermissions(List<UserEntityPermissionsDTO> entityPermissions)
-	{
-		set("entityPermissions", entityPermissions);
-	}
-
-	public List<UserEntityPermissionsDTO> getEntityPermissions()
-	{
-		List<UserEntityPermissionsDTO> list = get("entityPermissions");
-		return list == null ? entityPermissions : list;
-	}
-
 	public List<String> getChaptersWithPermission(PermissionTypeEnum type)
 	{
 		List<String> chaps = new ArrayList<String>();
 
 		List<UserChapterPermissionsDTO> chapters = getChapterPermissions();
+		if (chapters == null)
+			return chaps;
 		for (UserChapterPermissionsDTO chapDto : chapters)
 		{
 			switch (type)
@@ -199,6 +211,8 @@ public class UserDTO extends BaseModelData
 		List<String> projs = new ArrayList<String>();
 
 		List<UserProjectPermissionsDTO> projects = getProjectPermissions();
+		if (projects == null)
+			return projs;
 		for (UserProjectPermissionsDTO projectDto : projects)
 		{
 			switch (type)
@@ -229,6 +243,8 @@ public class UserDTO extends BaseModelData
 		List<String> clinic = new ArrayList<String>();
 
 		List<UserClinicPermissionsDTO> clinics = getClinicPermissions();
+		if (clinics == null)
+			return clinic;
 		for (UserClinicPermissionsDTO clinicDto : clinics)
 		{
 			switch (type)
@@ -256,9 +272,11 @@ public class UserDTO extends BaseModelData
 
 	public List<String> getReportWithPermission(PermissionTypeEnum type)
 	{
-		List<String> clinic = new ArrayList<String>();
+		List<String> report = new ArrayList<String>();
 
 		List<UserReportPermissionsDTO> reports = getReportPermissions();
+		if (reports == null)
+			return report;
 		for (UserReportPermissionsDTO reportDto : reports)
 		{
 			switch (type)
@@ -266,22 +284,22 @@ public class UserDTO extends BaseModelData
 			case READ:
 				String read = reportDto.getRead();
 				if (read != null && read.equalsIgnoreCase(type.name()))
-					clinic.add(reportDto.getReportName());
+					report.add(reportDto.getReportName());
 				break;
 			case WRITE:
 				String write = reportDto.getWrite();
 				if (write != null && write.equalsIgnoreCase(type.name()))
-					clinic.add(reportDto.getReportName());
+					report.add(reportDto.getReportName());
 				break;
 			case DELETE:
 				String delete = reportDto.getDelete();
 				if (delete != null && delete.equalsIgnoreCase(type.name()))
-					clinic.add(reportDto.getReportName());
+					report.add(reportDto.getReportName());
 				break;
 			}
 		}
 
-		return clinic;
+		return report;
 	}
 
 	@Override

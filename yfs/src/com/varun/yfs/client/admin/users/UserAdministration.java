@@ -354,7 +354,7 @@ public class UserAdministration extends LayoutContainer
 				savePage(models);
 			}
 		}));
-		
+
 		userDetailsViewHolder.add(frmpanelUserBasic, new FitData(5));
 
 	}
@@ -416,14 +416,23 @@ public class UserAdministration extends LayoutContainer
 
 							editorGridChapter.getStore().add(
 									(List<? extends UserChapterPermissionsDTO>) modelData.get("chapterPermissions"));
+							editorGridChapter.getStore().commitChanges();
+
 							editorGridProject.getStore().add(
 									(List<? extends UserProjectPermissionsDTO>) modelData.get("projectPermissions"));
+							editorGridProject.getStore().commitChanges();
+
 							editorGridClinic.getStore().add(
 									(List<? extends UserClinicPermissionsDTO>) modelData.get("clinicPermissions"));
+							editorGridClinic.getStore().commitChanges();
+
 							editorGridReports.getStore().add(
 									(List<? extends UserReportPermissionsDTO>) modelData.get("reportsPermissions"));
+							editorGridReports.getStore().commitChanges();
+
 							editorGridEntity.getStore().add(
 									(List<? extends UserEntityPermissionsDTO>) modelData.get("entityPermissions"));
+							editorGridEntity.getStore().commitChanges();
 						}
 					}
 				});
