@@ -17,7 +17,7 @@ public class UserEntityPermissions implements Serializable
 
 	@Id
 	@GeneratedValue
-	@Column(name = "UserEntityPermissionsId")
+	@Column(name = "userEntityPermissionsId")
 	private long id;
 
 	@Column(nullable = false)

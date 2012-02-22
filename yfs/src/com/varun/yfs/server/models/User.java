@@ -38,35 +38,35 @@ public class User implements Serializable
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_ChapterPermissions", joinColumns = { @JoinColumn(name = "userId") },
-			inverseJoinColumns = { @JoinColumn(name = "chapterPermId") })
+			inverseJoinColumns = { @JoinColumn(name = "userChapterPermId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserChapterPermissions> chapterPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_ProjectPermissions", joinColumns = { @JoinColumn(name = "userId") },
-			inverseJoinColumns = { @JoinColumn(name = "projPermId") })
+			inverseJoinColumns = { @JoinColumn(name = "userProjectPermId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserProjectPermissions> projectPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_ClinicPermissions", joinColumns = { @JoinColumn(name = "userId") },
-			inverseJoinColumns = { @JoinColumn(name = "clinicPermId") })
+			inverseJoinColumns = { @JoinColumn(name = "userClinicPermissionsId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserClinicPermissions> clinicPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_ReportPermissions", joinColumns = { @JoinColumn(name = "userId") },
-			inverseJoinColumns = { @JoinColumn(name = "reportPermId") })
+			inverseJoinColumns = { @JoinColumn(name = "userReportPermissionsId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserReportPermissions> reportPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "User_EntityPermissions", joinColumns = { @JoinColumn(name = "userId") },
-			inverseJoinColumns = { @JoinColumn(name = "entityPermId") })
+			inverseJoinColumns = { @JoinColumn(name = "userEntityPermissionsId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserEntityPermissions> entityPermissions;

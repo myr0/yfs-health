@@ -6,10 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "userChapterPermissions")
 public class UserChapterPermissions implements Serializable
 {
 	private static final long serialVersionUID = -420052322734423454L;
@@ -48,11 +46,6 @@ public class UserChapterPermissions implements Serializable
 	public void setId(long id)
 	{
 		this.id = id;
-	}
-
-	public String getName()
-	{
-		return chapterName;
 	}
 
 	public String getChapterName()

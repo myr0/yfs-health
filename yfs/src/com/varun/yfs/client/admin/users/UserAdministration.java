@@ -325,110 +325,36 @@ public class UserAdministration extends LayoutContainer
 				if (isAdd)
 				{
 					modelData = new UserDTO();
+					models.add(modelData);
+					modelData.setName(txtfldUsrName.getValue());
+					modelData.setPassword(txtfldPassword.getValue());
+					// modelData.setRole(userRole.getSimpleValue());
+					modelData.setChapterPermissions(editorGridChapter.getStore().getModels());
+					modelData.setProjectPermissions(editorGridProject.getStore().getModels());
+					modelData.setReportPermissions(editorGridReports.getStore().getModels());
+					modelData.setClinicPermissions(editorGridClinic.getStore().getModels());
+					modelData.setEntityPermissions(editorGridEntity.getStore().getModels());
 
 				} else
 				{
 					modelData = editorGridUser.getSelectionModel().getSelectedItem();
-					// if (modelData != null)
-					// {
-					// modelData.setName(txtfldUsrName.getValue());
-					// modelData.setPassword(txtfldPassword.getValue());
-					// // modelData.setRole(userRole.getSimpleValue());
-					// modelData.setChapterPermissions(editorGridChapter.getStore().getModels());
-					// modelData.setProjectPermissions(editorGridProject.getStore().getModels());
-					// }
+					if (modelData != null)
+					{
+						modelData.setName(txtfldUsrName.getValue());
+						modelData.setPassword(txtfldPassword.getValue());
+						// modelData.setRole(userRole.getSimpleValue());
+						modelData.setChapterPermissions(editorGridChapter.getStore().getModels());
+						modelData.setProjectPermissions(editorGridProject.getStore().getModels());
+						modelData.setReportPermissions(editorGridReports.getStore().getModels());
+						modelData.setClinicPermissions(editorGridClinic.getStore().getModels());
+						modelData.setEntityPermissions(editorGridEntity.getStore().getModels());
+					}
 				}
-
-				models.add(modelData);
-				modelData.setName(txtfldUsrName.getValue());
-				modelData.setPassword(txtfldPassword.getValue());
-				// modelData.setRole(userRole.getSimpleValue());
-				modelData.setChapterPermissions(editorGridChapter.getStore().getModels());
-				modelData.setProjectPermissions(editorGridProject.getStore().getModels());
 
 				savePage(models);
 			}
 		}));
-
-		// userRole.addSelectionChangedListener(new
-		// SelectionChangedListener<SimpleComboValue<String>>()
-		// {
-		// @Override
-		// public void
-		// selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se)
-		// {
-		// List<String> chapters = (List<String>)
-		// currentModelData.get("lstChapterNames");
-		// List<String> projects = (List<String>)
-		// currentModelData.get("lstProjects");
-		//
-		// if (projects == null)
-		// projects = Collections.EMPTY_LIST;
-		//
-		// if (chapters == null)
-		// chapters = Collections.EMPTY_LIST;
-		//
-		// editorGridChapter.getStore().removeAll();
-		// editorGridProject.getStore().removeAll();
-		//
-		// String selectedValue = se.getSelectedItem().getValue();
-		// if (selectedValue.isEmpty() || selectedValue == null)
-		// return;
-		//
-		// if (selectedValue.equals("Administrator"))
-		// {
-		// for (String string : projects)
-		// {
-		// UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
-		// model.setProjectName(string);
-		// model.setDelete("YES");
-		// model.setWrite("YES");
-		// model.setRead("YES");
-		// editorGridProject.getStore().add(model);
-		// }
-		// editorGridProject.getStore().commitChanges();
-		//
-		// for (String string : chapters)
-		// {
-		// UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
-		// model.setChapterName(string);
-		// model.setDelete("YES");
-		// model.setWrite("YES");
-		// model.setRead("YES");
-		// editorGridChapter.getStore().add(model);
-		// }
-		// editorGridChapter.getStore().commitChanges();
-		// } else if (selectedValue.equals("Administrator - Chapter"))
-		// {
-		// for (String string : chapters)
-		// {
-		// UserChapterPermissionsDTO model = new UserChapterPermissionsDTO();
-		// model.setChapterName(string);
-		// model.setDelete("YES");
-		// model.setWrite("YES");
-		// model.setRead("YES");
-		// editorGridChapter.getStore().add(model);
-		// }
-		// editorGridProject.getStore().commitChanges();
-		//
-		// } else if (selectedValue.equals("Area Co-Ordinator"))
-		// {
-		// for (String string : projects)
-		// {
-		// UserProjectPermissionsDTO model = new UserProjectPermissionsDTO();
-		// model.setProjectName(string);
-		// model.setDelete("YES");
-		// model.setWrite("YES");
-		// model.setRead("YES");
-		// editorGridProject.getStore().add(model);
-		// }
-		// editorGridProject.getStore().commitChanges();
-		// }
-		//
-		// }
-		// });
-
-		// userDetailsViewHolder.setSize("300px", "600px");
+		
 		userDetailsViewHolder.add(frmpanelUserBasic, new FitData(5));
 
 	}

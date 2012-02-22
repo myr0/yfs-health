@@ -1,5 +1,6 @@
 package com.varun.yfs.server.common.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -16,25 +17,37 @@ public class UsersData extends AbstractData
 	private static final Logger LOGGER = Logger.getLogger(UsersData.class);
 	private ChapterNameData chapData = new ChapterNameData();
 	private ProjectData projData = new ProjectData();
+	private ClinicData clinicData = new ClinicData();
 
-	@SuppressWarnings("unchecked")
 	public ModelData getModel(UserDTO user)
 	{
 		ModelData modelData = new BaseModelData();
 		List<ModelData> modelList = DataUtil.<ModelData> getModelList("User");
-		// List<String> lstChapterNames = (List<String>)
-		// DataUtil.executeQuery("select name from ChapterName");
-		// List<String> lstProjects = (List<String>)
-		// DataUtil.executeQuery("select name from Project");
-		List<String> lstClinics = (List<String>) DataUtil.executeQuery("select clinicName from Clinic");
 
 		modelData.set("users", modelList);
-		modelData.set("lstChapterNames", chapData.getModel(user).get("data"));
-		modelData.set("lstProjects", projData.getModel(user).get("data"));
-		modelData.set("lstClinicNames", lstClinics);
+
+		List<ModelData> chapDat = chapData.getModel(user).get("data");
+		modelData.set("lstChapterNames", getNames(chapDat));
+
+		List<ModelData> projDat = projData.getModel(user).get("data");
+		modelData.set("lstProjects", getNames(projDat));
+
+		List<ModelData> clinicDat = clinicData.getModel(user).get("data");
+		modelData.set("lstClinicNames", getNames(clinicDat));
+
 		modelData.set("lstReportNames", ReportType.getValues());
 		modelData.set("lstEntityNames", DataUtil.getEntitiesList());
 		return modelData;
+	}
+
+	protected List<String> getNames(List<ModelData> chapDat)
+	{
+		List<String> lstChaps = new ArrayList<String>();
+		for (ModelData modelData2 : chapDat)
+		{
+			lstChaps.add(modelData2.toString());
+		}
+		return lstChaps;
 	}
 
 	public RpcStatusEnum saveModel(ModelData model)
