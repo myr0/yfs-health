@@ -11,6 +11,7 @@ import com.varun.yfs.dto.UserDTO;
 
 public class Yfs implements EntryPoint
 {
+	@Override
 	public void onModuleLoad()
 	{
 		String sessionID = Cookies.getCookie("sid");

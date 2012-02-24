@@ -55,6 +55,7 @@ public class ImportDetail extends LayoutContainer
 
 	protected final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
 	{
+		@Override
 		public void handleEvent(MessageBoxEvent ce)
 		{
 		}
@@ -127,6 +128,7 @@ public class ImportDetail extends LayoutContainer
 	private final IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler()
 	{
 
+		@Override
 		public void onFinish(IUploader uploader)
 		{
 			if (uploader.getStatus() == gwtupload.client.IUploadStatus.Status.SUCCESS)
@@ -249,6 +251,7 @@ public class ImportDetail extends LayoutContainer
 
 	private final OnLoadPreloadedImageHandler showImage = new OnLoadPreloadedImageHandler()
 	{
+		@Override
 		public void onLoad(PreloadedImage image)
 		{
 			image.setWidth("75px");

@@ -15,6 +15,7 @@ public class VolunteerData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(VolunteerData.class);
 
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();

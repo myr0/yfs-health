@@ -12,6 +12,7 @@ import com.varun.yfs.dto.UserDTO;
 
 public class ReportsData extends AbstractData
 {
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		List<String> lstReportPermissions = userDto.getReportWithPermission(PermissionTypeEnum.READ);

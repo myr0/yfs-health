@@ -15,6 +15,7 @@ public class ReferralTypeData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(ReferralTypeData.class);
 
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();

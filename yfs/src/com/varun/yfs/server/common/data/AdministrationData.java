@@ -13,6 +13,7 @@ import com.varun.yfs.dto.YesNoDTO;
 
 public class AdministrationData extends AbstractData
 {
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();

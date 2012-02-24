@@ -12,6 +12,7 @@ public class ImageServiceImpl extends RemoteServiceServlet implements ImageServi
 {
 	private static final long serialVersionUID = -6737253680259121546L;
 
+	@Override
 	public String getImageToken(String base64image)
 	{
 		byte[] imageBytes = Base64.decode(base64image);

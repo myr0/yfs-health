@@ -20,6 +20,7 @@ public class CountryData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(CountryData.class);
 
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
@@ -33,6 +34,7 @@ public class CountryData extends AbstractData
 		return modelData;
 	}
 
+	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;

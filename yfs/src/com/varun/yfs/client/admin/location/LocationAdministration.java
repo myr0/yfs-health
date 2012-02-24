@@ -56,6 +56,7 @@ public class LocationAdministration extends LayoutContainer
 
 	private Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
 	{
+		@Override
 		public void handleEvent(MessageBoxEvent ce)
 		{
 		}

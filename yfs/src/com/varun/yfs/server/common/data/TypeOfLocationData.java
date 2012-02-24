@@ -15,6 +15,7 @@ public class TypeOfLocationData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(TypeOfLocationData.class);
 
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();

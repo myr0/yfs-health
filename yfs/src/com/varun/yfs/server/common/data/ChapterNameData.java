@@ -30,6 +30,7 @@ public class ChapterNameData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(ChapterNameData.class);
 
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
@@ -51,6 +52,7 @@ public class ChapterNameData extends AbstractData
 		return modelData;
 	}
 
+	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();

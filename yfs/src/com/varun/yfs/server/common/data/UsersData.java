@@ -19,6 +19,7 @@ public class UsersData extends AbstractData
 	private ProjectData projData = new ProjectData();
 	private ClinicData clinicData = new ClinicData();
 
+	@Override
 	public ModelData getModel(UserDTO user)
 	{
 		ModelData modelData = new BaseModelData();
@@ -50,6 +51,7 @@ public class UsersData extends AbstractData
 		return lstChaps;
 	}
 
+	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;

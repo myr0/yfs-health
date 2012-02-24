@@ -95,6 +95,7 @@ public class IndexPage extends LayoutContainer
 
 	protected final static Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
+		@Override
 		public void handleEvent(MessageBoxEvent ce)
 		{
 		}

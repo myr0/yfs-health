@@ -21,6 +21,7 @@ public class LocalityData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(LocalityData.class);
 
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
@@ -35,6 +36,7 @@ public class LocalityData extends AbstractData
 		return modelData;
 	}
 
+	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;

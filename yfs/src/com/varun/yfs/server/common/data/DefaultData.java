@@ -10,6 +10,7 @@ import com.varun.yfs.dto.UserDTO;
 
 public class DefaultData extends AbstractData
 {
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();

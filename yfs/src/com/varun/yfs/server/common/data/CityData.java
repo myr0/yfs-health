@@ -21,6 +21,7 @@ public class CityData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(CityData.class);
 
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
@@ -36,6 +37,7 @@ public class CityData extends AbstractData
 		return modelData;
 	}
 
+	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();

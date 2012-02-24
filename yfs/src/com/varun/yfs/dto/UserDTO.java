@@ -10,22 +10,6 @@ public class UserDTO extends BaseModelData
 {
 	private static final long serialVersionUID = 3196402615838002153L;
 	private long id;
-	// private List<UserChapterPermissionsDTO> chapterPermissions;
-	// private List<UserProjectPermissionsDTO> projectPermissions;
-	// private List<UserClinicPermissionsDTO> clinicPermissions;
-	// private List<UserEntityPermissionsDTO> entityPermissions;
-	// private List<UserReportPermissionsDTO> reportPermissions;
-
-	// private List<UserChapterPermissionsDTO> chapterPermissions = new
-	// ArrayList<UserChapterPermissionsDTO>();
-	// private List<UserProjectPermissionsDTO> projectPermissions = new
-	// ArrayList<UserProjectPermissionsDTO>();
-	// private List<UserClinicPermissionsDTO> clinicPermissions = new
-	// ArrayList<UserClinicPermissionsDTO>();
-	// private List<UserEntityPermissionsDTO> entityPermissions = new
-	// ArrayList<UserEntityPermissionsDTO>();
-	// private List<UserReportPermissionsDTO> reportPermissions = new
-	// ArrayList<UserReportPermissionsDTO>();
 
 	private ReportType reportType;
 

@@ -13,6 +13,7 @@ import com.varun.yfs.dto.UserDTO;
 
 public class ClinicScreeningLocationsData extends AbstractData
 {
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		List<ModelData> nodes = new ArrayList<ModelData>();

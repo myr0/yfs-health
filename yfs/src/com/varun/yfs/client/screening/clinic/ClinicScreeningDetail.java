@@ -96,6 +96,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 	protected final Listener<MessageBoxEvent> l = new Listener<MessageBoxEvent>()
 	{
+		@Override
 		public void handleEvent(MessageBoxEvent ce)
 		{
 		}

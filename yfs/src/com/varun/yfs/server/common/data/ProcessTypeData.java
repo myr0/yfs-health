@@ -15,6 +15,7 @@ public class ProcessTypeData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(ProcessTypeData.class);
 
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();

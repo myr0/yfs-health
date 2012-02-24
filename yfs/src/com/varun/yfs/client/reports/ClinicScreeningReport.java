@@ -57,6 +57,7 @@ public class ClinicScreeningReport extends LayoutContainer
 
 	final Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
+		@Override
 		public void handleEvent(MessageBoxEvent ce)
 		{
 		}

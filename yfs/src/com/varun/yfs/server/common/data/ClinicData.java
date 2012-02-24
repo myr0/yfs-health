@@ -24,6 +24,7 @@ public class ClinicData extends AbstractData
 {
 	private static final Logger LOGGER = Logger.getLogger(ClinicData.class);
 
+	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
@@ -38,6 +39,7 @@ public class ClinicData extends AbstractData
 		return modelData;
 	}
 
+	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;
