@@ -60,6 +60,9 @@ public class UserAdministration extends LayoutContainer
 	private final ContentPanel gridPanel = new ContentPanel();
 
 	private final ContentPanel userDetailsViewHolder = new ContentPanel();
+	/**
+	 * 
+	 */
 	private TabPanel tabPermissions = new TabPanel();
 	private final TextField<String> txtfldUsrName = new TextField<String>();
 	private final TextField<String> txtfldPassword = new TextField<String>();
@@ -171,6 +174,12 @@ public class UserAdministration extends LayoutContainer
 				editorGridUser.unmask();
 				editorGridUser.setAutoWidth(true);
 
+				fieldChapter.getStore().removeAll();
+				fieldProject.getStore().removeAll();
+				fieldClinic.getStore().removeAll();
+				fieldReports.getStore().removeAll();
+				fieldEntity.getStore().removeAll();
+				
 				fieldChapter.add((List<String>) currentModelData.get("lstChapterNames"));
 				fieldProject.add((List<String>) currentModelData.get("lstProjects"));
 				fieldClinic.add((List<String>) currentModelData.get("lstClinicNames"));
@@ -428,7 +437,7 @@ public class UserAdministration extends LayoutContainer
 							editorGridClinic.getStore().commitChanges();
 
 							editorGridReports.getStore().add(
-									(List<? extends UserReportPermissionsDTO>) modelData.get("reportsPermissions"));
+									(List<? extends UserReportPermissionsDTO>) modelData.get("reportPermissions"));
 							editorGridReports.getStore().commitChanges();
 
 							editorGridEntity.getStore().add(
@@ -473,6 +482,7 @@ public class UserAdministration extends LayoutContainer
 		tabPermissions.add(entityTab);
 		userDetailsViewHolder.add(tabPermissions, new FitData(5));
 		tabPermissions.setHeight(300);
+		tabPermissions.setBorders(false);
 	}
 
 	private ContentPanel buildProjectPermissionsGrid()

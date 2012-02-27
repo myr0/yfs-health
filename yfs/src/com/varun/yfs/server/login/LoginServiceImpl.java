@@ -29,7 +29,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 			if (modelList.get(usrIdx).getPassword().equalsIgnoreCase(password))
 			{
 				user.setLoggedIn(true);
-				storeUserInSession(user);
+				storeUserInSession(modelList.get(usrIdx));
 				user.setSessionId(this.getThreadLocalRequest().getSession().getId());
 			}
 		}

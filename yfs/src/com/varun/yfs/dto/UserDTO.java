@@ -65,7 +65,6 @@ public class UserDTO extends BaseModelData
 
 	public List<UserChapterPermissionsDTO> getChapterPermissions()
 	{
-		List<UserChapterPermissionsDTO> list = get("chapterPermissions");
 		return get("chapterPermissions");// list == null ? chapterPermissions :
 											// list;
 	}
@@ -77,7 +76,6 @@ public class UserDTO extends BaseModelData
 
 	public List<UserProjectPermissionsDTO> getProjectPermissions()
 	{
-		List<UserProjectPermissionsDTO> list = get("projectPermissions");
 		return get("projectPermissions");// list == null ? projectPermissions :
 											// list;
 	}
@@ -89,7 +87,6 @@ public class UserDTO extends BaseModelData
 
 	public List<UserClinicPermissionsDTO> getClinicPermissions()
 	{
-		List<UserClinicPermissionsDTO> list = get("clinicPermissions");
 		return get("clinicPermissions");// list == null ? clinicPermissions :
 										// list;
 	}
@@ -101,7 +98,6 @@ public class UserDTO extends BaseModelData
 
 	public List<UserReportPermissionsDTO> getReportPermissions()
 	{
-		List<UserReportPermissionsDTO> list = get("reportPermissions");
 		return get("reportPermissions");// list == null ? reportPermissions :
 										// list;
 	}
@@ -113,7 +109,6 @@ public class UserDTO extends BaseModelData
 
 	public List<UserEntityPermissionsDTO> getEntityPermissions()
 	{
-		List<UserEntityPermissionsDTO> list = get("entityPermissions");
 		return get("entityPermissions");// list == null ? entityPermissions :
 										// list;
 	}

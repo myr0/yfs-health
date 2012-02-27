@@ -115,7 +115,6 @@ public class ImportDetail extends LayoutContainer
 				{
 					lstCurrentModels.set(lstCurrentModels.indexOf(modelData), modelData);
 				}
-
 			}
 			resultTemp = lstCurrentModels;
 		}
