@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.util.Util;
+import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.UserChapterPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.dto.YesNoDTO;
@@ -126,8 +127,8 @@ public class ChapterNameData extends AbstractData
 				{
 					String entityName = userChapterPermissionsDTO.getChapterName();
 
-					ModelData tempModel = new BaseModelData();
-					tempModel.set("name", entityName);
+					ChapterNameDTO tempModel = new ChapterNameDTO();
+					tempModel.set("chapterName", entityName);
 
 					int idx = modelList.indexOf(tempModel);
 					if (idx >= 0)

@@ -9,11 +9,15 @@ import com.varun.yfs.client.reports.rpc.ReportType;
 public class UserDTO extends BaseModelData
 {
 	private static final long serialVersionUID = 3196402615838002153L;
-	private long id;
-
-	private ReportType reportType;
-
 	private static final String ADMIN_USER = "admin";
+
+	private long id;
+	private ReportType reportType;
+	private UserChapterPermissionsDTO dummy1;
+	private UserProjectPermissionsDTO dummy2;
+	private UserClinicPermissionsDTO dummy3;
+	private UserReportPermissionsDTO dummy4;
+	private UserEntityPermissionsDTO dummy5;
 
 	public UserDTO()
 	{
@@ -65,8 +69,7 @@ public class UserDTO extends BaseModelData
 
 	public List<UserChapterPermissionsDTO> getChapterPermissions()
 	{
-		return get("chapterPermissions");// list == null ? chapterPermissions :
-											// list;
+		return get("chapterPermissions");
 	}
 
 	public void setProjectPermissions(List<UserProjectPermissionsDTO> projects)
@@ -76,8 +79,7 @@ public class UserDTO extends BaseModelData
 
 	public List<UserProjectPermissionsDTO> getProjectPermissions()
 	{
-		return get("projectPermissions");// list == null ? projectPermissions :
-											// list;
+		return get("projectPermissions");
 	}
 
 	public void setClinicPermissions(List<UserClinicPermissionsDTO> clinicPermissions)
@@ -87,8 +89,7 @@ public class UserDTO extends BaseModelData
 
 	public List<UserClinicPermissionsDTO> getClinicPermissions()
 	{
-		return get("clinicPermissions");// list == null ? clinicPermissions :
-										// list;
+		return get("clinicPermissions");
 	}
 
 	public void setReportPermissions(List<UserReportPermissionsDTO> reportPermissions)
@@ -98,8 +99,7 @@ public class UserDTO extends BaseModelData
 
 	public List<UserReportPermissionsDTO> getReportPermissions()
 	{
-		return get("reportPermissions");// list == null ? reportPermissions :
-										// list;
+		return get("reportPermissions");
 	}
 
 	public void setEntityPermissions(List<UserEntityPermissionsDTO> entityPermissions)
@@ -109,8 +109,7 @@ public class UserDTO extends BaseModelData
 
 	public List<UserEntityPermissionsDTO> getEntityPermissions()
 	{
-		return get("entityPermissions");// list == null ? entityPermissions :
-										// list;
+		return get("entityPermissions");
 	}
 
 	public String getDeleted()
@@ -166,17 +165,17 @@ public class UserDTO extends BaseModelData
 			{
 			case READ:
 				String read = chapDto.getRead();
-				if (read != null && read.equalsIgnoreCase(type.name()))
+				if (read != null && read.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					chaps.add(chapDto.getChapterName());
 				break;
 			case WRITE:
 				String write = chapDto.getWrite();
-				if (write != null && write.equalsIgnoreCase(type.name()))
+				if (write != null && write.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					chaps.add(chapDto.getChapterName());
 				break;
 			case DELETE:
 				String delete = chapDto.getDelete();
-				if (delete != null && delete.equalsIgnoreCase(type.name()))
+				if (delete != null && delete.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					chaps.add(chapDto.getChapterName());
 				break;
 			}
@@ -198,17 +197,17 @@ public class UserDTO extends BaseModelData
 			{
 			case READ:
 				String read = projectDto.getRead();
-				if (read != null && read.equalsIgnoreCase(type.name()))
+				if (read != null && read.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					projs.add(projectDto.getProjectName());
 				break;
 			case WRITE:
 				String write = projectDto.getWrite();
-				if (write != null && write.equalsIgnoreCase(type.name()))
+				if (write != null && write.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					projs.add(projectDto.getProjectName());
 				break;
 			case DELETE:
 				String delete = projectDto.getDelete();
-				if (delete != null && delete.equalsIgnoreCase(type.name()))
+				if (delete != null && delete.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					projs.add(projectDto.getProjectName());
 				break;
 			}
@@ -230,17 +229,17 @@ public class UserDTO extends BaseModelData
 			{
 			case READ:
 				String read = clinicDto.getRead();
-				if (read != null && read.equalsIgnoreCase(type.name()))
+				if (read != null && read.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					clinic.add(clinicDto.getClinicName());
 				break;
 			case WRITE:
 				String write = clinicDto.getWrite();
-				if (write != null && write.equalsIgnoreCase(type.name()))
+				if (write != null && write.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					clinic.add(clinicDto.getClinicName());
 				break;
 			case DELETE:
 				String delete = clinicDto.getDelete();
-				if (delete != null && delete.equalsIgnoreCase(type.name()))
+				if (delete != null && delete.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					clinic.add(clinicDto.getClinicName());
 				break;
 			}
@@ -262,17 +261,17 @@ public class UserDTO extends BaseModelData
 			{
 			case READ:
 				String read = reportDto.getRead();
-				if (read != null && read.equalsIgnoreCase(type.name()))
+				if (read != null && read.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					report.add(reportDto.getReportName());
 				break;
 			case WRITE:
 				String write = reportDto.getWrite();
-				if (write != null && write.equalsIgnoreCase(type.name()))
+				if (write != null && write.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					report.add(reportDto.getReportName());
 				break;
 			case DELETE:
 				String delete = reportDto.getDelete();
-				if (delete != null && delete.equalsIgnoreCase(type.name()))
+				if (delete != null && delete.equalsIgnoreCase(YesNoDTO.YES.getName()))
 					report.add(reportDto.getReportName());
 				break;
 			}

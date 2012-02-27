@@ -80,4 +80,15 @@ public class UserClinicPermissionsDTO extends BaseModelData
 		return get("delete");
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null)
+			return false;
+		if (obj.getClass() != this.getClass())
+			return false;
+		UserClinicPermissionsDTO user = (UserClinicPermissionsDTO) obj;
+		return user.getClinicName().equalsIgnoreCase(this.getClinicName());
+	}
+
 }

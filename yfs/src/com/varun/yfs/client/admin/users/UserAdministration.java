@@ -60,9 +60,6 @@ public class UserAdministration extends LayoutContainer
 	private final ContentPanel gridPanel = new ContentPanel();
 
 	private final ContentPanel userDetailsViewHolder = new ContentPanel();
-	/**
-	 * 
-	 */
 	private TabPanel tabPermissions = new TabPanel();
 	private final TextField<String> txtfldUsrName = new TextField<String>();
 	private final TextField<String> txtfldPassword = new TextField<String>();
@@ -179,7 +176,7 @@ public class UserAdministration extends LayoutContainer
 				fieldClinic.getStore().removeAll();
 				fieldReports.getStore().removeAll();
 				fieldEntity.getStore().removeAll();
-				
+
 				fieldChapter.add((List<String>) currentModelData.get("lstChapterNames"));
 				fieldProject.add((List<String>) currentModelData.get("lstProjects"));
 				fieldClinic.add((List<String>) currentModelData.get("lstClinicNames"));

@@ -13,6 +13,7 @@ import org.hibernate.Transaction;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.dto.ClinicDTO;
 import com.varun.yfs.dto.UserClinicPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.dto.YesNoDTO;
@@ -96,8 +97,8 @@ public class ClinicData extends AbstractData
 				{
 					String entityName = userClinicPermissionsDTO.getClinicName();
 
-					ModelData tempModel = new BaseModelData();
-					tempModel.set("name", entityName);
+					ClinicDTO tempModel = new ClinicDTO();
+					tempModel.set("clinicName", entityName);
 
 					int idx = modelList.indexOf(tempModel);
 					if (idx >= 0)

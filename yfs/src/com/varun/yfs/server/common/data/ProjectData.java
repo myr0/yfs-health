@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.util.Util;
+import com.varun.yfs.dto.ProjectDTO;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.dto.UserProjectPermissionsDTO;
 import com.varun.yfs.dto.YesNoDTO;
@@ -99,8 +100,8 @@ public class ProjectData extends AbstractData
 				{
 					String entityName = userProjectPermissionsDTO.getProjectName();
 
-					ModelData tempModel = new BaseModelData();
-					tempModel.set("name", entityName);
+					ProjectDTO tempModel = new ProjectDTO();
+					tempModel.set("projectName", entityName);
 
 					int idx = modelList.indexOf(tempModel);
 					if (idx >= 0)
