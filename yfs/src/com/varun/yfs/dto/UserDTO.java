@@ -2,6 +2,7 @@ package com.varun.yfs.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.varun.yfs.client.reports.rpc.ReportType;
@@ -29,6 +30,14 @@ public class UserDTO extends BaseModelData
 		setName(name);
 		setPassword(password);
 		setLoggedIn(false);
+	}
+
+	public UserDTO(Map<String, Object> properties)
+	{
+		for (String key : properties.keySet())
+		{
+			set(key, properties.get(key));
+		}
 	}
 
 	public long getId()

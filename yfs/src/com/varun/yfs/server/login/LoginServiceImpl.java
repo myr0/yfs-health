@@ -24,13 +24,20 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		UserDTO user = new UserDTO(name, password);
 		int usrIdx = modelList.indexOf(user);
 
+		UserDTO userDbModel = modelList.get(usrIdx);
+
 		if (usrIdx >= 0) // user-name exists
 		{
-			if (modelList.get(usrIdx).getPassword().equalsIgnoreCase(password))
+			if (userDbModel.getPassword().equalsIgnoreCase(password))
 			{
+				user = new UserDTO(userDbModel.getProperties());
+				user.setName(name);
+				user.setPassword(password);
+				
 				user.setLoggedIn(true);
-				storeUserInSession(modelList.get(usrIdx));
 				user.setSessionId(this.getThreadLocalRequest().getSession().getId());
+				
+				storeUserInSession(user);
 			}
 		}
 
