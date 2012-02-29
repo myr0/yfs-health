@@ -24,7 +24,8 @@ public class TypeOfLocationData extends AbstractData
 		model.set("configIds", Arrays.asList("name"));
 		model.set("configCols", Arrays.asList("Name"));
 		model.set("configType", Arrays.asList("Text"));
-
+		
+		model.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.TypeOfLocation.name().toLowerCase()));
 		return model;
 	}
 

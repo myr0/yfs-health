@@ -1,6 +1,7 @@
 package com.varun.yfs.dto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ public class UserDTO extends BaseModelData
 	private UserClinicPermissionsDTO dummy3;
 	private UserReportPermissionsDTO dummy4;
 	private UserEntityPermissionsDTO dummy5;
+	private PermissionsDTO permDTO;
 
 	public UserDTO()
 	{
@@ -119,6 +121,22 @@ public class UserDTO extends BaseModelData
 	public List<UserEntityPermissionsDTO> getEntityPermissions()
 	{
 		return get("entityPermissions");
+	}
+
+	public Map<String, PermissionsDTO> getEntityPermissionsMap()
+	{
+		List<UserEntityPermissionsDTO> lstEntityPerms = get("entityPermissions");
+		Map<String, PermissionsDTO> mapName2Perm = new HashMap<String, PermissionsDTO>();
+
+		if (lstEntityPerms == null)
+			return mapName2Perm;
+
+		for (UserEntityPermissionsDTO usrEntPerm : lstEntityPerms)
+		{
+			mapName2Perm.put(usrEntPerm.getEntityName().toLowerCase().replaceAll(" ", ""), new PermissionsDTO(usrEntPerm.getRead(),
+					usrEntPerm.getWrite(), usrEntPerm.getDelete()));
+		}
+		return mapName2Perm;
 	}
 
 	public String getDeleted()

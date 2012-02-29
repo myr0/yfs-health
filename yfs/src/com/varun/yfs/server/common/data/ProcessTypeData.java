@@ -25,6 +25,7 @@ public class ProcessTypeData extends AbstractData
 		model.set("configCols", Arrays.asList("Name"));
 		model.set("configType", Arrays.asList("Text"));
 
+		model.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.ProcessType.name().toLowerCase()));
 		return model;
 	}
 

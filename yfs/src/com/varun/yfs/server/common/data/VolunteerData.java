@@ -24,6 +24,8 @@ public class VolunteerData extends AbstractData
 		model.set("configIds", Arrays.asList("name"));
 		model.set("configCols", Arrays.asList("Name"));
 		model.set("configType", Arrays.asList("Text"));
+		
+		model.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Volunteer.name().toLowerCase()));
 		return model;
 	}
 

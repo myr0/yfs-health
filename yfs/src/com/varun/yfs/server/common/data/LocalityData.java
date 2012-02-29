@@ -12,6 +12,7 @@ import org.hibernate.Transaction;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.City;
@@ -26,13 +27,15 @@ public class LocalityData extends AbstractData
 	{
 		ModelData modelData = new BaseModelData();
 
-		List<ModelData> list = DataUtil.<ModelData> getModelList("Locality");
+		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Locality.name());
 		modelData.set("data", list);
-		modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
+		modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList(ModelDataEnum.City.name()));
 
 		modelData.set("configIds", Arrays.asList("localityName", "cityName"));
 		modelData.set("configCols", Arrays.asList("Locality", "City"));
 		modelData.set("configType", Arrays.asList("Text", "combo"));
+
+		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Locality.name().toLowerCase()));
 		return modelData;
 	}
 

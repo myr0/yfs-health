@@ -7,6 +7,7 @@ import java.util.List;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.dto.EntitiesDTO;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.dto.UserEntityPermissionsDTO;
 import com.varun.yfs.dto.YesNoDTO;
@@ -46,7 +47,7 @@ public class AdministrationData extends AbstractData
 			{
 				String entityName = userEntityPermissionsDTO.getEntityName();
 
-				ModelData tempModel = new BaseModelData();
+				EntitiesDTO tempModel = new EntitiesDTO();
 				tempModel.set("name", entityName);
 
 				int idx = modelList.indexOf(tempModel);

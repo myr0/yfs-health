@@ -24,6 +24,8 @@ public class ReferralTypeData extends AbstractData
 		model.set("configIds", Arrays.asList("name"));
 		model.set("configCols", Arrays.asList("Name"));
 		model.set("configType", Arrays.asList("Text"));
+		
+		model.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.ReferralType.name().toLowerCase()));
 		return model;
 	}
 

@@ -13,6 +13,7 @@ import org.hibernate.Transaction;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.UserChapterPermissionsDTO;
@@ -36,7 +37,7 @@ public class ChapterNameData extends AbstractData
 	{
 		ModelData modelData = new BaseModelData();
 
-		List<ModelData> list = DataUtil.<ModelData> getModelList("ChapterName");
+		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.ChapterName.name());
 		modelData.set("data", applyPermission(userDto, list));
 		modelData.set("parentStoreCountry", DataUtil.<ModelData> getModelList("Country"));
 		modelData.set("parentStoreState", DataUtil.<ModelData> getModelList("State"));
@@ -50,6 +51,9 @@ public class ChapterNameData extends AbstractData
 		modelData.set("configCols",
 				Arrays.asList("Chapter Name", "Country", "State", "Village", "Town", "City", "Locality"));
 		modelData.set("configType", Arrays.asList("Text", "combo", "combo", "combo", "combo", "combo", "combo"));
+
+		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.ChapterName.name().toLowerCase()));
+
 		return modelData;
 	}
 

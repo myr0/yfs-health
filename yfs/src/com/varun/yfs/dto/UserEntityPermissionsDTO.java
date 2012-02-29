@@ -13,7 +13,7 @@ public class UserEntityPermissionsDTO extends BaseModelData
 		setDeleted("N");
 	}
 
-	public UserEntityPermissionsDTO(String name, String pass)
+	public UserEntityPermissionsDTO(String name)
 	{
 		setEntityName(name);
 		setDeleted("N");

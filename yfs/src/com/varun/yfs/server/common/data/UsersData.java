@@ -9,6 +9,7 @@ import org.hibernate.HibernateException;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.reports.rpc.ReportType;
 import com.varun.yfs.dto.UserDTO;
 
@@ -23,7 +24,7 @@ public class UsersData extends AbstractData
 	public ModelData getModel(UserDTO user)
 	{
 		ModelData modelData = new BaseModelData();
-		List<ModelData> modelList = DataUtil.<ModelData> getModelList("User");
+		List<ModelData> modelList = DataUtil.<ModelData> getModelList(ModelDataEnum.User.name());
 
 		modelData.set("users", modelList);
 
@@ -38,6 +39,8 @@ public class UsersData extends AbstractData
 
 		modelData.set("lstReportNames", ReportType.getValues());
 		modelData.set("lstEntityNames", DataUtil.getEntitiesList());
+		
+		modelData.set("permissions", user.getEntityPermissionsMap().get(ModelDataEnum.User.name().toLowerCase()));
 		return modelData;
 	}
 

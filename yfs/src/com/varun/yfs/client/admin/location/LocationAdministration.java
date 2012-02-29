@@ -34,6 +34,8 @@ import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.images.YfsImageBundle;
+import com.varun.yfs.dto.PermissionsDTO;
+import com.varun.yfs.dto.YesNoDTO;
 
 public class LocationAdministration extends LayoutContainer
 {
@@ -49,6 +51,7 @@ public class LocationAdministration extends LayoutContainer
 	private List<String> lstConfigsId;
 	private List<String> lstconfigCols;
 	private List<String> lstconfigType;
+	private PermissionsDTO permissions;
 
 	public LocationAdministration()
 	{
@@ -187,6 +190,22 @@ public class LocationAdministration extends LayoutContainer
 				lstConfigsId = result.get("configIds");
 				lstconfigCols = result.get("configCols");
 				lstconfigType = result.get("configType");
+
+				permissions = result.get("permissions");
+				if(permissions.getWrite().equalsIgnoreCase(YesNoDTO.YES.getName()))
+				{
+				}
+				else
+				{
+				}
+				
+				if(permissions.getDelete().equalsIgnoreCase(YesNoDTO.YES.getName()))
+				{
+				}
+				else
+				{
+				}
+
 
 				List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 				for (int i = 0; i < lstConfigsId.size(); i++)

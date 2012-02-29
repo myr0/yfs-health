@@ -12,6 +12,14 @@ public class PermissionsDTO extends BaseModelData
 		set("deleted", "N");
 	}
 
+	public PermissionsDTO(String read, String write, String delete)
+	{
+		this();
+		setRead(read);
+		setWrite(write);
+		setDelete(delete);
+	}
+
 	public long getId()
 	{
 		return id;
@@ -40,5 +48,35 @@ public class PermissionsDTO extends BaseModelData
 	public void setDeleted(String deleted)
 	{
 		set("deleted", deleted);
+	}
+
+	public void setRead(String read)
+	{
+		set("read", read);
+	}
+
+	public String getRead()
+	{
+		return get("read");
+	}
+
+	public void setWrite(String write)
+	{
+		set("write", write);
+	}
+
+	public String getWrite()
+	{
+		return get("write");
+	}
+
+	public void setDelete(String delete)
+	{
+		set("delete", delete);
+	}
+
+	public String getDelete()
+	{
+		return get("delete");
 	}
 }

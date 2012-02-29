@@ -13,6 +13,7 @@ import org.hibernate.Transaction;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.dto.ClinicDTO;
 import com.varun.yfs.dto.UserClinicPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
@@ -30,13 +31,15 @@ public class ClinicData extends AbstractData
 	{
 		ModelData modelData = new BaseModelData();
 
-		List<ModelData> list = DataUtil.<ModelData> getModelList("Clinic");
+		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Clinic.name());
 		modelData.set("data", this.applyPermission(userDto, list));
-		modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
+		modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList(ModelDataEnum.City.name()));
 
 		modelData.set("configIds", Arrays.asList("clinicName", "cityName"));
 		modelData.set("configCols", Arrays.asList("Clinic Name", "City"));
 		modelData.set("configType", Arrays.asList("Text", "combo"));
+		
+		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Clinic.name().toLowerCase()));
 		return modelData;
 	}
 

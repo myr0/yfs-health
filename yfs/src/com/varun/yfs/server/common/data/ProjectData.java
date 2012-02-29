@@ -13,6 +13,7 @@ import org.hibernate.Transaction;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.ProjectDTO;
 import com.varun.yfs.dto.UserDTO;
@@ -31,13 +32,15 @@ public class ProjectData extends AbstractData
 	{
 		ModelData modelData = new BaseModelData();
 
-		List<ModelData> list = DataUtil.<ModelData> getModelList("Project");
+		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Project.name());
 		modelData.set("data", this.applyPermission(userDto, list));
-		modelData.set("parentStoreChapter", DataUtil.<ModelData> getModelList("ChapterName"));
+		modelData.set("parentStoreChapter", DataUtil.<ModelData> getModelList(ModelDataEnum.ChapterName.name()));
 
 		modelData.set("configIds", Arrays.asList("projectName", "chapterName"));
 		modelData.set("configCols", Arrays.asList("Project Name", "Chapter"));
 		modelData.set("configType", Arrays.asList("Text", "combo"));
+		
+		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Project.name().toLowerCase()));
 		return modelData;
 	}
 

@@ -12,6 +12,7 @@ import org.hibernate.Transaction;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.State;
@@ -26,13 +27,15 @@ public class VillageData extends AbstractData
 	{
 		ModelData modelData = new BaseModelData();
 
-		List<ModelData> list = DataUtil.<ModelData> getModelList("Village");
+		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Village.name());
 		modelData.set("data", list);
-		modelData.set("parentStoreState", DataUtil.<ModelData> getModelList("State"));
+		modelData.set("parentStoreState", DataUtil.<ModelData> getModelList(ModelDataEnum.State.name()));
 
 		modelData.set("configIds", Arrays.asList("villageName", "stateName"));
 		modelData.set("configCols", Arrays.asList("Village", "State"));
 		modelData.set("configType", Arrays.asList("Text", "combo"));
+
+		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Village.name().toLowerCase()));
 		return modelData;
 	}
 
