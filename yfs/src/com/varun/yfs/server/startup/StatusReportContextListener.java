@@ -7,7 +7,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.PropertyConfigurator;
 
-import com.varun.yfs.server.common.HibernateUtil;
+import com.varun.yfs.server.models.data.HibernateUtil;
 
 public class StatusReportContextListener implements ServletContextListener
 {

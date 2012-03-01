@@ -1,4 +1,4 @@
-package com.varun.yfs.client.admin.users;
+package com.varun.yfs.client.admin;
 
 import java.util.ArrayList;
 import java.util.List;

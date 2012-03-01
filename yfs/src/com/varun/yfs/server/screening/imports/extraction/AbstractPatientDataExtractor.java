@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.dto.ReferralTypeDTO;
 import com.varun.yfs.dto.YesNoDTO;
-import com.varun.yfs.server.common.data.DataUtil;
+import com.varun.yfs.server.models.data.DataUtil;
 
 @SuppressWarnings("rawtypes")
 public abstract class AbstractPatientDataExtractor

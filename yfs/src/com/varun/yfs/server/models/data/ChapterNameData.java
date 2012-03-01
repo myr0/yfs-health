@@ -1,4 +1,4 @@
-package com.varun.yfs.server.common.data;
+package com.varun.yfs.server.models.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +19,6 @@ import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.UserChapterPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.dto.YesNoDTO;
-import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.ChapterName;
 import com.varun.yfs.server.models.City;
 import com.varun.yfs.server.models.Country;

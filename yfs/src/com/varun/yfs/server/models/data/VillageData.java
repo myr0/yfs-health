@@ -1,4 +1,4 @@
-package com.varun.yfs.server.common.data;
+package com.varun.yfs.server.models.data;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,38 +14,36 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.dto.UserDTO;
-import com.varun.yfs.server.common.HibernateUtil;
-import com.varun.yfs.server.models.City;
 import com.varun.yfs.server.models.State;
+import com.varun.yfs.server.models.Village;
 
-public class CityData extends AbstractData
+public class VillageData extends AbstractData
 {
-	private static final Logger LOGGER = Logger.getLogger(CityData.class);
+	private static final Logger LOGGER = Logger.getLogger(VillageData.class);
 
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
 
-		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.City.name());
+		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Village.name());
 		modelData.set("data", list);
 		modelData.set("parentStoreState", DataUtil.<ModelData> getModelList(ModelDataEnum.State.name()));
 
-		modelData.set("configIds", Arrays.asList("cityName", "stateName"));
-		modelData.set("configCols", Arrays.asList("City", "State"));
+		modelData.set("configIds", Arrays.asList("villageName", "stateName"));
+		modelData.set("configCols", Arrays.asList("Village", "State"));
 		modelData.set("configType", Arrays.asList("Text", "combo"));
 
-		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.City.name().toLowerCase()));
-
+		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Village.name().toLowerCase()));
 		return modelData;
 	}
 
 	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
+		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transact = session.beginTransaction();
-		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		try
 		{
 			List<State> lstStates = DataUtil.<State> getRawList("State");
@@ -55,27 +53,23 @@ public class CityData extends AbstractData
 
 			for (ModelData modelData : lstModels)
 			{
-				City hibObject = dozerMapper.map(modelData, City.class);
-				String stateName = modelData.get("stateName").toString();
+				Village hibObject = dozerMapper.map(modelData, Village.class);
 
+				String stateName = modelData.get("stateName").toString();
 				hibObject.setState(findParent(lstStates, new State(stateName)));
 
-				if (hibObject.getId() <= 0)
+				if (hibObject.getId() <= 0) // new state - find the parent
 				{
-					hibObject.setName(modelData.get("cityName").toString());
+					hibObject.setName(modelData.get("villageName").toString());
 					session.save(hibObject);
-
 				} else
 				{
 					session.saveOrUpdate(hibObject);
 				}
 			}
-
 			transact.commit();
-
 			session.flush();
 			session.close();
-
 			status = RpcStatusEnum.SUCCESS;
 		} catch (HibernateException ex)
 		{
@@ -89,5 +83,4 @@ public class CityData extends AbstractData
 		}
 		return status;
 	}
-
 }

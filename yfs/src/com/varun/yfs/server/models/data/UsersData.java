@@ -1,4 +1,4 @@
-package com.varun.yfs.server.common.data;
+package com.varun.yfs.server.models.data;
 
 import java.util.ArrayList;
 import java.util.List;

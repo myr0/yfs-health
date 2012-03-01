@@ -1,4 +1,4 @@
-package com.varun.yfs.server.common.data;
+package com.varun.yfs.server.models.data;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,26 +14,27 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.dto.UserDTO;
-import com.varun.yfs.server.common.HibernateUtil;
-import com.varun.yfs.server.models.Country;
+import com.varun.yfs.server.models.State;
+import com.varun.yfs.server.models.Town;
 
-public class CountryData extends AbstractData
+public class TownData extends AbstractData
 {
-	private static final Logger LOGGER = Logger.getLogger(CountryData.class);
+	private static final Logger LOGGER = Logger.getLogger(TownData.class);
 
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
 
-		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Country.name());
+		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Town.name());
 		modelData.set("data", list);
+		modelData.set("parentStoreState", DataUtil.<ModelData> getModelList(ModelDataEnum.State.name()));
 
-		modelData.set("configIds", Arrays.asList("countryName"));
-		modelData.set("configCols", Arrays.asList("Country"));
-		modelData.set("configType", Arrays.asList("Text"));
-		
-		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Country.name().toLowerCase()));
+		modelData.set("configIds", Arrays.asList("townName", "stateName"));
+		modelData.set("configCols", Arrays.asList("Town", "State"));
+		modelData.set("configType", Arrays.asList("Text", "combo"));
+
+		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Town.name().toLowerCase()));
 		return modelData;
 	}
 
@@ -46,14 +47,19 @@ public class CountryData extends AbstractData
 		Transaction transact = session.beginTransaction();
 		try
 		{
+			List<State> lstStates = DataUtil.<State> getRawList("State");
 			List<ModelData> lstModels = model.get("data");
 
 			for (ModelData modelData : lstModels)
 			{
-				Country hibObject = dozerMapper.map(modelData, Country.class);
-				if (hibObject.getId() <= 0)
+				Town hibObject = dozerMapper.map(modelData, Town.class);
+
+				String stateName = modelData.get("stateName").toString();
+				hibObject.setState(findParent(lstStates, new State(stateName)));
+
+				if (hibObject.getId() <= 0) // new state - find the parent
 				{
-					hibObject.setName(modelData.get("countryName").toString());
+					hibObject.setName(modelData.get("townName").toString());
 					session.save(hibObject);
 				} else
 				{
@@ -61,6 +67,7 @@ public class CountryData extends AbstractData
 				}
 			}
 			transact.commit();
+			session.flush();
 			session.close();
 			status = RpcStatusEnum.SUCCESS;
 		} catch (HibernateException ex)

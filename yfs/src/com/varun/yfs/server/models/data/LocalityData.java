@@ -1,4 +1,4 @@
-package com.varun.yfs.server.common.data;
+package com.varun.yfs.server.models.data;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,28 +14,27 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.dto.UserDTO;
-import com.varun.yfs.server.common.HibernateUtil;
-import com.varun.yfs.server.models.State;
-import com.varun.yfs.server.models.Village;
+import com.varun.yfs.server.models.City;
+import com.varun.yfs.server.models.Locality;
 
-public class VillageData extends AbstractData
+public class LocalityData extends AbstractData
 {
-	private static final Logger LOGGER = Logger.getLogger(VillageData.class);
+	private static final Logger LOGGER = Logger.getLogger(LocalityData.class);
 
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData modelData = new BaseModelData();
 
-		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Village.name());
+		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Locality.name());
 		modelData.set("data", list);
-		modelData.set("parentStoreState", DataUtil.<ModelData> getModelList(ModelDataEnum.State.name()));
+		modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList(ModelDataEnum.City.name()));
 
-		modelData.set("configIds", Arrays.asList("villageName", "stateName"));
-		modelData.set("configCols", Arrays.asList("Village", "State"));
+		modelData.set("configIds", Arrays.asList("localityName", "cityName"));
+		modelData.set("configCols", Arrays.asList("Locality", "City"));
 		modelData.set("configType", Arrays.asList("Text", "combo"));
 
-		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Village.name().toLowerCase()));
+		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Locality.name().toLowerCase()));
 		return modelData;
 	}
 
@@ -44,24 +43,23 @@ public class VillageData extends AbstractData
 	{
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		Session session = HibernateUtil.getSessionFactory().openSession();
+		Mapper dozerMapper = HibernateUtil.getDozerMapper();
 		Transaction transact = session.beginTransaction();
 		try
 		{
-			List<State> lstStates = DataUtil.<State> getRawList("State");
+			List<City> lstCities = DataUtil.<City> getRawList("City");
 			List<ModelData> lstModels = model.get("data");
-
-			Mapper dozerMapper = HibernateUtil.getDozerMapper();
 
 			for (ModelData modelData : lstModels)
 			{
-				Village hibObject = dozerMapper.map(modelData, Village.class);
+				Locality hibObject = dozerMapper.map(modelData, Locality.class);
 
-				String stateName = modelData.get("stateName").toString();
-				hibObject.setState(findParent(lstStates, new State(stateName)));
+				String cityName = modelData.get("cityName").toString();
+				hibObject.setCity(findParent(lstCities, new City(cityName)));
 
 				if (hibObject.getId() <= 0) // new state - find the parent
 				{
-					hibObject.setName(modelData.get("villageName").toString());
+					hibObject.setName(modelData.get("localityName").toString());
 					session.save(hibObject);
 				} else
 				{
@@ -74,13 +72,13 @@ public class VillageData extends AbstractData
 			status = RpcStatusEnum.SUCCESS;
 		} catch (HibernateException ex)
 		{
+			LOGGER.error("Encountered error saving the model." + ex.getMessage());
+			status = RpcStatusEnum.FAILURE;
 			if (session != null)
 			{
 				transact.rollback();
 				session.close();
 			}
-			LOGGER.error("Encountered error saving the model." + ex.getMessage());
-			status = RpcStatusEnum.FAILURE;
 		}
 		return status;
 	}

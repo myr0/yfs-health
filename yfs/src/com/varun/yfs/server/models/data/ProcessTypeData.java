@@ -1,4 +1,4 @@
-package com.varun.yfs.server.common.data;
+package com.varun.yfs.server.models.data;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,21 +11,21 @@ import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.dto.UserDTO;
 
-public class TypeOfLocationData extends AbstractData
+public class ProcessTypeData extends AbstractData
 {
-	private static final Logger LOGGER = Logger.getLogger(TypeOfLocationData.class);
+	private static final Logger LOGGER = Logger.getLogger(ProcessTypeData.class);
 
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		ModelData model = new BaseModelData();
-		model.set("data", DataUtil.getModelList(ModelDataEnum.TypeOfLocation.name()));
+		model.set("data", DataUtil.getModelList(ModelDataEnum.ProcessType.name()));
 
 		model.set("configIds", Arrays.asList("name"));
 		model.set("configCols", Arrays.asList("Name"));
 		model.set("configType", Arrays.asList("Text"));
-		
-		model.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.TypeOfLocation.name().toLowerCase()));
+
+		model.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.ProcessType.name().toLowerCase()));
 		return model;
 	}
 
@@ -36,7 +36,7 @@ public class TypeOfLocationData extends AbstractData
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
-			DataUtil.<ModelData> saveListStore(ModelDataEnum.TypeOfLocation.name(), lstModels);
+			DataUtil.<ModelData> saveListStore(ModelDataEnum.ProcessType.name(), lstModels);
 		} catch (Exception ex)
 		{
 			status = RpcStatusEnum.FAILURE;

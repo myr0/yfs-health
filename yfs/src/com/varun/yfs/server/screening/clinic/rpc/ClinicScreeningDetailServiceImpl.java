@@ -12,7 +12,7 @@ import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.screening.clinic.rpc.ClinicScreeningDetailService;
 import com.varun.yfs.dto.ClinicPatientDetailDTO;
-import com.varun.yfs.server.common.data.DataUtil;
+import com.varun.yfs.server.models.data.DataUtil;
 
 public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet implements ClinicScreeningDetailService
 {

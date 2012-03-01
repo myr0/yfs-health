@@ -1,4 +1,4 @@
-package com.varun.yfs.server.common.data;
+package com.varun.yfs.server.models.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,25 +8,25 @@ import java.util.Map;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
+import com.varun.yfs.dto.CampScreeningDetailDTO;
 import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.PermissionTypeEnum;
-import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.dto.UserDTO;
 
-public class SchoolScreeningLocationsData extends AbstractData
+public class CampScreeningLocationsData extends AbstractData
 {
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
 		List<ModelData> nodes = new ArrayList<ModelData>();
 
-		List<String> lstChaptersPermissions = userDto.getChaptersWithPermission(PermissionTypeEnum.READ);
+		List<String> lstChapterPermissions = userDto.getChaptersWithPermission(PermissionTypeEnum.READ);
 
-		List<String> chapsWithRead = null;
+		List<String> chapsWithRead;
 		if (userDto.isAdmin())
 			chapsWithRead = (List<String>) DataUtil.executeQuery("select name from ChapterName where deleted = 'N'");
 		else
-			chapsWithRead = lstChaptersPermissions;
+			chapsWithRead = lstChapterPermissions;
 
 		ModelData model = new BaseModelData();
 		model.set("data", nodes);
@@ -50,9 +50,10 @@ public class SchoolScreeningLocationsData extends AbstractData
 			// get projects under the chapter
 			Map<String, List<ModelData>> mapChap2Screening = new HashMap<String, List<ModelData>>();
 
-			List<SchoolScreeningDetailDTO> lstScrDet = DataUtil.getSchoolScreeningDetail("ChapterName", "id",
+			List<CampScreeningDetailDTO> lstScrDet = DataUtil.getCampScreeningDetail("ChapterName", "id",
 					String.valueOf(chapterNameDTO.getId()));
-			for (SchoolScreeningDetailDTO scrDto : lstScrDet)
+
+			for (CampScreeningDetailDTO scrDto : lstScrDet)
 			{
 				ModelData scrNode = new BaseModelData();
 				scrNode.set("name", scrDto.toString());
@@ -87,6 +88,6 @@ public class SchoolScreeningLocationsData extends AbstractData
 	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
-		return RpcStatusEnum.SUCCESS;
+		return RpcStatusEnum.FAILURE;
 	}
 }

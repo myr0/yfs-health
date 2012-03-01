@@ -13,7 +13,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.reports.rpc.ReportDetailService;
 import com.varun.yfs.client.reports.rpc.ReportType;
 import com.varun.yfs.dto.ExportTableDataDTO;
-import com.varun.yfs.server.common.data.DataUtil;
+import com.varun.yfs.server.models.data.DataUtil;
 
 public class ReportDetailServiceImpl extends RemoteServiceServlet implements ReportDetailService
 {

@@ -1,4 +1,4 @@
-package com.varun.yfs.server.common.data;
+package com.varun.yfs.server.models.data;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +14,6 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.dto.UserDTO;
-import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.Country;
 import com.varun.yfs.server.models.State;
 

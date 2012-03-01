@@ -1,4 +1,4 @@
-package com.varun.yfs.server.common;
+package com.varun.yfs.server.models.data;
 
 import java.util.Arrays;
 import java.util.HashSet;

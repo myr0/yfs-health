@@ -13,7 +13,7 @@ import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.UserDTO;
-import com.varun.yfs.server.common.data.DataUtil;
+import com.varun.yfs.server.models.data.DataUtil;
 
 public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoader
 {

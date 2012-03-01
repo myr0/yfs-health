@@ -8,7 +8,7 @@ import javax.servlet.http.HttpSession;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.login.LoginService;
 import com.varun.yfs.dto.UserDTO;
-import com.varun.yfs.server.common.data.DataUtil;
+import com.varun.yfs.server.models.data.DataUtil;
 
 public class LoginServiceImpl extends RemoteServiceServlet implements LoginService
 {

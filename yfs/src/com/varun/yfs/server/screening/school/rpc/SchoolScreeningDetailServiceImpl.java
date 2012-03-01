@@ -14,9 +14,9 @@ import com.varun.yfs.client.index.ModelDataEnum;
 import com.varun.yfs.client.screening.school.rpc.SchoolScreeningDetailService;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.dto.UserDTO;
-import com.varun.yfs.server.common.data.ChapterNameData;
-import com.varun.yfs.server.common.data.DataUtil;
-import com.varun.yfs.server.common.data.ProjectData;
+import com.varun.yfs.server.models.data.ChapterNameData;
+import com.varun.yfs.server.models.data.DataUtil;
+import com.varun.yfs.server.models.data.ProjectData;
 
 public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet implements SchoolScreeningDetailService
 {

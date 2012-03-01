@@ -1,4 +1,4 @@
-package com.varun.yfs.server.common.data;
+package com.varun.yfs.server.models.data;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,7 +29,6 @@ import com.varun.yfs.dto.ClinicDTO;
 import com.varun.yfs.dto.ClinicPatientDetailDTO;
 import com.varun.yfs.dto.ClinicPatientHistoryDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
-import com.varun.yfs.server.common.HibernateUtil;
 import com.varun.yfs.server.models.CampScreeningDetail;
 import com.varun.yfs.server.models.Clinic;
 import com.varun.yfs.server.models.ClinicPatientDetail;

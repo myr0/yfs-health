@@ -1,4 +1,4 @@
-package com.varun.yfs.client.admin.location;
+package com.varun.yfs.client.admin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.dto.PermissionsDTO;
 import com.varun.yfs.dto.YesNoDTO;
 
-public class LocationAdministration extends LayoutContainer
+public class EntityAdministration extends LayoutContainer
 {
 
 	private StoreLoaderAsync storeLoader = GWT.create(StoreLoader.class);
@@ -53,7 +53,13 @@ public class LocationAdministration extends LayoutContainer
 	private List<String> lstconfigType;
 	private PermissionsDTO permissions;
 
-	public LocationAdministration()
+	private Button resetButton;
+	private Button saveButton;
+
+	private Button add;
+	private Button remove;
+
+	public EntityAdministration()
 	{
 	}
 
@@ -90,7 +96,7 @@ public class LocationAdministration extends LayoutContainer
 		gridPanel.add(editorGrid);
 
 		ToolBar toolBar = new ToolBar();
-		Button add = new Button("Add");
+		add = new Button("Add");
 		add.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		add.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -102,12 +108,6 @@ public class LocationAdministration extends LayoutContainer
 				ColumnModel columnModel = editorGrid.getColumnModel();
 
 				plant.set(columnModel.getColumn(0).getId(), "Type here...");
-				// if (columnModel.getColumnCount() > 1 && comboModels.size() >
-				// 0)
-				// {
-				// ColumnConfig column = columnModel.getColumn(1);
-				// // plant.set(column.getId(), comboModels.get(0));
-				// }
 
 				editorGrid.stopEditing();
 				editorGrid.getStore().add(plant);
@@ -116,7 +116,7 @@ public class LocationAdministration extends LayoutContainer
 		});
 		toolBar.add(add);
 
-		Button remove = new Button("Remove");
+		remove = new Button("Remove");
 		remove.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
 		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -145,7 +145,7 @@ public class LocationAdministration extends LayoutContainer
 		gridPanel.setTopComponent(toolBar);
 
 		gridPanel.setButtonAlign(HorizontalAlignment.CENTER);
-		gridPanel.addButton(new Button("Reset", new SelectionListener<ButtonEvent>()
+		resetButton = new Button("Reset", new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
@@ -153,9 +153,10 @@ public class LocationAdministration extends LayoutContainer
 				editorGrid.mask("Reloading...");
 				reinitPage(curAdminEntity);
 			}
-		}));
+		});
+		gridPanel.addButton(resetButton);
 
-		gridPanel.addButton(new Button("Save", new SelectionListener<ButtonEvent>()
+		saveButton = new Button("Save", new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
@@ -165,7 +166,9 @@ public class LocationAdministration extends LayoutContainer
 				modData.set("data", editorGrid.getStore().getModels());
 				savePage(modData);
 			}
-		}));
+		});
+
+		gridPanel.addButton(saveButton);
 
 		gridPanel.setHeight("500px");
 		gridPanel.setWidth("500px");
@@ -192,20 +195,7 @@ public class LocationAdministration extends LayoutContainer
 				lstconfigType = result.get("configType");
 
 				permissions = result.get("permissions");
-				if(permissions.getWrite().equalsIgnoreCase(YesNoDTO.YES.getName()))
-				{
-				}
-				else
-				{
-				}
-				
-				if(permissions.getDelete().equalsIgnoreCase(YesNoDTO.YES.getName()))
-				{
-				}
-				else
-				{
-				}
-
+				applyPermissions();
 
 				List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 				for (int i = 0; i < lstConfigsId.size(); i++)
@@ -260,6 +250,28 @@ public class LocationAdministration extends LayoutContainer
 
 				editorGrid.reconfigure(lstStore, new ColumnModel(configs));
 				editorGrid.unmask();
+			}
+
+			private void applyPermissions()
+			{
+				if (permissions != null)
+				{
+					if (permissions.getWrite().equalsIgnoreCase(YesNoDTO.YES.getName()))
+					{
+						saveButton.setEnabled(true);
+					} else
+					{
+						saveButton.setEnabled(false);
+					}
+
+					if (permissions.getDelete().equalsIgnoreCase(YesNoDTO.YES.getName()))
+					{
+						remove.setEnabled(true);
+					} else
+					{
+						remove.setEnabled(false);
+					}
+				}
 			}
 
 			@Override

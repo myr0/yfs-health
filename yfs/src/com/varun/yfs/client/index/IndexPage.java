@@ -42,10 +42,10 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.varun.yfs.client.admin.location.LocationAdministration;
+import com.varun.yfs.client.admin.EntityAdministration;
+import com.varun.yfs.client.admin.UserAdministration;
 import com.varun.yfs.client.admin.rpc.StoreLoader;
 import com.varun.yfs.client.admin.rpc.StoreLoaderAsync;
-import com.varun.yfs.client.admin.users.UserAdministration;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.help.HelpPage;
 import com.varun.yfs.client.images.YfsImageBundle;
@@ -385,7 +385,7 @@ public class IndexPage extends LayoutContainer
 						layoutContainerCenter.add(widget);
 					} else
 					{
-						LocationAdministration widget = new LocationAdministration();
+						EntityAdministration widget = new EntityAdministration();
 						widget.reinitPage(adminEntityEdit);
 						layoutContainerCenter.add(widget);
 					}
