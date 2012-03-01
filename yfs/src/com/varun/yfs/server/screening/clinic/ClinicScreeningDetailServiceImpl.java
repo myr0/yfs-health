@@ -1,4 +1,4 @@
-package com.varun.yfs.server.screening.clinic.rpc;
+package com.varun.yfs.server.screening.clinic;
 
 import java.util.List;
 

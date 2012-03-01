@@ -1,4 +1,4 @@
-package com.varun.yfs.server.screening.school.rpc;
+package com.varun.yfs.server.screening.camp;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -11,17 +11,19 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
-import com.varun.yfs.client.screening.school.rpc.SchoolScreeningDetailService;
-import com.varun.yfs.dto.SchoolScreeningDetailDTO;
+import com.varun.yfs.client.screening.camp.rpc.CampScreeningDetailService;
+import com.varun.yfs.dto.CampScreeningDetailDTO;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.server.models.data.ChapterNameData;
 import com.varun.yfs.server.models.data.DataUtil;
 import com.varun.yfs.server.models.data.ProjectData;
 
-public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet implements SchoolScreeningDetailService
+public class CampScreeningDetailServiceImpl extends RemoteServiceServlet implements CampScreeningDetailService
 {
-	private static final Logger LOGGER = Logger.getLogger(SchoolScreeningDetailServiceImpl.class);
+	private static final Logger LOGGER = Logger.getLogger(CampScreeningDetailServiceImpl.class);
 	private static final long serialVersionUID = 4397970043413666183L;
+	private ChapterNameData chapData = new ChapterNameData();
+	private ProjectData projData = new ProjectData();
 
 	@Override
 	public ModelData getModel(String scrId)
@@ -38,7 +40,7 @@ public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		ModelData modelData = new BaseModelData();
 		if (scrId != null)
 		{
-			SchoolScreeningDetailDTO scrDto = DataUtil.getScreeningDetail(Long.valueOf(scrId));
+			CampScreeningDetailDTO scrDto = DataUtil.getCampScreeningDetail(Long.valueOf(scrId));
 			modelData.set("data", scrDto);
 		}
 
@@ -49,12 +51,10 @@ public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		modelData.set("lstVillage", DataUtil.getModelList(ModelDataEnum.Village.name()));
 		modelData.set("lstLocality", DataUtil.getModelList(ModelDataEnum.Locality.name()));
 
-		ChapterNameData chapData = new ChapterNameData();
 		// modelData.set("lstChapterName",
 		// DataUtil.getModelList(ModelDataEnum.ChapterName.name()));
 		modelData.set("lstChapterName", chapData.getModel(user).get("data"));
 
-		ProjectData projData = new ProjectData();
 		// modelData.set("lstProjectName",
 		// DataUtil.getModelList(ModelDataEnum.Project.name()));
 		modelData.set("lstProjectName", projData.getModel(user).get("data"));
@@ -69,7 +69,7 @@ public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet imple
 	}
 
 	@Override
-	public RpcStatusEnum saveModel(String scrId, SchoolScreeningDetailDTO modelData)
+	public RpcStatusEnum saveModel(String scrId, CampScreeningDetailDTO modelData)
 	{
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try

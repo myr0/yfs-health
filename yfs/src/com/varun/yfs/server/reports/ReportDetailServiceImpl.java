@@ -1,4 +1,4 @@
-package com.varun.yfs.server.reports.rpc;
+package com.varun.yfs.server.reports;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
