@@ -19,7 +19,7 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 {
 	private static final long serialVersionUID = -3784282705749642889L;
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public ModelData getModel(String entityName)
 	{
@@ -34,8 +34,7 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		ModelData modelStore = new BaseModelData();
 		try
 		{
-			Class clasLoaded = Class
-					.forName("com.varun.yfs.server.common.data." + Util.stripSpace(entityName) + "Data");
+			Class clasLoaded = Class.forName("com.varun.yfs.server.models.data." + Util.stripSpace(entityName) + "Data");
 			Object obj = clasLoaded.newInstance();
 			Method method = clasLoaded.getDeclaredMethod("getModel", new Class[] { UserDTO.class });
 			modelStore = (ModelData) method.invoke(obj, new Object[] { user });
@@ -65,14 +64,14 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		return modelStore;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public RpcStatusEnum saveModel(String entityName, ModelData model)
 	{
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
-			Class clasLoaded = Class
-					.forName("com.varun.yfs.server.common.data." + Util.stripSpace(entityName) + "Data");
+			Class clasLoaded = Class.forName("com.varun.yfs.server.models.data." + Util.stripSpace(entityName) + "Data");
 			Object obj = clasLoaded.newInstance();
 			Method method = clasLoaded.getDeclaredMethod("saveModel", new Class[] { ModelData.class });
 			status = (RpcStatusEnum) method.invoke(obj, (ModelData) model);
@@ -111,8 +110,7 @@ public class StoreLoaderServlet extends RemoteServiceServlet implements StoreLoa
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
-			DataUtil.executeUpdate("update " + Util.stripSpace(entityName) + " set deleted = 'Y' where "
-					+ Util.stripSpace(entityName) + "id =" + id);
+			DataUtil.executeUpdate("update " + Util.stripSpace(entityName) + " set deleted = 'Y' where " + Util.stripSpace(entityName) + "id =" + id);
 		} catch (Exception ex)
 		{
 			ex.printStackTrace();

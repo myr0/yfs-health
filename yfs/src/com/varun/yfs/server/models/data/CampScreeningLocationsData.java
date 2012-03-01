@@ -15,6 +15,7 @@ import com.varun.yfs.dto.UserDTO;
 
 public class CampScreeningLocationsData extends AbstractData
 {
+	@SuppressWarnings("unchecked")
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{

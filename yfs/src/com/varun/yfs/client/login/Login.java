@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.index.IndexPage;
+import com.varun.yfs.client.login.rpc.LoginService;
 import com.varun.yfs.dto.UserDTO;
 
 public class Login extends LayoutContainer

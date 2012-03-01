@@ -438,6 +438,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void decodeResult(ModelData result)
 	{
 		lblfldLocations.clear();

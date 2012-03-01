@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.varun.yfs.client.login.rpc.LoginService;
 
 public class ChangePassword extends LayoutContainer
 {

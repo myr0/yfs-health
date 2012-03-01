@@ -197,7 +197,7 @@ public class EntityAdministration extends LayoutContainer
 				permissions = result.get("permissions");
 				applyPermissions();
 
-				List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+				configs = new ArrayList<ColumnConfig>();
 				for (int i = 0; i < lstConfigsId.size(); i++)
 				{
 					ColumnConfig clmncnfg = new ColumnConfig(lstConfigsId.get(i), lstconfigCols.get(i), 150);

@@ -102,6 +102,7 @@ public class ImportDetail extends LayoutContainer
 		IndexPage.unmaskCenterComponent();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void onImportComplete(List<? extends BaseModelData> result)
 	{
 		List<? extends BaseModelData> resultTemp = result;

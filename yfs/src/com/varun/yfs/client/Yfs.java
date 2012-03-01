@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.varun.yfs.client.index.IndexPage;
 import com.varun.yfs.client.login.Login;
-import com.varun.yfs.client.login.LoginService;
+import com.varun.yfs.client.login.rpc.LoginService;
 import com.varun.yfs.dto.UserDTO;
 
 public class Yfs implements EntryPoint

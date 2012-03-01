@@ -1,4 +1,4 @@
-package com.varun.yfs.client.login;
+package com.varun.yfs.client.login.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.varun.yfs.dto.UserDTO;

@@ -219,6 +219,7 @@ public class EventsReport extends LayoutContainer
 				model.set("dateTo", dtfldToDate.getValue().getTime());
 				reportDetailService.getModel(ReportType.Events, model, new AsyncCallback<ModelData>()
 				{
+					@SuppressWarnings("unchecked")
 					@Override
 					public void onSuccess(ModelData result)
 					{
@@ -301,6 +302,7 @@ public class EventsReport extends LayoutContainer
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void decodeResult(ModelData result)
 	{
 		gridEvents.getStore().removeAll();

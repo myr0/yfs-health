@@ -52,7 +52,7 @@ import com.varun.yfs.client.images.YfsImageBundle;
 import com.varun.yfs.client.landing.LandingPage;
 import com.varun.yfs.client.login.ChangePassword;
 import com.varun.yfs.client.login.Login;
-import com.varun.yfs.client.login.LoginService;
+import com.varun.yfs.client.login.rpc.LoginService;
 import com.varun.yfs.client.reports.ClinicScreeningReport;
 import com.varun.yfs.client.reports.EventsReport;
 import com.varun.yfs.client.reports.MedicalCampProgramReport;
@@ -91,7 +91,7 @@ public class IndexPage extends LayoutContainer
 	private static TreePanel<ModelData> treeReportScreeningPanel = new TreePanel<ModelData>(reportScreeningPanelStore);
 
 	private String userName;
-	private UserDTO currentUser;
+//	private UserDTO currentUser;
 
 	protected final static Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
@@ -104,7 +104,7 @@ public class IndexPage extends LayoutContainer
 	public IndexPage(UserDTO result)
 	{
 		init();
-		this.currentUser = result;
+//		this.currentUser = result;
 		this.userName = result.getName();
 	}
 
@@ -371,13 +371,6 @@ public class IndexPage extends LayoutContainer
 					layoutContainerCenter.removeAll();
 
 					String adminEntityEdit = Util.stripSpace(selectedItem.get("name").toString());
-					// if (ModelDataEnum.isLocationAdmin(adminEntityEdit))
-					// {
-					// LocationAdministration widget = new
-					// LocationAdministration();
-					// widget.reinitPage(adminEntityEdit);
-					// layoutContainerCenter.add(widget);
-					// } else
 					if (adminEntityEdit.equalsIgnoreCase("Users"))
 					{
 						UserAdministration widget = new UserAdministration();
@@ -404,9 +397,9 @@ public class IndexPage extends LayoutContainer
 			{
 				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(),
 						DUMMYLISTENER);
-				// System.out.println(caught.getMessage());
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(ModelData result)
 			{

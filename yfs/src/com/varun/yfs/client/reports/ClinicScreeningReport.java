@@ -121,6 +121,7 @@ public class ClinicScreeningReport extends LayoutContainer
 				MessageBox.info("Error", "Error encountered while loading report params.", DUMMYLISTENER);
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(ModelData result)
 			{
@@ -368,6 +369,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void decodeResult(ModelData result)
 	{
 		lblfldTotalScreened.clear();

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.varun.yfs.client.login.LoginService;
+import com.varun.yfs.client.login.rpc.LoginService;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.server.models.data.DataUtil;
 

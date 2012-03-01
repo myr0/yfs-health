@@ -4,7 +4,6 @@ import gwtupload.server.UploadAction;
 import gwtupload.server.exceptions.UploadActionException;
 
 import java.io.File;
-import java.util.Hashtable;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +17,8 @@ public class UploadServlet extends UploadAction
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOGGER = Logger.getLogger(UploadServlet.class);
-	private Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
-	private Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
+//	private Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
+//	private Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
 
 	@Override
 	public String executeAction(HttpServletRequest request, List<FileItem> sessionFiles) throws UploadActionException

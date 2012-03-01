@@ -21,7 +21,6 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -84,16 +83,17 @@ public class UserAdministration extends LayoutContainer
 	{
 	}
 
-	private class CellEditorLocal extends CellEditor
+	private class CellEditorLocal<T> extends CellEditor
 	{
-		private Field<? extends Object> field;
+		private SimpleComboBox<T> field;
 
-		public CellEditorLocal(Field<? extends Object> field)
+		public CellEditorLocal(SimpleComboBox<T> field)
 		{
 			super(field);
 			this.field = field;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Object preProcessValue(Object value)
 		{
@@ -101,7 +101,7 @@ public class UserAdministration extends LayoutContainer
 			{
 				return value;
 			}
-			return ((SimpleComboBox) field).findModel(value.toString());
+			return field.findModel((T) value);
 		}
 
 		@Override
@@ -388,61 +388,55 @@ public class UserAdministration extends LayoutContainer
 		editorGridUser.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
 		gridPanel.add(editorGridUser);
 
-		editorGridUser.getSelectionModel().addListener(Events.SelectionChange,
-				new Listener<SelectionChangedEvent<ModelData>>()
+		editorGridUser.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionChangedEvent<ModelData>>()
+		{
+			@SuppressWarnings("unchecked")
+			public void handleEvent(SelectionChangedEvent<ModelData> be)
+			{
+				List<ModelData> selection = be.getSelection();
+				if (selection.size() > 0)
 				{
-					@SuppressWarnings("unchecked")
-					public void handleEvent(SelectionChangedEvent<ModelData> be)
-					{
-						List<ModelData> selection = be.getSelection();
-						if (selection.size() > 0)
-						{
-							txtfldUsrName.clear();
-							txtfldPassword.clear();
-							// userRole.clearSelections();
+					txtfldUsrName.clear();
+					txtfldPassword.clear();
+					// userRole.clearSelections();
 
-							ModelData modelData = selection.get(0);
-							txtfldUsrName.setValue(modelData.get("name").toString());
-							txtfldPassword.setValue(modelData.get("password").toString());
-							// Object role = modelData.get("role");
-							// if (role != null &&
-							// userRole.findModel(role.toString())
-							// != null)
-							// {
-							// userRole.setValue(userRole.findModel(role.toString()));
-							// }
+					ModelData modelData = selection.get(0);
+					txtfldUsrName.setValue(modelData.get("name").toString());
+					txtfldPassword.setValue(modelData.get("password").toString());
+					// Object role = modelData.get("role");
+					// if (role != null &&
+					// userRole.findModel(role.toString())
+					// != null)
+					// {
+					// userRole.setValue(userRole.findModel(role.toString()));
+					// }
 
-							// userDetailsViewHolder.setVisible(true);
-							userDetailsViewHolder.focus();
+					// userDetailsViewHolder.setVisible(true);
+					userDetailsViewHolder.focus();
 
-							editorGridChapter.getStore().removeAll();
-							editorGridProject.getStore().removeAll();
-							editorGridClinic.getStore().removeAll();
-							editorGridReports.getStore().removeAll();
-							editorGridEntity.getStore().removeAll();
+					editorGridChapter.getStore().removeAll();
+					editorGridProject.getStore().removeAll();
+					editorGridClinic.getStore().removeAll();
+					editorGridReports.getStore().removeAll();
+					editorGridEntity.getStore().removeAll();
 
-							editorGridChapter.getStore().add(
-									(List<? extends UserChapterPermissionsDTO>) modelData.get("chapterPermissions"));
-							editorGridChapter.getStore().commitChanges();
+					editorGridChapter.getStore().add((List<? extends UserChapterPermissionsDTO>) modelData.get("chapterPermissions"));
+					editorGridChapter.getStore().commitChanges();
 
-							editorGridProject.getStore().add(
-									(List<? extends UserProjectPermissionsDTO>) modelData.get("projectPermissions"));
-							editorGridProject.getStore().commitChanges();
+					editorGridProject.getStore().add((List<? extends UserProjectPermissionsDTO>) modelData.get("projectPermissions"));
+					editorGridProject.getStore().commitChanges();
 
-							editorGridClinic.getStore().add(
-									(List<? extends UserClinicPermissionsDTO>) modelData.get("clinicPermissions"));
-							editorGridClinic.getStore().commitChanges();
+					editorGridClinic.getStore().add((List<? extends UserClinicPermissionsDTO>) modelData.get("clinicPermissions"));
+					editorGridClinic.getStore().commitChanges();
 
-							editorGridReports.getStore().add(
-									(List<? extends UserReportPermissionsDTO>) modelData.get("reportPermissions"));
-							editorGridReports.getStore().commitChanges();
+					editorGridReports.getStore().add((List<? extends UserReportPermissionsDTO>) modelData.get("reportPermissions"));
+					editorGridReports.getStore().commitChanges();
 
-							editorGridEntity.getStore().add(
-									(List<? extends UserEntityPermissionsDTO>) modelData.get("entityPermissions"));
-							editorGridEntity.getStore().commitChanges();
-						}
-					}
-				});
+					editorGridEntity.getStore().add((List<? extends UserEntityPermissionsDTO>) modelData.get("entityPermissions"));
+					editorGridEntity.getStore().commitChanges();
+				}
+			}
+		});
 	}
 
 	private void buildPermissionsGrid()
@@ -492,15 +486,14 @@ public class UserAdministration extends LayoutContainer
 		ColumnConfig clmncnfgProjectName = new ColumnConfig("projectName", "Project", 120);
 		fieldProject.setTriggerAction(TriggerAction.ALL);
 		fieldProject.setAllowBlank(false);
-		CellEditor editor = new CellEditorLocal(fieldProject);
+		CellEditor editor = new CellEditorLocal<String>(fieldProject);
 
 		clmncnfgProjectName.setEditor(editor);
 		configsProjectGrid.add(clmncnfgProjectName);
 
 		buildPermissionColumns(configsProjectGrid);
 
-		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(),
-				new ColumnModel(configsProjectGrid));
+		editorGridProject = new EditorGrid<UserProjectPermissionsDTO>(new ListStore<UserProjectPermissionsDTO>(), new ColumnModel(configsProjectGrid));
 		editorGridProject.setHeight(120);
 		editorGridProject.setLoadMask(true);
 		editorGridProject.setColumnLines(true);
@@ -564,15 +557,14 @@ public class UserAdministration extends LayoutContainer
 		ColumnConfig clmncnfgChapter = new ColumnConfig("chapterName", "Chapter", 120);
 		fieldChapter.setTriggerAction(TriggerAction.ALL);
 		fieldChapter.setAllowBlank(false);
-		CellEditor editor = new CellEditorLocal(fieldChapter);
+		CellEditor editor = new CellEditorLocal<String>(fieldChapter);
 
 		clmncnfgChapter.setEditor(editor);
 		configsChapter.add(clmncnfgChapter);
 
 		buildPermissionColumns(configsChapter);
 
-		editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(new ListStore<UserChapterPermissionsDTO>(),
-				new ColumnModel(configsChapter));
+		editorGridChapter = new EditorGrid<UserChapterPermissionsDTO>(new ListStore<UserChapterPermissionsDTO>(), new ColumnModel(configsChapter));
 		editorGridChapter.setHeight(120);
 		editorGridChapter.setLoadMask(true);
 		editorGridChapter.setColumnLines(true);
@@ -636,15 +628,14 @@ public class UserAdministration extends LayoutContainer
 		ColumnConfig clmncnfgReportsName = new ColumnConfig("reportName", "Reports", 120);
 		fieldReports.setTriggerAction(TriggerAction.ALL);
 		fieldReports.setAllowBlank(false);
-		CellEditor editor = new CellEditorLocal(fieldReports);
+		CellEditor editor = new CellEditorLocal<String>(fieldReports);
 
 		clmncnfgReportsName.setEditor(editor);
 		configsReportsGrid.add(clmncnfgReportsName);
 
 		buildPermissionColumns(configsReportsGrid);
 
-		editorGridReports = new EditorGrid<UserReportPermissionsDTO>(new ListStore<UserReportPermissionsDTO>(),
-				new ColumnModel(configsReportsGrid));
+		editorGridReports = new EditorGrid<UserReportPermissionsDTO>(new ListStore<UserReportPermissionsDTO>(), new ColumnModel(configsReportsGrid));
 		editorGridReports.setHeight(120);
 		editorGridReports.setLoadMask(true);
 		editorGridReports.setColumnLines(true);
@@ -709,15 +700,14 @@ public class UserAdministration extends LayoutContainer
 		ColumnConfig clmncnfgClinicName = new ColumnConfig("clinicName", "Clinic", 120);
 		fieldClinic.setTriggerAction(TriggerAction.ALL);
 		fieldClinic.setAllowBlank(false);
-		CellEditor editor = new CellEditorLocal(fieldClinic);
+		CellEditor editor = new CellEditorLocal<String>(fieldClinic);
 
 		clmncnfgClinicName.setEditor(editor);
 		configsClinicGrid.add(clmncnfgClinicName);
 
 		buildPermissionColumns(configsClinicGrid);
 
-		editorGridClinic = new EditorGrid<UserClinicPermissionsDTO>(new ListStore<UserClinicPermissionsDTO>(),
-				new ColumnModel(configsClinicGrid));
+		editorGridClinic = new EditorGrid<UserClinicPermissionsDTO>(new ListStore<UserClinicPermissionsDTO>(), new ColumnModel(configsClinicGrid));
 		editorGridClinic.setHeight(120);
 		editorGridClinic.setLoadMask(true);
 		editorGridClinic.setColumnLines(true);
@@ -782,15 +772,14 @@ public class UserAdministration extends LayoutContainer
 		ColumnConfig clmncnfgEntityName = new ColumnConfig("entityName", "Entity", 120);
 		fieldEntity.setTriggerAction(TriggerAction.ALL);
 		fieldEntity.setAllowBlank(false);
-		CellEditor editor = new CellEditorLocal(fieldEntity);
+		CellEditor editor = new CellEditorLocal<String>(fieldEntity);
 
 		clmncnfgEntityName.setEditor(editor);
 		configsEntityGrid.add(clmncnfgEntityName);
 
 		buildPermissionColumns(configsEntityGrid);
 
-		editorGridEntity = new EditorGrid<UserEntityPermissionsDTO>(new ListStore<UserEntityPermissionsDTO>(),
-				new ColumnModel(configsEntityGrid));
+		editorGridEntity = new EditorGrid<UserEntityPermissionsDTO>(new ListStore<UserEntityPermissionsDTO>(), new ColumnModel(configsEntityGrid));
 		editorGridEntity.setHeight(120);
 		editorGridEntity.setLoadMask(true);
 		editorGridEntity.setColumnLines(true);
