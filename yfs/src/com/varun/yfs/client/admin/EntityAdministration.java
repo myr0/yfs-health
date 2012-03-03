@@ -56,8 +56,8 @@ public class EntityAdministration extends LayoutContainer
 	private Button resetButton;
 	private Button saveButton;
 
-	private Button add;
-	private Button remove;
+	private Button addButton;
+	private Button removeButton;
 
 	public EntityAdministration()
 	{
@@ -96,9 +96,9 @@ public class EntityAdministration extends LayoutContainer
 		gridPanel.add(editorGrid);
 
 		ToolBar toolBar = new ToolBar();
-		add = new Button("Add");
-		add.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
-		add.addSelectionListener(new SelectionListener<ButtonEvent>()
+		addButton = new Button("Add");
+		addButton.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
+		addButton.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
@@ -114,11 +114,11 @@ public class EntityAdministration extends LayoutContainer
 				editorGrid.startEditing(editorGrid.getStore().getCount() - 1, 0);
 			}
 		});
-		toolBar.add(add);
+		toolBar.add(addButton);
 
-		remove = new Button("Remove");
-		remove.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
-		remove.addSelectionListener(new SelectionListener<ButtonEvent>()
+		removeButton = new Button("Remove");
+		removeButton.setIcon(AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
+		removeButton.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
 			public void componentSelected(ButtonEvent ce)
@@ -140,7 +140,7 @@ public class EntityAdministration extends LayoutContainer
 				}
 			}
 		});
-		toolBar.add(remove);
+		toolBar.add(removeButton);
 
 		gridPanel.setTopComponent(toolBar);
 
@@ -258,18 +258,20 @@ public class EntityAdministration extends LayoutContainer
 				{
 					if (permissions.getWrite().equalsIgnoreCase(YesNoDTO.YES.getName()))
 					{
+						addButton.setEnabled(true);
 						saveButton.setEnabled(true);
 					} else
 					{
+						addButton.setEnabled(false);
 						saveButton.setEnabled(false);
 					}
 
 					if (permissions.getDelete().equalsIgnoreCase(YesNoDTO.YES.getName()))
 					{
-						remove.setEnabled(true);
+						removeButton.setEnabled(true);
 					} else
 					{
-						remove.setEnabled(false);
+						removeButton.setEnabled(false);
 					}
 				}
 			}

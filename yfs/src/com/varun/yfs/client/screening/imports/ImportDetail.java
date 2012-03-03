@@ -86,7 +86,7 @@ public class ImportDetail extends LayoutContainer
 			}
 		});
 		defaultUploader.setMaximumFiles(1);
-		defaultUploader.setAvoidRepeatFiles(true);
+//		defaultUploader.setAvoidRepeatFiles(true);
 		defaultUploader.addOnFinishUploadHandler(onFinishUploaderHandler);
 
 		lcUploadComponent.add(lblFileImport);

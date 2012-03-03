@@ -133,8 +133,8 @@ public class UserDTO extends BaseModelData
 
 		for (UserEntityPermissionsDTO usrEntPerm : lstEntityPerms)
 		{
-			mapName2Perm.put(usrEntPerm.getEntityName().toLowerCase().replaceAll(" ", ""), new PermissionsDTO(usrEntPerm.getRead(),
-					usrEntPerm.getWrite(), usrEntPerm.getDelete()));
+			mapName2Perm.put(usrEntPerm.getEntityName().toLowerCase().replaceAll(" ", ""), new PermissionsDTO(
+					usrEntPerm.getRead(), usrEntPerm.getWrite(), usrEntPerm.getDelete()));
 		}
 		return mapName2Perm;
 	}
@@ -179,6 +179,27 @@ public class UserDTO extends BaseModelData
 		return get("role");
 	}
 
+	public boolean isAdmin()
+	{
+		return this.getName().equalsIgnoreCase(ADMIN_USER);
+	}
+
+	public Map<String, PermissionsDTO> getChapterPermissionsMap()
+	{
+		List<UserChapterPermissionsDTO> lstEntityPerms = getChapterPermissions();
+		Map<String, PermissionsDTO> mapName2Perm = new HashMap<String, PermissionsDTO>();
+
+		if (lstEntityPerms == null)
+			return mapName2Perm;
+
+		for (UserChapterPermissionsDTO usrEntPerm : lstEntityPerms)
+		{
+			mapName2Perm.put(usrEntPerm.getChapterName(),
+					new PermissionsDTO(usrEntPerm.getRead(), usrEntPerm.getWrite(), usrEntPerm.getDelete()));
+		}
+		return mapName2Perm;
+	}
+
 	public List<String> getChaptersWithPermission(PermissionTypeEnum type)
 	{
 		List<String> chaps = new ArrayList<String>();
@@ -209,6 +230,22 @@ public class UserDTO extends BaseModelData
 		}
 
 		return chaps;
+	}
+
+	public Map<String, PermissionsDTO> getProjectPermissionsMap()
+	{
+		List<UserProjectPermissionsDTO> lstEntityPerms = getProjectPermissions();
+		Map<String, PermissionsDTO> mapName2Perm = new HashMap<String, PermissionsDTO>();
+
+		if (lstEntityPerms == null)
+			return mapName2Perm;
+
+		for (UserProjectPermissionsDTO usrEntPerm : lstEntityPerms)
+		{
+			mapName2Perm.put(usrEntPerm.getProjectName(),
+					new PermissionsDTO(usrEntPerm.getRead(), usrEntPerm.getWrite(), usrEntPerm.getDelete()));
+		}
+		return mapName2Perm;
 	}
 
 	public List<String> getProjectWithPermission(PermissionTypeEnum type)
@@ -243,6 +280,22 @@ public class UserDTO extends BaseModelData
 		return projs;
 	}
 
+	public Map<String, PermissionsDTO> getClinicPermissionsMap()
+	{
+		List<UserClinicPermissionsDTO> lstEntityPerms = getClinicPermissions();
+		Map<String, PermissionsDTO> mapName2Perm = new HashMap<String, PermissionsDTO>();
+
+		if (lstEntityPerms == null)
+			return mapName2Perm;
+
+		for (UserClinicPermissionsDTO usrEntPerm : lstEntityPerms)
+		{
+			mapName2Perm.put(usrEntPerm.getClinicName(), new PermissionsDTO(usrEntPerm.getRead(),
+					usrEntPerm.getWrite(), usrEntPerm.getDelete()));
+		}
+		return mapName2Perm;
+	}
+
 	public List<String> getClinicWithPermission(PermissionTypeEnum type)
 	{
 		List<String> clinic = new ArrayList<String>();
@@ -273,6 +326,22 @@ public class UserDTO extends BaseModelData
 		}
 
 		return clinic;
+	}
+
+	public Map<String, PermissionsDTO> getReportPermissionsMap()
+	{
+		List<UserReportPermissionsDTO> lstEntityPerms = getReportPermissions();
+		Map<String, PermissionsDTO> mapName2Perm = new HashMap<String, PermissionsDTO>();
+
+		if (lstEntityPerms == null)
+			return mapName2Perm;
+
+		for (UserReportPermissionsDTO usrEntPerm : lstEntityPerms)
+		{
+			mapName2Perm.put(usrEntPerm.getReportName(), new PermissionsDTO(usrEntPerm.getRead(),
+					usrEntPerm.getWrite(), usrEntPerm.getDelete()));
+		}
+		return mapName2Perm;
 	}
 
 	public List<String> getReportWithPermission(PermissionTypeEnum type)
@@ -318,8 +387,4 @@ public class UserDTO extends BaseModelData
 		return user.getName().equalsIgnoreCase(this.getName());
 	}
 
-	public boolean isAdmin()
-	{
-		return this.getName().equalsIgnoreCase(ADMIN_USER);
-	}
 }

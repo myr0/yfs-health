@@ -90,8 +90,12 @@ public class IndexPage extends LayoutContainer
 	private static TreeStore<ModelData> reportScreeningPanelStore = new TreeStore<ModelData>();
 	private static TreePanel<ModelData> treeReportScreeningPanel = new TreePanel<ModelData>(reportScreeningPanelStore);
 
+	private ContentPanel cpAdmin;
+	private static TreeStore<ModelData> adminPanelStore = new TreeStore<ModelData>();
+	private static TreePanel<ModelData> treeAdminPanel = new TreePanel<ModelData>(adminPanelStore);
+
 	private String userName;
-//	private UserDTO currentUser;
+	// private UserDTO currentUser;
 
 	protected final static Listener<MessageBoxEvent> DUMMYLISTENER = new Listener<MessageBoxEvent>()
 	{
@@ -104,7 +108,7 @@ public class IndexPage extends LayoutContainer
 	public IndexPage(UserDTO result)
 	{
 		init();
-//		this.currentUser = result;
+		// this.currentUser = result;
 		this.userName = result.getName();
 	}
 
@@ -331,22 +335,19 @@ public class IndexPage extends LayoutContainer
 
 	private void buildAdministrationPanel()
 	{
-		final ContentPanel cpAdministration = new ContentPanel();
-		cpAdministration.setHeading("Administration");
-		cpAdministration.setLayout(new FitLayout());
-		layoutContainerWest.add(cpAdministration);
+		cpAdmin = new ContentPanel();
+		cpAdmin.setHeading("Administration");
+		cpAdmin.setLayout(new FitLayout());
+		layoutContainerWest.add(cpAdmin);
 
 		TreeStore<ModelData> store = new TreeStore<ModelData>();
-		final TreePanel<ModelData> tree = new TreePanel<ModelData>(store);
-		tree.setIconProvider(new ModelIconProvider<ModelData>()
+		treeAdminPanel = new TreePanel<ModelData>(store);
+		treeAdminPanel.setIconProvider(new ModelIconProvider<ModelData>()
 		{
-
 			public AbstractImagePrototype getIcon(ModelData model)
 			{
 				if (model.get("icon") != null)
 				{
-					// return IconHelper.createStyle((String)
-					// model.get("icon"));
 					return AbstractImagePrototype.create(YfsImageBundle.INSTANCE.settingsIcon());
 				} else
 				{
@@ -355,17 +356,16 @@ public class IndexPage extends LayoutContainer
 			}
 
 		});
-		tree.setDisplayProperty("name");
-		// final AdministrationPage widget = new AdministrationPage();
+		treeAdminPanel.setDisplayProperty("name");
 
-		tree.addListener(Events.OnClick, new Listener<BaseEvent>()
+		treeAdminPanel.addListener(Events.OnClick, new Listener<BaseEvent>()
 		{
 			@Override
 			public void handleEvent(BaseEvent be)
 			{
-				ModelData selectedItem = tree.getSelectionModel().getSelectedItem();
-				boolean isLeaf = tree.isLeaf(selectedItem);
-				if (!cpAdministration.isCollapsed() && isLeaf)
+				ModelData selectedItem = treeAdminPanel.getSelectionModel().getSelectedItem();
+				boolean isLeaf = treeAdminPanel.isLeaf(selectedItem);
+				if (!cpAdmin.isCollapsed() && isLeaf)
 				{
 					layoutContainerCenter.mask();
 					layoutContainerCenter.removeAll();
@@ -389,51 +389,7 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		storeLoader.getModel(MainPanelEnum.Administration.name(), new AsyncCallback<ModelData>()
-		{
-
-			@Override
-			public void onFailure(Throwable caught)
-			{
-				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(),
-						DUMMYLISTENER);
-			}
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void onSuccess(ModelData result)
-			{
-				final Map<String, List<ModelData>> mapGrpName2Model = new HashMap<String, List<ModelData>>();
-				List<ModelData> dataLst = (List<ModelData>) result.get("data");
-				for (ModelData modelData : dataLst)
-				{
-					String key = modelData.get("groupName").toString();
-					if (mapGrpName2Model.containsKey(key))
-					{
-						mapGrpName2Model.get(key).add(modelData);
-					} else
-					{
-						List<ModelData> lst = new ArrayList<ModelData>();
-						lst.add(modelData);
-						mapGrpName2Model.put(key, lst);
-					}
-				}
-				for (String groupName : mapGrpName2Model.keySet())
-				{
-					ModelData rootNode = new BaseModelData();
-					rootNode.set("name", groupName);
-					rootNode.set("icon", "");
-					tree.getStore().add(rootNode, false);
-
-					tree.getStore().add(rootNode, mapGrpName2Model.get(groupName), false);
-				}
-				for (ModelData modelData : dataLst)
-				{
-					tree.setExpanded(modelData, true);
-				}
-			}
-		});
-		cpAdministration.add(tree);
+		cpAdmin.add(treeAdminPanel);
 	}
 
 	private void buildReportsPanel()
@@ -495,36 +451,6 @@ public class IndexPage extends LayoutContainer
 				}
 			}
 		});
-
-		// storeLoader.getModel(MainPanelEnum.Reports.name(), new
-		// AsyncCallback<ModelData>()
-		// {
-		//
-		// @Override
-		// public void onFailure(Throwable caught)
-		// {
-		// // System.out.println(caught.getMessage());
-		// MessageBox.info("Error",
-		// "Error Encountered while loading Reports Panel" +
-		// caught.getMessage(), DUMMYLISTENER);
-		// }
-		//
-		// @SuppressWarnings("unchecked")
-		// @Override
-		// public void onSuccess(ModelData result)
-		// {
-		// List<ModelData> resModel = result.get("data");
-		// for (ModelData modelData : resModel)
-		// {
-		// treeReportScreeningPanel.getStore().add(modelData, false);
-		// Object object = modelData.get("children");
-		// if (object != null)
-		// treeReportScreeningPanel.getStore().add(modelData, (List<ModelData>)
-		// object, false);
-		// treeReportScreeningPanel.setExpanded(modelData, true);
-		// }
-		// }
-		// });
 
 		cpReportScreening.add(treeReportScreeningPanel);
 	}
@@ -947,6 +873,8 @@ public class IndexPage extends LayoutContainer
 			treeSchoolScreeningPanel.getStore().removeAll();
 			treeCampScreeningPanel.getStore().removeAll();
 			treeClinicScreeningPanel.getStore().removeAll();
+			treeReportScreeningPanel.getStore().removeAll();
+			treeAdminPanel.getStore().removeAll();
 		}
 
 		storeLoader.getModel(MainPanelEnum.SchoolScreeningLocations.name(), new AsyncCallback<ModelData>()
@@ -954,7 +882,6 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				// System.out.println(caught.getMessage());
 				MessageBox.info("Error",
 						"Error Encountered while loading School Screening Panel" + caught.getMessage(), DUMMYLISTENER);
 			}
@@ -989,7 +916,6 @@ public class IndexPage extends LayoutContainer
 			{
 				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(),
 						DUMMYLISTENER);
-				// System.out.println(caught.getMessage());
 			}
 
 			@SuppressWarnings("unchecked")
@@ -1046,7 +972,6 @@ public class IndexPage extends LayoutContainer
 
 		storeLoader.getModel(MainPanelEnum.Reports.name(), new AsyncCallback<ModelData>()
 		{
-
 			@Override
 			public void onFailure(Throwable caught)
 			{
@@ -1070,5 +995,50 @@ public class IndexPage extends LayoutContainer
 				}
 			}
 		});
+
+		storeLoader.getModel(MainPanelEnum.Administration.name(), new AsyncCallback<ModelData>()
+		{
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(),
+						DUMMYLISTENER);
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void onSuccess(ModelData result)
+			{
+				final Map<String, List<ModelData>> mapGrpName2Model = new HashMap<String, List<ModelData>>();
+				List<ModelData> dataLst = (List<ModelData>) result.get("data");
+				for (ModelData modelData : dataLst)
+				{
+					String key = modelData.get("groupName").toString();
+					if (mapGrpName2Model.containsKey(key))
+					{
+						mapGrpName2Model.get(key).add(modelData);
+					} else
+					{
+						List<ModelData> lst = new ArrayList<ModelData>();
+						lst.add(modelData);
+						mapGrpName2Model.put(key, lst);
+					}
+				}
+				for (String groupName : mapGrpName2Model.keySet())
+				{
+					ModelData rootNode = new BaseModelData();
+					rootNode.set("name", groupName);
+					rootNode.set("icon", "");
+					treeAdminPanel.getStore().add(rootNode, false);
+
+					treeAdminPanel.getStore().add(rootNode, mapGrpName2Model.get(groupName), false);
+				}
+				for (ModelData modelData : dataLst)
+				{
+					treeAdminPanel.setExpanded(modelData, true);
+				}
+			}
+		});
+
 	}
 }

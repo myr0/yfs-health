@@ -31,6 +31,8 @@ public class SchoolScreeningLocationsData extends AbstractData
 
 		ModelData model = new BaseModelData();
 		model.set("data", nodes);
+		
+		model.set("permissions", userDto.getChapterPermissionsMap());
 
 		List<ChapterNameDTO> rootNodes = DataUtil.<ChapterNameDTO> getModelList("ChapterName");
 		for (ChapterNameDTO chapterNameDTO : rootNodes)

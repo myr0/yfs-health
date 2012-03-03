@@ -26,9 +26,12 @@ public class ClinicScreeningLocationsData extends AbstractData
 			clinicsWithRead = (List<String>) DataUtil.executeQuery("select clinicName from Clinic where deleted = 'N'");
 		else
 			clinicsWithRead = lstClinicPermissions;
+		
 
 		ModelData model = new BaseModelData();
 		model.set("data", nodes);
+		
+		model.set("permissions", userDto.getClinicPermissionsMap());
 
 		List<CityDTO> rootNodes = DataUtil.<CityDTO> getModelList("City");
 		for (CityDTO cityDTO : rootNodes)
