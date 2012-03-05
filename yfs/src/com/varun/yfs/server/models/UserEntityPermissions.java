@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "userEntityPermissions")
+@Table(name = "UserEntityPermissions")
 public class UserEntityPermissions implements Serializable
 {
 
@@ -24,13 +24,13 @@ public class UserEntityPermissions implements Serializable
 	private String entityName;
 
 	@Column(nullable = true)
-	private String read;
+	private String read1;
 
 	@Column(nullable = true)
-	private String write;
+	private String write1;
 
 	@Column(nullable = true)
-	private String delete;
+	private String deleted;
 
 	public UserEntityPermissions()
 	{
@@ -63,32 +63,32 @@ public class UserEntityPermissions implements Serializable
 
 	public void setRead(String read)
 	{
-		this.read = read;
+		this.read1 = read;
 	}
 
 	public String getRead()
 	{
-		return read;
+		return read1;
 	}
 
 	public void setWrite(String write)
 	{
-		this.write = write;
+		this.write1 = write;
 	}
 
 	public String getWrite()
 	{
-		return write;
+		return write1;
 	}
 
 	public void setDelete(String delete)
 	{
-		this.delete = delete;
+		this.deleted = delete;
 	}
 
 	public String getDelete()
 	{
-		return delete;
+		return deleted;
 	}
 
 	@Override

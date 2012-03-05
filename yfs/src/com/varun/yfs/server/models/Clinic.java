@@ -16,7 +16,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity
-@Table(name = "clinic")
+@Table(name = "Clinic")
 public class Clinic implements Serializable
 {
 	private static final long serialVersionUID = 8467271735823152112L;

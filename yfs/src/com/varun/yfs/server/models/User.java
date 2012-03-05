@@ -37,35 +37,35 @@ public class User implements Serializable
 	private String role;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_ChapterPermissions", joinColumns = { @JoinColumn(name = "userId") },
+	@JoinTable(name = "UserChapterPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "userChapterPermId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserChapterPermissions> chapterPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_ProjectPermissions", joinColumns = { @JoinColumn(name = "userId") },
+	@JoinTable(name = "UserProjectPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "userProjectPermId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserProjectPermissions> projectPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_ClinicPermissions", joinColumns = { @JoinColumn(name = "userId") },
+	@JoinTable(name = "UserClinicPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "userClinicPermissionsId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserClinicPermissions> clinicPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_ReportPermissions", joinColumns = { @JoinColumn(name = "userId") },
+	@JoinTable(name = "UserReportPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "userReportPermissionsId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
 	private List<UserReportPermissions> reportPermissions;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "User_EntityPermissions", joinColumns = { @JoinColumn(name = "userId") },
+	@JoinTable(name = "UserEntityPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "userEntityPermissionsId") })
 	@Column(nullable = true)
 	@Fetch(FetchMode.SELECT)
