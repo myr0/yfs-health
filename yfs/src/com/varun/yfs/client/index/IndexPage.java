@@ -583,7 +583,7 @@ public class IndexPage extends LayoutContainer
 					MessageBox.alert("Warning", "Select a screening record to delete.", DUMMYLISTENER);
 					return;
 				}
-				removeScreeningRecord("campscreeningdetail", selected);
+				removeScreeningRecord("CampScreeningDetail", selected);
 			}
 		});
 
@@ -677,7 +677,7 @@ public class IndexPage extends LayoutContainer
 			public void componentSelected(MenuEvent ce)
 			{
 				List<ModelData> selected = treeCampScreeningPanel.getSelectionModel().getSelectedItems();
-				removeScreeningRecord("campscreeningdetail", selected);
+				removeScreeningRecord("CampScreeningDetail", selected);
 			}
 
 		});
@@ -762,7 +762,7 @@ public class IndexPage extends LayoutContainer
 					MessageBox.alert("Warning", "Select a screening record to delete.", DUMMYLISTENER);
 					return;
 				}
-				removeScreeningRecord("schoolscreeningdetail", selected);
+				removeScreeningRecord("SchoolScreeningDetail", selected);
 			}
 		});
 
@@ -857,7 +857,7 @@ public class IndexPage extends LayoutContainer
 			public void componentSelected(MenuEvent ce)
 			{
 				List<ModelData> selected = treeSchoolScreeningPanel.getSelectionModel().getSelectedItems();
-				removeScreeningRecord("schoolscreeningdetail", selected);
+				removeScreeningRecord("SchoolScreeningDetail", selected);
 			}
 		});
 		contextMenu.add(remove);

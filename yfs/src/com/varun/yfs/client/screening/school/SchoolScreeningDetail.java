@@ -221,7 +221,6 @@ public class SchoolScreeningDetail extends LayoutContainer
 		locality.setTriggerAction(TriggerAction.ALL);
 		locality.setStore(new ListStore<ModelData>());
 		locality.setWidth("150");
-		locality.setAllowBlank(false);
 		locality.setForceSelection(true);
 
 		cpPart2.add(processType, new FormData("90%"));
@@ -999,6 +998,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 					village.setValue(scrDto.getVillage());
 
 					screeningDate.setReadOnly(true);
+					projectName.setReadOnly(true);
 					chapterName.setReadOnly(true);
 
 					if (scrDto.getDoctors() != null)
@@ -1080,6 +1080,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 		screeningDate.setReadOnly(false);
 		chapterName.setReadOnly(false);
+		projectName.setReadOnly(false);
 
 		country.getStore().removeAll();
 		state.getStore().removeAll();

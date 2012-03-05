@@ -10,8 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "ChapterName")
 public class ChapterName implements Serializable
 {
 	private static final long serialVersionUID = -6293347565863506025L;

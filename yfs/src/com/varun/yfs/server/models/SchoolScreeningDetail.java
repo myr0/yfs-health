@@ -17,7 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "schoolScreeningDetail")
+@Table(name = "SchoolScreeningDetail")
 public class SchoolScreeningDetail implements Serializable
 {
 	private static final long serialVersionUID = 7504451639139702860L;

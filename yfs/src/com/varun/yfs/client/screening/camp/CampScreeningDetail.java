@@ -1007,6 +1007,7 @@ public class CampScreeningDetail extends LayoutContainer
 
 					screeningDate.setReadOnly(true);
 					chapterName.setReadOnly(true);
+					projectName.setReadOnly(true);
 
 					if (scrDto.getDoctors() != null)
 						for (DoctorDTO doctor : scrDto.getDoctors())
@@ -1087,6 +1088,7 @@ public class CampScreeningDetail extends LayoutContainer
 
 		screeningDate.setReadOnly(false);
 		chapterName.setReadOnly(false);
+		projectName.setReadOnly(false);
 
 		country.getStore().removeAll();
 		state.getStore().removeAll();

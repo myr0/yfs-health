@@ -6,8 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "Doctor")
 public class Doctor implements Serializable
 {
 	private static final long serialVersionUID = 5236826981090541133L;

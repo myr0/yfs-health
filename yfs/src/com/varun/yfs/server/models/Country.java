@@ -17,7 +17,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity
-@Table(name = "country")
+@Table(name = "Country")
 public class Country implements Serializable
 {
 	private static final long serialVersionUID = -7972100793996969092L;
