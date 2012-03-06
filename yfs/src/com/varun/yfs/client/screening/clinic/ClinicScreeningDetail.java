@@ -156,11 +156,14 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				gridPatDetail.unmask();
+
+				gridPatDetail.getSelectionModel().deselectAll();
+				gridPatDetail.stopEditing();
+
 				ClinicPatientDetailDTO patientDetail = new ClinicPatientDetailDTO();
 				patientDetail.setDeleted("N");
-				gridPatDetail.stopEditing();
 				storePatDetail.insert(patientDetail, 0);
-				gridPatDetail.startEditing(storePatDetail.indexOf(patientDetail), 0);
+				gridPatDetail.startEditing(0, 0);
 			}
 		});
 		toolBar.add(add);
@@ -330,11 +333,13 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				gridPatHistory.unmask();
+				gridPatHistory.stopEditing();
+				gridPatHistory.getSelectionModel().deselectAll();
+
 				ClinicPatientHistoryDTO patientDetail = new ClinicPatientHistoryDTO();
 				patientDetail.setDeleted("N");
-				gridPatHistory.stopEditing();
 				storePatHistory.insert(patientDetail, 0);
-				gridPatHistory.startEditing(storePatHistory.indexOf(patientDetail), 0);
+				gridPatHistory.startEditing(0, 0);
 			}
 		});
 		toolBar.add(add);

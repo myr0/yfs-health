@@ -119,9 +119,9 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 			mapProcessId2Name.put(row[0].toString(), row[1].toString());
 		}
 
-		List<ExportTableDataDTO> results = genMedCampSummary(mapProcessId2Name);
+		List<ExportTableDataDTO> results = genMedCampSummary(mapProcessId2Name, fromDate, toDate);
 
-		results.addAll(genSchoolScreeningSummary(mapProcessId2Name));
+		results.addAll(genSchoolScreeningSummary(mapProcessId2Name, fromDate, toDate));
 
 		model.set("eventsInfo", results);
 	}
@@ -170,14 +170,14 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<ExportTableDataDTO> genSchoolScreeningSummary(Map<String, String> mapProcessId2Name)
+	private List<ExportTableDataDTO> genSchoolScreeningSummary(Map<String, String> mapProcessId2Name, Long fromDate, Long toDate)
 	{
 		Map<String, List<String>> mapId2Docs = null;
 		Map<String, List<String>> mapId2Volunteers = null;
 		List<ExportTableDataDTO> results = new ArrayList<ExportTableDataDTO>();
 
-		List<Object> lstObjsSchool = (List<Object>) DataUtil.executeQuery("select sd.screeningdate as date , pt.processTypeId,sd.address as eventLocation, count(*) as noscreened, sd.schoolscreeningdetailid,d.name from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schscrid = sd.schoolscreeningdetailid join processtype pt on pt.processtypeid = sd.processtypeid join schscrdet_doct ssdd on sd.schoolscreeningdetailid = ssdd.schscrid join doctor d on d.doctorid = ssdd.docid group by sd.screeningdate,pt.processTypeId, sd.address,sd.schoolscreeningdetailid,d.name");
-		List<Object> lstVolunteers = (List<Object>) DataUtil.executeQuery("select sd.screeningdate as date , pt.processTypeId,sd.address as eventLocation, count(*) as noscreened, sd.schoolscreeningdetailid,v.name from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schscrid = sd.schoolscreeningdetailid join processtype pt on pt.processtypeid = sd.processtypeid join schscrdet_volunt ssdv on sd.schoolscreeningdetailid = ssdv.schscrid join volunteer v on v.volunteerid = ssdv.volid group by sd.screeningdate,pt.processTypeId, sd.address,sd.schoolscreeningdetailid,v.name");
+		List<Object> lstObjsSchool = (List<Object>) DataUtil.executeQuery("select sd.screeningdate as date , pt.processTypeId,sd.address as eventLocation, count(*) as noscreened, sd.schoolscreeningdetailid,d.name from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schscrid = sd.schoolscreeningdetailid join processtype pt on pt.processtypeid = sd.processtypeid join schscrdet_doct ssdd on sd.schoolscreeningdetailid = ssdd.schscrid join doctor d on d.doctorid = ssdd.docid where sd.screeningdate >= " + fromDate + " and sd.screeningdate <= " + toDate + " group by sd.screeningdate,pt.processTypeId, sd.address,sd.schoolscreeningdetailid,d.name");
+		List<Object> lstVolunteers = (List<Object>) DataUtil.executeQuery("select sd.screeningdate as date , pt.processTypeId,sd.address as eventLocation, count(*) as noscreened, sd.schoolscreeningdetailid,v.name from schoolscreeningdetail sd join locality lo on sd.localityid = lo.localityid join schoolscrdet_patdet spd on spd.schscrid = sd.schoolscreeningdetailid join processtype pt on pt.processtypeid = sd.processtypeid join schscrdet_volunt ssdv on sd.schoolscreeningdetailid = ssdv.schscrid join volunteer v on v.volunteerid = ssdv.volid where sd.screeningdate >= " + fromDate + " and sd.screeningdate <= " + toDate + " group by sd.screeningdate,pt.processTypeId, sd.address,sd.schoolscreeningdetailid,v.name");
 
 		if (lstObjsSchool != null)
 			mapId2Docs = buildMapping(lstObjsSchool);
@@ -192,14 +192,14 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<ExportTableDataDTO> genMedCampSummary(Map<String, String> mapProcessId2Name)
+	private List<ExportTableDataDTO> genMedCampSummary(Map<String, String> mapProcessId2Name, Long fromDate, Long toDate)
 	{
 		Map<String, List<String>> mapId2Docs = null;
 		Map<String, List<String>> mapId2Volunteers = null;
 		List<ExportTableDataDTO> results = new ArrayList<ExportTableDataDTO>();
 
-		List<Object> lstObjsCamp = (List<Object>) DataUtil.executeQuery("select cd.screeningdate as date ,  pt.processTypeId , cd.address as eventLocation, count(*) as noscreened, cd.campscreeningdetailid, d.name from campscreeningdetail cd join locality lo on cd.localityid = lo.localityid join campscrdet_patdet cpd on cpd.camscrid = cd.campscreeningdetailid join processtype pt on pt.processtypeid = cd.processtypeid join campscrdet_doct csdd on cd.campscreeningdetailid = csdd.camscrid join doctor d on d.doctorid = csdd.docid group by cd.screeningdate,pt.processTypeId, cd.address,cd.campscreeningdetailid,d.name");
-		List<Object> lstVolunteers = (List<Object>) DataUtil.executeQuery("select cd.screeningdate as date , pt.processTypeId , cd.address as eventLocation, count(*) as noscreened, cd.campscreeningdetailid, v.name from campscreeningdetail cd join locality lo on cd.localityid = lo.localityid join campscrdet_patdet cpd on cpd.camscrid = cd.campscreeningdetailid join processtype pt on pt.processtypeid = cd.processtypeid join campscrdet_volunt csdv on cd.campscreeningdetailid = csdv.camscrid join volunteer v on v.volunteerid = csdv.volid group by cd.screeningdate,pt.processTypeId, cd.address,cd.campscreeningdetailid, v.name");
+		List<Object> lstObjsCamp = (List<Object>) DataUtil.executeQuery("select cd.screeningdate as date ,  pt.processTypeId , cd.address as eventLocation, count(*) as noscreened, cd.campscreeningdetailid, d.name from campscreeningdetail cd join locality lo on cd.localityid = lo.localityid join campscrdet_patdet cpd on cpd.camscrid = cd.campscreeningdetailid join processtype pt on pt.processtypeid = cd.processtypeid join campscrdet_doct csdd on cd.campscreeningdetailid = csdd.camscrid join doctor d on d.doctorid = csdd.docid where cd.screeningdate >= " + fromDate + " and cd.screeningdate <= " + toDate + "  group by cd.screeningdate,pt.processTypeId, cd.address,cd.campscreeningdetailid,d.name");
+		List<Object> lstVolunteers = (List<Object>) DataUtil.executeQuery("select cd.screeningdate as date , pt.processTypeId , cd.address as eventLocation, count(*) as noscreened, cd.campscreeningdetailid, v.name from campscreeningdetail cd join locality lo on cd.localityid = lo.localityid join campscrdet_patdet cpd on cpd.camscrid = cd.campscreeningdetailid join processtype pt on pt.processtypeid = cd.processtypeid join campscrdet_volunt csdv on cd.campscreeningdetailid = csdv.camscrid join volunteer v on v.volunteerid = csdv.volid where cd.screeningdate >= " + fromDate + " and cd.screeningdate <= " + toDate + " group by cd.screeningdate,pt.processTypeId, cd.address,cd.campscreeningdetailid, v.name");
 
 		if (lstObjsCamp != null)
 			mapId2Docs = buildMapping(lstObjsCamp);

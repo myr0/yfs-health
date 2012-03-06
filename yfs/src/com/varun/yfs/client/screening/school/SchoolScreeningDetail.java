@@ -314,7 +314,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 				patientDetail.setDeleted("N");
 				editorGrid.stopEditing();
 				editorGridStore.insert(patientDetail, 0);
-				editorGrid.startEditing(editorGridStore.indexOf(patientDetail), 0);
+				editorGrid.startEditing(0, 0);
 			}
 		});
 		toolBar.add(add);
