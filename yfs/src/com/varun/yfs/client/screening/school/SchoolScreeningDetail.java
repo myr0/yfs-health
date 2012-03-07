@@ -289,9 +289,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 		editorGridStore = new ListStore<SchoolPatientDetailDTO>();
 		ColumnModel columnModel = getColumnModel();
 		editorGrid = new EditorGrid<SchoolPatientDetailDTO>(editorGridStore, columnModel);
-		// editorGrid.reconfigure(editorGridStore, columnModel);
 		editorGrid.setBorders(true);
-		editorGrid.setSelectionModel(new GridSelectionModel<SchoolPatientDetailDTO>());
+//		editorGrid.setSelectionModel(new GridSelectionModel<SchoolPatientDetailDTO>());
 		editorGrid.setLoadMask(true);
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
@@ -310,11 +309,14 @@ public class SchoolScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGrid.unmask();
+				editorGrid.stopEditing();
+				
 				SchoolPatientDetailDTO patientDetail = new SchoolPatientDetailDTO();
 				patientDetail.setDeleted("N");
-				editorGrid.stopEditing();
+
 				editorGridStore.insert(patientDetail, 0);
-				editorGrid.startEditing(0, 0);
+				editorGrid.startEditing(editorGridStore.indexOf(patientDetail), 0);
+				editorGrid.getSelectionModel().deselectAll();
 			}
 		});
 		toolBar.add(add);

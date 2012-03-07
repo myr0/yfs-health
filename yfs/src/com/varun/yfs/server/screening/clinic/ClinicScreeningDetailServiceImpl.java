@@ -33,13 +33,14 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		return modelData;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public RpcStatusEnum saveModel(String clinicId, List<ClinicPatientDetailDTO> modelData)
 	{
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
-			DataUtil.saveScreeningDetail(clinicId, modelData);
+			DataUtil.saveScreeningDetail(clinicId, (List<ClinicPatientDetailDTO>) modelData);
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error trying to save the model." + ex.getCause());

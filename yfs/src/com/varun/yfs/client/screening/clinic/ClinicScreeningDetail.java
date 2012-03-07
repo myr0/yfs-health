@@ -7,6 +7,7 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.data.ModelComparer;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -78,6 +79,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 	private EditorGrid<ClinicPatientHistoryDTO> gridPatHistory;
 
 	private String scrId;
+	private long idSeq;
 
 	public EditorGrid<ClinicPatientDetailDTO> getEditorGrid()
 	{
@@ -127,7 +129,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 		gridPatDetail = new EditorGrid<ClinicPatientDetailDTO>(storePatDetail, columnModel);
 		// editorGrid.reconfigure(editorGridStore, columnModel);
 		gridPatDetail.setBorders(true);
-		gridPatDetail.setSelectionModel(new GridSelectionModel<ClinicPatientDetailDTO>());
+//		gridPatDetail.setSelectionModel(new GridSelectionModel<ClinicPatientDetailDTO>());
 		gridPatDetail.setLoadMask(true);
 		gridPatDetail.setColumnLines(true);
 		gridPatDetail.setLoadMask(true);
@@ -140,7 +142,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 			{
 				ClinicPatientDetailDTO selItem = gridPatDetail.getSelectionModel().getSelectedItem();
 				gridPatHistory.getStore().removeAll();
-				gridPatHistory.getStore().add(selItem.getLstPatientHistory());
+				if (selItem != null)
+					gridPatHistory.getStore().add(selItem.getLstPatientHistory());
 			}
 		});
 
@@ -156,14 +159,13 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				gridPatDetail.unmask();
-
-				gridPatDetail.getSelectionModel().deselectAll();
 				gridPatDetail.stopEditing();
 
 				ClinicPatientDetailDTO patientDetail = new ClinicPatientDetailDTO();
 				patientDetail.setDeleted("N");
 				storePatDetail.insert(patientDetail, 0);
-				gridPatDetail.startEditing(0, 0);
+				gridPatDetail.startEditing(storePatDetail.indexOf(patientDetail), 0);
+				gridPatDetail.getSelectionModel().deselectAll();
 			}
 		});
 		toolBar.add(add);
@@ -207,7 +209,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -251,7 +254,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -263,7 +267,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport, processIds)
+				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport,
+						processIds)
 				{
 					@SuppressWarnings({ "rawtypes", "unchecked" })
 					@Override
@@ -315,7 +320,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 		ColumnModel columnModel = getColumnModelPatientHistory();
 		gridPatHistory = new EditorGrid<ClinicPatientHistoryDTO>(storePatHistory, columnModel);
 		gridPatHistory.setBorders(true);
-		gridPatHistory.setSelectionModel(new GridSelectionModel<ClinicPatientHistoryDTO>());
+//		gridPatHistory.setSelectionModel(new GridSelectionModel<ClinicPatientHistoryDTO>());
 		gridPatHistory.setLoadMask(true);
 		gridPatHistory.setColumnLines(true);
 		gridPatHistory.setLoadMask(true);
@@ -334,12 +339,11 @@ public class ClinicScreeningDetail extends LayoutContainer
 			{
 				gridPatHistory.unmask();
 				gridPatHistory.stopEditing();
-				gridPatHistory.getSelectionModel().deselectAll();
 
 				ClinicPatientHistoryDTO patientDetail = new ClinicPatientHistoryDTO();
 				patientDetail.setDeleted("N");
 				storePatHistory.insert(patientDetail, 0);
-				gridPatHistory.startEditing(0, 0);
+				gridPatHistory.startEditing(storePatHistory.indexOf(patientDetail), 0);
 			}
 		});
 		toolBar.add(add);
@@ -383,7 +387,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -427,7 +432,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		MenuItem exportReferral = new MenuItem("Export Referrals", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportReferral = new MenuItem("Export Referrals",
+				AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -444,7 +450,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 				StoreFilter<ClinicPatientHistoryDTO> filterReferrals = new StoreFilter<ClinicPatientHistoryDTO>()
 				{
 					@Override
-					public boolean select(Store<ClinicPatientHistoryDTO> store, ClinicPatientHistoryDTO parent, ClinicPatientHistoryDTO item, String property)
+					public boolean select(Store<ClinicPatientHistoryDTO> store, ClinicPatientHistoryDTO parent,
+							ClinicPatientHistoryDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
@@ -488,7 +495,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportReferral);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
+				.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -500,7 +508,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport, processIds)
+				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport,
+						processIds)
 				{
 					@SuppressWarnings("unchecked")
 					@Override
@@ -515,7 +524,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 							{
 								if (lstCurrentModels.contains(modelData))
 								{
-									lstCurrentModels.set(lstCurrentModels.indexOf(modelData), (ClinicPatientHistoryDTO) modelData);
+									lstCurrentModels.set(lstCurrentModels.indexOf(modelData),
+											(ClinicPatientHistoryDTO) modelData);
 								} else
 								{
 									lstCurrentModels.add((ClinicPatientHistoryDTO) modelData);
@@ -553,7 +563,10 @@ public class ClinicScreeningDetail extends LayoutContainer
 				ClinicPatientDetailDTO patDetail = gridPatDetail.getSelectionModel().getSelectedItem();
 				if (gridPatDetail == null)
 				{
-					MessageBox.info("No Patient Mapping", "Now row selected in the Patient Grid. Select the appropriate patient from the above grid to continue.", l);
+					MessageBox
+							.info("No Patient Mapping",
+									"Now row selected in the Patient Grid. Select the appropriate patient from the above grid to continue.",
+									l);
 				} else
 				{
 					patDetail.setLstPatientHistory(gridPatHistory.getStore().getModels());
@@ -939,7 +952,9 @@ public class ClinicScreeningDetail extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.alert("Alert", "Error encountered while loading the screen. Please retry the operation. Additional Details: " + caught.getMessage(), l);
+				MessageBox.alert("Alert",
+						"Error encountered while loading the screen. Please retry the operation. Additional Details: "
+								+ caught.getMessage(), l);
 			}
 		});
 
@@ -954,7 +969,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 			{
 				IndexPage.unmaskCenterComponent();
 				gridPatDetail.unmask();
-				MessageBox.alert("Alert", "Error encountered while saving", l);
+				MessageBox.alert("Alert", "Error encountered while saving. Additional Details: " + caught.getMessage(),
+						l);
 			}
 
 			@Override

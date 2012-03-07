@@ -296,7 +296,8 @@ public class CampScreeningDetail extends LayoutContainer
 		editorGrid = new EditorGrid<CampPatientDetailDTO>(editorGridStore, columnModel);
 		// editorGrid.reconfigure(editorGridStore, columnModel);
 		editorGrid.setBorders(true);
-		editorGrid.setSelectionModel(new GridSelectionModel<CampPatientDetailDTO>());
+		// editorGrid.setSelectionModel(new
+		// GridSelectionModel<CampPatientDetailDTO>());
 		editorGrid.setLoadMask(true);
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
@@ -317,9 +318,10 @@ public class CampScreeningDetail extends LayoutContainer
 				editorGrid.unmask();
 				CampPatientDetailDTO patientDetail = new CampPatientDetailDTO();
 				patientDetail.setDeleted("N");
+
 				editorGrid.stopEditing();
 				editorGridStore.insert(patientDetail, 0);
-				editorGrid.startEditing(0, 0);
+				editorGrid.startEditing(editorGridStore.indexOf(patientDetail), 0);
 			}
 		});
 		toolBar.add(add);

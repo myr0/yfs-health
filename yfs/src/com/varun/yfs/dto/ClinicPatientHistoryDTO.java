@@ -8,24 +8,23 @@ public class ClinicPatientHistoryDTO extends BaseModelData
 	private static final long serialVersionUID = 8343184437177073237L;
 
 	private long id;
-	private String deleted;
-
-	private String findings;
-	private String treatment;
-	private String referral1;
-	private String referral2;
-	private String referral3;
-
-	private String emergency;
-	private String caseClosed;
-	private String surgeryCase;
-	private String medicines;
+	// private String deleted;
+	//
+	// private String findings;
+	// private String treatment;
+	// private String referral1;
+	// private String referral2;
+	// private String referral3;
+	//
+	// private String emergency;
+	// private String caseClosed;
+	// private String surgeryCase;
+	// private String medicines;
+	// private Long screeningDate;
 
 	private YesNoDTO yesNo;
 	private GenderDTO gender;
 	private ReferralTypeDTO referral;
-
-	private Long screeningDate;
 
 	public ClinicPatientHistoryDTO()
 	{
@@ -34,57 +33,52 @@ public class ClinicPatientHistoryDTO extends BaseModelData
 
 	public long getId()
 	{
-		return id;
+		return (Long) (get("id") == null ? 0L : get("id"));
 	}
 
 	public void setId(long id)
 	{
 		set("id", id);
-		this.id = id;
 	}
 
 	public String getDeleted()
 	{
-		return deleted;
+		return get("deleted");
 	}
 
 	public final void setDeleted(String deleted)
 	{
 		set("deleted", deleted);
-		this.deleted = deleted;
 	}
 
 	public String getEmergency()
 	{
-		return emergency;
+		return get("emergency");
 	}
 
 	public void setEmergency(String emergency)
 	{
 		set("emergency", emergency);
-		this.emergency = emergency;
 	}
 
 	public String getCaseClosed()
 	{
-		return caseClosed;
+		return get("caseClosed");
 	}
 
 	public void setCaseClosed(String caseClosed)
 	{
 		set("caseClosed", caseClosed);
-		this.caseClosed = caseClosed;
 	}
 
 	public String getSurgeryCase()
 	{
-		return surgeryCase;
+		return get("surgeryCase");
 	}
 
 	public void setSurgeryCase(String surgeryCase)
 	{
 		set("surgeryCase", surgeryCase);
-		this.surgeryCase = surgeryCase;
 	}
 
 	public YesNoDTO getYesNo()
@@ -110,56 +104,51 @@ public class ClinicPatientHistoryDTO extends BaseModelData
 	public void setFindings(String findings)
 	{
 		set("findings", findings);
-		this.findings = findings;
 	}
 
 	public String getFindings()
 	{
-		return findings;
+		return get("findings");
 	}
 
 	public String getTreatment()
 	{
-		return treatment;
+		return get("treatment");
 	}
 
 	public void setTreatment(String treatment)
 	{
 		set("treatment", treatment);
-		this.treatment = treatment;
 	}
 
 	public String getReferral1()
 	{
-		return referral1;
+		return get("referral1");
 	}
 
 	public void setReferral1(String referral1)
 	{
 		set("referral1", referral1);
-		this.referral1 = referral1;
 	}
 
 	public String getReferral2()
 	{
-		return referral2;
+		return get("referral2");
 	}
 
 	public void setReferral2(String referral2)
 	{
 		set("referral2", referral2);
-		this.referral2 = referral2;
 	}
 
 	public String getReferral3()
 	{
-		return referral3;
+		return get("referral3");
 	}
 
 	public void setReferral3(String referral3)
 	{
 		set("referral3", referral3);
-		this.referral3 = referral3;
 	}
 
 	public void setReferral(ReferralTypeDTO referral)
@@ -169,29 +158,27 @@ public class ClinicPatientHistoryDTO extends BaseModelData
 
 	public ReferralTypeDTO getReferral()
 	{
-		return referral;
+		return get("referral");
 	}
 
 	public void setMedicines(String medicines)
 	{
 		set("medicines", medicines);
-		this.medicines = medicines;
 	}
 
 	public String getMedicines()
 	{
-		return medicines;
+		return get("medicines");
 	}
 
 	public void setScreeningDate(Long screeningDate)
 	{
 		set("screeningDate", screeningDate);
-		this.screeningDate = screeningDate;
 	}
 
 	public Long getScreeningDate()
 	{
-		return screeningDate;
+		return get("screeningDate");
 	}
 
 	@Override
@@ -223,10 +210,10 @@ public class ClinicPatientHistoryDTO extends BaseModelData
 	{
 		// don't touch the order - just append to the last -- fragile code -
 		// export will get screwed
-		return id + "," + Util.safeCsvString(findings) + "," + Util.safeCsvString(treatment) + ","
-				+ Util.safeCsvString(referral1) + "," + Util.safeCsvString(referral2) + ","
-				+ Util.safeCsvString(referral3) + "," + Util.safeCsvString(emergency) + ","
-				+ Util.safeCsvString(surgeryCase) + "," + Util.safeCsvString(caseClosed);
+		return get("id") + "," + Util.safeCsvString(get("findings")) + "," + Util.safeCsvString(get("treatment")) + ","
+				+ Util.safeCsvString(get("referral1")) + "," + Util.safeCsvString(get("referral2")) + ","
+				+ Util.safeCsvString(get("referral3")) + "," + Util.safeCsvString(get("emergency")) + ","
+				+ Util.safeCsvString(get("surgeryCase")) + "," + Util.safeCsvString(get("caseClosed"));
 	}
 
 }
