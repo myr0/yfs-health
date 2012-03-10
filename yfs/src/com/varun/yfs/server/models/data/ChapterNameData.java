@@ -14,18 +14,11 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.ModelDataEnum;
-import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.ChapterNameDTO;
 import com.varun.yfs.dto.UserChapterPermissionsDTO;
 import com.varun.yfs.dto.UserDTO;
 import com.varun.yfs.dto.YesNoDTO;
 import com.varun.yfs.server.models.ChapterName;
-import com.varun.yfs.server.models.City;
-import com.varun.yfs.server.models.Country;
-import com.varun.yfs.server.models.Locality;
-import com.varun.yfs.server.models.State;
-import com.varun.yfs.server.models.Town;
-import com.varun.yfs.server.models.Village;
 
 public class ChapterNameData extends AbstractData
 {
@@ -38,12 +31,18 @@ public class ChapterNameData extends AbstractData
 
 		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.ChapterName.name());
 		modelData.set("data", applyPermission(userDto, list));
-//		modelData.set("parentStoreCountry", DataUtil.<ModelData> getModelList("Country"));
-//		modelData.set("parentStoreState", DataUtil.<ModelData> getModelList("State"));
-//		modelData.set("parentStoreVillage", DataUtil.<ModelData> getModelList("Village"));
-//		modelData.set("parentStoreTown", DataUtil.<ModelData> getModelList("Town"));
-//		modelData.set("parentStoreCity", DataUtil.<ModelData> getModelList("City"));
-//		modelData.set("parentStoreLocality", DataUtil.<ModelData> getModelList("Locality"));
+		// modelData.set("parentStoreCountry", DataUtil.<ModelData>
+		// getModelList("Country"));
+		// modelData.set("parentStoreState", DataUtil.<ModelData>
+		// getModelList("State"));
+		// modelData.set("parentStoreVillage", DataUtil.<ModelData>
+		// getModelList("Village"));
+		// modelData.set("parentStoreTown", DataUtil.<ModelData>
+		// getModelList("Town"));
+		// modelData.set("parentStoreCity", DataUtil.<ModelData>
+		// getModelList("City"));
+		// modelData.set("parentStoreLocality", DataUtil.<ModelData>
+		// getModelList("Locality"));
 
 		modelData.set("configIds", Arrays.asList("chapterName"));
 		// , "countryName", "stateName", "villageName", "townName", "cityName",
@@ -54,7 +53,8 @@ public class ChapterNameData extends AbstractData
 		modelData.set("configType", Arrays.asList("Text"));
 		// , "combo", "combo", "combo", "combo", "combo", "combo"));
 
-		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.ChapterName.name().toLowerCase()));
+		modelData.set("permissions",
+				userDto.getEntityPermissionsMap().get(ModelDataEnum.ChapterName.name().toLowerCase()));
 
 		return modelData;
 	}
@@ -67,12 +67,15 @@ public class ChapterNameData extends AbstractData
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		try
 		{
-//			List<Country> lstCountry = DataUtil.<Country> getRawList("Country");
-//			List<State> lstState = DataUtil.<State> getRawList("State");
-//			List<City> lstCity = DataUtil.<City> getRawList("City");
-//			List<Town> lstTown = DataUtil.<Town> getRawList("Town");
-//			List<Village> lstVillage = DataUtil.<Village> getRawList("Village");
-//			List<Locality> lstLocality = DataUtil.<Locality> getRawList("Locality");
+			// List<Country> lstCountry = DataUtil.<Country>
+			// getRawList("Country");
+			// List<State> lstState = DataUtil.<State> getRawList("State");
+			// List<City> lstCity = DataUtil.<City> getRawList("City");
+			// List<Town> lstTown = DataUtil.<Town> getRawList("Town");
+			// List<Village> lstVillage = DataUtil.<Village>
+			// getRawList("Village");
+			// List<Locality> lstLocality = DataUtil.<Locality>
+			// getRawList("Locality");
 
 			List<ModelData> lstModels = model.get("data");
 
@@ -81,19 +84,29 @@ public class ChapterNameData extends AbstractData
 			for (ModelData modelData : lstModels)
 			{
 				ChapterName hibObject = dozerMapper.map(modelData, ChapterName.class);
-//				String countryName = Util.safeToString(modelData.get("countryName"));
-//				String stateName = Util.safeToString(modelData.get("stateName"));
-//				String cityName = Util.safeToString(modelData.get("cityName"));
-//				String townName = Util.safeToString(modelData.get("townName"));
-//				String villageName = Util.safeToString(modelData.get("villageName"));
-//				String localityName = Util.safeToString(modelData.get("localityName"));
+				// String countryName =
+				// Util.safeToString(modelData.get("countryName"));
+				// String stateName =
+				// Util.safeToString(modelData.get("stateName"));
+				// String cityName =
+				// Util.safeToString(modelData.get("cityName"));
+				// String townName =
+				// Util.safeToString(modelData.get("townName"));
+				// String villageName =
+				// Util.safeToString(modelData.get("villageName"));
+				// String localityName =
+				// Util.safeToString(modelData.get("localityName"));
 
-//				hibObject.setCountry(findParent(lstCountry, new Country(countryName)));
-//				hibObject.setState(findParent(lstState, new State(stateName)));
-//				hibObject.setCity(findParent(lstCity, new City(cityName)));
-//				hibObject.setTown(findParent(lstTown, new Town(townName)));
-//				hibObject.setVillage(findParent(lstVillage, new Village(villageName)));
-//				hibObject.setLocality(findParent(lstLocality, new Locality(localityName)));
+				// hibObject.setCountry(findParent(lstCountry, new
+				// Country(countryName)));
+				// hibObject.setState(findParent(lstState, new
+				// State(stateName)));
+				// hibObject.setCity(findParent(lstCity, new City(cityName)));
+				// hibObject.setTown(findParent(lstTown, new Town(townName)));
+				// hibObject.setVillage(findParent(lstVillage, new
+				// Village(villageName)));
+				// hibObject.setLocality(findParent(lstLocality, new
+				// Locality(localityName)));
 
 				if (hibObject.getId() <= 0) // new chaptername object - find
 				{

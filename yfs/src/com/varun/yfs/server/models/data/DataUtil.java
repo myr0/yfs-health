@@ -27,10 +27,12 @@ import com.varun.yfs.client.util.Util;
 import com.varun.yfs.dto.CampScreeningDetailDTO;
 import com.varun.yfs.dto.ClinicDTO;
 import com.varun.yfs.dto.ClinicPatientDetailDTO;
+import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
 import com.varun.yfs.server.models.CampScreeningDetail;
 import com.varun.yfs.server.models.Clinic;
 import com.varun.yfs.server.models.ClinicPatientDetail;
+import com.varun.yfs.server.models.SchoolPatientDetail;
 import com.varun.yfs.server.models.SchoolScreeningDetail;
 import com.varun.yfs.server.models.User;
 
@@ -333,13 +335,21 @@ public class DataUtil
 		try
 		{
 			SchoolScreeningDetail scrDetHibObj = dozerMapper.map(screeningDetailDto, SchoolScreeningDetail.class);
-			String id = screeningDetailDto.get("id");
+			for (SchoolPatientDetail schoolPatientDetail : scrDetHibObj.getPatientDetails())
+			{
+				if (schoolPatientDetail.getId() == 0)
+					session.save(schoolPatientDetail);
+				else
+					session.saveOrUpdate(schoolPatientDetail);
+			}
+			session.flush();
+			Long id = screeningDetailDto.get("id");
 			if (id == null)
 			{
 				session.save(scrDetHibObj);
 			} else
 			{
-				scrDetHibObj.setId(Long.parseLong(id));
+				scrDetHibObj.setId(id);
 				session.saveOrUpdate(scrDetHibObj);
 			}
 			trans.commit();

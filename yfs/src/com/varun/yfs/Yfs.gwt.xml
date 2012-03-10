@@ -10,9 +10,6 @@
 	<inherits name="com.extjs.gxt.ui.GXT" />
 	<inherits name='com.extjs.gxt.charts.Chart' />
 
-	<!-- Include GWTUpload library -->
-	<inherits name="gwtupload.GWTUpload" />
-	<stylesheet src="Upload.css" />
 
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.varun.yfs.client.Yfs' />

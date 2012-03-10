@@ -11,7 +11,9 @@ import com.varun.yfs.dto.SchoolPatientDetailDTO;
 
 public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 {
+	private static final int NO_OF_COLS = 17;
 	private static final Logger LOGGER = Logger.getLogger(SchoolPatientDataExtractor.class);
+	private static final String EMPTY_STRING = "";
 
 	public SchoolPatientDataExtractor(List<String> errorRows)
 	{
@@ -25,18 +27,10 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 		LOGGER.debug(processedRowCount + "- starting conversion.");
 		errorString.trimToSize();
 
-		if (lstCols.size() < 14)
-		{
-			LOGGER.debug(processedRowCount + " -record conversion aborted. Insufficient columns in record.");
-			processedRowCount += 1;
-			return;
-		}
-
 		int startErrorCount = errorRows.size();
+		normalize(lstCols, NO_OF_COLS);
 
 		SchoolPatientDetailDTO patientDetailDTO = new SchoolPatientDetailDTO();
-		// patientDetailDTO.setCaseClosed(lstCols.get(4));
-		// patientDetailDTO.setReferral3(lstCols.get());
 
 		patientDetailDTO.setDeleted("N");
 
@@ -87,6 +81,15 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 
 		errorRows.add(processedRowCount + " - " + errorString.toString());
 		processedRowCount += 1;
+
+	}
+
+	private void normalize(List<String> lstCols, int noOfCols)
+	{
+		for (int i = lstCols.size(); i <= noOfCols; i++)
+		{
+			lstCols.add(EMPTY_STRING);
+		}
 
 	}
 

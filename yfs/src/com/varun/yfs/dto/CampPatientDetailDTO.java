@@ -288,7 +288,7 @@ public class CampPatientDetailDTO extends BaseModelData
 	{
 		// don't touch the order - just append to the last -- fragile code -
 		// export will get screwed
-		return id + "," + get("name") + "," + get("sex") + "," + get("occupation") + "," + get("age") + ","
+		return get("id") + "," + get("name") + "," + get("sex") + "," + get("occupation") + "," + get("age") + ","
 				+ get("address") + "," + get("contactNo") + "," + get("height") + "," + get("weight") + ","
 				+ get("bloodPressure") + "," + Util.safeCsvString(get("findings")) + ","
 				+ Util.safeCsvString(get("treatment")) + "," + Util.safeCsvString(get("referral1")) + ","

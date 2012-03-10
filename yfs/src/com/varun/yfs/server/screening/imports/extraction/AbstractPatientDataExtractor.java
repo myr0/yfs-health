@@ -65,4 +65,5 @@ public abstract class AbstractPatientDataExtractor
 
 	abstract public void convertToPatientDetailDTO(List<String> lstCols, boolean processIds);
 
+
 }

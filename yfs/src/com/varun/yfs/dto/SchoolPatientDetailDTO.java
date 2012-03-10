@@ -29,6 +29,7 @@ public class SchoolPatientDetailDTO extends BaseModelData
 	public void setId(long id)
 	{
 		set("id", id);
+		this.id = id;
 	}
 
 	public String getDeleted()
@@ -251,14 +252,14 @@ public class SchoolPatientDetailDTO extends BaseModelData
 		return get("referralUpdates");
 	}
 
-//	@Override
-//	public int hashCode()
-//	{
-//		final int prime = 31;
-//		int result = 1;
-//		result = prime * result + (int) (id ^ (id >>> 32));
-//		return result;
-//	}
+	// @Override
+	// public int hashCode()
+	// {
+	// final int prime = 31;
+	// int result = 1;
+	// result = prime * result + (int) (id ^ (id >>> 32));
+	// return result;
+	// }
 
 	@Override
 	public boolean equals(Object obj)
@@ -280,7 +281,7 @@ public class SchoolPatientDetailDTO extends BaseModelData
 	{
 		// don't touch the order - just append to the last -- fragile code -
 		// export will get screwed
-		return id + "," + get("name") + "," + get("sex") + "," + get("standard") + "," + get("age") + ","
+		return get("id") + "," + get("name") + "," + get("sex") + "," + get("standard") + "," + get("age") + ","
 				+ get("address") + "," + get("contactNo") + "," + get("height") + "," + get("weight") + ","
 				+ Util.safeCsvString(get("findings")) + "," + Util.safeCsvString(get("treatment")) + ","
 				+ Util.safeCsvString(get("referral1")) + "," + Util.safeCsvString(get("referral2")) + ","

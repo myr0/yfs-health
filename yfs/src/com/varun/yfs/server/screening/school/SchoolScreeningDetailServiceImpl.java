@@ -75,7 +75,7 @@ public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		try
 		{
 			if (scrId != null)
-				modelData.set("id", scrId);
+				modelData.setId(Long.parseLong(scrId));
 
 			DataUtil.saveScreeningDetail(modelData);
 		} catch (HibernateException ex)

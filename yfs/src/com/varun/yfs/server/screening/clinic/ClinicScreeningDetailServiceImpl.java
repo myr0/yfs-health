@@ -33,7 +33,6 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		return modelData;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public RpcStatusEnum saveModel(String clinicId, List<ClinicPatientDetailDTO> modelData)
 	{

@@ -146,15 +146,31 @@ public class ImportDetail extends LayoutContainer
 	@SuppressWarnings("unchecked")
 	protected void onImportComplete(List<? extends BaseModelData> result)
 	{
-		List<? extends BaseModelData> resultTemp = new ArrayList<BaseModelData>(result);
 		ListStore store = dataGrid.getStore();
 		if (appendMode)
 		{
-			List lstCurrentModels = store.getModels();
-			resultTemp.addAll(lstCurrentModels);
+			List curStoreModel = store.getModels();
+			for (Object newRecord : result)
+			{
+				if (curStoreModel.contains(newRecord)) 
+				{
+					int index = curStoreModel.indexOf(newRecord);
+					curStoreModel.set(index, newRecord);
+					System.out.println("updating record");
+				} else
+				// store doesnt have it - add it
+				{
+					curStoreModel.add(newRecord);
+					System.out.println("Adding new record");
+				}
+			}
+			store.removeAll();
+			store.add(curStoreModel);
 		}
-		store.removeAll();
-		store.add(resultTemp);
+		else
+		{
+			store.add(result);
+		}
 		store.commitChanges();
 		dataGrid.unmask();
 	}
@@ -207,26 +223,25 @@ public class ImportDetail extends LayoutContainer
 								String progress = result.getProgress();
 								bar.updateText(progress);
 
-								int curProcessed = Integer.parseInt(progress.split("/")[0]);
-								int totalProcessed = Integer.parseInt(progress.split("/")[1]);
+								// int curProcessed =
+								// Integer.parseInt(progress.split("/")[0]);
+								// int totalProcessed =
+								// Integer.parseInt(progress.split("/")[1]);
 
 								if (result.getStatus().equals(RpcStatusEnum.FAILURE))
 								{
 									cancel();
 									box.close();
 									importInProgress = false;
-									// Info.display("Screening Detail Import",
-									// "Processing failed", "");
-								} else if (curProcessed >= totalProcessed)
+								} else if (result.getStatus().equals(RpcStatusEnum.COMPLETED))
 								{
 									cancel();
 									box.close();
-									// Info.display("Import Completed",
-									// "Processing completed", "");
 
 									dataGrid.mask("Loading ...");
 									updateProcessedRecords();
 								}
+
 							}
 						});
 					}

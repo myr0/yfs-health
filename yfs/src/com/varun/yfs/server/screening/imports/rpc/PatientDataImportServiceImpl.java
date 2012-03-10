@@ -40,6 +40,80 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	private final ProgressDTO progressDto = new ProgressDTO();
 	private RpcStatusEnum status = RpcStatusEnum.COMPLETED;
 
+	// private final OnImportCompleteCallback onImportCallback = new
+	// OnImportCompleteCallback(status);
+
+	public void onImportCompleteCallback()
+	{
+		this.status = RpcStatusEnum.COMPLETED;
+	}
+
+	class ExcelParserThread implements Runnable
+	{
+		private String path;
+		private PatientDataImportServiceImpl patientDataImportServiceImpl;
+
+		public ExcelParserThread(String path, PatientDataImportServiceImpl patientDataImportServiceImpl)
+		{
+			this.path = path;
+			this.patientDataImportServiceImpl = patientDataImportServiceImpl;
+		}
+
+		@Override
+		public void run()
+		{
+			try
+			{
+				status = RpcStatusEnum.RUNNING;
+				excelConverter.readContentsAsCSV(path);
+			} catch (Exception ex)
+			{
+				String errorMessage = "Error encountered trying to read the file contents." + ex.getMessage();
+				LOGGER.error(errorMessage);
+				errorRows.add(errorMessage);
+				status = RpcStatusEnum.FAILURE;
+			}
+		}
+
+	}
+
+	class PatientDetailImportThread implements Runnable
+	{
+		private boolean processIds;
+		private PatientDataImportServiceImpl patientDataImportServiceImpl;
+
+		public PatientDetailImportThread(boolean processIds, PatientDataImportServiceImpl patientDataImportServiceImpl)
+		{
+			this.processIds = processIds;
+			this.patientDataImportServiceImpl = patientDataImportServiceImpl;
+		}
+
+		@Override
+		public void run()
+		{
+			try
+			{
+				status = RpcStatusEnum.RUNNING;
+				// hack to let the UI init properly
+				try
+				{
+					Thread.sleep(200);
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+				patientDetailImporter.convertRecords(processIds, patientDataImportServiceImpl);
+			} catch (Exception ex)
+			{
+				String errorMesssage = "Error encountered trying to convert excel rows to file contents."
+						+ ex.getMessage();
+				LOGGER.error(errorMesssage);
+				errorRows.add(errorMesssage);
+				status = RpcStatusEnum.FAILURE;
+			}
+		}
+	}
+
 	@Override
 	public String startProcessing(ImportType importType, boolean processIds)
 	{
@@ -103,10 +177,8 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	@Override
 	public ProgressDTO getProgress()
 	{
-		if (patientDetailImporterThread.isAlive())
-			progressDto.setStatus(RpcStatusEnum.RUNNING);
-		else
-			progressDto.setStatus(status);
+		progressDto.setStatus(status);
+
 		progressDto
 				.setProgress(patientDetailImporter.getProcessedRecordsCount() + "/" + excelConverter.getMaxRecords());
 		return progressDto;
@@ -127,57 +199,13 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 
 	private void startPatientDetailImporterThread(final boolean processIds)
 	{
-		Runnable runnable;
-		runnable = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				try
-				{
-					// hack to let the UI init properly
-					try
-					{
-						Thread.sleep(200);
-					} catch (InterruptedException e)
-					{
-						e.printStackTrace();
-					}
-					patientDetailImporter.convertRecords(processIds);
-				} catch (Exception ex)
-				{
-					String errorMesssage = "Error encountered trying to convert excel rows to file contents."
-							+ ex.getMessage();
-					LOGGER.error(errorMesssage);
-					errorRows.add(errorMesssage);
-					status = RpcStatusEnum.FAILURE;
-				}
-			}
-		};
-		patientDetailImporterThread = new Thread(runnable);
+		patientDetailImporterThread = new Thread(new PatientDetailImportThread(processIds, this));
 		patientDetailImporterThread.start();
 	}
 
 	private void startExcelParserThread(final String path)
 	{
-		Runnable runnable = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				try
-				{
-					excelConverter.readContentsAsCSV(path);
-				} catch (Exception ex)
-				{
-					String errorMessage = "Error encountered trying to read the file contents." + ex.getMessage();
-					LOGGER.error(errorMessage);
-					errorRows.add(errorMessage);
-					status = RpcStatusEnum.FAILURE;
-				}
-			}
-		};
-		excelConverterThread = new Thread(runnable);
+		excelConverterThread = new Thread(new ExcelParserThread(path, this));
 		excelConverterThread.start();
 	}
 

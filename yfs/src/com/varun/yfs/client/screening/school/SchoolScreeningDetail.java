@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
-import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.RowNumberer;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -290,7 +289,8 @@ public class SchoolScreeningDetail extends LayoutContainer
 		ColumnModel columnModel = getColumnModel();
 		editorGrid = new EditorGrid<SchoolPatientDetailDTO>(editorGridStore, columnModel);
 		editorGrid.setBorders(true);
-//		editorGrid.setSelectionModel(new GridSelectionModel<SchoolPatientDetailDTO>());
+		// editorGrid.setSelectionModel(new
+		// GridSelectionModel<SchoolPatientDetailDTO>());
 		editorGrid.setLoadMask(true);
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
@@ -310,7 +310,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 			{
 				editorGrid.unmask();
 				editorGrid.stopEditing();
-				
+
 				SchoolPatientDetailDTO patientDetail = new SchoolPatientDetailDTO();
 				patientDetail.setDeleted("N");
 
@@ -366,6 +366,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(MenuEvent ce)
 			{
+				IndexPage.maskCenterComponent("Exporting...");
 				List<String> headers = new ArrayList<String>();
 				List<ColumnConfig> columns = editorGrid.getColumnModel().getColumns();
 				columns = columns.subList(1, columns.size());
@@ -396,6 +397,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 						formPanel.setAction(url);
 						formPanel.submit();
+						IndexPage.unmaskCenterComponent();
 					}
 
 				});
@@ -411,6 +413,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(MenuEvent ce)
 			{
+				IndexPage.maskCenterComponent("Exporting...");
 				List<String> headers = new ArrayList<String>();
 				List<ColumnConfig> columns = editorGrid.getColumnModel().getColumns();
 				columns = columns.subList(1, columns.size());
@@ -465,6 +468,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 						formPanel.submit();
 
 						editorGridStore.clearFilters();
+						IndexPage.unmaskCenterComponent();
 					}
 
 				});

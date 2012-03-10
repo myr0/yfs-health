@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -211,6 +210,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(MenuEvent ce)
 			{
+				IndexPage.maskCenterComponent("Exporting...");
 				List<String> headers = new ArrayList<String>();
 				List<ColumnConfig> columns = gridPatDetail.getColumnModel().getColumns();
 				columns = columns.subList(1, columns.size());
@@ -241,6 +241,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 						formPanel.setAction(url);
 						formPanel.submit();
+						
+						IndexPage.unmaskCenterComponent();
 					}
 
 				});
@@ -392,6 +394,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(MenuEvent ce)
 			{
+				IndexPage.maskCenterComponent("Exporting...");
 				List<String> headers = new ArrayList<String>();
 				List<ColumnConfig> columns = gridPatHistory.getColumnModel().getColumns();
 				columns = columns.subList(1, columns.size());
@@ -422,6 +425,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 						formPanel.setAction(url);
 						formPanel.submit();
+						
+						IndexPage.unmaskCenterComponent();
 					}
 
 				});
@@ -437,6 +442,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(MenuEvent ce)
 			{
+				IndexPage.maskCenterComponent("Exporting...");
 				List<String> headers = new ArrayList<String>();
 				List<ColumnConfig> columns = gridPatHistory.getColumnModel().getColumns();
 				columns = columns.subList(1, columns.size());
@@ -485,6 +491,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 						formPanel.submit();
 
 						storePatDetail.clearFilters();
+						
+						IndexPage.unmaskCenterComponent();
 					}
 
 				});

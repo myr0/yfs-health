@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
-import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.RowNumberer;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -371,6 +370,7 @@ public class CampScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(MenuEvent ce)
 			{
+				IndexPage.maskCenterComponent("Exporting...");
 				List<String> headers = new ArrayList<String>();
 				List<ColumnConfig> columns = editorGrid.getColumnModel().getColumns();
 				columns = columns.subList(1, columns.size());
@@ -401,6 +401,7 @@ public class CampScreeningDetail extends LayoutContainer
 
 						formPanel.setAction(url);
 						formPanel.submit();
+						IndexPage.unmaskCenterComponent();
 					}
 
 				});
@@ -416,6 +417,7 @@ public class CampScreeningDetail extends LayoutContainer
 			@Override
 			public void componentSelected(MenuEvent ce)
 			{
+				IndexPage.maskCenterComponent("Exporting...");
 				List<String> headers = new ArrayList<String>();
 				List<ColumnConfig> columns = editorGrid.getColumnModel().getColumns();
 				columns = columns.subList(1, columns.size());
@@ -464,6 +466,7 @@ public class CampScreeningDetail extends LayoutContainer
 						formPanel.submit();
 
 						editorGridStore.clearFilters();
+						IndexPage.unmaskCenterComponent();
 					}
 
 				});

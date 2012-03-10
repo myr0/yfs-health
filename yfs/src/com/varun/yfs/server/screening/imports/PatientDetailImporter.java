@@ -12,6 +12,7 @@ import com.varun.yfs.server.screening.imports.extraction.CampPatientDataExtracto
 import com.varun.yfs.server.screening.imports.extraction.ClinicPatientDetailExtractor;
 import com.varun.yfs.server.screening.imports.extraction.ClinicPatientHistoryExtractor;
 import com.varun.yfs.server.screening.imports.extraction.SchoolPatientDataExtractor;
+import com.varun.yfs.server.screening.imports.rpc.PatientDataImportServiceImpl;
 
 public class PatientDetailImporter
 {
@@ -29,7 +30,7 @@ public class PatientDetailImporter
 		this.errorRows = errorRows;
 	}
 
-	public void convertRecords(boolean processIds)
+	public void convertRecords(boolean processIds, PatientDataImportServiceImpl patientDataImportServiceImpl)
 	{
 		LOGGER.debug("Conversion to Patient Detail has Started");
 		List<String> lstCols = null;
@@ -46,6 +47,7 @@ public class PatientDetailImporter
 			if (lstCols.equals(Collections.EMPTY_LIST))
 			{
 				LOGGER.debug("Conversion to Patient Detail Completed.");
+				patientDataImportServiceImpl.onImportCompleteCallback();
 				break;
 			}
 
@@ -55,19 +57,6 @@ public class PatientDetailImporter
 				LOGGER.debug("Current row processed: "
 						+ extractor.getPatientData().get(extractor.getPatientData().size() - 1));
 		}
-	}
-
-	private void initExtractor()
-	{
-		if (importType.equals(ImportType.CAMP))
-			extractor = new CampPatientDataExtractor(errorRows);
-		else if (importType.equals(ImportType.SCHOOL))
-			extractor = new SchoolPatientDataExtractor(errorRows);
-		else if (importType.equals(ImportType.CLINICPATIENTDETAIL))
-			extractor = new ClinicPatientDetailExtractor(errorRows);
-		else if (importType.equals(ImportType.CLINICPATIENTHISTORY))
-			extractor = new ClinicPatientHistoryExtractor(errorRows);
-
 	}
 
 	public int getProcessedRecordsCount()
@@ -91,4 +80,18 @@ public class PatientDetailImporter
 	{
 		this.importType = importType;
 	}
+
+	private void initExtractor()
+	{
+		if (importType.equals(ImportType.CAMP))
+			extractor = new CampPatientDataExtractor(errorRows);
+		else if (importType.equals(ImportType.SCHOOL))
+			extractor = new SchoolPatientDataExtractor(errorRows);
+		else if (importType.equals(ImportType.CLINICPATIENTDETAIL))
+			extractor = new ClinicPatientDetailExtractor(errorRows);
+		else if (importType.equals(ImportType.CLINICPATIENTHISTORY))
+			extractor = new ClinicPatientHistoryExtractor(errorRows);
+
+	}
+
 }
