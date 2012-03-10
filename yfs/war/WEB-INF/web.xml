@@ -5,26 +5,22 @@
 
 <web-app>
 
-	<context-param>
-		<!-- max size of the upload request -->
-		<param-name>maxSize</param-name>
-		<param-value>3145728</param-value>
-	</context-param>
-	<context-param>
-		<!-- Useful in development mode to slow down the uploads in fast networks. 
-			Put the number of milliseconds to sleep in each block received in the server. 
-			false or 0, means don't use slow uploads -->
-		<param-name>slowUploads</param-name>
-		<param-value>200</param-value>
-	</context-param>
-
 	<servlet>
-		<servlet-name>gwtUploadServlet</servlet-name>
+		<servlet-name>UploadServlet</servlet-name>
 		<servlet-class>com.varun.yfs.server.screening.imports.UploadServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>gwtUploadServlet</servlet-name>
-		<url-pattern>*.gupld</url-pattern>
+		<servlet-name>UploadServlet</servlet-name>
+		<url-pattern>/yfs/UploadServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>FileUploadProgressService</servlet-name>
+		<servlet-class>com.varun.yfs.server.screening.imports.rpc.FileUploadProgressServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FileUploadProgressService</servlet-name>
+		<url-pattern>/yfs/FileUploadProgressService</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -65,7 +61,7 @@
 
 	<servlet>
 		<servlet-name>PatientDataImportService</servlet-name>
-		<servlet-class>com.varun.yfs.server.screening.imports.PatientDataImportServiceImpl</servlet-class>
+		<servlet-class>com.varun.yfs.server.screening.imports.rpc.PatientDataImportServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>PatientDataImportService</servlet-name>
@@ -98,7 +94,7 @@
 		<servlet-name>LoginService</servlet-name>
 		<url-pattern>/yfs/LoginService</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>ImageByteReaderService</servlet-name>
 		<servlet-class>com.varun.yfs.server.reports.rpc.ImageByteReader</servlet-class>
@@ -107,7 +103,7 @@
 		<servlet-name>ImageByteReaderService</servlet-name>
 		<url-pattern>/yfs/ImageByteReaderService</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>ImageService</servlet-name>
 		<servlet-class>com.varun.yfs.server.reports.rpc.ImageServiceImpl</servlet-class>
@@ -115,6 +111,15 @@
 	<servlet-mapping>
 		<servlet-name>ImageService</servlet-name>
 		<url-pattern>/yfs/ImageService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ReportDetailService</servlet-name>
+		<servlet-class>com.varun.yfs.server.reports.ReportDetailServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReportDetailService</servlet-name>
+		<url-pattern>/yfs/ReportDetailService</url-pattern>
 	</servlet-mapping>
 
 	<listener>
@@ -125,13 +130,5 @@
 	<welcome-file-list>
 		<welcome-file>Yfs.html</welcome-file>
 	</welcome-file-list>
-	<servlet>
-		<servlet-name>ReportDetailService</servlet-name>
-		<servlet-class>com.varun.yfs.server.reports.ReportDetailServiceImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ReportDetailService</servlet-name>
-		<url-pattern>/yfs/ReportDetailService</url-pattern>
-	</servlet-mapping>
 
 </web-app>

@@ -1,4 +1,4 @@
-package com.varun.yfs.client.screening.imports;
+package com.varun.yfs.client.screening.imports.rpc;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.varun.yfs.client.screening.imports.ImportType;
 import com.varun.yfs.dto.ProgressDTO;
 
 @RemoteServiceRelativePath("PatientDataImportService")
@@ -28,7 +29,7 @@ public interface PatientDataImportService extends RemoteService
 		}
 	}
 
-	String startProcessing(ImportType type, String path, boolean readId);
+	String startProcessing(ImportType type, boolean readId);
 
 	public ProgressDTO getProgress();
 

@@ -1,4 +1,4 @@
-package com.varun.yfs.server.screening.imports;
+package com.varun.yfs.server.screening.imports.rpc;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
@@ -14,8 +17,11 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.screening.imports.ImportType;
-import com.varun.yfs.client.screening.imports.PatientDataImportService;
+import com.varun.yfs.client.screening.imports.rpc.PatientDataImportService;
 import com.varun.yfs.dto.ProgressDTO;
+import com.varun.yfs.server.screening.imports.ExcelReader;
+import com.varun.yfs.server.screening.imports.FileUploadProgressListener;
+import com.varun.yfs.server.screening.imports.PatientDetailImporter;
 
 public class PatientDataImportServiceImpl extends RemoteServiceServlet implements PatientDataImportService
 {
@@ -35,15 +41,33 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	private RpcStatusEnum status = RpcStatusEnum.COMPLETED;
 
 	@Override
-	public String startProcessing(ImportType importType, final String path, boolean processIds)
+	public String startProcessing(ImportType importType, boolean processIds)
 	{
+		String statusMessage = RpcStatusEnum.SUCCESS.name();
 		patientDetailImporter.setImportType(importType);
 		reinit();
 
-		String statusMessage = RpcStatusEnum.SUCCESS.name();
+		HttpServletRequest httpServletRequest = this.getThreadLocalRequest();
+		HttpSession session = httpServletRequest.getSession();
+		if (session == null)
+		{
+			statusMessage = "The uploaded file was not available in the session. Please retry again.";
+			LOGGER.error(statusMessage);
+			return statusMessage;
+		}
+
+		FileUploadProgressListener testProgressListener = (FileUploadProgressListener) session
+				.getAttribute("progressListener");
+		if (testProgressListener == null)
+		{
+			statusMessage = "The uploaded file was not found. Please retry again.";
+			LOGGER.error(statusMessage);
+			return statusMessage;
+		}
+
 		try
 		{
-			excelConverter.validateFile(path);
+			excelConverter.validateFile(testProgressListener.getFilePath());
 		} catch (FileNotFoundException e)
 		{
 			statusMessage = "The uploaded file was not found. Please retry again.";
@@ -69,7 +93,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 		}
 
 		LOGGER.debug("Starting the parse/import threads");
-		startExcelParserThread(path);
+		startExcelParserThread(testProgressListener.getFilePath());
 		startPatientDetailImporterThread(processIds);
 
 		return statusMessage;

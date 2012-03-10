@@ -7,7 +7,6 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelComparer;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -35,7 +34,6 @@ import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
-import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.RowNumberer;
 import com.extjs.gxt.ui.client.widget.layout.FitData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -79,7 +77,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 	private EditorGrid<ClinicPatientHistoryDTO> gridPatHistory;
 
 	private String scrId;
-	private long idSeq;
 
 	public EditorGrid<ClinicPatientDetailDTO> getEditorGrid()
 	{
@@ -127,9 +124,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 		storePatDetail = new ListStore<ClinicPatientDetailDTO>();
 		ColumnModel columnModel = getColumnModel();
 		gridPatDetail = new EditorGrid<ClinicPatientDetailDTO>(storePatDetail, columnModel);
-		// editorGrid.reconfigure(editorGridStore, columnModel);
 		gridPatDetail.setBorders(true);
-//		gridPatDetail.setSelectionModel(new GridSelectionModel<ClinicPatientDetailDTO>());
 		gridPatDetail.setLoadMask(true);
 		gridPatDetail.setColumnLines(true);
 		gridPatDetail.setLoadMask(true);
@@ -268,32 +263,34 @@ public class ClinicScreeningDetail extends LayoutContainer
 				if (scrId != null)
 					processIds = true;
 				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport,
-						processIds)
-				{
-					@SuppressWarnings({ "rawtypes", "unchecked" })
-					@Override
-					protected void onImportComplete(List<? extends BaseModelData> result)
-					{
-						ListStore store = gridPatDetail.getStore();
-						List lstCurrentModels = store.getModels();
-						if (lstCurrentModels.isEmpty())
-							lstCurrentModels.addAll(result);
-						else
-							for (BaseModelData modelData : result)
-							{
-								if (lstCurrentModels.contains(modelData))
-								{
-									lstCurrentModels.set(lstCurrentModels.indexOf(modelData), modelData);
-								} else
-								{
-									lstCurrentModels.add(modelData);
-								}
-							}
-						store.removeAll();
-						store.add(lstCurrentModels);
-						gridPatDetail.unmask();
-					}
-				};
+						processIds);
+				// {
+				// @SuppressWarnings({ "rawtypes", "unchecked" })
+				// @Override
+				// protected void onImportComplete(List<? extends BaseModelData>
+				// result)
+				// {
+				// ListStore store = gridPatDetail.getStore();
+				// List lstCurrentModels = store.getModels();
+				// if (lstCurrentModels.isEmpty())
+				// lstCurrentModels.addAll(result);
+				// else
+				// for (BaseModelData modelData : result)
+				// {
+				// if (lstCurrentModels.contains(modelData))
+				// {
+				// lstCurrentModels.set(lstCurrentModels.indexOf(modelData),
+				// modelData);
+				// } else
+				// {
+				// lstCurrentModels.add(modelData);
+				// }
+				// }
+				// store.removeAll();
+				// store.add(lstCurrentModels);
+				// gridPatDetail.unmask();
+				// }
+				// };
 				dialogImport.add(widget, new FitData(5));
 				dialogImport.show();
 			}
@@ -320,7 +317,8 @@ public class ClinicScreeningDetail extends LayoutContainer
 		ColumnModel columnModel = getColumnModelPatientHistory();
 		gridPatHistory = new EditorGrid<ClinicPatientHistoryDTO>(storePatHistory, columnModel);
 		gridPatHistory.setBorders(true);
-//		gridPatHistory.setSelectionModel(new GridSelectionModel<ClinicPatientHistoryDTO>());
+		// gridPatHistory.setSelectionModel(new
+		// GridSelectionModel<ClinicPatientHistoryDTO>());
 		gridPatHistory.setLoadMask(true);
 		gridPatHistory.setColumnLines(true);
 		gridPatHistory.setLoadMask(true);
@@ -509,33 +507,37 @@ public class ClinicScreeningDetail extends LayoutContainer
 				if (scrId != null)
 					processIds = true;
 				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport,
-						processIds)
-				{
-					@SuppressWarnings("unchecked")
-					@Override
-					protected void onImportComplete(List<? extends BaseModelData> result)
-					{
-						ListStore<ClinicPatientHistoryDTO> store = gridPatHistory.getStore();
-						List<ClinicPatientHistoryDTO> lstCurrentModels = store.getModels();
-						if (lstCurrentModels.isEmpty())
-							lstCurrentModels.addAll((List<ClinicPatientHistoryDTO>) result);
-						else
-							for (BaseModelData modelData : result)
-							{
-								if (lstCurrentModels.contains(modelData))
-								{
-									lstCurrentModels.set(lstCurrentModels.indexOf(modelData),
-											(ClinicPatientHistoryDTO) modelData);
-								} else
-								{
-									lstCurrentModels.add((ClinicPatientHistoryDTO) modelData);
-								}
-							}
-						store.removeAll();
-						store.add(lstCurrentModels);
-						gridPatHistory.unmask();
-					}
-				};
+						processIds);
+				// {
+				// @SuppressWarnings("unchecked")
+				// @Override
+				// protected void onImportComplete(List<? extends BaseModelData>
+				// result)
+				// {
+				// ListStore<ClinicPatientHistoryDTO> store =
+				// gridPatHistory.getStore();
+				// List<ClinicPatientHistoryDTO> lstCurrentModels =
+				// store.getModels();
+				// if (lstCurrentModels.isEmpty())
+				// lstCurrentModels.addAll((List<ClinicPatientHistoryDTO>)
+				// result);
+				// else
+				// for (BaseModelData modelData : result)
+				// {
+				// if (lstCurrentModels.contains(modelData))
+				// {
+				// lstCurrentModels.set(lstCurrentModels.indexOf(modelData),
+				// (ClinicPatientHistoryDTO) modelData);
+				// } else
+				// {
+				// lstCurrentModels.add((ClinicPatientHistoryDTO) modelData);
+				// }
+				// }
+				// store.removeAll();
+				// store.add(lstCurrentModels);
+				// gridPatHistory.unmask();
+				// }
+				// };
 				dialogImport.add(widget, new FitData(5));
 				dialogImport.show();
 			}

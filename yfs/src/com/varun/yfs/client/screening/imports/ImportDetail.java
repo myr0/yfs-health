@@ -1,16 +1,14 @@
 package com.varun.yfs.client.screening.imports;
 
-import gwtupload.client.IUploader;
-import gwtupload.client.IUploader.OnStartUploaderHandler;
-import gwtupload.client.MultiUploader;
-import gwtupload.client.PreloadedImage;
-import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
-
+import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -18,36 +16,38 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FileUploadField;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
+import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.varun.yfs.client.common.RpcStatusEnum;
 import com.varun.yfs.client.index.IndexPage;
+import com.varun.yfs.client.screening.imports.rpc.FileUploadProgressService;
+import com.varun.yfs.client.screening.imports.rpc.PatientDataImportService;
+import com.varun.yfs.client.screening.imports.rpc.PatientDataImportServiceAsync;
 import com.varun.yfs.dto.ProgressDTO;
 
 @SuppressWarnings("rawtypes")
 public class ImportDetail extends LayoutContainer
 {
 	private final PatientDataImportServiceAsync patientDataImportService = PatientDataImportService.Util.getInstance();
-	private String uploadPath;
-	private FlowPanel panelImages = new FlowPanel();
-	private EditorGrid patientDetailGrid;
+	private EditorGrid dataGrid;
 	private Dialog dialogImport;
-	final MultiUploader defaultUploader = new MultiUploader();
 	final boolean appendMode;
 
 	final ImportType importType;
+	private boolean importInProgress;
 
 	public ImportDetail(ImportType type, EditorGrid editorGrid, Dialog dialogImport, boolean appendMode)
 	{
-		this.patientDetailGrid = editorGrid;
+		this.dataGrid = editorGrid;
 		this.dialogImport = dialogImport;
 		this.appendMode = appendMode;
 		this.importType = type;
@@ -68,33 +68,74 @@ public class ImportDetail extends LayoutContainer
 
 		setLayout(new FitLayout());
 
-		LayoutContainer lcUploadComponent = new LayoutContainer();
-		lcUploadComponent.setLayout(new TableLayout(2));
+		final FormPanel panel = new FormPanel();
+		panel.setHeaderVisible(false);
+		panel.setFrame(true);
+		panel.setAction("/yfs/UploadServlet");
+		panel.setEncoding(Encoding.MULTIPART);
+		panel.setMethod(Method.POST);
+		panel.setButtonAlign(HorizontalAlignment.CENTER);
+		panel.setWidth(350);
 
-		LabelField lblFileImport = new LabelField("Select a file:");
-		lblFileImport.setWidth("70");
+		FileUploadField file = new FileUploadField();
+		file.setName("fileUpload");
+		file.setAllowBlank(false);
+		file.setFieldLabel("File");
+		panel.add(file);
 
-		defaultUploader.setValidExtensions("xls", "xlsx");
-		defaultUploader.addOnStartUploadHandler(new OnStartUploaderHandler()
+		Button btn = new Button("Start");
+		btn.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
+
 			@Override
-			public void onStart(IUploader uploader)
+			public void componentSelected(ButtonEvent ce)
 			{
-				dialogImport.hide();
-				defaultUploader.clear();
-				defaultUploader.reset();
+				if (!panel.isValid())
+				{
+					return;
+				}
+
+				panel.submit();
+
+				final Timer timer = new Timer()
+				{
+					@Override
+					public void run()
+					{
+						FileUploadProgressService.Util.getInstance().getStatus(new AsyncCallback<RpcStatusEnum>()
+						{
+							@Override
+							public void onFailure(Throwable caught)
+							{
+								MessageBox.info("Action", "Please retry your operation.", null);
+								importInProgress = false;
+							}
+
+							@Override
+							public void onSuccess(RpcStatusEnum result)
+							{
+								if (result.equals(RpcStatusEnum.COMPLETED))
+								{
+									cancel();
+									dialogImport.hide();
+									startProcessing();
+									importInProgress = true;
+								} else
+									MessageBox.info("Action", "Please retry your operation.", null);
+							}
+
+						});
+					}
+				};
+				timer.scheduleRepeating(100);
 			}
 		});
-		defaultUploader.setMaximumFiles(1);
-//		defaultUploader.setAvoidRepeatFiles(true);
-		defaultUploader.addOnFinishUploadHandler(onFinishUploaderHandler);
-
-		lcUploadComponent.add(lblFileImport);
-		lcUploadComponent.add(defaultUploader);
+		panel.addButton(btn);
 
 		FormData fdStep1 = new FormData("80%");
 		fdStep1.setMargins(new Margins(10, 5, 5, 5));
-		add(lcUploadComponent, fdStep1);
+		add(panel, fdStep1);
+		panel.setHeight("100px");
 	}
 
 	public void initialize(String title, String scrId)
@@ -105,157 +146,267 @@ public class ImportDetail extends LayoutContainer
 	@SuppressWarnings("unchecked")
 	protected void onImportComplete(List<? extends BaseModelData> result)
 	{
-		List<? extends BaseModelData> resultTemp = result;
-		ListStore store = patientDetailGrid.getStore();
+		List<? extends BaseModelData> resultTemp = new ArrayList<BaseModelData>(result);
+		ListStore store = dataGrid.getStore();
 		if (appendMode)
 		{
 			List lstCurrentModels = store.getModels();
-			for (BaseModelData modelData : result)
-			{
-				if (lstCurrentModels.contains(modelData))
-				{
-					lstCurrentModels.set(lstCurrentModels.indexOf(modelData), modelData);
-				}
-			}
-			resultTemp = lstCurrentModels;
+			resultTemp.addAll(lstCurrentModels);
 		}
 		store.removeAll();
 		store.add(resultTemp);
 		store.commitChanges();
-		patientDetailGrid.unmask();
+		dataGrid.unmask();
 	}
 
-	private final IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler()
+	private void startProcessing()
 	{
+		if (importInProgress)
+			return;
 
-		@Override
-		public void onFinish(IUploader uploader)
+		final MessageBox box = MessageBox.progress("Please wait", "Processing records...", "");
+		final ProgressBar bar = box.getProgressBar();
+		box.show();
+		patientDataImportService.startProcessing(importType, appendMode, new AsyncCallback<String>()
 		{
-			if (uploader.getStatus() == gwtupload.client.IUploadStatus.Status.SUCCESS)
+			@Override
+			public void onSuccess(String result)
 			{
-				new PreloadedImage(uploader.fileUrl(), showImage);
-				GWT.log(uploader.getServerResponse());
-				uploadPath = uploader.getServerInfo().message;
-
-				IndexPage.maskCenterComponent("Please wait...");
-
-				startProcessing();
-
-				defaultUploader.reset();
-				defaultUploader.clear();
-				dialogImport.hide();
-			}
-		}
-
-		private void startProcessing()
-		{
-			patientDataImportService.startProcessing(importType, uploadPath, appendMode, new AsyncCallback<String>()
-			{
-				@Override
-				public void onSuccess(String result)
+				IndexPage.unmaskCenterComponent();
+				if (!result.equalsIgnoreCase(RpcStatusEnum.SUCCESS.name()))
 				{
-					IndexPage.unmaskCenterComponent();
-					if (!result.equalsIgnoreCase(RpcStatusEnum.SUCCESS.name()))
+					MessageBox.info("Import Failed", result, l);
+					importInProgress = false;
+					return;
+				}
+
+				final Timer t = new Timer()
+				{
+					@Override
+					public void run()
 					{
-						MessageBox.info("Import Failed", result, l);
-						return;
+						updateProgress();
 					}
 
-					final MessageBox box = MessageBox.progress("Please wait", "Processing records...", "");
-					final ProgressBar bar = box.getProgressBar();
-					final Timer t = new Timer()
+					private void updateProgress()
 					{
-						@Override
-						public void run()
+						patientDataImportService.getProgress(new AsyncCallback<ProgressDTO>()
 						{
-							updateProgress();
-						}
-
-						private void updateProgress()
-						{
-							patientDataImportService.getProgress(new AsyncCallback<ProgressDTO>()
+							@Override
+							public void onFailure(Throwable caught)
 							{
-								@Override
-								public void onFailure(Throwable caught)
+								cancel();
+								box.close();
+								Info.display("Import Failed", "Processing failed", "");
+								importInProgress = false;
+							}
+
+							@Override
+							public void onSuccess(ProgressDTO result)
+							{
+								String progress = result.getProgress();
+								bar.updateText(progress);
+
+								int curProcessed = Integer.parseInt(progress.split("/")[0]);
+								int totalProcessed = Integer.parseInt(progress.split("/")[1]);
+
+								if (result.getStatus().equals(RpcStatusEnum.FAILURE))
 								{
 									cancel();
 									box.close();
-									Info.display("Import Failed", "Processing failed", "");
-								}
-
-								@Override
-								public void onSuccess(ProgressDTO result)
+									importInProgress = false;
+									// Info.display("Screening Detail Import",
+									// "Processing failed", "");
+								} else if (curProcessed >= totalProcessed)
 								{
-									String progress = result.getProgress();
-									bar.updateText(progress);
+									cancel();
+									box.close();
+									// Info.display("Import Completed",
+									// "Processing completed", "");
 
-									int curProcessed = Integer.parseInt(progress.split("/")[0]);
-									int totalProcessed = Integer.parseInt(progress.split("/")[1]);
-
-									if (result.getStatus().equals(RpcStatusEnum.FAILURE))
-									{
-										cancel();
-										box.close();
-										// Info.display("Screening Detail Import",
-										// "Processing failed", "");
-									} else if (curProcessed >= totalProcessed)
-									{
-										cancel();
-										box.close();
-										// Info.display("Import Completed",
-										// "Processing completed", "");
-
-										patientDetailGrid.mask("Loading ...");
-										updateProcessedRecords();
-									}
+									dataGrid.mask("Loading ...");
+									updateProcessedRecords();
 								}
-							});
-						}
-					};
-					t.scheduleRepeating(100);
-				}
+							}
+						});
+					}
+				};
+				t.scheduleRepeating(100);
+			}
 
-				@Override
-				public void onFailure(Throwable caught)
-				{
-					IndexPage.unmaskCenterComponent();
-					patientDetailGrid.unmask();
-					MessageBox.info("Import Failed", "Please try again. Additional Details : " + caught.getMessage(), l);
-				}
+			@Override
+			public void onFailure(Throwable caught)
+			{
+				IndexPage.unmaskCenterComponent();
+				dataGrid.unmask();
+				importInProgress = false;
+				MessageBox.info("Import Failed", "Please try again. Additional Details : " + caught.getMessage(), l);
+			}
 
-				private void updateProcessedRecords()
+			private void updateProcessedRecords()
+			{
+				patientDataImportService.getProcessedRecords(new AsyncCallback<List<? extends BaseModelData>>()
 				{
-					patientDataImportService.getProcessedRecords(new AsyncCallback<List<? extends BaseModelData>>()
+					@Override
+					public void onFailure(Throwable caught)
 					{
-						@Override
-						public void onFailure(Throwable caught)
-						{
-							MessageBox.info("Preview Failed",
-									"Failed to retrieve records. Please retry the operation again. Additional Details: "
-											+ caught.getMessage(), l);
-							patientDetailGrid.unmask();
-							return;
-						}
+						MessageBox.info("Preview Failed",
+								"Failed to retrieve records. Please retry the operation again. Additional Details: "
+										+ caught.getMessage(), l);
+						dataGrid.unmask();
+						importInProgress = false;
+						return;
+					}
 
-						@Override
-						public void onSuccess(List<? extends BaseModelData> result)
-						{
-							onImportComplete(result);
-						}
+					@Override
+					public void onSuccess(List<? extends BaseModelData> result)
+					{
+						onImportComplete(result);
+						importInProgress = false;
+					}
 
-					});
-				}
-			});
-		}
-	};
-
-	private final OnLoadPreloadedImageHandler showImage = new OnLoadPreloadedImageHandler()
-	{
-		@Override
-		public void onLoad(PreloadedImage image)
-		{
-			image.setWidth("75px");
-			panelImages.add(image);
-		}
-	};
+				});
+			}
+		});
+	}
+	// private final IUploader.OnFinishUploaderHandler onFinishUploaderHandler =
+	// new IUploader.OnFinishUploaderHandler()
+	// {
+	//
+	// @Override
+	// public void onFinish(IUploader uploader)
+	// {
+	// if (uploader.getStatus() ==
+	// gwtupload.client.IUploadStatus.Status.SUCCESS)
+	// {
+	// new PreloadedImage(uploader.fileUrl(), showImage);
+	// GWT.log(uploader.getServerResponse());
+	// uploadPath = uploader.getServerInfo().message;
+	//
+	// IndexPage.maskCenterComponent("Please wait...");
+	//
+	// startProcessing();
+	//
+	// // defaultUploader.reset();
+	// // defaultUploader.clear();
+	// dialogImport.hide();
+	// }
+	// }
+	//
+	// private void startProcessing()
+	// {
+	// patientDataImportService.startProcessing(importType, uploadPath,
+	// appendMode, new AsyncCallback<String>()
+	// {
+	// @Override
+	// public void onSuccess(String result)
+	// {
+	// IndexPage.unmaskCenterComponent();
+	// if (!result.equalsIgnoreCase(RpcStatusEnum.SUCCESS.name()))
+	// {
+	// MessageBox.info("Import Failed", result, l);
+	// return;
+	// }
+	//
+	// final MessageBox box = MessageBox.progress("Please wait",
+	// "Processing records...", "");
+	// final ProgressBar bar = box.getProgressBar();
+	// final Timer t = new Timer()
+	// {
+	// @Override
+	// public void run()
+	// {
+	// updateProgress();
+	// }
+	//
+	// private void updateProgress()
+	// {
+	// patientDataImportService.getProgress(new AsyncCallback<ProgressDTO>()
+	// {
+	// @Override
+	// public void onFailure(Throwable caught)
+	// {
+	// cancel();
+	// box.close();
+	// Info.display("Import Failed", "Processing failed", "");
+	// }
+	//
+	// @Override
+	// public void onSuccess(ProgressDTO result)
+	// {
+	// String progress = result.getProgress();
+	// bar.updateText(progress);
+	//
+	// int curProcessed = Integer.parseInt(progress.split("/")[0]);
+	// int totalProcessed = Integer.parseInt(progress.split("/")[1]);
+	//
+	// if (result.getStatus().equals(RpcStatusEnum.FAILURE))
+	// {
+	// cancel();
+	// box.close();
+	// // Info.display("Screening Detail Import",
+	// // "Processing failed", "");
+	// } else if (curProcessed >= totalProcessed)
+	// {
+	// cancel();
+	// box.close();
+	// // Info.display("Import Completed",
+	// // "Processing completed", "");
+	//
+	// patientDetailGrid.mask("Loading ...");
+	// updateProcessedRecords();
+	// }
+	// }
+	// });
+	// }
+	// };
+	// t.scheduleRepeating(100);
+	// }
+	//
+	// @Override
+	// public void onFailure(Throwable caught)
+	// {
+	// IndexPage.unmaskCenterComponent();
+	// patientDetailGrid.unmask();
+	// MessageBox.info("Import Failed",
+	// "Please try again. Additional Details : " + caught.getMessage(), l);
+	// }
+	//
+	// private void updateProcessedRecords()
+	// {
+	// patientDataImportService.getProcessedRecords(new AsyncCallback<List<?
+	// extends BaseModelData>>()
+	// {
+	// @Override
+	// public void onFailure(Throwable caught)
+	// {
+	// MessageBox.info("Preview Failed",
+	// "Failed to retrieve records. Please retry the operation again. Additional Details: "
+	// + caught.getMessage(), l);
+	// patientDetailGrid.unmask();
+	// return;
+	// }
+	//
+	// @Override
+	// public void onSuccess(List<? extends BaseModelData> result)
+	// {
+	// onImportComplete(result);
+	// }
+	//
+	// });
+	// }
+	// });
+	// }
+	// };
+	//
+	// private final OnLoadPreloadedImageHandler showImage = new
+	// OnLoadPreloadedImageHandler()
+	// {
+	// @Override
+	// public void onLoad(PreloadedImage image)
+	// {
+	// image.setWidth("75px");
+	// panelImages.add(image);
+	// }
+	// };
 }
