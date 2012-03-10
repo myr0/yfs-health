@@ -9,7 +9,8 @@ import com.varun.yfs.dto.ClinicPatientDetailDTO;
 public class ClinicPatientDetailExtractor extends SchoolPatientDataExtractor
 {
 	private static final Logger LOGGER = Logger.getLogger(ClinicPatientDetailExtractor.class);
-
+	private static final int NO_OF_COLS = 8;
+	
 	public ClinicPatientDetailExtractor(List<String> errorRows)
 	{
 		super(errorRows);
@@ -22,13 +23,7 @@ public class ClinicPatientDetailExtractor extends SchoolPatientDataExtractor
 		LOGGER.debug(processedRowCount + "- starting conversion.");
 		errorString.trimToSize();
 
-		if (lstCols.size() < 8)
-		{
-			LOGGER.debug(processedRowCount + " -record conversion aborted. Insufficient columns in record.");
-			processedRowCount += 1;
-			return;
-		}
-
+		normalize(lstCols, NO_OF_COLS);
 		int startErrorCount = errorRows.size();
 
 		ClinicPatientDetailDTO patientDetailDTO = new ClinicPatientDetailDTO();

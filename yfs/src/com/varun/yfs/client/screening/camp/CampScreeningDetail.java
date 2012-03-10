@@ -225,7 +225,6 @@ public class CampScreeningDetail extends LayoutContainer
 		locality.setDisplayField("localityName");
 		locality.setTriggerAction(TriggerAction.ALL);
 		locality.setStore(new ListStore<ModelData>());
-		locality.setAllowBlank(false);
 
 		cpPart2.add(processType, new FormData("90%"));
 		processType.setForceSelection(true);

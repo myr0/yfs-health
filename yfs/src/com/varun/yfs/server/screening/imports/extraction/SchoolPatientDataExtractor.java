@@ -13,7 +13,6 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 {
 	private static final int NO_OF_COLS = 17;
 	private static final Logger LOGGER = Logger.getLogger(SchoolPatientDataExtractor.class);
-	private static final String EMPTY_STRING = "";
 
 	public SchoolPatientDataExtractor(List<String> errorRows)
 	{
@@ -81,15 +80,6 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 
 		errorRows.add(processedRowCount + " - " + errorString.toString());
 		processedRowCount += 1;
-
-	}
-
-	private void normalize(List<String> lstCols, int noOfCols)
-	{
-		for (int i = lstCols.size(); i <= noOfCols; i++)
-		{
-			lstCols.add(EMPTY_STRING);
-		}
 
 	}
 

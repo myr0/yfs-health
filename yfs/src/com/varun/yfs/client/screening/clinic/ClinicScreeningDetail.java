@@ -579,7 +579,10 @@ public class ClinicScreeningDetail extends LayoutContainer
 									l);
 				} else
 				{
-					patDetail.setLstPatientHistory(gridPatHistory.getStore().getModels());
+					if(patDetail != null)
+					{
+						patDetail.setLstPatientHistory(gridPatHistory.getStore().getModels());
+					}
 					validateAndSave();
 				}
 			}

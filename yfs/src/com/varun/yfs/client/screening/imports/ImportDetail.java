@@ -1,6 +1,5 @@
 package com.varun.yfs.client.screening.imports;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -107,7 +106,7 @@ public class ImportDetail extends LayoutContainer
 							@Override
 							public void onFailure(Throwable caught)
 							{
-								MessageBox.info("Action", "Please retry your operation.", null);
+								MessageBox.info("Action", "Unable to read progress status. Retrying...", null);
 								importInProgress = false;
 							}
 
@@ -150,13 +149,21 @@ public class ImportDetail extends LayoutContainer
 		if (appendMode)
 		{
 			List curStoreModel = store.getModels();
-			for (Object newRecord : result)
+			for (BaseModelData newRecord : result)
 			{
-				if (curStoreModel.contains(newRecord)) 
+				if (curStoreModel.contains(newRecord))
 				{
-					int index = curStoreModel.indexOf(newRecord);
-					curStoreModel.set(index, newRecord);
-					System.out.println("updating record");
+					if (newRecord.get("id") == null)
+						curStoreModel.add(newRecord);
+					else if (newRecord.get("id").equals(""))
+					{
+						curStoreModel.add(newRecord);
+					} else
+					{
+						int index = curStoreModel.indexOf(newRecord);
+						curStoreModel.set(index, newRecord);
+						System.out.println("updating record");
+					}
 				} else
 				// store doesnt have it - add it
 				{
@@ -166,8 +173,7 @@ public class ImportDetail extends LayoutContainer
 			}
 			store.removeAll();
 			store.add(curStoreModel);
-		}
-		else
+		} else
 		{
 			store.add(result);
 		}

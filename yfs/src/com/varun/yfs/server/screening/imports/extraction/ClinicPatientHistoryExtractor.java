@@ -12,7 +12,8 @@ public class ClinicPatientHistoryExtractor extends SchoolPatientDataExtractor
 {
 	private final static Calendar CURRENTDATE = Calendar.getInstance();
 	private static final Logger LOGGER = Logger.getLogger(ClinicPatientHistoryExtractor.class);
-
+	private static final int NO_OF_COLS = 8;
+	
 	public ClinicPatientHistoryExtractor(List<String> errorRows)
 	{
 		super(errorRows);
@@ -31,13 +32,7 @@ public class ClinicPatientHistoryExtractor extends SchoolPatientDataExtractor
 		LOGGER.debug(processedRowCount + "- starting conversion.");
 		errorString.trimToSize();
 
-		if (lstCols.size() < 8)
-		{
-			LOGGER.debug(processedRowCount + " -record conversion aborted. Insufficient columns in record.");
-			processedRowCount += 1;
-			return;
-		}
-
+		normalize(lstCols, NO_OF_COLS);
 		int startErrorCount = errorRows.size();
 
 		ClinicPatientHistoryDTO patientDetailDTO = new ClinicPatientHistoryDTO();

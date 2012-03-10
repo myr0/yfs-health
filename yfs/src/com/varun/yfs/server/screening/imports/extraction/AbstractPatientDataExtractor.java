@@ -21,6 +21,7 @@ public abstract class AbstractPatientDataExtractor
 	protected StringBuilder errorString = new StringBuilder();
 	protected final List<String> errorRows;
 	protected int processedRowCount;
+	private static final String EMPTY_STRING = "";
 
 	public AbstractPatientDataExtractor(List<String> errorRows)
 	{
@@ -41,6 +42,15 @@ public abstract class AbstractPatientDataExtractor
 	{
 		lstPatientDetails.clear();
 		this.processedRowCount = 0;
+	}
+
+	protected void normalize(List<String> lstCols, int noOfCols)
+	{
+		for (int i = lstCols.size(); i <= noOfCols; i++)
+		{
+			lstCols.add(EMPTY_STRING);
+		}
+
 	}
 
 	protected String decodeYesNo(String string)
@@ -64,6 +74,5 @@ public abstract class AbstractPatientDataExtractor
 	}
 
 	abstract public void convertToPatientDetailDTO(List<String> lstCols, boolean processIds);
-
 
 }

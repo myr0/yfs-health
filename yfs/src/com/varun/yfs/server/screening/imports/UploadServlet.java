@@ -50,6 +50,9 @@ public class UploadServlet extends HttpServlet
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException
 	{
+		HttpSession session = request.getSession();
+		session.setAttribute("progressListener", progressListener);
+		
 		PrintWriter out = response.getWriter();
 		response.setContentType("text/plain");
 
@@ -65,9 +68,6 @@ public class UploadServlet extends HttpServlet
 
 		upload = new ServletFileUpload(fileItemFactory);
 		upload.setProgressListener(progressListener);
-
-		HttpSession session = request.getSession();
-		session.setAttribute("progressListener", progressListener);
 
 		try
 		{
