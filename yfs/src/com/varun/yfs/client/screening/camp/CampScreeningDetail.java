@@ -292,10 +292,7 @@ public class CampScreeningDetail extends LayoutContainer
 		editorGridStore = new ListStore<CampPatientDetailDTO>();
 		ColumnModel columnModel = getColumnModel();
 		editorGrid = new EditorGrid<CampPatientDetailDTO>(editorGridStore, columnModel);
-		// editorGrid.reconfigure(editorGridStore, columnModel);
 		editorGrid.setBorders(true);
-		// editorGrid.setSelectionModel(new
-		// GridSelectionModel<CampPatientDetailDTO>());
 		editorGrid.setLoadMask(true);
 		editorGrid.setColumnLines(true);
 		editorGrid.setLoadMask(true);
@@ -337,7 +334,6 @@ public class CampScreeningDetail extends LayoutContainer
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
-					// editorGrid.mask("Removing Entry...");
 					validateAndSave();
 					editorGrid.getStore().remove(selectedItem);
 				}
@@ -524,7 +520,6 @@ public class CampScreeningDetail extends LayoutContainer
 
 		mainContainerPanel.add(gridHolderPanel, new FitData(5));
 		add(mainContainerPanel);
-		// mainContainerPanel.setSize("700px", "600px");
 		mainContainerPanel.add(formPanel);
 		formPanel.setVisible(false);
 	}
@@ -543,44 +538,14 @@ public class CampScreeningDetail extends LayoutContainer
 
 	private boolean validateFormEntry()
 	{
-		// if (!country.validate())
-		// return false;
-		//
-		// if (!state.validate())
-		// return false;
-		//
-		// if (!city.validate())
-		// return false;
-		//
-		// if (!town.validate())
-		// return false;
-		//
-		// if (!village.validate())
-		// return false;
-
 		if (!chapterName.validate())
 			return false;
 
 		if (!projectName.validate())
 			return false;
 
-		// if (!locality.validate())
-		// return false;
-
 		if (!screeningDate.validate())
 			return false;
-
-		// if (!processType.validate())
-		// return false;
-		//
-		// if (!typeOfLocation.validate())
-		// return false;
-		//
-		// if (!address.validate())
-		// return false;
-		//
-		// if (!contactInformation.validate())
-		// return false;
 
 		return true;
 	}

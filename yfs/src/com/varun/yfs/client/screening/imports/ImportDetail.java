@@ -204,13 +204,6 @@ public class ImportDetail extends LayoutContainer
 			public void onSuccess(String result)
 			{
 				IndexPage.unmaskCenterComponent();
-				if (!result.equalsIgnoreCase(RpcStatusEnum.SUCCESS.name()))
-				{
-					MessageBox.info("Import Failed", result, l);
-					importInProgress = false;
-					return;
-				}
-
 				final Timer t = new Timer()
 				{
 					@Override
@@ -261,6 +254,16 @@ public class ImportDetail extends LayoutContainer
 						});
 					}
 				};
+				
+				if (!result.equalsIgnoreCase(RpcStatusEnum.SUCCESS.name()))
+				{
+					MessageBox.info("Import Failed", result, l);
+					importInProgress = false;
+					t.cancel();
+					box.close();
+					return;
+				}
+				
 				t.scheduleRepeating(100);
 			}
 

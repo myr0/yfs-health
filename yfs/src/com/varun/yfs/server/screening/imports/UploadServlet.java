@@ -85,7 +85,8 @@ public class UploadServlet extends HttpServlet
 					out.println("Field Name = " + item.getFieldName() + ", File Name = " + item.getName()
 							+ ", Content type = " + item.getContentType() + ", File Size = " + item.getSize());
 
-					File file = new File(tmpDir, item.getName().concat(String.valueOf(UUID.randomUUID().timestamp())));
+					File file = new File(tmpDir, item.getName().concat(
+							String.valueOf(UUID.randomUUID().getMostSignificantBits())));
 					item.write(file);
 					progressListener.setFilePath(file.getAbsolutePath());
 				}

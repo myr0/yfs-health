@@ -241,7 +241,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 						formPanel.setAction(url);
 						formPanel.submit();
-						
+
 						IndexPage.unmaskCenterComponent();
 					}
 
@@ -267,7 +267,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 					processIds = true;
 				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport,
 						processIds);
-				
+
 				dialogImport.add(widget, new FitData(5));
 				dialogImport.show();
 			}
@@ -294,8 +294,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 		ColumnModel columnModel = getColumnModelPatientHistory();
 		gridPatHistory = new EditorGrid<ClinicPatientHistoryDTO>(storePatHistory, columnModel);
 		gridPatHistory.setBorders(true);
-		// gridPatHistory.setSelectionModel(new
-		// GridSelectionModel<ClinicPatientHistoryDTO>());
 		gridPatHistory.setLoadMask(true);
 		gridPatHistory.setColumnLines(true);
 		gridPatHistory.setLoadMask(true);
@@ -336,7 +334,6 @@ public class ClinicScreeningDetail extends LayoutContainer
 				if (selectedItem != null)
 				{
 					selectedItem.set("deleted", "Y");
-					// gridPatHistory.mask("Removing Entry...");
 					validateAndSave();
 					gridPatHistory.getStore().remove(selectedItem);
 				}
@@ -400,7 +397,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 						formPanel.setAction(url);
 						formPanel.submit();
-						
+
 						IndexPage.unmaskCenterComponent();
 					}
 
@@ -466,7 +463,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 						formPanel.submit();
 
 						storePatDetail.clearFilters();
-						
+
 						IndexPage.unmaskCenterComponent();
 					}
 
@@ -492,7 +489,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 					processIds = true;
 				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport,
 						processIds);
-				
+
 				dialogImport.add(widget, new FitData(5));
 				dialogImport.show();
 			}
@@ -526,7 +523,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 									l);
 				} else
 				{
-					if(patDetail != null)
+					if (patDetail != null)
 					{
 						patDetail.setLstPatientHistory(gridPatHistory.getStore().getModels());
 					}
@@ -548,7 +545,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 	private void validateAndSave()
 	{
-		gridPatDetail.unmask();
+		IndexPage.maskCenterComponent("Saving...");
 		savePage(gridPatDetail.getStore().getModels());
 	}
 

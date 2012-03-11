@@ -3,6 +3,7 @@ package com.varun.yfs.client.login;
 import java.util.Date;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.VerticalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -12,7 +13,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.custom.ThemeSelector;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
@@ -33,34 +33,35 @@ public class Login extends LayoutContainer
 
 	public Login()
 	{
-		setLayout(new TableLayout(2));
+		setLayout(new TableLayout(3));
 
 		Image yfsLogo = new Image();
 		yfsLogo.setResource(YfsImageBundle.INSTANCE.yfsLogoImage());
 		TableData td_cpPart1 = new TableData();
 		td_cpPart1.setPadding(20);
-		td_cpPart1.setColspan(2);
-		td_cpPart1.setStyle("padding-left: 50%");
+		td_cpPart1.setColspan(3);
+		td_cpPart1.setStyle("padding-left: 10%");
 		add(yfsLogo, td_cpPart1);
 		yfsLogo.setHeight("300");
 
 		Image dfsLogo = new Image(YfsImageBundle.INSTANCE.dfsLogoImage());
 		TableData td_cpPart2 = new TableData();
-		td_cpPart2.setPadding(5);
-		td_cpPart2.setStyle("padding-left: 30%");
+		td_cpPart2.setPadding(50);
+		td_cpPart2.setColspan(2);
+		td_cpPart2.setStyle("padding-left: 10%");
 		add(dfsLogo, td_cpPart2);
-		dfsLogo.setWidth("300");
+		dfsLogo.setWidth("400");
 
 		final FormPanel frmpnlLogin = new FormPanel();
-		frmpnlLogin.setLabelAlign(LabelAlign.RIGHT);
 		frmpnlLogin.setLabelWidth(110);
 		frmpnlLogin.setButtonAlign(HorizontalAlignment.CENTER);
 		frmpnlLogin.setHeading("Patient Management System");
 		frmpnlLogin.setWidth("300px");
 
 		TableData td_cpPart3 = new TableData();
+		td_cpPart3.setVerticalAlign(VerticalAlignment.MIDDLE);
+		td_cpPart3.setHorizontalAlign(HorizontalAlignment.CENTER);
 		td_cpPart3.setPadding(5);
-		td_cpPart3.setStyle("padding-left: 20%");
 		add(frmpnlLogin, td_cpPart3);
 
 		final TextField<String> txtfldUserName = new TextField<String>();
@@ -102,7 +103,7 @@ public class Login extends LayoutContainer
 					frmpnlLogin.unmask();
 					return;
 				}
-				
+
 				frmpnlLogin.mask("Loading..");
 				LoginService.Util.getInstance().loginServer(txtfldUserName.getValue(), txtfldPassword.getValue(),
 						new AsyncCallback<UserDTO>()

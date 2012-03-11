@@ -536,54 +536,23 @@ public class SchoolScreeningDetail extends LayoutContainer
 	{
 		if (!validateFormEntry())
 		{
-			editorGrid.unmask();
 			return;
 		}
-
+		
 		SchoolScreeningDetailDTO modelData = extractFormData();
 		savePage(modelData);
 	}
 
 	private boolean validateFormEntry()
 	{
-		// if (!country.validate())
-		// return false;
-		//
-		// if (!state.validate())
-		// return false;
-		//
-		// if (!city.validate())
-		// return false;
-		//
-		// if (!town.validate())
-		// return false;
-		//
-		// if (!village.validate())
-		// return false;
-
 		if (!chapterName.validate())
 			return false;
 
 		if (!projectName.validate())
 			return false;
 
-		// if (!locality.validate())
-		// return false;
-
 		if (!screeningDate.validate())
 			return false;
-
-		// if (!processType.validate())
-		// return false;
-		//
-		// if (!typeOfLocation.validate())
-		// return false;
-		//
-		// if (!address.validate())
-		// return false;
-		//
-		// if (!contactInformation.validate())
-		// return false;
 
 		return true;
 	}
