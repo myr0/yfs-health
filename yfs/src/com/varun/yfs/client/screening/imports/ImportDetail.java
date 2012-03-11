@@ -32,6 +32,7 @@ import com.varun.yfs.client.screening.imports.rpc.FileUploadProgressService;
 import com.varun.yfs.client.screening.imports.rpc.PatientDataImportService;
 import com.varun.yfs.client.screening.imports.rpc.PatientDataImportServiceAsync;
 import com.varun.yfs.dto.ProgressDTO;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 
 @SuppressWarnings("rawtypes")
 public class ImportDetail extends LayoutContainer
@@ -85,7 +86,6 @@ public class ImportDetail extends LayoutContainer
 		Button btn = new Button("Start");
 		btn.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
-
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
@@ -93,6 +93,8 @@ public class ImportDetail extends LayoutContainer
 				{
 					return;
 				}
+
+				panel.mask("Uploading file...");
 
 				panel.submit();
 
@@ -116,25 +118,32 @@ public class ImportDetail extends LayoutContainer
 								if (result.equals(RpcStatusEnum.COMPLETED))
 								{
 									cancel();
+									panel.unmask();
 									dialogImport.hide();
 									startProcessing();
 									importInProgress = true;
-								} else
-									MessageBox.info("Action", "Please retry your operation.", null);
+								} else if (result.equals(RpcStatusEnum.FAILURE))
+								{
+									MessageBox.info("Action", "Unable to read progress.Will retry in a moment.", null);
+								}
 							}
 
 						});
 					}
 				};
-				timer.scheduleRepeating(100);
+				timer.scheduleRepeating(150);
 			}
 		});
+
+		LabelField lblfldNoteUploadWill = new LabelField(
+				"Note: File has to be uploaded.Please be patient, it may take few minutes.");
+		panel.add(lblfldNoteUploadWill, new FormData("100%"));
 		panel.addButton(btn);
 
 		FormData fdStep1 = new FormData("80%");
 		fdStep1.setMargins(new Margins(10, 5, 5, 5));
 		add(panel, fdStep1);
-		panel.setHeight("100px");
+		panel.setHeight("140px");
 	}
 
 	public void initialize(String title, String scrId)

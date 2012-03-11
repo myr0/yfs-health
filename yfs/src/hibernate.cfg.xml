@@ -9,20 +9,25 @@
 		<property name="hibernate.connection.password"></property>
 		<property name="hibernate.connection.url">jdbc:hsqldb:hsql://localhost</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.HSQLDialect</property>
-		<property name="connection.pool_size">4</property>
-		<property name="show_sql">true</property>
-		<property name="hbm2ddl.auto">create</property>
+		<property name="show_sql">false</property>
+		<property name="hbm2ddl.auto">update</property>
 		<property name="hibernate.id.new_generator_mappings">true</property>
 
+		<property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		<property name="hibernate.c3p0.max_size">60</property>
+		<property name="hibernate.c3p0.min_size">2</property>
+		<property name="hibernate.c3p0.timeout">5000</property>
+		<property name="hibernate.c3p0.max_statements">100</property>
+		<property name="hibernate.c3p0.idle_test_period">300</property>
+		<property name="hibernate.c3p0.acquire_increment">2</property>
+
 		<mapping class="com.varun.yfs.server.models.Entities" />
-		
 		<mapping class="com.varun.yfs.server.models.City" />
 		<mapping class="com.varun.yfs.server.models.Country" />
 		<mapping class="com.varun.yfs.server.models.Locality" />
 		<mapping class="com.varun.yfs.server.models.State" />
 		<mapping class="com.varun.yfs.server.models.Town" />
 		<mapping class="com.varun.yfs.server.models.Village" />
-		
 		<mapping class="com.varun.yfs.server.models.ChapterName" />
 		<mapping class="com.varun.yfs.server.models.Doctor" />
 		<mapping class="com.varun.yfs.server.models.Clinic" />
@@ -31,13 +36,13 @@
 		<mapping class="com.varun.yfs.server.models.Volunteer" />
 		<mapping class="com.varun.yfs.server.models.ReferralType" />
 		<mapping class="com.varun.yfs.server.models.Project" />
-		
+
 		<mapping class="com.varun.yfs.server.models.SchoolScreeningDetail" />
 		<mapping class="com.varun.yfs.server.models.SchoolPatientDetail" />
 
 		<mapping class="com.varun.yfs.server.models.CampScreeningDetail" />
 		<mapping class="com.varun.yfs.server.models.CampPatientDetail" />
-		
+
 		<mapping class="com.varun.yfs.server.models.ClinicPatientHistory" />
 		<mapping class="com.varun.yfs.server.models.ClinicPatientDetail" />
 		<mapping class="com.varun.yfs.server.models.User" />

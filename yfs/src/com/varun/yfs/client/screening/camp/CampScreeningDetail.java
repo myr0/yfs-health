@@ -482,7 +482,8 @@ public class CampScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				Dialog dialogImport = new Dialog();
-				dialogImport.setHeading("Import Patient Detail");
+				dialogImport.setButtons(Dialog.CLOSE);
+				dialogImport.setHeading("Import Patient Details");
 				dialogImport.setWidth("400");
 				boolean processIds = false;
 				if (scrId != null)

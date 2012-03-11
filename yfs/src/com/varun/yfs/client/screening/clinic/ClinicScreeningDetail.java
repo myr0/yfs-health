@@ -259,40 +259,15 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				Dialog dialogImport = new Dialog();
-				dialogImport.setHeading("Import Patient Detail");
+				dialogImport.setButtons(Dialog.CLOSE);
+				dialogImport.setHeading("Import Patient Details");
 				dialogImport.setWidth("400");
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
 				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTDETAIL, gridPatDetail, dialogImport,
 						processIds);
-				// {
-				// @SuppressWarnings({ "rawtypes", "unchecked" })
-				// @Override
-				// protected void onImportComplete(List<? extends BaseModelData>
-				// result)
-				// {
-				// ListStore store = gridPatDetail.getStore();
-				// List lstCurrentModels = store.getModels();
-				// if (lstCurrentModels.isEmpty())
-				// lstCurrentModels.addAll(result);
-				// else
-				// for (BaseModelData modelData : result)
-				// {
-				// if (lstCurrentModels.contains(modelData))
-				// {
-				// lstCurrentModels.set(lstCurrentModels.indexOf(modelData),
-				// modelData);
-				// } else
-				// {
-				// lstCurrentModels.add(modelData);
-				// }
-				// }
-				// store.removeAll();
-				// store.add(lstCurrentModels);
-				// gridPatDetail.unmask();
-				// }
-				// };
+				
 				dialogImport.add(widget, new FitData(5));
 				dialogImport.show();
 			}
@@ -509,6 +484,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				Dialog dialogImport = new Dialog();
+				dialogImport.setButtons(Dialog.CLOSE);
 				dialogImport.setHeading("Import Patient History");
 				dialogImport.setWidth("400");
 				boolean processIds = false;
@@ -516,36 +492,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 					processIds = true;
 				ImportDetail widget = new ImportDetail(ImportType.CLINICPATIENTHISTORY, gridPatHistory, dialogImport,
 						processIds);
-				// {
-				// @SuppressWarnings("unchecked")
-				// @Override
-				// protected void onImportComplete(List<? extends BaseModelData>
-				// result)
-				// {
-				// ListStore<ClinicPatientHistoryDTO> store =
-				// gridPatHistory.getStore();
-				// List<ClinicPatientHistoryDTO> lstCurrentModels =
-				// store.getModels();
-				// if (lstCurrentModels.isEmpty())
-				// lstCurrentModels.addAll((List<ClinicPatientHistoryDTO>)
-				// result);
-				// else
-				// for (BaseModelData modelData : result)
-				// {
-				// if (lstCurrentModels.contains(modelData))
-				// {
-				// lstCurrentModels.set(lstCurrentModels.indexOf(modelData),
-				// (ClinicPatientHistoryDTO) modelData);
-				// } else
-				// {
-				// lstCurrentModels.add((ClinicPatientHistoryDTO) modelData);
-				// }
-				// }
-				// store.removeAll();
-				// store.add(lstCurrentModels);
-				// gridPatHistory.unmask();
-				// }
-				// };
+				
 				dialogImport.add(widget, new FitData(5));
 				dialogImport.show();
 			}

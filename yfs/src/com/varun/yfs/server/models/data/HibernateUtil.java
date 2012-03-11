@@ -54,7 +54,7 @@ public class HibernateUtil
 			if (hbm2ddl.equalsIgnoreCase("create"))
 			{
 				insertReferenceData();
-				LOGGER.debug("The application has finished booting.The reference data insertion is complete.");
+				LOGGER.debug("Reference data insertion is complete.");
 			}
 			LOGGER.debug("The application has finished booting.");
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -52,7 +53,7 @@ public class UploadServlet extends HttpServlet
 	{
 		HttpSession session = request.getSession();
 		session.setAttribute("progressListener", progressListener);
-		
+
 		PrintWriter out = response.getWriter();
 		response.setContentType("text/plain");
 
@@ -84,7 +85,7 @@ public class UploadServlet extends HttpServlet
 					out.println("Field Name = " + item.getFieldName() + ", File Name = " + item.getName()
 							+ ", Content type = " + item.getContentType() + ", File Size = " + item.getSize());
 
-					File file = new File(tmpDir, item.getName());
+					File file = new File(tmpDir, item.getName().concat(String.valueOf(UUID.randomUUID().timestamp())));
 					item.write(file);
 					progressListener.setFilePath(file.getAbsolutePath());
 				}
