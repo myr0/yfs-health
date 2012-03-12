@@ -44,11 +44,13 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 				storeUserInSession(user);
 
 				LOGGER.info("User: " + name + " logged in successfully. Session id: " + user.getSessionId());
+				return user;
 			}
 			LOGGER.info("Login for user: " + name + " failed. Password for given UserName doesn't match.");
 		}
 
-		LOGGER.info("Login for user: " + name + " failed. UserName doesnt exist.");
+		if (usrIdx <= 0)
+			LOGGER.info("Login for user: " + name + " failed. UserName doesnt exist.");
 
 		return user;
 	}

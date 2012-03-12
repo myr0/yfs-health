@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -71,7 +72,11 @@ public class ImportDetail extends LayoutContainer
 		final FormPanel panel = new FormPanel();
 		panel.setHeaderVisible(false);
 		panel.setFrame(true);
-		panel.setAction("/yfs/UploadServlet");
+
+		String url = GWT.getModuleBaseURL();
+		url = url + "UploadServlet";
+
+		panel.setAction(url);
 		panel.setEncoding(Encoding.MULTIPART);
 		panel.setMethod(Method.POST);
 		panel.setButtonAlign(HorizontalAlignment.CENTER);
@@ -108,8 +113,12 @@ public class ImportDetail extends LayoutContainer
 							@Override
 							public void onFailure(Throwable caught)
 							{
-								MessageBox.info("Action", "Unable to read progress status. Retrying...", null);
 								importInProgress = false;
+								cancel();
+								panel.unmask();
+								dialogImport.hide();
+
+								MessageBox.info("Action", "Unable to read progress.Upload Failed. Please retry again.", null);
 							}
 
 							@Override
@@ -120,11 +129,19 @@ public class ImportDetail extends LayoutContainer
 									cancel();
 									panel.unmask();
 									dialogImport.hide();
+
 									startProcessing();
+
 									importInProgress = true;
+
 								} else if (result.equals(RpcStatusEnum.FAILURE))
 								{
-									MessageBox.info("Action", "Unable to read progress.Will retry in a moment.", null);
+									cancel();
+									importInProgress = false;
+									panel.unmask();
+									dialogImport.hide();
+
+									MessageBox.info("Action", "Unable to read progress.Upload Failed.", null);
 								}
 							}
 
@@ -135,8 +152,7 @@ public class ImportDetail extends LayoutContainer
 			}
 		});
 
-		LabelField lblfldNoteUploadWill = new LabelField(
-				"Note: File has to be uploaded.Please be patient, it may take few minutes.");
+		LabelField lblfldNoteUploadWill = new LabelField("Note: File has to be uploaded.Please be patient, it may take few minutes.");
 		panel.add(lblfldNoteUploadWill, new FormData("100%"));
 		panel.addButton(btn);
 
@@ -254,7 +270,7 @@ public class ImportDetail extends LayoutContainer
 						});
 					}
 				};
-				
+
 				if (!result.equalsIgnoreCase(RpcStatusEnum.SUCCESS.name()))
 				{
 					MessageBox.info("Import Failed", result, l);
@@ -263,7 +279,7 @@ public class ImportDetail extends LayoutContainer
 					box.close();
 					return;
 				}
-				
+
 				t.scheduleRepeating(100);
 			}
 
@@ -283,9 +299,7 @@ public class ImportDetail extends LayoutContainer
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						MessageBox.info("Preview Failed",
-								"Failed to retrieve records. Please retry the operation again. Additional Details: "
-										+ caught.getMessage(), l);
+						MessageBox.info("Preview Failed", "Failed to retrieve records. Please retry the operation again. Additional Details: " + caught.getMessage(), l);
 						dataGrid.unmask();
 						importInProgress = false;
 						return;
