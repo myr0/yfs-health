@@ -24,6 +24,8 @@ public class StateData extends AbstractData
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
+		LOGGER.debug("Attempting data load");
+		
 		ModelData modelData = new BaseModelData();
 
 		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.State.name());
@@ -35,12 +37,16 @@ public class StateData extends AbstractData
 		modelData.set("configType", Arrays.asList("Text", "combo"));
 		
 		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.State.name().toLowerCase()));
+		
+		LOGGER.debug("Data load complete.");
 		return modelData;
 	}
 
 	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
+		LOGGER.debug("Attempting to save model");
+		
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Mapper dozerMapper = HibernateUtil.getDozerMapper();
@@ -69,6 +75,8 @@ public class StateData extends AbstractData
 			session.flush();
 			session.close();
 			status = RpcStatusEnum.SUCCESS;
+			
+			LOGGER.debug("Save model completed successfully.");
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());

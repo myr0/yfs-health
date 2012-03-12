@@ -23,6 +23,8 @@ public class CountryData extends AbstractData
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
+		LOGGER.debug("Attempting data load");
+		
 		ModelData modelData = new BaseModelData();
 
 		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Country.name());
@@ -33,12 +35,15 @@ public class CountryData extends AbstractData
 		modelData.set("configType", Arrays.asList("Text"));
 		
 		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Country.name().toLowerCase()));
+		LOGGER.debug("Data load complete.");
 		return modelData;
 	}
 
 	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
+		LOGGER.debug("Attempting to save model");
+		
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Mapper dozerMapper = HibernateUtil.getDozerMapper();
@@ -62,6 +67,8 @@ public class CountryData extends AbstractData
 			transact.commit();
 			session.close();
 			status = RpcStatusEnum.SUCCESS;
+			
+			LOGGER.debug("Save model completed successfully.");
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());

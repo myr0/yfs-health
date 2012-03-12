@@ -64,8 +64,12 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 		{
 			try
 			{
+				LOGGER.debug("Starting excel parsing.");
+				
 				status = RpcStatusEnum.RUNNING;
 				excelConverter.readContentsAsCSV(path);
+				
+				LOGGER.debug("Completed excel parse");
 			} catch (Exception ex)
 			{
 				String errorMessage = "Error encountered trying to read the file contents." + ex.getMessage();
@@ -93,6 +97,8 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 		{
 			try
 			{
+				LOGGER.debug("Starting patient detail importer");
+				
 				status = RpcStatusEnum.RUNNING;
 				// hack to let the UI init properly
 				try
@@ -103,6 +109,8 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 					e.printStackTrace();
 				}
 				patientDetailImporter.convertRecords(processIds, patientDataImportServiceImpl);
+				
+				LOGGER.debug("Completed patient detail import");
 			} catch (Exception ex)
 			{
 				String errorMesssage = "Error encountered trying to convert excel rows to file contents."

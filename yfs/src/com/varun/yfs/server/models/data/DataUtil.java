@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.dozer.Mapper;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -19,8 +20,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.util.Util;
@@ -46,7 +45,7 @@ public class DataUtil
 	@SuppressWarnings("rawtypes")
 	private static Map<String, Class> nameToDtoClass = new HashMap<String, Class>();
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DataUtil.class);
+	private static final Logger LOGGER = Logger.getLogger(DataUtil.class);
 
 	static
 	{
@@ -59,7 +58,7 @@ public class DataUtil
 				nameToDtoClass.put(className, Class.forName("com.varun.yfs.dto." + className + "DTO"));
 			} catch (ClassNotFoundException e)
 			{
-				LOGGER.error("Encountered error loading specified class instance: " + e.getCause());
+				LOGGER.error("Encountered error loading specified class instance: " + e);
 			}
 		}
 	}

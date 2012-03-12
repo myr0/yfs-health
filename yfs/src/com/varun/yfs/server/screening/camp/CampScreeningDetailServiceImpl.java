@@ -37,6 +37,8 @@ public class CampScreeningDetailServiceImpl extends RemoteServiceServlet impleme
 			user = (UserDTO) userObj;
 		}
 
+		LOGGER.debug("Attempting to build model for id:" + scrId);
+
 		ModelData modelData = new BaseModelData();
 		if (scrId != null)
 		{
@@ -65,12 +67,14 @@ public class CampScreeningDetailServiceImpl extends RemoteServiceServlet impleme
 		modelData.set("lstVolunteers", DataUtil.getModelList(ModelDataEnum.Volunteer.name()));
 		modelData.set("lstDoctors", DataUtil.getModelList(ModelDataEnum.Doctor.name()));
 
+		LOGGER.debug("Build model for screening id:" + scrId + " complete.");
 		return modelData;
 	}
 
 	@Override
 	public RpcStatusEnum saveModel(String scrId, CampScreeningDetailDTO modelData)
 	{
+		LOGGER.debug("Attempting to save the model for screening id:" + scrId);
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
@@ -78,6 +82,7 @@ public class CampScreeningDetailServiceImpl extends RemoteServiceServlet impleme
 				modelData.set("id", scrId);
 
 			DataUtil.saveScreeningDetail(modelData);
+			LOGGER.info("Save for screening id:" + scrId + " completed successfully.");
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error trying to save the model." + ex.getCause());

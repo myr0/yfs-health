@@ -8,10 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 public class ImageByteReader extends HttpServlet
 {
 	private static final long serialVersionUID = -2392101295764631865L;
 	private static final String SESSION_VAR_NAME = "var";
+	private static final Logger LOGGER = Logger.getLogger(ImageByteReader.class);
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException
 	{
@@ -31,6 +34,7 @@ public class ImageByteReader extends HttpServlet
 			output.close();
 		} catch (Exception e)
 		{
+			LOGGER.error("Encountered error streaming Image contents: " + e);
 		}
 	}
 }

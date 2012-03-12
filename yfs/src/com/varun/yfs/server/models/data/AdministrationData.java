@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
@@ -14,9 +16,13 @@ import com.varun.yfs.dto.YesNoDTO;
 
 public class AdministrationData extends AbstractData
 {
+	private static final Logger LOGGER = Logger.getLogger(AdministrationData.class);
+
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
+		LOGGER.debug("Attempting data load");
+
 		ModelData model = new BaseModelData();
 
 		List<Object> modelList = DataUtil.getModelList("Entities");
@@ -34,11 +40,15 @@ public class AdministrationData extends AbstractData
 		model.set("configCols", Arrays.asList("Name"));
 		model.set("configType", Arrays.asList("Text"));
 
+		LOGGER.debug("Data load complete.");
+
 		return model;
 	}
 
 	protected List<Object> applyPermission(UserDTO userDto, List<Object> modelList)
 	{
+		LOGGER.debug("Applying Permissions to the data - " + modelList);
+
 		List<Object> lstModels = new ArrayList<Object>();
 		List<UserEntityPermissionsDTO> lstEntityPermissions = userDto.getEntityPermissions();
 		for (UserEntityPermissionsDTO userEntityPermissionsDTO : lstEntityPermissions)
@@ -55,6 +65,8 @@ public class AdministrationData extends AbstractData
 					lstModels.add(modelList.get(idx));
 			}
 		}
+
+		LOGGER.debug("Applying Permissions to the data completed - " + lstModels);
 		return lstModels;
 	}
 

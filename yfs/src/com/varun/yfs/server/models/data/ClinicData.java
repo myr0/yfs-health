@@ -28,6 +28,8 @@ public class ClinicData extends AbstractData
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
+		LOGGER.debug("Attempting data load");
+		
 		ModelData modelData = new BaseModelData();
 
 		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.Clinic.name());
@@ -39,12 +41,15 @@ public class ClinicData extends AbstractData
 		modelData.set("configType", Arrays.asList("Text", "combo"));
 		
 		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.Clinic.name().toLowerCase()));
+		LOGGER.debug("Data load complete.");
 		return modelData;
 	}
 
 	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
+		LOGGER.debug("Attempting to save model");
+		
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Mapper dozerMapper = HibernateUtil.getDozerMapper();
@@ -74,6 +79,8 @@ public class ClinicData extends AbstractData
 			session.flush();
 			session.close();
 			status = RpcStatusEnum.SUCCESS;
+			
+			LOGGER.debug("Save model completed successfully.");
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());
@@ -89,6 +96,8 @@ public class ClinicData extends AbstractData
 
 	protected List<ModelData> applyPermission(UserDTO userDto, List<ModelData> modelList)
 	{
+		LOGGER.debug("Applying Permissions to the data - " + modelList);
+		
 		List<ModelData> lstModels = new ArrayList<ModelData>();
 		if (!userDto.isAdmin())
 		{
@@ -109,6 +118,8 @@ public class ClinicData extends AbstractData
 			}
 		} else
 			lstModels = modelList;
+		
+		LOGGER.debug("Applying Permissions to the data completed - " + lstModels);
 		return lstModels;
 	}
 

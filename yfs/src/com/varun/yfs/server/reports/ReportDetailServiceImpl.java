@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -21,6 +23,7 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 	private static final long serialVersionUID = -8632087746514887014L;
 	private final Map<String, Integer> schRepType2Count = new HashMap<String, Integer>();
 	private final Map<String, String> schRepCol2Type = new HashMap<String, String>();
+	private static final Logger LOGGER = Logger.getLogger(ReportDetailServiceImpl.class);
 
 	public ReportDetailServiceImpl()
 	{
@@ -46,6 +49,8 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 	@Override
 	public ModelData getModel(ReportType report, ModelData params)
 	{
+		LOGGER.debug("Beginning report creation.");
+
 		ModelData model = new BaseModelData();
 
 		if (ReportType.Clinic.equals(report))
@@ -65,6 +70,7 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		// {
 		// }
 
+		LOGGER.info("Report creation completed.");
 		return model;
 
 	}

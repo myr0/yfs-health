@@ -3,6 +3,8 @@ package com.varun.yfs.server.models.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
@@ -12,9 +14,13 @@ import com.varun.yfs.dto.UserDTO;
 
 public class ReportsData extends AbstractData
 {
+	private static final Logger LOGGER = Logger.getLogger(ReportsData.class);
+	
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
+		LOGGER.debug("Attempting data load");
+		
 		List<String> lstReportPermissions = userDto.getReportWithPermission(PermissionTypeEnum.READ);
 
 		List<ModelData> arrayList = new ArrayList<ModelData>();
@@ -44,7 +50,7 @@ public class ReportsData extends AbstractData
 		// "reportIndividual"));
 		// child.add(newItem(ReportType.Clinic.getValue(), "reportIndividual"));
 		// child.add(newItem(ReportType.Events.getValue(), "reportIndividual"));
-
+		LOGGER.debug("Data load complete.");
 		return model;
 	}
 

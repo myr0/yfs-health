@@ -25,6 +25,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.varun.yfs.client.screening.export.ExportService;
 import com.varun.yfs.dto.ExportTableDTO;
+import com.varun.yfs.server.screening.camp.CampScreeningDetailServiceImpl;
 import com.varun.yfs.server.screening.imports.ExcelReader;
 
 public class ExportServiceImpl extends RemoteServiceServlet implements ExportService
@@ -32,7 +33,7 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 	private static final long serialVersionUID = -2853390238324491312L;
 	private static final Logger LOGGER = Logger.getLogger(ExportServiceImpl.class);
 	private static final int START_CELL_NO = 2;
-
+	
 	@Override
 	public String createExportFile(List<ExportTableDTO> exportTables, String base64Image)
 	{
@@ -42,6 +43,7 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 		HSSFCell myCell = null;
 		int rowNum = START_CELL_NO;
 
+		LOGGER.debug("Writing image contents");
 		if (base64Image != null)
 		{
 			int index = myWorkBook.addPicture(Base64.decode(base64Image), Workbook.PICTURE_TYPE_PNG);
@@ -55,6 +57,7 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 			rowNum = rowNum + 15;
 		}
 
+		LOGGER.debug("Writing table data contents");
 		for (ExportTableDTO exportTableDTO : exportTables)
 		{
 			List<String> colHeaders = exportTableDTO.getColHeaders();
@@ -117,6 +120,8 @@ public class ExportServiceImpl extends RemoteServiceServlet implements ExportSer
 			myRow = mySheet.createRow(rowNum++);
 
 		}
+		
+		LOGGER.debug("Writing data contents to a file before export.");
 
 		String tmpDir = System.getProperty("java.io.tmpdir");
 		String fileName = UUID.randomUUID().toString() + ".xls";

@@ -27,6 +27,8 @@ public class ChapterNameData extends AbstractData
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
+		LOGGER.debug("Attempting data load");
+		
 		ModelData modelData = new BaseModelData();
 
 		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.ChapterName.name());
@@ -55,13 +57,15 @@ public class ChapterNameData extends AbstractData
 
 		modelData.set("permissions",
 				userDto.getEntityPermissionsMap().get(ModelDataEnum.ChapterName.name().toLowerCase()));
-
+		LOGGER.debug("Data load complete.");
 		return modelData;
 	}
 
 	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
+		LOGGER.debug("Attempting to save model");
+		
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transact = session.beginTransaction();
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;
@@ -121,6 +125,8 @@ public class ChapterNameData extends AbstractData
 			session.flush();
 			session.close();
 			status = RpcStatusEnum.SUCCESS;
+			
+			LOGGER.debug("Save model completed successfully.");
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());
@@ -136,6 +142,8 @@ public class ChapterNameData extends AbstractData
 
 	protected List<ModelData> applyPermission(UserDTO userDto, List<ModelData> modelList)
 	{
+		LOGGER.debug("Applying Permissions to the data - " + modelList);
+		
 		List<ModelData> lstModels = new ArrayList<ModelData>();
 		if (!userDto.isAdmin())
 		{
@@ -156,6 +164,8 @@ public class ChapterNameData extends AbstractData
 			}
 		} else
 			lstModels = modelList;
+		
+		LOGGER.debug("Applying Permissions to the data completed - " + lstModels);
 		return lstModels;
 	}
 

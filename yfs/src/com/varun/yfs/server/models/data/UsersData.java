@@ -23,6 +23,8 @@ public class UsersData extends AbstractData
 	@Override
 	public ModelData getModel(UserDTO user)
 	{
+		LOGGER.debug("Attempting data load");
+		
 		ModelData modelData = new BaseModelData();
 		List<ModelData> modelList = DataUtil.<ModelData> getModelList(ModelDataEnum.User.name());
 
@@ -41,6 +43,8 @@ public class UsersData extends AbstractData
 		modelData.set("lstEntityNames", DataUtil.getEntitiesList());
 		
 		modelData.set("permissions", user.getEntityPermissionsMap().get(ModelDataEnum.User.name().toLowerCase()));
+		
+		LOGGER.debug("Data load complete.");
 		return modelData;
 	}
 
@@ -57,14 +61,16 @@ public class UsersData extends AbstractData
 	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
+		LOGGER.debug("Attempting to save model");
+		
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;
 		try
 		{
 			DataUtil.saveUserDetail(model);
 			status = RpcStatusEnum.SUCCESS;
+			LOGGER.debug("Save model completed successfully.");
 		} catch (HibernateException ex)
 		{
-			status = RpcStatusEnum.FAILURE;
 			LOGGER.error("Encountered error saving the model." + ex.getMessage());
 		}
 		return status;

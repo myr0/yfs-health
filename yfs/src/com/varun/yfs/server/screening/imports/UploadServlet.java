@@ -18,6 +18,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.log4j.Logger;
 
 public class UploadServlet extends HttpServlet
 {
@@ -25,6 +26,7 @@ public class UploadServlet extends HttpServlet
 	private String tmpDir;
 	private ServletFileUpload upload;
 	private FileUploadProgressListener progressListener = new FileUploadProgressListener();
+	private static final Logger LOGGER = Logger.getLogger(UploadServlet.class);
 
 	public void init(ServletConfig config) throws ServletException
 	{
@@ -33,29 +35,27 @@ public class UploadServlet extends HttpServlet
 		try
 		{
 			temp = File.createTempFile("temp-file-name", ".tmp");
-			System.out.println("Temp file : " + temp.getAbsolutePath());
+			LOGGER.debug("Temp file : " + temp.getAbsolutePath());
 
 			String absolutePath = temp.getAbsolutePath();
 			tmpDir = absolutePath.substring(0, absolutePath.lastIndexOf(File.separator));
 
-			System.out.println("Temp file path : " + tmpDir);
+			LOGGER.debug("Temp file path : " + tmpDir);
 
 			temp.delete();
 		} catch (IOException e)
 		{
-			e.printStackTrace();
+			LOGGER.error("Encountered exception initializing the upload servlet: " + e);
 		}
 
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		HttpSession session = request.getSession();
-		session.setAttribute("progressListener", progressListener);
-
 		PrintWriter out = response.getWriter();
 		response.setContentType("text/plain");
+
+		LOGGER.debug("Upload processing begins now");
 
 		boolean isMultipartContent = ServletFileUpload.isMultipartContent(request);
 		if (!isMultipartContent)
@@ -70,6 +70,9 @@ public class UploadServlet extends HttpServlet
 		upload = new ServletFileUpload(fileItemFactory);
 		upload.setProgressListener(progressListener);
 
+		HttpSession session = request.getSession();
+		session.setAttribute("progressListener", progressListener);
+
 		try
 		{
 			List items = upload.parseRequest(request);
@@ -82,22 +85,22 @@ public class UploadServlet extends HttpServlet
 					out.println("File Name = " + item.getFieldName() + ", Value = " + item.getString());
 				} else
 				{
-					out.println("Field Name = " + item.getFieldName() + ", File Name = " + item.getName()
-							+ ", Content type = " + item.getContentType() + ", File Size = " + item.getSize());
+					out.println("Field Name = " + item.getFieldName() + ", File Name = " + item.getName() + ", Content type = " + item.getContentType() + ", File Size = " + item.getSize());
 
-					File file = new File(tmpDir, item.getName().concat(
-							String.valueOf(UUID.randomUUID().getMostSignificantBits())));
+					File file = new File(tmpDir, item.getName().concat(String.valueOf(UUID.randomUUID().getMostSignificantBits())));
 					item.write(file);
+
 					progressListener.setFilePath(file.getAbsolutePath());
 				}
 				out.close();
+				LOGGER.debug("File saved succesfully to: " + progressListener.getFilePath());
 			}
 		} catch (FileUploadException ex)
 		{
-			log("Error encountered while parsing the request", ex);
+			LOGGER.error("Error encountered while parsing the request" + ex);
 		} catch (Exception ex)
 		{
-			log("Error encountered while uploading file", ex);
+			LOGGER.error("Error encountered while uploading file" + ex);
 		}
 
 	}

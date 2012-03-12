@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.varun.yfs.client.common.RpcStatusEnum;
@@ -15,10 +17,14 @@ import com.varun.yfs.dto.UserDTO;
 
 public class SchoolScreeningLocationsData extends AbstractData
 {
+	private static final Logger LOGGER = Logger.getLogger(SchoolScreeningLocationsData.class);
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
+		LOGGER.debug("Attempting data load");
+		
 		List<ModelData> nodes = new ArrayList<ModelData>();
 
 		List<String> lstChaptersPermissions = userDto.getChaptersWithPermission(PermissionTypeEnum.READ);
@@ -83,7 +89,7 @@ public class SchoolScreeningLocationsData extends AbstractData
 				projectNodes.add(projectNode);
 			}
 		}
-
+		LOGGER.debug("Data load complete.");
 		return model;
 	}
 

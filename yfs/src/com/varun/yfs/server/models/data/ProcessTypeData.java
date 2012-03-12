@@ -18,6 +18,8 @@ public class ProcessTypeData extends AbstractData
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
+		LOGGER.debug("Attempting data load");
+		
 		ModelData model = new BaseModelData();
 		model.set("data", DataUtil.getModelList(ModelDataEnum.ProcessType.name()));
 
@@ -26,17 +28,23 @@ public class ProcessTypeData extends AbstractData
 		model.set("configType", Arrays.asList("Text"));
 
 		model.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.ProcessType.name().toLowerCase()));
+		
+		LOGGER.debug("Data load complete.");
 		return model;
 	}
 
 	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
+		LOGGER.debug("Attempting to save model");
+		
 		List<ModelData> lstModels = model.get("data");
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
 			DataUtil.<ModelData> saveListStore(ModelDataEnum.ProcessType.name(), lstModels);
+			
+			LOGGER.debug("Save model completed successfully.");
 		} catch (Exception ex)
 		{
 			status = RpcStatusEnum.FAILURE;

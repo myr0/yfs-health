@@ -24,6 +24,8 @@ public class CityData extends AbstractData
 	@Override
 	public ModelData getModel(UserDTO userDto)
 	{
+		LOGGER.debug("Attempting data load");
+		
 		ModelData modelData = new BaseModelData();
 
 		List<ModelData> list = DataUtil.<ModelData> getModelList(ModelDataEnum.City.name());
@@ -35,13 +37,16 @@ public class CityData extends AbstractData
 		modelData.set("configType", Arrays.asList("Text", "combo"));
 
 		modelData.set("permissions", userDto.getEntityPermissionsMap().get(ModelDataEnum.City.name().toLowerCase()));
-
+		
+		LOGGER.debug("Data load complete.");
 		return modelData;
 	}
 
 	@Override
 	public RpcStatusEnum saveModel(ModelData model)
 	{
+		LOGGER.debug("Attempting to save model");
+		
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction transact = session.beginTransaction();
 		RpcStatusEnum status = RpcStatusEnum.FAILURE;
@@ -76,6 +81,8 @@ public class CityData extends AbstractData
 			session.close();
 
 			status = RpcStatusEnum.SUCCESS;
+			
+			LOGGER.debug("Save model completed successfully.");
 		} catch (HibernateException ex)
 		{
 			if (session != null)

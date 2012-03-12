@@ -1,11 +1,13 @@
 package com.varun.yfs.server.screening.imports;
 
 import org.apache.commons.fileupload.ProgressListener;
+import org.apache.log4j.Logger;
 
 public class FileUploadProgressListener implements ProgressListener
 {
 	private int percentDone = 0;
 	private String filePath;
+	private static final Logger LOGGER = Logger.getLogger(FileUploadProgressListener.class);
 
 	public void setFilePath(String filePath)
 	{
@@ -19,20 +21,20 @@ public class FileUploadProgressListener implements ProgressListener
 
 	public void update(long pBytesRead, long pContentLength, int pItems)
 	{
-		System.out.println("We are currently reading item " + pItems);
+		LOGGER.debug("We are currently reading item " + pItems);
 		if (pContentLength == -1)
 		{
-			System.out.println("So far, " + pBytesRead + " bytes have been read.");
+			LOGGER.debug("So far, " + pBytesRead + " bytes have been read.");
 		} else
 		{
-			System.out.println("So far, " + pBytesRead + " of " + pContentLength + " bytes have been read.");
+			LOGGER.debug("So far, " + pBytesRead + " of " + pContentLength + " bytes have been read.");
 		}
 		percentDone = (int) (100 * pBytesRead / pContentLength);
 	}
 
 	public String getMessage()
 	{
-		System.out.println("Completed writing file to: " + this.filePath + " | " + this.percentDone);
+		LOGGER.debug("Completed writing file to: " + this.filePath + " | " + this.percentDone);
 		return String.valueOf(percentDone);
 	}
 };

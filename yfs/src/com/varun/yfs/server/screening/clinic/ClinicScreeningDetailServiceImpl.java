@@ -22,6 +22,8 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 	@Override
 	public ModelData getModel(String scrId)
 	{
+		LOGGER.debug("Attempting to build model for id:" + scrId);
+
 		ModelData modelData = new BaseModelData();
 		if (scrId != null)
 		{
@@ -30,16 +32,20 @@ public class ClinicScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		}
 		modelData.set("lstReferralTypes", DataUtil.getModelList(ModelDataEnum.ReferralType.name()));
 
+		LOGGER.debug("Build model for screening id:" + scrId + " complete.");
 		return modelData;
 	}
 
 	@Override
 	public RpcStatusEnum saveModel(String clinicId, List<ClinicPatientDetailDTO> modelData)
 	{
+		LOGGER.debug("Attempting to save the model for screening id:" + clinicId);
+
 		RpcStatusEnum status = RpcStatusEnum.SUCCESS;
 		try
 		{
 			DataUtil.saveScreeningDetail(clinicId, (List<ClinicPatientDetailDTO>) modelData);
+			LOGGER.info("Save for screening id:" + clinicId + " completed successfully.");
 		} catch (HibernateException ex)
 		{
 			LOGGER.error("Encountered error trying to save the model." + ex.getCause());
