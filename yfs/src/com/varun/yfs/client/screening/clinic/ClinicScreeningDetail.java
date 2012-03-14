@@ -799,7 +799,7 @@ public class ClinicScreeningDetail extends LayoutContainer
 
 		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
 		numberField = new NumberField();
-		numberField.setMinLength(8);
+		numberField.setMinLength(6);
 		numberField.setMaxLength(15);
 		numberField.setAllowBlank(false);
 		numberField.setAllowDecimals(false);
