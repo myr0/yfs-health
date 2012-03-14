@@ -211,7 +211,7 @@ public class DataUtil
 		} catch (HibernateException ex)
 		{
 			trans.rollback();
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -250,7 +250,7 @@ public class DataUtil
 		} catch (HibernateException ex)
 		{
 			trans.rollback();
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -288,7 +288,7 @@ public class DataUtil
 		} catch (HibernateException ex)
 		{
 			trans.rollback();
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -317,7 +317,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -349,7 +349,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -381,7 +381,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -412,7 +412,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -442,7 +442,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -462,7 +462,7 @@ public class DataUtil
 			}
 		} catch (HibernateException ex)
 		{
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		}
 	}
@@ -489,7 +489,7 @@ public class DataUtil
 		} catch (HibernateException ex)
 		{
 			trans.rollback();
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -516,7 +516,7 @@ public class DataUtil
 
 		} catch (HibernateException ex)
 		{
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -535,7 +535,7 @@ public class DataUtil
 			obj = filter.list();
 		} catch (HibernateException ex)
 		{
-			LOGGER.error("Encountered error retrieving objects: " + ex.getMessage());
+			LOGGER.error("Encountered error retrieving objects: " + ex);
 			throw ex;
 		} finally
 		{
@@ -557,7 +557,7 @@ public class DataUtil
 		} catch (HibernateException ex)
 		{
 			tran.rollback();
-			LOGGER.error("Encountered error while updating objects: " + ex.getMessage());
+			LOGGER.error("Encountered error while updating objects: " + ex);
 			throw ex;
 		} finally
 		{

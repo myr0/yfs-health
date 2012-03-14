@@ -148,7 +148,7 @@ public class CampScreeningDetail extends LayoutContainer
 		td_cpPart1.setPadding(5);
 		cpMain.add(cpPart1, td_cpPart1);
 
-		cpPart1.add(chapterName, new FormData("90%"));
+		cpPart1.add(chapterName, new FormData("80%"));
 		chapterName.setFieldLabel("Chapter Name");
 		chapterName.setForceSelection(true);
 		chapterName.setSize("150", "22");
@@ -157,8 +157,9 @@ public class CampScreeningDetail extends LayoutContainer
 		chapterName.setStore(new ListStore<ModelData>());
 		chapterName.setAllowBlank(false);
 		chapterName.setStyleAttribute("font-weight", "bold");
+		chapterName.setMessageTarget("tooltip");
 
-		cpPart1.add(projectName, new FormData("90%"));
+		cpPart1.add(projectName, new FormData("80%"));
 		projectName.setFieldLabel("Project Name");
 		projectName.setForceSelection(true);
 		projectName.setSize("150", "22");
@@ -166,12 +167,14 @@ public class CampScreeningDetail extends LayoutContainer
 		projectName.setTriggerAction(TriggerAction.ALL);
 		projectName.setStore(new ListStore<ModelData>());
 		projectName.setAllowBlank(false);
+		projectName.setMessageTarget("tooltip");
 
-		cpPart1.add(screeningDate, new FormData("90%"));
+		cpPart1.add(screeningDate, new FormData("80%"));
 		screeningDate.setFieldLabel("Event Date");
 		screeningDate.setAllowBlank(false);
+		screeningDate.setMessageTarget("tooltip");
 
-		cpPart1.add(country, new FormData("90%"));
+		cpPart1.add(country, new FormData("80%"));
 		country.setEditable(false);
 		country.setForceSelection(true);
 		country.setFieldLabel("Country");
@@ -180,7 +183,7 @@ public class CampScreeningDetail extends LayoutContainer
 		country.setTriggerAction(TriggerAction.ALL);
 		country.setStore(new ListStore<ModelData>());
 
-		cpPart1.add(state, new FormData("90%"));
+		cpPart1.add(state, new FormData("80%"));
 		state.setEditable(false);
 		state.setForceSelection(true);
 		state.setFieldLabel("State");
@@ -188,7 +191,7 @@ public class CampScreeningDetail extends LayoutContainer
 		state.setTriggerAction(TriggerAction.ALL);
 		state.setStore(new ListStore<ModelData>());
 
-		cpPart1.add(city, new FormData("90%"));
+		cpPart1.add(city, new FormData("80%"));
 		city.setEditable(false);
 		city.setForceSelection(true);
 		city.setFieldLabel("City");
@@ -196,7 +199,7 @@ public class CampScreeningDetail extends LayoutContainer
 		city.setTriggerAction(TriggerAction.ALL);
 		city.setStore(new ListStore<ModelData>());
 
-		cpPart1.add(town, new FormData("90%"));
+		cpPart1.add(town, new FormData("80%"));
 		town.setEditable(false);
 		town.setForceSelection(true);
 		town.setFieldLabel("Town");
@@ -204,7 +207,7 @@ public class CampScreeningDetail extends LayoutContainer
 		town.setTriggerAction(TriggerAction.ALL);
 		town.setStore(new ListStore<ModelData>());
 
-		cpPart1.add(village, new FormData("90%"));
+		cpPart1.add(village, new FormData("80%"));
 		village.setEditable(false);
 		village.setForceSelection(true);
 		village.setFieldLabel("Village");

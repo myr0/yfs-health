@@ -211,24 +211,37 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void componentSelected(ButtonEvent ce)
 			{
-				LoginService.Util.getInstance().logout(new AsyncCallback<Void>()
+				MessageBox.confirm("Confirm", "Are you sure you want to logout?", new Listener<MessageBoxEvent>()
 				{
-					@Override
-					public void onFailure(Throwable caught)
-					{
-						Login w = new Login();
-						RootPanel.get().clear();
-						RootPanel.get().add(w);
-					}
 
 					@Override
-					public void onSuccess(Void result)
+					public void handleEvent(MessageBoxEvent be)
 					{
-						Login w = new Login();
-						RootPanel.get().clear();
-						RootPanel.get().add(w);
+						Button btn = be.getButtonClicked();
+						if (btn.getText().equalsIgnoreCase("Yes"))
+						{
+							LoginService.Util.getInstance().logout(new AsyncCallback<Void>()
+							{
+								@Override
+								public void onFailure(Throwable caught)
+								{
+									Login w = new Login();
+									RootPanel.get().clear();
+									RootPanel.get().add(w);
+								}
+
+								@Override
+								public void onSuccess(Void result)
+								{
+									Login w = new Login();
+									RootPanel.get().clear();
+									RootPanel.get().add(w);
+								}
+							});
+						}
 					}
 				});
+
 			}
 		});
 
@@ -325,7 +338,7 @@ public class IndexPage extends LayoutContainer
 
 		buildAdministrationPanel();
 
-		refreshIndexPanel(false);
+		refreshIndexPanel(true);
 	}
 
 	private String getCurrentUserName()
@@ -483,8 +496,7 @@ public class IndexPage extends LayoutContainer
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
-			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property,
-					String filter)
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
 			{
 				String name = record.get("name");
 				name = name.toLowerCase();
@@ -546,8 +558,7 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 		cpCampScreening.setTopComponent(toolbar);
 
-		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.addButtonIcon()));
+		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		toolbar.add(newScreening);
 		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -567,8 +578,7 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.deleteButtonIcon()));
+		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(removeScreening);
 		removeScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
@@ -605,8 +615,7 @@ public class IndexPage extends LayoutContainer
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
-			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property,
-					String filter)
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
 			{
 				String name = record.get("name");
 				name = name.toLowerCase();
@@ -697,9 +706,7 @@ public class IndexPage extends LayoutContainer
 					@Override
 					public void onFailure(Throwable caught)
 					{
-						MessageBox.info("Error",
-								"Encountered an error while removing the selected entry. Please try again.",
-								DUMMYLISTENER);
+						MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
 					}
 
 					@Override
@@ -708,9 +715,7 @@ public class IndexPage extends LayoutContainer
 						if (result.equals(RpcStatusEnum.SUCCESS))
 							refreshIndexPanel(true);
 						else
-							MessageBox.info("Error",
-									"Encountered an error while removing the selected entry. Please try again.",
-									DUMMYLISTENER);
+							MessageBox.info("Error", "Encountered an error while removing the selected entry. Please try again.", DUMMYLISTENER);
 					}
 				});
 		}
@@ -726,8 +731,7 @@ public class IndexPage extends LayoutContainer
 		ToolBar toolbar = new ToolBar();
 		cpSchoolScreening.setTopComponent(toolbar);
 
-		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.addButtonIcon()));
+		final Button newScreening = new Button("New", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.addButtonIcon()));
 		toolbar.add(newScreening);
 		newScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
@@ -746,8 +750,7 @@ public class IndexPage extends LayoutContainer
 			}
 		});
 
-		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.deleteButtonIcon()));
+		final Button removeScreening = new Button("Remove", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.deleteButtonIcon()));
 		toolbar.add(new SeparatorToolItem());
 		toolbar.add(removeScreening);
 		removeScreening.addSelectionListener(new SelectionListener<ButtonEvent>()
@@ -784,8 +787,7 @@ public class IndexPage extends LayoutContainer
 		StoreFilterField<ModelData> filter = new StoreFilterField<ModelData>()
 		{
 			@Override
-			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property,
-					String filter)
+			protected boolean doSelect(Store<ModelData> store, ModelData parent, ModelData record, String property, String filter)
 			{
 				String name = record.get("name");
 				name = name.toLowerCase();
@@ -882,8 +884,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error",
-						"Error Encountered while loading School Screening Panel" + caught.getMessage(), DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading School Screening Panel" + caught.getMessage(), DUMMYLISTENER);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -914,8 +915,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(),
-						DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Clinic Panel" + caught.getMessage(), DUMMYLISTENER);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -942,8 +942,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Camp Panel" + caught.getMessage(),
-						DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Camp Panel" + caught.getMessage(), DUMMYLISTENER);
 				// System.out.println(caught.getMessage());
 			}
 
@@ -976,8 +975,7 @@ public class IndexPage extends LayoutContainer
 			public void onFailure(Throwable caught)
 			{
 				// System.out.println(caught.getMessage());
-				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(),
-						DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Reports Panel" + caught.getMessage(), DUMMYLISTENER);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -1001,8 +999,7 @@ public class IndexPage extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(),
-						DUMMYLISTENER);
+				MessageBox.info("Error", "Error Encountered while loading Admin Panel" + caught.getMessage(), DUMMYLISTENER);
 			}
 
 			@SuppressWarnings("unchecked")

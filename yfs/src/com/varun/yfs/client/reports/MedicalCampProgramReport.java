@@ -217,8 +217,8 @@ public class MedicalCampProgramReport extends LayoutContainer
 					@Override
 					public void onSuccess(ModelData result)
 					{
-						decodeResult(result);
 						unmask();
+						decodeResult(result);
 					}
 
 					@Override

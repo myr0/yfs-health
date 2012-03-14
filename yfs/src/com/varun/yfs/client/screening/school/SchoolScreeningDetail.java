@@ -155,6 +155,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		chapterName.setStore(new ListStore<ModelData>());
 		chapterName.setAllowBlank(false);
 		chapterName.setForceSelection(true);
+		chapterName.setMessageTarget("tooltip");
 
 		cpPart1.add(projectName, new FormData("90%"));
 		projectName.setFieldLabel("Project Name");
@@ -163,11 +164,13 @@ public class SchoolScreeningDetail extends LayoutContainer
 		projectName.setStore(new ListStore<ModelData>());
 		projectName.setAllowBlank(false);
 		projectName.setForceSelection(true);
+		projectName.setMessageTarget("tooltip");
 
 		cpPart1.add(screeningDate, new FormData("90%"));
 		screeningDate.setFieldLabel("Date");
 		screeningDate.setAllowBlank(false);
-
+		screeningDate.setMessageTarget("tooltip");
+		
 		cpPart1.add(country, new FormData("90%"));
 		country.setEditable(false);
 		country.setFieldLabel("Country");
