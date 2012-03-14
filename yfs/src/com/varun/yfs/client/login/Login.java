@@ -78,7 +78,7 @@ public class Login extends LayoutContainer
 		ThemeSelector selector = new ThemeSelector();
 		selector.setFieldLabel("Select a Theme");
 		selector.setWidth(125);
-		frmpnlLogin.add(selector, new FormData("100%"));
+//		frmpnlLogin.add(selector, new FormData("100%"));
 
 		final Button btnLogin = new Button("Login");
 		frmpnlLogin.setButtonAlign(HorizontalAlignment.RIGHT);

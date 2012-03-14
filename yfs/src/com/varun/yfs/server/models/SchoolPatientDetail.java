@@ -25,7 +25,7 @@ public class SchoolPatientDetail implements Serializable
 	private String name;
 
 	@Column(nullable = true)
-	private String age;
+	private Integer age;
 
 	@Column(nullable = true)
 	private String sex;
@@ -34,16 +34,16 @@ public class SchoolPatientDetail implements Serializable
 	private String standard;
 
 	@Column(nullable = true)
-	private String height;
+	private Integer height;
 
 	@Column(nullable = true)
-	private String weight;
+	private Integer weight;
 
 	@Column(nullable = true)
 	private String address;
 
 	@Column(nullable = true)
-	private String contactNo;
+	private Integer contactNo;
 
 	@Column(nullable = true)
 	private String findings;
@@ -110,12 +110,12 @@ public class SchoolPatientDetail implements Serializable
 		this.name = name;
 	}
 
-	public String getAge()
+	public Integer getAge()
 	{
 		return age;
 	}
 
-	public void setAge(String age)
+	public void setAge(Integer age)
 	{
 		this.age = age;
 	}
@@ -140,22 +140,22 @@ public class SchoolPatientDetail implements Serializable
 		this.standard = standard;
 	}
 
-	public String getHeight()
+	public Integer getHeight()
 	{
 		return height;
 	}
 
-	public void setHeight(String height)
+	public void setHeight(Integer height)
 	{
 		this.height = height;
 	}
 
-	public String getWeight()
+	public Integer getWeight()
 	{
 		return weight;
 	}
 
-	public void setWeight(String weight)
+	public void setWeight(Integer weight)
 	{
 		this.weight = weight;
 	}
@@ -170,12 +170,12 @@ public class SchoolPatientDetail implements Serializable
 		this.address = address;
 	}
 
-	public String getContactNo()
+	public Integer getContactNo()
 	{
 		return contactNo;
 	}
 
-	public void setContactNo(String contactNo)
+	public void setContactNo(Integer contactNo)
 	{
 		this.contactNo = contactNo;
 	}

@@ -219,6 +219,7 @@ public class SchoolHealthProgramReport extends LayoutContainer
 					@Override
 					public void onSuccess(ModelData result)
 					{
+						unmask();
 						decodeResult(result);
 
 						List<ExportTableDTO> lstExportTableDto = new ArrayList<ExportTableDTO>();

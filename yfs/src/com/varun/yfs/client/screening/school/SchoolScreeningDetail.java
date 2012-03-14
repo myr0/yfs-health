@@ -29,6 +29,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
@@ -203,12 +204,6 @@ public class SchoolScreeningDetail extends LayoutContainer
 		town.setStore(new ListStore<ModelData>());
 		town.setForceSelection(true);
 
-		cpPart1.add(village, new FormData("90%"));
-		village.setFieldLabel("Village");
-		village.setDisplayField("villageName");
-		village.setTriggerAction(TriggerAction.ALL);
-		village.setStore(new ListStore<ModelData>());
-		village.setForceSelection(true);
 
 		mainContainerPanel.add(cpMain);
 		cpPart1.setSize("33%", "280px");
@@ -216,6 +211,13 @@ public class SchoolScreeningDetail extends LayoutContainer
 		LayoutContainer cpPart2 = new LayoutContainer();
 		cpPart2.setLayout(new FormLayout());
 		cpPart2.setSize("33%", "280px");
+		
+		cpPart2.add(village, new FormData("90%"));
+		village.setFieldLabel("Village");
+		village.setDisplayField("villageName");
+		village.setTriggerAction(TriggerAction.ALL);
+		village.setStore(new ListStore<ModelData>());
+		village.setForceSelection(true);
 
 		cpPart2.add(locality, new FormData("100%"));
 		locality.setFieldLabel("Locality");
@@ -665,17 +667,21 @@ public class SchoolScreeningDetail extends LayoutContainer
 		ColumnConfig classColumn = new ColumnConfig("standard", "Standard", 100);
 		textField = new TextField<String>();
 		textField.setAllowBlank(false);
-		textField.setMinLength(2);
+		textField.setMinLength(1);
 		textField.setMaxLength(4);
 		classColumn.setEditor(new CellEditor(textField));
 		configs.add(classColumn);
 
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
-		TextField<String> numField = new TextField<String>();
-		numField.setAllowBlank(false);
-		numField.setMinLength(1);
-		numField.setMaxLength(3);
-		ageColumn.setEditor(new CellEditor(numField));
+		NumberField numberField = new NumberField();
+		numberField.setAllowBlank(false);
+		numberField.setMinValue(1);
+		numberField.setMaxValue(150);
+		numberField.setAllowDecimals(false);
+		numberField.setAllowNegative(false);
+		numberField.setAutoValidate(true);
+		numberField.setPropertyEditorType(Integer.class);
+		ageColumn.setEditor(new CellEditor(numberField));
 		configs.add(ageColumn);
 
 		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
@@ -687,27 +693,39 @@ public class SchoolScreeningDetail extends LayoutContainer
 		configs.add(addressColumn);
 
 		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(15);
-		contactNoColumn.setEditor(new CellEditor(textField));
+		numberField = new NumberField();
+		numberField.setMinLength(6);
+		numberField.setMaxLength(15);
+		numberField.setAllowBlank(false);
+		numberField.setAllowDecimals(false);
+		numberField.setAllowNegative(false);
+		numberField.setAutoValidate(true);
+		numberField.setPropertyEditorType(Integer.class);
+		contactNoColumn.setEditor(new CellEditor(numberField));
 		configs.add(contactNoColumn);
 
 		ColumnConfig heightColumn = new ColumnConfig("height", "Height(cm)", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(15);
-		heightColumn.setEditor(new CellEditor(textField));
+		numberField = new NumberField();
+		numberField.setMinValue(1);
+		numberField.setMaxValue(1000);
+		numberField.setAllowBlank(false);
+		numberField.setAllowDecimals(false);
+		numberField.setAllowNegative(false);
+		numberField.setAutoValidate(true);
+		numberField.setPropertyEditorType(Integer.class);
+		heightColumn.setEditor(new CellEditor(numberField));
 		configs.add(heightColumn);
 
 		ColumnConfig weightColumn = new ColumnConfig("weight", "Weight(kg)", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(1);
-		textField.setMaxLength(3);
-		weightColumn.setEditor(new CellEditor(textField));
+		numberField = new NumberField();
+		numberField.setMinValue(1);
+		numberField.setMaxValue(1000);
+		numberField.setAllowBlank(false);
+		numberField.setAllowDecimals(false);
+		numberField.setAllowNegative(false);
+		numberField.setAutoValidate(true);
+		numberField.setPropertyEditorType(Integer.class);
+		weightColumn.setEditor(new CellEditor(numberField));
 		configs.add(weightColumn);
 
 		ColumnConfig findingsPColumn = new ColumnConfig("findings", "Findings", 100);

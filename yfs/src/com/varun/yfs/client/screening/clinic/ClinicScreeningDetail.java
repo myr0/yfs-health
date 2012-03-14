@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -777,11 +778,15 @@ public class ClinicScreeningDetail extends LayoutContainer
 		configs.add(classColumn);
 
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
-		TextField<String> numField = new TextField<String>();
-		numField.setAllowBlank(false);
-		numField.setMinLength(1);
-		numField.setMaxLength(3);
-		ageColumn.setEditor(new CellEditor(numField));
+		NumberField numberField = new NumberField();
+		numberField.setAllowBlank(false);
+		numberField.setMinValue(1);
+		numberField.setMaxValue(150);
+		numberField.setAllowDecimals(false);
+		numberField.setAllowNegative(false);
+		numberField.setAutoValidate(true);
+		numberField.setPropertyEditorType(Integer.class);
+		ageColumn.setEditor(new CellEditor(numberField));
 		configs.add(ageColumn);
 
 		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
@@ -793,27 +798,39 @@ public class ClinicScreeningDetail extends LayoutContainer
 		configs.add(addressColumn);
 
 		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(15);
-		contactNoColumn.setEditor(new CellEditor(textField));
+		numberField = new NumberField();
+		numberField.setMinLength(8);
+		numberField.setMaxLength(15);
+		numberField.setAllowBlank(false);
+		numberField.setAllowDecimals(false);
+		numberField.setAllowNegative(false);
+		numberField.setAutoValidate(true);
+		numberField.setPropertyEditorType(Integer.class);
+		contactNoColumn.setEditor(new CellEditor(numberField));
 		configs.add(contactNoColumn);
 
 		ColumnConfig heightColumn = new ColumnConfig("height", "Height(cm)", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
-		textField.setMaxLength(15);
-		heightColumn.setEditor(new CellEditor(textField));
+		numberField = new NumberField();
+		numberField.setMinValue(1);
+		numberField.setMaxValue(1000);
+		numberField.setAllowBlank(false);
+		numberField.setAllowDecimals(false);
+		numberField.setAllowNegative(false);
+		numberField.setAutoValidate(true);
+		numberField.setPropertyEditorType(Integer.class);
+		heightColumn.setEditor(new CellEditor(numberField));
 		configs.add(heightColumn);
 
 		ColumnConfig weightColumn = new ColumnConfig("weight", "Weight(kg)", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(1);
-		textField.setMaxLength(3);
-		weightColumn.setEditor(new CellEditor(textField));
+		numberField = new NumberField();
+		numberField.setMinValue(1);
+		numberField.setMaxValue(1000);
+		numberField.setAllowBlank(false);
+		numberField.setAllowDecimals(false);
+		numberField.setAllowNegative(false);
+		numberField.setAutoValidate(true);
+		numberField.setPropertyEditorType(Integer.class);
+		weightColumn.setEditor(new CellEditor(numberField));
 		configs.add(weightColumn);
 
 		return configs;

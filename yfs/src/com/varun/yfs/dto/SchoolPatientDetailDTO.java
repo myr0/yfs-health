@@ -52,12 +52,12 @@ public class SchoolPatientDetailDTO extends BaseModelData
 		set("name", name);
 	}
 
-	public String getAge()
+	public Integer getAge()
 	{
 		return get("age");
 	}
 
-	public void setAge(String age)
+	public void setAge(Integer age)
 	{
 		set("age", age);
 	}
@@ -82,22 +82,22 @@ public class SchoolPatientDetailDTO extends BaseModelData
 		set("standard", standard);
 	}
 
-	public String getHeight()
+	public Integer getHeight()
 	{
 		return get("height");
 	}
 
-	public void setHeight(String height)
+	public void setHeight(Integer height)
 	{
 		set("height", height);
 	}
 
-	public String getWeight()
+	public Integer getWeight()
 	{
 		return get("weight");
 	}
 
-	public void setWeight(String weight)
+	public void setWeight(Integer weight)
 	{
 		set("weight", weight);
 	}
@@ -112,12 +112,12 @@ public class SchoolPatientDetailDTO extends BaseModelData
 		set("address", address);
 	}
 
-	public String getContactNo()
+	public Integer getContactNo()
 	{
 		return get("contactNo");
 	}
 
-	public void setContactNo(String contactNo)
+	public void setContactNo(Integer contactNo)
 	{
 		set("contactNo", contactNo);
 	}
