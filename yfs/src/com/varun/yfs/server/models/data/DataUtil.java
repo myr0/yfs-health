@@ -219,7 +219,6 @@ public class DataUtil
 		}
 	}
 
-
 	public static void saveScreeningDetail(CampScreeningDetailDTO screeningDetailDto)
 	{
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -228,7 +227,7 @@ public class DataUtil
 		try
 		{
 			CampScreeningDetail scrDetHibObj = dozerMapper.map(screeningDetailDto, CampScreeningDetail.class);
-			for(CampPatientDetail campPatientDetail : scrDetHibObj.getPatientDetails())
+			for (CampPatientDetail campPatientDetail : scrDetHibObj.getPatientDetails())
 			{
 				if (campPatientDetail.getId() == 0)
 					session.save(campPatientDetail);
@@ -535,7 +534,7 @@ public class DataUtil
 			obj = filter.list();
 		} catch (HibernateException ex)
 		{
-			LOGGER.error("Encountered error retrieving objects: " + ex);
+			LOGGER.error("Encountered error retrieving objects for string : " + string + ". Additional details: " + ex);
 			throw ex;
 		} finally
 		{

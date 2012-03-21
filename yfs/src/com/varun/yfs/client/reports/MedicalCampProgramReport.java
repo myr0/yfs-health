@@ -248,7 +248,7 @@ public class MedicalCampProgramReport extends LayoutContainer
 				model.set("dateFrom", dtfldFromDate.getValue().getTime());
 				model.set("dateTo", dtfldToDate.getValue().getTime());
 
-				reportDetailService.getModel(ReportType.School, model, new AsyncCallback<ModelData>()
+				reportDetailService.getModel(ReportType.MedicalCamp, model, new AsyncCallback<ModelData>()
 				{
 					@Override
 					public void onSuccess(ModelData result)

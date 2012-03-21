@@ -1,6 +1,6 @@
 package com.varun.yfs.server.reports;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -52,23 +52,28 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		LOGGER.debug("Beginning report creation.");
 
 		ModelData model = new BaseModelData();
-
-		if (ReportType.Clinic.equals(report))
+		try
 		{
-			generateClinicReport(params, model);
-		} else if (ReportType.Events.equals(report))
+			if (ReportType.Clinic.equals(report))
+			{
+				generateClinicReport(params, model);
+			} else if (ReportType.Events.equals(report))
+			{
+				generateEventsReport(params, model);
+			} else if (ReportType.MedicalCamp.equals(report))
+			{
+				generateMedicalCampReport(params, model);
+			} else if (ReportType.School.equals(report))
+			{
+				generateSchoolScreeningReport(params, model);
+			}
+			// else if (ReportType.Overall.equals(report))
+			// {
+			// }
+		} catch (Exception ex)
 		{
-			generateEventsReport(params, model);
-		} else if (ReportType.MedicalCamp.equals(report))
-		{
-			generateMedicalCampReport(params, model);
-		} else if (ReportType.School.equals(report))
-		{
-			generateSchoolScreeningReport(params, model);
+			LOGGER.debug("Encountered error generating report." + ex);
 		}
-		// else if (ReportType.Overall.equals(report))
-		// {
-		// }
 
 		LOGGER.info("Report creation completed.");
 		return model;
@@ -81,11 +86,47 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		Long fromDate = params.get("dateFrom");
 		Long toDate = params.get("dateTo");
 
-		model.set("locationsCount", DataUtil.executeQuery("select count(*) from SchoolScreeningDetail sd join Locality lo on sd.localityId = lo.localityId join SchoolScrDet_PatDet spd on spd.schScrId = sd.schoolScreeningDetailId where sd.screeningDate >= " + fromDate + " and sd.screeningDate <= " + toDate));
-		model.set("locationsList", DataUtil.executeQuery("select distinct ld.localityName from SchoolScreeningDetail sd join Locality ld on sd.localityId = ld.localityId where sd.screeningDate >= " + fromDate + " and sd.screeningDate <= " + toDate));
+		model.set(
+				"locationsCount",
+				DataUtil.executeQuery("select count(*) from SchoolScreeningDetail sd join Locality lo on sd.localityId = lo.localityId join SchoolScrDet_PatDet spd on spd.schScrId = sd.schoolScreeningDetailId where sd.screeningDate >= "
+						+ fromDate + " and sd.screeningDate <= " + toDate));
+		model.set(
+				"locationsList",
+				DataUtil.executeQuery("select distinct ld.localityName from SchoolScreeningDetail sd join Locality ld on sd.localityId = ld.localityId where sd.screeningDate >= "
+						+ fromDate + " and sd.screeningDate <= " + toDate));
 		List breakupOfTreatments = (List) DataUtil
-				.executeQuery("select t.referral1 as referral, sum(t.cnt) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines, case t.caseClosed when 'YES' then 1 else 0 end case as caseClosed, case t.surgeryCase when 'YES' then 1 else 0 end case surgeryCase, t.screeningDate from ( select spd.referral1,count(spd.referral1) as cnt, spd.medicines, spd.caseClosed, spd.surgeryCase,spd.emergency, ssd.screeningDate from SchoolPatientDetail spd join ReferralType rt on (spd.referral1 = rt.name ) join SchoolScrDet_Patdet ssdpd on ssdpd.patId = spd.schPatDetId join SchoolScreeningDetail ssd on ssd.schoolScreeningDetailId = ssdpd.schScrid group by referral1, medicines, caseClosed, surgeryCase, emergency, ssd.screeningDate union all select spd.referral2, count(spd.referral2) as cnt, spd.medicines, spd.caseClosed, spd.surgeryCase, spd.emergency, ssd.screeningDate from SchoolPatientDetail spd join ReferralType rt on (spd.referral2 = rt.name ) join SchoolScrDet_PatDet ssdpd on ssdpd.patId = spd.SchPatDetId join SchoolScreeningDetail ssd on ssd.schoolScreeningDetailId = ssdpd.schScrid group by referral2, medicines, caseClosed, surgeryCase, emergency, ssd.screeningDate union all select spd.referral2,count(*) as snt, spd.medicines,spd.caseClosed, spd.surgeryCase, spd.emergency, ssd.screeningDate from SchoolPatientDetail spd join SchoolScrDet_PatDet ssdpd on ssdpd.patId = spd.schPatDetId join SchoolScreeningDetail ssd on ssd.schoolScreeningDetailId = ssdpd.schScrid where spd.referral1 is null and spd.referral2 is null group by referral2, medicines, caseClosed, surgeryCase, emergency, ssd.screeningDate ) t where t.screeningDate >="
-						+ fromDate + " and t.screeningDate <= " + toDate + " group by t.referral1, t.medicines, t.caseClosed, t.surgeryCase, t.emergency, t.screeningDate");
+				.executeQuery("select t.referral1 as referral, sum(t.cnt) as screened, "
+						+ " t.medicines, "
+						+ " t.caseClosed,"
+						+ " t.surgeryCase, t.screeningDate "
+						+ "from "
+						+ "( "
+						+ "select spd.referral1,count(spd.referral1) as cnt, spd.medicines, spd.caseClosed, "
+						+ "spd.surgeryCase,spd.emergency, ssd.screeningDate "
+						+ "from SchoolPatientDetail spd join ReferralType rt on spd.referral1 = rt.name "
+						+ "join SchoolScrDet_Patdet ssdpd on ssdpd.patId = spd.schPatDetId "
+						+ "join SchoolScreeningDetail ssd on ssd.schoolScreeningDetailId = ssdpd.schScrid "
+						+ "group by referral1, medicines, caseClosed, surgeryCase, emergency, ssd.screeningDate "
+						+ "union all "
+						+ "select spd.referral2, count(spd.referral2) as cnt, spd.medicines, spd.caseClosed, "
+						+ "spd.surgeryCase, spd.emergency, ssd.screeningDate "
+						+ "from SchoolPatientDetail spd join ReferralType rt on spd.referral2 = rt.name "
+						+ "join SchoolScrDet_PatDet ssdpd on ssdpd.patId = spd.SchPatDetId "
+						+ "join SchoolScreeningDetail ssd on ssd.schoolScreeningDetailId = ssdpd.schScrid "
+						+ "group by referral2, medicines, caseClosed, surgeryCase, emergency, ssd.screeningDate "
+						+ "union all select spd.referral2,count(*) as snt, spd.medicines,spd.caseClosed, spd.surgeryCase, "
+						+ "spd.emergency, ssd.screeningDate "
+						+ "from SchoolPatientDetail spd join SchoolScrDet_PatDet ssdpd on ssdpd.patId = spd.schPatDetId "
+						+ "join SchoolScreeningDetail ssd on ssd.schoolScreeningDetailId = ssdpd.schScrid "
+						+ "where spd.referral1 is null and spd.referral2 is null "
+						+ "group by referral2, medicines, caseClosed, surgeryCase, emergency, ssd.screeningDate "
+						+ " ) t "
+						+ "where t.screeningDate >="
+						+ fromDate
+						+ " and t.screeningDate <= "
+						+ toDate
+						+ " "
+						+ "group by t.referral1, t.medicines, t.caseClosed, t.surgeryCase, t.emergency, t.screeningDate");
 
 		Map<String, ExportTableDataDTO> referral2Model = buildBreakupSummaryModel(breakupOfTreatments);
 
@@ -99,11 +140,44 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		Long fromDate = params.get("dateFrom");
 		Long toDate = params.get("dateTo");
 
-		model.set("locationsCount", DataUtil.executeQuery("select count(*) from CampScreeningDetail cd join Locality lo on cd.localityId = lo.localityId join CampScrDet_PatDet cpd on cpd.camScrId = cd.campScreeningDetailId where cd.screeningDate >= " + fromDate + " and cd.screeningDate <= " + toDate));
-		model.set("locationsList", DataUtil.executeQuery("select distinct ld.localityName from CampScreeningDetail cd join Locality ld on cd.localityId = ld.localityId where cd.screeningDate >= " + fromDate + " and cd.screeningDate <= " + toDate));
+		model.set(
+				"locationsCount",
+				DataUtil.executeQuery("select count(*) from CampScreeningDetail cd join Locality lo on cd.localityId = lo.localityId join CampScrDet_PatDet cpd on cpd.camScrId = cd.campScreeningDetailId where cd.screeningDate >= "
+						+ fromDate + " and cd.screeningDate <= " + toDate));
+		model.set(
+				"locationsList",
+				DataUtil.executeQuery("select distinct ld.localityName from CampScreeningDetail cd join Locality ld on cd.localityId = ld.localityId where cd.screeningDate >= "
+						+ fromDate + " and cd.screeningDate <= " + toDate));
 		List breakupOfTreatments = (List) DataUtil
-				.executeQuery("select t.referral1, sum(t.cnt), case t.medicines when 'YES' then 1 else 0 end case as medicines,case t.caseClosed when 'YES' then 1 else 0 end case as caseClosed, case t.surgeryCase when 'YES' then 1 else 0 end case surgeryCase , t.screeningDate from ( select cpd.referral1,count(cpd.referral1) as cnt, cpd.medicines, cpd.caseClosed, cpd.surgeryCase, cpd.emergency, csd.screeningDate from CampPatientDetail cpd join ReferralType rt on (cpd.referral1 = rt.name ) join CampScrDet_PatDet csdpd on csdpd.patId = cpd.camPatDetId join CampScreeningdetail csd on csd.campScreeningDetailId = csdpd.camScrId group by referral1, medicines, caseClosed, surgeryCase, emergency, csd.screeningDate union all select cpd.referral2, count(cpd.referral2) as cnt, cpd.medicines, cpd.caseClosed, cpd.surgeryCase, cpd.emergency, csd.screeningDate from CampPatientDetail cpd join ReferralType rt on (cpd.referral2 = rt.name ) join CampScrDet_PatDet csdpd on csdpd.patId = cpd.CamPatDetId join CampScreeningDetail csd on csd.campScreeningDetailId = csdpd.camScrId group by referral2, medicines, caseClosed, surgeryCase, emergency, csd.screeningDate union all select cpd.referral2,count(*) as cnt, cpd.medicines, cpd.caseClosed, cpd.surgeryCase, cpd.emergency, csd.screeningDate from CampPatientDetail cpd join CampScrDet_PatDet csdpd on csdpd.patId = cpd.camPatDetId join CampScreeningDetail csd on csd.campScreeningDetailId = csdpd.camScrId where cpd.referral1 is null and cpd.referral2 is null group by referral2, medicines, caseClosed, surgeryCase, emergency , csd.screeningDate ) t where t.screeningDate >="
-						+ fromDate + " and t.screeningDate <=" + toDate + " group by t.referral1, t.medicines, t.caseClosed, t.surgeryCase, t.emergency, t.screeningDate");
+				.executeQuery("select t.referral1, sum(t.cnt), "
+						+ " t.medicines,"
+						+ " t.caseClosed, "
+						+ " t.surgeryCase, "
+						+ " t.screeningDate from ( "
+						+ " select cpd.referral1,count(cpd.referral1) as cnt, cpd.medicines, "
+						+ " cpd.caseClosed, cpd.surgeryCase, cpd.emergency, csd.screeningDate "
+						+ " from CampPatientDetail cpd join ReferralType rt on cpd.referral1 = rt.name "
+						+ " join CampScrDet_PatDet csdpd on csdpd.patId = cpd.camPatDetId "
+						+ " join CampScreeningdetail csd on csd.campScreeningDetailId = csdpd.camScrId "
+						+ " group by referral1, medicines, caseClosed, surgeryCase, emergency, csd.screeningDate "
+						+ " union all "
+						+ " select cpd.referral2, count(cpd.referral2) as cnt, cpd.medicines, cpd.caseClosed, "
+						+ " cpd.surgeryCase, cpd.emergency, csd.screeningDate "
+						+ " from CampPatientDetail cpd join ReferralType rt on cpd.referral2 = rt.name"
+						+ " join CampScrDet_PatDet csdpd on csdpd.patId = cpd.CamPatDetId join "
+						+ " CampScreeningDetail csd on csd.campScreeningDetailId = csdpd.camScrId "
+						+ " group by referral2, medicines, caseClosed, surgeryCase, emergency, csd.screeningDate "
+						+ " union all "
+						+ " select cpd.referral2,count(*) as cnt, cpd.medicines, cpd.caseClosed, "
+						+ " cpd.surgeryCase, cpd.emergency, csd.screeningDate from CampPatientDetail cpd "
+						+ " join CampScrDet_PatDet csdpd on csdpd.patId = cpd.camPatDetId "
+						+ " join CampScreeningDetail csd on csd.campScreeningDetailId = csdpd.camScrId where cpd.referral1 is null and cpd.referral2 is null "
+						+ " group by referral2, medicines, caseClosed, surgeryCase, emergency , csd.screeningDate ) t "
+						+ " where t.screeningDate >="
+						+ fromDate
+						+ " and t.screeningDate <="
+						+ toDate
+						+ " group by t.referral1, t.medicines, t.caseClosed, t.surgeryCase, t.emergency, t.screeningDate");
 
 		Map<String, ExportTableDataDTO> referral2Model = buildBreakupSummaryModel(breakupOfTreatments);
 
@@ -117,7 +191,8 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		Long fromDate = params.get("dateFrom");
 		Long toDate = params.get("dateTo");
 
-		List<Object> processTypes = (List<Object>) DataUtil.executeQuery("select processTypeId, name from ProcessType p where p.deleted = 'N'");
+		List<Object> processTypes = (List<Object>) DataUtil
+				.executeQuery("select processTypeId, name from ProcessType p where p.deleted = 'N'");
 		Map<String, String> mapProcessId2Name = new HashMap<String, String>();
 		for (Object object : processTypes)
 		{
@@ -138,18 +213,31 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		Long fromDate = params.get("dateFrom");
 		Long toDate = params.get("dateTo");
 		Object clinicId = params.get("clinicId");
-		model.set("locationsCount", DataUtil.executeQuery("select count(*) from ClinicPatientDetail cpd join CliPatDet_CliPatHis cpdcph on cpd.cliPatDetId = cpdcph.CliPatDetId join ClinicPatientHistory cph on cph.cliPatHisId = cpdcph.cliPatHisId where cpd.clinicid =" + clinicId + " and cph.screeningDate >= " + fromDate + " and cph.screeningDate <= " + toDate));
+		model.set(
+				"locationsCount",
+				DataUtil.executeQuery("select count(*) from ClinicPatientDetail cpd join CliPatDet_CliPatHis cpdcph on cpd.cliPatDetId = cpdcph.CliPatDetId join ClinicPatientHistory cph on cph.cliPatHisId = cpdcph.cliPatHisId where cpd.clinicid ="
+						+ clinicId + " and cph.screeningDate >= " + fromDate + " and cph.screeningDate <= " + toDate));
 
-		List breakupOfTreatments = (List) DataUtil.executeQuery("select t.referral,sum(t.count1) as screened, case t.medicines when 'YES' then 1 else 0 end case as medicines, case t.caseClosed when 'YES' then 1 else 0 end case as caseClosed, case t.surgeryCase when 'YES' then 1 else 0 end case surgeryCase, t.screeningDate from ( select cph.referral1 as referral, count(cph.referral1) as count1, cph.medicines, cph.caseClosed, cph.surgeryCase, cph.screeningDate from ClinicPatientDetail cpd join CliPatDet_CliPatHis cpdcph on cpd.cliPatDetId = cpdcph.cliPatDetId join ClinicPatientHistory cph on cph.cliPatHisId = cpdcph.cliPatHisId where cpd.clinicid = " + clinicId
-				+ " and cph.referral1 is not null group by cph.referral1,cph.medicines, cph.caseClosed, cph.surgeryCase , cph.screeningDate union select cph.referral2 as referral, count(cph.referral2) as count1, cph.medicines, cph.caseClosed, cph.surgeryCase , cph.screeningDate from ClinicPatientDetail cpd join CliPatDet_CliPatHis cpdcph on cpd.cliPatDetId = cpdcph.cliPatDetId join ClinicPatientHistory cph on cph.cliPatHisId = cpdcph.cliPatHisId where cpd.clinicid =" + clinicId + " and cph.referral2 is not null group by cph.referral2,cph.medicines, cph.caseClosed, cph.surgeryCase, cph.screeningDate union select cph.referral2 as referral, count(*) as count1, cph.medicines, cph.caseClosed, cph.surgeryCase , cph.screeningDate from ClinicPatientDetail cpd join CliPatDet_CliPatHis cpdcph on cpd.cliPatDetId = cpdcph.cliPatDetId join ClinicPatientHistory cph on cph.cliPatHisId = cpdcph.cliPatHisId where cpd.clinicid =" + clinicId
-				+ " and cph.referral2 is null and cph.referral1 is null group by cph.referral2,cph.medicines, cph.caseClosed, cph.surgeryCase, cph.screeningDate ) t  where t.screeningDate >= " + fromDate + " and t.screeningDate <= " + toDate + " group by t.referral, t.medicines, t.caseClosed, t.surgeryCase , t.screeningDate");
+		List breakupOfTreatments = (List) DataUtil
+				.executeQuery("select t.referral,sum(t.count1) as screened, t.medicines, t.caseClosed, t.surgeryCase, t.screeningDate from ( select cph.referral1 as referral, count(cph.referral1) as count1, cph.medicines, cph.caseClosed, cph.surgeryCase, cph.screeningDate from ClinicPatientDetail cpd join CliPatDet_CliPatHis cpdcph on cpd.cliPatDetId = cpdcph.cliPatDetId join ClinicPatientHistory cph on cph.cliPatHisId = cpdcph.cliPatHisId where cpd.clinicid = "
+						+ clinicId
+						+ " and cph.referral1 is not null group by cph.referral1,cph.medicines, cph.caseClosed, cph.surgeryCase , cph.screeningDate union select cph.referral2 as referral, count(cph.referral2) as count1, cph.medicines, cph.caseClosed, cph.surgeryCase , cph.screeningDate from ClinicPatientDetail cpd join CliPatDet_CliPatHis cpdcph on cpd.cliPatDetId = cpdcph.cliPatDetId join ClinicPatientHistory cph on cph.cliPatHisId = cpdcph.cliPatHisId where cpd.clinicid ="
+						+ clinicId
+						+ " and cph.referral2 is not null group by cph.referral2,cph.medicines, cph.caseClosed, cph.surgeryCase, cph.screeningDate union select cph.referral2 as referral, count(*) as count1, cph.medicines, cph.caseClosed, cph.surgeryCase , cph.screeningDate from ClinicPatientDetail cpd join CliPatDet_CliPatHis cpdcph on cpd.cliPatDetId = cpdcph.cliPatDetId join ClinicPatientHistory cph on cph.cliPatHisId = cpdcph.cliPatHisId where cpd.clinicid ="
+						+ clinicId
+						+ " and cph.referral2 is null and cph.referral1 is null group by cph.referral2,cph.medicines, cph.caseClosed, cph.surgeryCase, cph.screeningDate ) t  where t.screeningDate >= "
+						+ fromDate
+						+ " and t.screeningDate <= "
+						+ toDate
+						+ " group by t.referral, t.medicines, t.caseClosed, t.surgeryCase , t.screeningDate");
 
 		Map<String, ExportTableDataDTO> referral2Model = buildBreakupSummaryModel(breakupOfTreatments);
 
 		model.set("breakupOfTreatments", new ArrayList<ExportTableDataDTO>(referral2Model.values()));
 	}
 
-	private List<ExportTableDataDTO> extractRowData(Map<String, List<String>> mapId2Docs, Map<String, List<String>> mapId2Volunteers, Map<String, String> mapProcessId2Name, List<Object> lstData)
+	private List<ExportTableDataDTO> extractRowData(Map<String, List<String>> mapId2Docs,
+			Map<String, List<String>> mapId2Volunteers, Map<String, String> mapProcessId2Name, List<Object> lstData)
 	{
 		Calendar cal = Calendar.getInstance();
 
@@ -176,14 +264,25 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<ExportTableDataDTO> genSchoolScreeningSummary(Map<String, String> mapProcessId2Name, Long fromDate, Long toDate)
+	private List<ExportTableDataDTO> genSchoolScreeningSummary(Map<String, String> mapProcessId2Name, Long fromDate,
+			Long toDate)
 	{
 		Map<String, List<String>> mapId2Docs = null;
 		Map<String, List<String>> mapId2Volunteers = null;
 		List<ExportTableDataDTO> results = new ArrayList<ExportTableDataDTO>();
 
-		List<Object> lstObjsSchool = (List<Object>) DataUtil.executeQuery("select sd.screeningDate as date , pt.processTypeId,sd.address as eventLocation, count(*) as noscreened, sd.schoolScreeningDetailId,d.name from SchoolScreeningDetail sd join Locality lo on sd.localityId = lo.localityId join SchoolScrDet_PatDet spd on spd.schScrId = sd.schoolScreeningDetailId join ProcessType pt on pt.processTypeId = sd.processTypeId join SchScrDet_Doct ssdd on sd.schoolScreeningDetailId = ssdd.schScrId join Doctor d on d.doctorId = ssdd.docId where sd.screeningDate >= " + fromDate + " and sd.screeningDate <= " + toDate + " group by sd.screeningDate,pt.processTypeId, sd.address,sd.schoolScreeningDetailId,d.name");
-		List<Object> lstVolunteers = (List<Object>) DataUtil.executeQuery("select sd.screeningDate as date , pt.processTypeId,sd.address as eventLocation, count(*) as noscreened, sd.schoolScreeningDetailId,v.name from SchoolScreeningDetail sd join Locality lo on sd.localityId = lo.localityId join SchoolScrDet_PatDet spd on spd.schScrId = sd.schoolScreeningDetailId join ProcessType pt on pt.processTypeId = sd.processTypeId join SchScrDet_Volunt ssdv on sd.schoolScreeningDetailId = ssdv.schScrId join Volunteer v on v.volunteerId = ssdv.volId where sd.screeningDate >= " + fromDate + " and sd.screeningDate <= " + toDate + " group by sd.screeningDate,pt.processTypeId, sd.address,sd.schoolScreeningDetailId,v.name");
+		List<Object> lstObjsSchool = (List<Object>) DataUtil
+				.executeQuery("select sd.screeningDate as date , pt.processTypeId,sd.address as eventLocation, count(*) as noscreened, sd.schoolScreeningDetailId,d.name from SchoolScreeningDetail sd join Locality lo on sd.localityId = lo.localityId join SchoolScrDet_PatDet spd on spd.schScrId = sd.schoolScreeningDetailId join ProcessType pt on pt.processTypeId = sd.processTypeId join SchScrDet_Doct ssdd on sd.schoolScreeningDetailId = ssdd.schScrId join Doctor d on d.doctorId = ssdd.docId where sd.screeningDate >= "
+						+ fromDate
+						+ " and sd.screeningDate <= "
+						+ toDate
+						+ " group by sd.screeningDate,pt.processTypeId, sd.address,sd.schoolScreeningDetailId,d.name");
+		List<Object> lstVolunteers = (List<Object>) DataUtil
+				.executeQuery("select sd.screeningDate as date , pt.processTypeId,sd.address as eventLocation, count(*) as noscreened, sd.schoolScreeningDetailId,v.name from SchoolScreeningDetail sd join Locality lo on sd.localityId = lo.localityId join SchoolScrDet_PatDet spd on spd.schScrId = sd.schoolScreeningDetailId join ProcessType pt on pt.processTypeId = sd.processTypeId join SchScrDet_Volunt ssdv on sd.schoolScreeningDetailId = ssdv.schScrId join Volunteer v on v.volunteerId = ssdv.volId where sd.screeningDate >= "
+						+ fromDate
+						+ " and sd.screeningDate <= "
+						+ toDate
+						+ " group by sd.screeningDate,pt.processTypeId, sd.address,sd.schoolScreeningDetailId,v.name");
 
 		if (lstObjsSchool != null)
 			mapId2Docs = buildMapping(lstObjsSchool);
@@ -204,8 +303,18 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 		Map<String, List<String>> mapId2Volunteers = null;
 		List<ExportTableDataDTO> results = new ArrayList<ExportTableDataDTO>();
 
-		List<Object> lstObjsCamp = (List<Object>) DataUtil.executeQuery("select cd.screeningDate as date ,  pt.processTypeId , cd.address as eventLocation, count(*) as noscreened, cd.campScreeningDetailId, d.name from CampScreeningDetail cd join Locality lo on cd.localityId = lo.localityId join CampScrDet_PatDet cpd on cpd.camScrId = cd.campScreeningDetailId join ProcessType pt on pt.processTypeId = cd.processTypeId join CampScrDet_Doct csdd on cd.campScreeningDetailId = csdd.camScrId join Doctor d on d.doctorId = csdd.docId where cd.screeningDate >= " + fromDate + " and cd.screeningDate <= " + toDate + "  group by cd.screeningDate,pt.processTypeId, cd.address,cd.campScreeningDetailId,d.name");
-		List<Object> lstVolunteers = (List<Object>) DataUtil.executeQuery("select cd.screeningDate as date , pt.processTypeId , cd.address as eventLocation, count(*) as noscreened, cd.campScreeningDetailId, v.name from CampScreeningDetail cd join Locality lo on cd.localityId = lo.localityId join CampScrDet_PatDet cpd on cpd.camScrId = cd.campScreeningDetailId join ProcessType pt on pt.processTypeId = cd.processTypeId join CampScrDet_Volunt csdv on cd.campScreeningDetailId = csdv.camScrId join Volunteer v on v.volunteerId = csdv.volId where cd.screeningDate >= " + fromDate + " and cd.screeningDate <= " + toDate + " group by cd.screeningDate,pt.processTypeId, cd.address,cd.campScreeningDetailId, v.name");
+		List<Object> lstObjsCamp = (List<Object>) DataUtil
+				.executeQuery("select cd.screeningDate as date ,  pt.processTypeId , cd.address as eventLocation, count(*) as noscreened, cd.campScreeningDetailId, d.name from CampScreeningDetail cd join Locality lo on cd.localityId = lo.localityId join CampScrDet_PatDet cpd on cpd.camScrId = cd.campScreeningDetailId join ProcessType pt on pt.processTypeId = cd.processTypeId join CampScrDet_Doct csdd on cd.campScreeningDetailId = csdd.camScrId join Doctor d on d.doctorId = csdd.docId where cd.screeningDate >= "
+						+ fromDate
+						+ " and cd.screeningDate <= "
+						+ toDate
+						+ "  group by cd.screeningDate,pt.processTypeId, cd.address,cd.campScreeningDetailId,d.name");
+		List<Object> lstVolunteers = (List<Object>) DataUtil
+				.executeQuery("select cd.screeningDate as date , pt.processTypeId , cd.address as eventLocation, count(*) as noscreened, cd.campScreeningDetailId, v.name from CampScreeningDetail cd join Locality lo on cd.localityId = lo.localityId join CampScrDet_PatDet cpd on cpd.camScrId = cd.campScreeningDetailId join ProcessType pt on pt.processTypeId = cd.processTypeId join CampScrDet_Volunt csdv on cd.campScreeningDetailId = csdv.camScrId join Volunteer v on v.volunteerId = csdv.volId where cd.screeningDate >= "
+						+ fromDate
+						+ " and cd.screeningDate <= "
+						+ toDate
+						+ " group by cd.screeningDate,pt.processTypeId, cd.address,cd.campScreeningDetailId, v.name");
 
 		if (lstObjsCamp != null)
 			mapId2Docs = buildMapping(lstObjsCamp);
@@ -262,25 +371,25 @@ public class ReportDetailServiceImpl extends RemoteServiceServlet implements Rep
 			{
 				modelTemp = referral2Model.get(referralType);
 
-				BigInteger count = (BigInteger) obj[1];
+				BigDecimal count = (BigDecimal) obj[1];
 				Integer screenedCnt = modelTemp.get("screened");
 				modelTemp.set("screened", count.intValue() + screenedCnt);
 			} else
 			{
 				modelTemp = new ExportTableDataDTO();
 				modelTemp.set("breakUpOfTreatment", referralType);
-				modelTemp.set("screened", ((BigInteger) obj[1]).intValue());
+				modelTemp.set("screened", ((BigDecimal) obj[1]).intValue());
 				referral2Model.put(referralType, modelTemp);
 			}
 
-			String medicines = String.valueOf(obj[2]);
-			String caseClosed = String.valueOf(obj[3]);
-			String surgeryCase = String.valueOf(obj[4]);
+			String medicines = String.valueOf(obj[2]).equalsIgnoreCase("YES") ? "1" : "0";
+			String caseClosed = String.valueOf(obj[3]).equalsIgnoreCase("YES") ? "1" : "0";
+			String surgeryCase = String.valueOf(obj[4]).equalsIgnoreCase("YES") ? "1" : "0";
 			String key2RepType = medicines.concat(caseClosed).concat(surgeryCase); // 000
 
 			String repColType = schRepCol2Type.get(key2RepType); // colType
 			Integer screenedCnt = schRepType2CountTemp.get(repColType); // cur-type
-			BigInteger count = (BigInteger) obj[1]; // act count
+			BigDecimal count = (BigDecimal) obj[1]; // act count
 
 			modelTemp.set(repColType, count.intValue() + screenedCnt);
 
