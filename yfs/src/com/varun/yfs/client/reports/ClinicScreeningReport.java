@@ -141,6 +141,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		frmpnlRefresh.setBorders(true);
 		Button btnRefresh = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.refreshButtonIcon()));
 		frmpnlRefresh.add(btnRefresh, new FormData("100%"));
+		btnRefresh.setToolTip("Generate Report");
 		TableData td_frmpnlRefresh = new TableData();
 		td_frmpnlRefresh.setPadding(5);
 		td_frmpnlRefresh.setMargin(5);
@@ -151,6 +152,7 @@ public class ClinicScreeningReport extends LayoutContainer
 		frmpnlExport.setBorders(true);
 		Button btnExport = new Button("", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.excelExportIcon()));
 		frmpnlExport.add(btnExport, new FormData("100%"));
+		btnExport.setToolTip("Export Report");
 		TableData td_frmpnlExport = new TableData();
 		td_frmpnlExport.setPadding(5);
 		td_frmpnlExport.setMargin(5);

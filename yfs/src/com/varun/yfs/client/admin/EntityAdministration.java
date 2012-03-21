@@ -107,7 +107,7 @@ public class EntityAdministration extends LayoutContainer
 
 				ColumnModel columnModel = editorGrid.getColumnModel();
 
-				plant.set(columnModel.getColumn(0).getId(), "Type here...");
+				plant.set(columnModel.getColumn(0).getId(), "");
 
 				editorGrid.stopEditing();
 				editorGrid.getStore().add(plant);

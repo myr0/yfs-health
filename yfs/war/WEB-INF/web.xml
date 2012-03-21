@@ -74,7 +74,16 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ExportServlet</servlet-name>
-		<url-pattern>/yfs/exportServlet</url-pattern>
+		<url-pattern>/yfs/helpFileExportServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>HelpFileExportServlet</servlet-name>
+		<servlet-class>com.varun.yfs.server.screening.export.HelpFileDownloadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HelpFileExportServlet</servlet-name>
+		<url-pattern>/yfs/helpFileExportServlet</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
