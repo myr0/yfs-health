@@ -74,6 +74,7 @@ import com.varun.yfs.dto.ProjectDTO;
 import com.varun.yfs.dto.ReferralTypeDTO;
 import com.varun.yfs.dto.SchoolPatientDetailDTO;
 import com.varun.yfs.dto.SchoolScreeningDetailDTO;
+import com.varun.yfs.dto.StandardDTO;
 import com.varun.yfs.dto.StateDTO;
 import com.varun.yfs.dto.TownDTO;
 import com.varun.yfs.dto.TypeOfLocationDTO;
@@ -171,7 +172,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		screeningDate.setFieldLabel("Date");
 		screeningDate.setAllowBlank(false);
 		screeningDate.setMessageTarget("tooltip");
-		
+
 		cpPart1.add(country, new FormData("90%"));
 		country.setEditable(false);
 		country.setFieldLabel("Country");
@@ -204,14 +205,13 @@ public class SchoolScreeningDetail extends LayoutContainer
 		town.setStore(new ListStore<ModelData>());
 		town.setForceSelection(true);
 
-
 		mainContainerPanel.add(cpMain);
 		cpPart1.setSize("33%", "280px");
 
 		LayoutContainer cpPart2 = new LayoutContainer();
 		cpPart2.setLayout(new FormLayout());
 		cpPart2.setSize("33%", "280px");
-		
+
 		cpPart2.add(village, new FormData("90%"));
 		village.setFieldLabel("Village");
 		village.setDisplayField("villageName");
@@ -543,7 +543,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		{
 			return;
 		}
-		
+
 		SchoolScreeningDetailDTO modelData = extractFormData();
 		savePage(modelData);
 	}
@@ -665,11 +665,33 @@ public class SchoolScreeningDetail extends LayoutContainer
 		configs.add(sexColumn);
 
 		ColumnConfig classColumn = new ColumnConfig("standard", "Standard", 100);
-		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(1);
-		textField.setMaxLength(4);
-		classColumn.setEditor(new CellEditor(textField));
+		final SimpleComboBox<String> fieldStandard = new SimpleComboBox<String>();
+		fieldStandard.setTriggerAction(TriggerAction.ALL);
+		fieldStandard.setForceSelection(true);
+		fieldStandard.add(StandardDTO.getStringValues());
+		CellEditor editorStandard = new CellEditor(field)
+		{
+			@Override
+			public Object preProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return fieldStandard.findModel(value.toString());
+			}
+
+			@Override
+			public Object postProcessValue(Object value)
+			{
+				if (value == null)
+				{
+					return value;
+				}
+				return ((ModelData) value).get("value");
+			}
+		};
+		classColumn.setEditor(editorStandard);
 		configs.add(classColumn);
 
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);

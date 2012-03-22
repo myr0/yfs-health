@@ -36,7 +36,7 @@ public class SchoolScreeningDetailServiceImpl extends RemoteServiceServlet imple
 		}
 
 		LOGGER.debug("Attempting to build model for id:" + scrId);
-		
+
 		ModelData modelData = new BaseModelData();
 		if (scrId != null)
 		{
