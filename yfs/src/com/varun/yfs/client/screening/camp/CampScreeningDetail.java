@@ -622,7 +622,7 @@ public class CampScreeningDetail extends LayoutContainer
 		nameColumn = new ColumnConfig("name", "Name", 150);
 		TextField<String> textField = new TextField<String>();
 		textField.setAllowBlank(false);
-		textField.setMinLength(2);
+		textField.setMinLength(1);
 		textField.setMaxLength(255);
 		nameColumn.setEditor(new CellEditor(textField));
 		configs.add(nameColumn);
@@ -659,7 +659,6 @@ public class CampScreeningDetail extends LayoutContainer
 
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
 		NumberField numberField = new NumberField();
-		numberField.setAllowBlank(false);
 		numberField.setMinValue(1);
 		numberField.setMaxValue(150);
 		numberField.setAllowDecimals(false);
@@ -671,16 +670,12 @@ public class CampScreeningDetail extends LayoutContainer
 
 		ColumnConfig occupationColumn = new ColumnConfig("occupation", "Occupation", 100);
 		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
 		textField.setMaxLength(50);
 		occupationColumn.setEditor(new CellEditor(textField));
 		configs.add(occupationColumn);
 
 		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
 		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
 		textField.setMaxLength(255);
 		addressColumn.setEditor(new CellEditor(textField));
 		configs.add(addressColumn);
@@ -689,7 +684,6 @@ public class CampScreeningDetail extends LayoutContainer
 		numberField = new NumberField();
 		numberField.setMinLength(6);
 		numberField.setMaxLength(15);
-		numberField.setAllowBlank(false);
 		numberField.setAllowDecimals(false);
 		numberField.setAllowNegative(false);
 		numberField.setAutoValidate(true);
@@ -699,9 +693,8 @@ public class CampScreeningDetail extends LayoutContainer
 
 		ColumnConfig heightColumn = new ColumnConfig("height", "Height(cm)", 100);
 		numberField = new NumberField();
-		numberField.setMinValue(1);
+		numberField.setMinValue(0);
 		numberField.setMaxValue(1000);
-		numberField.setAllowBlank(false);
 		numberField.setAllowDecimals(false);
 		numberField.setAllowNegative(false);
 		numberField.setAutoValidate(true);
@@ -711,9 +704,8 @@ public class CampScreeningDetail extends LayoutContainer
 
 		ColumnConfig weightColumn = new ColumnConfig("weight", "Weight(kg)", 100);
 		numberField = new NumberField();
-		numberField.setMinValue(1);
+		numberField.setMinValue(0);
 		numberField.setMaxValue(1000);
-		numberField.setAllowBlank(false);
 		numberField.setAllowDecimals(false);
 		numberField.setAllowNegative(false);
 		numberField.setAutoValidate(true);
@@ -723,7 +715,6 @@ public class CampScreeningDetail extends LayoutContainer
 
 		ColumnConfig bpColumn = new ColumnConfig("bloodPressure", "Blood Pressure", 100);
 		textField = new TextField<String>();
-		textField.setAllowBlank(false);
 		textField.setMinLength(3);
 		textField.setMaxLength(7);
 		bpColumn.setEditor(new CellEditor(textField));
@@ -731,15 +722,12 @@ public class CampScreeningDetail extends LayoutContainer
 
 		ColumnConfig findingsPColumn = new ColumnConfig("findings", "Findings", 100);
 		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
 		textField.setMaxLength(1024);
 		findingsPColumn.setEditor(new CellEditor(textField));
 		configs.add(findingsPColumn);
 
 		ColumnConfig treatment = new ColumnConfig("treatment", "Treatment", 100);
 		textField = new TextField<String>();
-		textField.setAllowBlank(false);
 		textField.setMinLength(2);
 		textField.setMaxLength(1024);
 		treatment.setEditor(new CellEditor(textField));
@@ -877,8 +865,6 @@ public class CampScreeningDetail extends LayoutContainer
 
 		ColumnConfig referralUpdates = new ColumnConfig("referralUpdates", "Referral Updates", 100);
 		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
 		textField.setMaxLength(4096);
 		referralUpdates.setEditor(new CellEditor(textField));
 		configs.add(referralUpdates);

@@ -55,7 +55,7 @@ public class Login extends LayoutContainer
 		final FormPanel frmpnlLogin = new FormPanel();
 		frmpnlLogin.setLabelWidth(110);
 		frmpnlLogin.setButtonAlign(HorizontalAlignment.CENTER);
-		frmpnlLogin.setHeading("Patient Management System");
+		frmpnlLogin.setHeading("Patient Health Management System");
 		frmpnlLogin.setWidth("300px");
 
 		TableData td_cpPart3 = new TableData();

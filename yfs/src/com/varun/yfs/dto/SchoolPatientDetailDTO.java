@@ -11,6 +11,7 @@ public class SchoolPatientDetailDTO extends BaseModelData
 
 	private YesNoDTO yesNo;
 	private GenderDTO gender;
+	private StandardDTO standard;
 	private ReferralTypeDTO referral;
 
 	private String medicines;

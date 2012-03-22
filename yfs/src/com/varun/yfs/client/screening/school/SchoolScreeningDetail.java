@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -364,8 +365,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 		toolBar.add(splitItem);
 
-		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.exportButtonIcon()));
+		MenuItem exportAll = new MenuItem("Export All", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportAll.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -411,8 +411,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportAll);
 
-		MenuItem exportReferral = new MenuItem("Export Referrals",
-				AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
+		MenuItem exportReferral = new MenuItem("Export Referrals", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.exportButtonIcon()));
 		exportReferral.addSelectionListener(new SelectionListener<MenuEvent>()
 		{
 			@Override
@@ -430,8 +429,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 				StoreFilter<SchoolPatientDetailDTO> filterReferrals = new StoreFilter<SchoolPatientDetailDTO>()
 				{
 					@Override
-					public boolean select(Store<SchoolPatientDetailDTO> store, SchoolPatientDetailDTO parent,
-							SchoolPatientDetailDTO item, String property)
+					public boolean select(Store<SchoolPatientDetailDTO> store, SchoolPatientDetailDTO parent, SchoolPatientDetailDTO item, String property)
 					{
 						if (item.getReferral1() != null || item.getReferral2() != null)
 							return true;
@@ -482,8 +480,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		});
 		menu.add(exportReferral);
 
-		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE
-				.importButtonIcon()));
+		Button importPatientDetail = new Button("Import", AbstractImagePrototype.create(YfsImageBundle.INSTANCE.importButtonIcon()));
 		importPatientDetail.addSelectionListener(new SelectionListener<ButtonEvent>()
 		{
 			@Override
@@ -496,8 +493,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 				boolean processIds = false;
 				if (scrId != null)
 					processIds = true;
-				dialogImport.add(new ImportDetail(ImportType.SCHOOL, editorGrid, dialogImport, processIds),
-						new FitData(5));
+				dialogImport.add(new ImportDetail(ImportType.SCHOOL, editorGrid, dialogImport, processIds), new FitData(5));
 				dialogImport.show();
 			}
 		});
@@ -618,6 +614,11 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 	private List<ColumnConfig> getColumnConfigs()
 	{
+		ToolTipConfig config = new ToolTipConfig(); 
+		config.setMouseOffset(new int[] {0, 0}); 
+		config.setAnchor("left"); 
+		config.setAutoHide(true);
+		
 		List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
 		RowNumberer rowNumber = new RowNumberer();
@@ -629,8 +630,9 @@ public class SchoolScreeningDetail extends LayoutContainer
 		nameColumn = new ColumnConfig("name", "Name", 150);
 		TextField<String> textField = new TextField<String>();
 		textField.setAllowBlank(false);
-		textField.setMinLength(2);
+		textField.setMinLength(1);
 		textField.setMaxLength(255);
+		textField.setToolTip("Name can be alphanumeric characters only (max 255)");
 		nameColumn.setEditor(new CellEditor(textField));
 		configs.add(nameColumn);
 
@@ -669,7 +671,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		fieldStandard.setTriggerAction(TriggerAction.ALL);
 		fieldStandard.setForceSelection(true);
 		fieldStandard.add(StandardDTO.getStringValues());
-		CellEditor editorStandard = new CellEditor(field)
+		editor = new CellEditor(fieldStandard)
 		{
 			@Override
 			public Object preProcessValue(Object value)
@@ -691,34 +693,37 @@ public class SchoolScreeningDetail extends LayoutContainer
 				return ((ModelData) value).get("value");
 			}
 		};
-		classColumn.setEditor(editorStandard);
+		classColumn.setEditor(editor);
 		configs.add(classColumn);
 
 		ColumnConfig ageColumn = new ColumnConfig("age", "Age", 50);
 		NumberField numberField = new NumberField();
-		numberField.setAllowBlank(false);
-		numberField.setMinValue(1);
+		numberField.setMinValue(0);
 		numberField.setMaxValue(150);
 		numberField.setAllowDecimals(false);
 		numberField.setAllowNegative(false);
 		numberField.setAutoValidate(true);
 		numberField.setPropertyEditorType(Integer.class);
+		numberField.setToolTip(config);
+		numberField.setToolTip("Age should be between 0 and 150");
 		ageColumn.setEditor(new CellEditor(numberField));
 		configs.add(ageColumn);
 
 		ColumnConfig addressColumn = new ColumnConfig("address", "Address", 100);
 		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
+		textField.setMinLength(1);
 		textField.setMaxLength(255);
+		textField.setToolTip(config);
+		textField.setToolTip("Address can be alphanumeric characters only (max 255)");
 		addressColumn.setEditor(new CellEditor(textField));
 		configs.add(addressColumn);
 
 		ColumnConfig contactNoColumn = new ColumnConfig("contactNo", "Contact No.", 100);
 		numberField = new NumberField();
+		numberField.setToolTip(config);
+		numberField.setToolTip("Contact No. length should be between 6 and 15");
 		numberField.setMinLength(6);
 		numberField.setMaxLength(15);
-		numberField.setAllowBlank(false);
 		numberField.setAllowDecimals(false);
 		numberField.setAllowNegative(false);
 		numberField.setAutoValidate(true);
@@ -728,9 +733,10 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 		ColumnConfig heightColumn = new ColumnConfig("height", "Height(cm)", 100);
 		numberField = new NumberField();
-		numberField.setMinValue(1);
+		numberField.setToolTip(config);
+		numberField.setToolTip("Height should be between 0 and 1000");
+		numberField.setMinValue(0);
 		numberField.setMaxValue(1000);
-		numberField.setAllowBlank(false);
 		numberField.setAllowDecimals(false);
 		numberField.setAllowNegative(false);
 		numberField.setAutoValidate(true);
@@ -740,9 +746,10 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 		ColumnConfig weightColumn = new ColumnConfig("weight", "Weight(kg)", 100);
 		numberField = new NumberField();
-		numberField.setMinValue(1);
+		numberField.setToolTip(config);
+		numberField.setToolTip("Weight should be between 0 and 1000");
+		numberField.setMinValue(0);
 		numberField.setMaxValue(1000);
-		numberField.setAllowBlank(false);
 		numberField.setAllowDecimals(false);
 		numberField.setAllowNegative(false);
 		numberField.setAutoValidate(true);
@@ -752,17 +759,17 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 		ColumnConfig findingsPColumn = new ColumnConfig("findings", "Findings", 100);
 		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
+		numberField.setToolTip(config);
 		textField.setMaxLength(1024);
+		textField.setToolTip("Findings can be alphanumeric characters only (max 1024)");
 		findingsPColumn.setEditor(new CellEditor(textField));
 		configs.add(findingsPColumn);
 
 		ColumnConfig treatment = new ColumnConfig("treatment", "Treatment", 100);
 		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
+		numberField.setToolTip(config);
 		textField.setMaxLength(1024);
+		textField.setToolTip("Treatment can be alphanumeric characters only (max 1024)");
 		treatment.setEditor(new CellEditor(textField));
 		configs.add(treatment);
 
@@ -898,9 +905,9 @@ public class SchoolScreeningDetail extends LayoutContainer
 
 		ColumnConfig referralUpdates = new ColumnConfig("referralUpdates", "Referral Updates", 100);
 		textField = new TextField<String>();
-		textField.setAllowBlank(false);
-		textField.setMinLength(2);
+		numberField.setToolTip(config);
 		textField.setMaxLength(4096);
+		textField.setToolTip("Referral Updates can be alphanumeric characters only (max 4096)");
 		referralUpdates.setEditor(new CellEditor(textField));
 		configs.add(referralUpdates);
 
@@ -1042,9 +1049,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 			@Override
 			public void onFailure(Throwable caught)
 			{
-				MessageBox.alert("Alert",
-						"Error encountered while loading the screen. Please retry the operation. Additional Details: "
-								+ caught.getMessage(), l);
+				MessageBox.alert("Alert", "Error encountered while loading the screen. Please retry the operation. Additional Details: " + caught.getMessage(), l);
 			}
 		});
 
