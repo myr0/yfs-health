@@ -34,6 +34,11 @@ import com.varun.yfs.server.models.ClinicPatientDetail;
 import com.varun.yfs.server.models.SchoolPatientDetail;
 import com.varun.yfs.server.models.SchoolScreeningDetail;
 import com.varun.yfs.server.models.User;
+import com.varun.yfs.server.models.UserChapterPermissions;
+import com.varun.yfs.server.models.UserClinicPermissions;
+import com.varun.yfs.server.models.UserEntityPermissions;
+import com.varun.yfs.server.models.UserProjectPermissions;
+import com.varun.yfs.server.models.UserReportPermissions;
 
 public class DataUtil
 {
@@ -474,6 +479,42 @@ public class DataUtil
 		try
 		{
 			User usrObj = dozerMapper.map(modelData, User.class);
+			for (UserChapterPermissions chapters : usrObj.getChapterPermissions())
+			{
+				if (chapters.getId() == 0)
+					session.save(chapters);
+				else
+					session.saveOrUpdate(chapters);
+			}
+			for (UserProjectPermissions chapters : usrObj.getProjectPermissions())
+			{
+				if (chapters.getId() == 0)
+					session.save(chapters);
+				else
+					session.saveOrUpdate(chapters);
+			}
+			for (UserClinicPermissions chapters : usrObj.getClinicPermissions())
+			{
+				if (chapters.getId() == 0)
+					session.save(chapters);
+				else
+					session.saveOrUpdate(chapters);
+			}
+			for (UserEntityPermissions chapters : usrObj.getEntityPermissions())
+			{
+				if (chapters.getId() == 0)
+					session.save(chapters);
+				else
+					session.saveOrUpdate(chapters);
+			}
+			for (UserReportPermissions chapters : usrObj.getReportPermissions())
+			{
+				if (chapters.getId() == 0)
+					session.save(chapters);
+				else
+					session.saveOrUpdate(chapters);
+			}
+			session.flush();
 			Long id = modelData.get("id");
 			if (id == null)
 			{

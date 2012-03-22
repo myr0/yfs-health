@@ -11,7 +11,6 @@ import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.custom.ThemeSelector;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -75,10 +74,10 @@ public class Login extends LayoutContainer
 		txtfldPassword.setFieldLabel("Password");
 		txtfldPassword.setWidth(125);
 
-		ThemeSelector selector = new ThemeSelector();
-		selector.setFieldLabel("Select a Theme");
-		selector.setWidth(125);
-//		frmpnlLogin.add(selector, new FormData("100%"));
+		// ThemeSelector selector = new ThemeSelector();
+		// selector.setFieldLabel("Select a Theme");
+		// selector.setWidth(125);
+		// frmpnlLogin.add(selector, new FormData("100%"));
 
 		final Button btnLogin = new Button("Login");
 		frmpnlLogin.setButtonAlign(HorizontalAlignment.RIGHT);

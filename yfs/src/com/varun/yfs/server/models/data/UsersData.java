@@ -71,7 +71,7 @@ public class UsersData extends AbstractData
 			LOGGER.debug("Save model completed successfully.");
 		} catch (HibernateException ex)
 		{
-			LOGGER.error("Encountered error saving the model." + ex.getMessage());
+			LOGGER.error("Encountered error saving the model." + ex);
 		}
 		return status;
 	}

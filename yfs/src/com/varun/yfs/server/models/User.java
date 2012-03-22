@@ -6,11 +6,12 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -36,39 +37,29 @@ public class User implements Serializable
 	@Column(nullable = true)
 	private String role;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "UserChapterPermissions", joinColumns = { @JoinColumn(name = "userId") },
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "User_ChapterPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "userChapterPermId") })
-	@Column(nullable = true)
-	@Fetch(FetchMode.SELECT)
 	private List<UserChapterPermissions> chapterPermissions;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "UserProjectPermissions", joinColumns = { @JoinColumn(name = "userId") },
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "User_ProjectPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "userProjectPermId") })
-	@Column(nullable = true)
-	@Fetch(FetchMode.SELECT)
 	private List<UserProjectPermissions> projectPermissions;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "UserClinicPermissions", joinColumns = { @JoinColumn(name = "userId") },
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "User_ClinicPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "userClinicPermissionsId") })
-	@Column(nullable = true)
-	@Fetch(FetchMode.SELECT)
 	private List<UserClinicPermissions> clinicPermissions;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "UserReportPermissions", joinColumns = { @JoinColumn(name = "userId") },
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "User_ReportPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "userReportPermissionsId") })
-	@Column(nullable = true)
-	@Fetch(FetchMode.SELECT)
 	private List<UserReportPermissions> reportPermissions;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "UserEntityPermissions", joinColumns = { @JoinColumn(name = "userId") },
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "User_EntityPermissions", joinColumns = { @JoinColumn(name = "userId") },
 			inverseJoinColumns = { @JoinColumn(name = "userEntityPermissionsId") })
-	@Column(nullable = true)
-	@Fetch(FetchMode.SELECT)
 	private List<UserEntityPermissions> entityPermissions;
 
 	@Column(nullable = false)
