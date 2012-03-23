@@ -39,12 +39,15 @@ public class ClinicPatientDetailExtractor extends SchoolPatientDataExtractor
 		patientDetailDTO.setSex(decodeSexColumn);
 
 		patientDetailDTO.setOccupation(lstCols.get(3));
-		patientDetailDTO.setAge(lstCols.get(4).equalsIgnoreCase("") ? 0 : Integer.parseInt(lstCols.get(4)));
+		patientDetailDTO.setAge(lstCols.get(4).equalsIgnoreCase("") ? 0 : Double.valueOf(
+				Double.parseDouble(lstCols.get(4))).intValue());
 		patientDetailDTO.setAddress(lstCols.get(5));
 		patientDetailDTO.setContactNo(lstCols.get(6).equalsIgnoreCase("") ? 0 : Integer.parseInt(lstCols.get(6)));
 
-		patientDetailDTO.setHeight(lstCols.get(7).equalsIgnoreCase("") ? 0 : Integer.parseInt(lstCols.get(7)));
-		patientDetailDTO.setWeight(lstCols.get(8).equalsIgnoreCase("") ? 0 : Integer.parseInt(lstCols.get(8)));
+		patientDetailDTO.setHeight(lstCols.get(7).equalsIgnoreCase("") ? 0 : Double.valueOf(
+				Double.parseDouble(lstCols.get(7))).intValue());
+		patientDetailDTO.setWeight(lstCols.get(8).equalsIgnoreCase("") ? 0 : Double.valueOf(
+				Double.parseDouble(lstCols.get(8))).intValue());
 
 		int endErrorCount = errorRows.size();
 

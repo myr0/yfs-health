@@ -14,12 +14,6 @@ public interface YfsImageBundle extends ClientBundle
 	@Source("arrow_refresh.png")
 	public ImageResource refreshButtonIcon();
 
-	@Source("cancel-upld.gif")
-	public ImageResource cancelUploadButtonIcon();
-
-	@Source("cancel-upld-hover.gif")
-	public ImageResource cancelUploadHoverButtonIcon();
-
 	@Source("delete.png")
 	public ImageResource deleteButtonIcon();
 
@@ -40,12 +34,6 @@ public interface YfsImageBundle extends ClientBundle
 
 	@Source("exit.png")
 	public ImageResource exitButtonIcon();
-
-	@Source("screeningHelp.png")
-	public ImageResource screeningHelpButtonImage();
-
-	@Source("adminHelp.png")
-	public ImageResource adminHelpButtonImage();
 
 	@Source("dfslogo1.png")
 	public ImageResource dfsLogoImage();

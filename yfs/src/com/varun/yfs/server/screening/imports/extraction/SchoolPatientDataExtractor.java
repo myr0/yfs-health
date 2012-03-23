@@ -30,56 +30,65 @@ public class SchoolPatientDataExtractor extends AbstractPatientDataExtractor
 		normalize(lstCols, NO_OF_COLS);
 
 		SchoolPatientDetailDTO patientDetailDTO = new SchoolPatientDetailDTO();
-
 		patientDetailDTO.setDeleted("N");
+		
+		try
+		{
+			if (!lstCols.get(0).isEmpty() && processIds)
+				patientDetailDTO.setId(Long.parseLong(lstCols.get(0)));
 
-		if (!lstCols.get(0).isEmpty() && processIds)
-			patientDetailDTO.setId(Long.parseLong(lstCols.get(0)));
+			patientDetailDTO.setName(lstCols.get(1));
 
-		patientDetailDTO.setName(lstCols.get(1));
+			String decodeSexColumn = decodeSexColumn(lstCols.get(2));
+			patientDetailDTO.setSex(decodeSexColumn);
 
-		String decodeSexColumn = decodeSexColumn(lstCols.get(2));
-		patientDetailDTO.setSex(decodeSexColumn);
+			patientDetailDTO.setStandard(lstCols.get(3));
+			patientDetailDTO.setAge(lstCols.get(4).equalsIgnoreCase("") ? 0 : Double.valueOf(
+					Double.parseDouble(lstCols.get(4))).intValue());
+			patientDetailDTO.setAddress(lstCols.get(5));
+			patientDetailDTO.setContactNo(lstCols.get(6).equalsIgnoreCase("") ? 0 : Integer.parseInt(lstCols.get(6)));
 
-		patientDetailDTO.setStandard(lstCols.get(3));
-		patientDetailDTO.setAge(lstCols.get(4).equalsIgnoreCase("") ? 0 : Integer.parseInt(lstCols.get(4)));
-		patientDetailDTO.setAddress(lstCols.get(5));
-		patientDetailDTO.setContactNo(lstCols.get(6).equalsIgnoreCase("") ? 0 : Integer.parseInt(lstCols.get(6)));
+			patientDetailDTO.setHeight(lstCols.get(7).equalsIgnoreCase("") ? 0 : Double.valueOf(
+					Double.parseDouble(lstCols.get(7))).intValue());
+			patientDetailDTO.setWeight(lstCols.get(8).equalsIgnoreCase("") ? 0 : Double.valueOf(
+					Double.parseDouble(lstCols.get(8))).intValue());
+			patientDetailDTO.setFindings(lstCols.get(9));
+			patientDetailDTO.setTreatment(lstCols.get(10));
 
-		patientDetailDTO.setHeight(lstCols.get(7).equalsIgnoreCase("") ? 0 : Integer.parseInt(lstCols.get(7)));
-		patientDetailDTO.setWeight(lstCols.get(8).equalsIgnoreCase("") ? 0 : Integer.parseInt(lstCols.get(8)));
-		patientDetailDTO.setFindings(lstCols.get(9));
-		patientDetailDTO.setTreatment(lstCols.get(10));
+			String decodeReferral = decodeReferral(lstCols.get(11));
+			patientDetailDTO.setReferral1(decodeReferral);
 
-		String decodeReferral = decodeReferral(lstCols.get(11));
-		patientDetailDTO.setReferral1(decodeReferral);
+			String decodeReferral2 = decodeReferral(lstCols.get(12));
+			patientDetailDTO.setReferral2(decodeReferral2);
 
-		String decodeReferral2 = decodeReferral(lstCols.get(12));
-		patientDetailDTO.setReferral2(decodeReferral2);
+			String decodeMedicines = decodeYesNo(lstCols.get(13));
+			patientDetailDTO.setMedicines(decodeMedicines);
 
-		String decodeMedicines = decodeYesNo(lstCols.get(13));
-		patientDetailDTO.setMedicines(decodeMedicines);
+			String decodeEmergency = decodeYesNo(lstCols.get(14));
+			patientDetailDTO.setEmergency(decodeEmergency);
 
-		String decodeEmergency = decodeYesNo(lstCols.get(14));
-		patientDetailDTO.setEmergency(decodeEmergency);
+			String decodeSurgery = decodeYesNo(lstCols.get(15));
+			patientDetailDTO.setSurgeryCase(decodeSurgery);
 
-		String decodeSurgery = decodeYesNo(lstCols.get(15));
-		patientDetailDTO.setSurgeryCase(decodeSurgery);
+			String decodeCaseClosed = decodeYesNo(lstCols.get(16));
+			patientDetailDTO.setCaseClosed(decodeCaseClosed);
 
-		String decodeCaseClosed = decodeYesNo(lstCols.get(16));
-		patientDetailDTO.setCaseClosed(decodeCaseClosed);
+			patientDetailDTO.setReferralUpdates(lstCols.get(17));
 
-		patientDetailDTO.setReferralUpdates(lstCols.get(17));
-
+		} catch (Exception ex)
+		{
+			LOGGER.debug(processedRowCount + " -record conversion aborted :" + ex);
+		}
 		int endErrorCount = errorRows.size();
 
 		if (startErrorCount == endErrorCount)
+		{
 			lstPatientDetails.add(patientDetailDTO);
-
-		LOGGER.debug(processedRowCount + " -record conversion completed :" + (startErrorCount == endErrorCount));
+			LOGGER.debug(processedRowCount + " -record conversion completed :" + (startErrorCount == endErrorCount));
+		}
 
 		errorRows.add(processedRowCount + " - " + errorString.toString());
-		processedRowCount += 1;
+		processedRowCount++;
 
 	}
 
