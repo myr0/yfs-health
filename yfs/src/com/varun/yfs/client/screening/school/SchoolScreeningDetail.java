@@ -8,7 +8,9 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
@@ -302,7 +304,14 @@ public class SchoolScreeningDetail extends LayoutContainer
 		editorGrid.setLoadMask(true);
 		editorGrid.setHeight("300px");
 		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
-
+		editorGrid.addListener(Events.AfterEdit, new Listener<BaseEvent>()
+		{
+			public void handleEvent(BaseEvent be)
+			{
+				editorGrid.getSelectionModel().deselectAll();
+				editorGrid.stopEditing();
+			};
+		});
 		final ContentPanel gridHolderPanel = new ContentPanel();
 		gridHolderPanel.setHeading("Patient Details");
 		gridHolderPanel.setHeaderVisible(true);
@@ -315,6 +324,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 			public void componentSelected(ButtonEvent ce)
 			{
 				editorGrid.unmask();
+				editorGrid.getSelectionModel().deselectAll();
 				editorGrid.stopEditing();
 
 				SchoolPatientDetailDTO patientDetail = new SchoolPatientDetailDTO();
@@ -675,6 +685,7 @@ public class SchoolScreeningDetail extends LayoutContainer
 		final SimpleComboBox<String> fieldStandard = new SimpleComboBox<String>();
 		fieldStandard.setTriggerAction(TriggerAction.ALL);
 		fieldStandard.setForceSelection(true);
+		fieldStandard.setEditable(false);
 		fieldStandard.add(StandardDTO.getStringValues());
 		editor = new CellEditor(fieldStandard)
 		{

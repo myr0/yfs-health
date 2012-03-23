@@ -75,4 +75,11 @@ public abstract class AbstractPatientDataExtractor
 
 	abstract public void convertToPatientDetailDTO(List<String> lstCols, boolean processIds);
 
+	public void clearRecords()
+	{
+		lstPatientDetails.clear();
+		processedRowCount = 0;
+		errorRows.clear();
+	}
+
 }

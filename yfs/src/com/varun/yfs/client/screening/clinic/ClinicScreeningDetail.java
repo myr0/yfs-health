@@ -129,7 +129,14 @@ public class ClinicScreeningDetail extends LayoutContainer
 		gridPatDetail.setColumnLines(true);
 		gridPatDetail.setLoadMask(true);
 		gridPatDetail.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
-
+		gridPatDetail.addListener(Events.AfterEdit, new Listener<BaseEvent>()
+		{
+			public void handleEvent(BaseEvent be)
+			{
+				gridPatDetail.getSelectionModel().deselectAll();
+				gridPatDetail.stopEditing();
+			};
+		});
 		gridPatDetail.addListener(Events.RowClick, new Listener<BaseEvent>()
 		{
 			@Override
@@ -299,7 +306,14 @@ public class ClinicScreeningDetail extends LayoutContainer
 		gridPatHistory.setColumnLines(true);
 		gridPatHistory.setLoadMask(true);
 		gridPatHistory.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
-
+		gridPatHistory.addListener(Events.AfterEdit, new Listener<BaseEvent>()
+		{
+			public void handleEvent(BaseEvent be)
+			{
+				gridPatHistory.getSelectionModel().deselectAll();
+				gridPatHistory.stopEditing();
+			};
+		});
 		final ContentPanel gridHolderPanel = new ContentPanel();
 		gridHolderPanel.setHeading("Patient Referral History");
 		gridHolderPanel.setHeaderVisible(true);

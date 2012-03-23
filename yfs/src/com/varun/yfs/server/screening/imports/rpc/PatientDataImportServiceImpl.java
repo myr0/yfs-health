@@ -65,10 +65,10 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 			try
 			{
 				LOGGER.debug("Starting excel parsing.");
-				
+
 				status = RpcStatusEnum.RUNNING;
 				excelConverter.readContentsAsCSV(path);
-				
+
 				LOGGER.debug("Completed excel parse");
 			} catch (Exception ex)
 			{
@@ -98,7 +98,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 			try
 			{
 				LOGGER.debug("Starting patient detail importer");
-				
+
 				status = RpcStatusEnum.RUNNING;
 				// hack to let the UI init properly
 				try
@@ -109,7 +109,7 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 					e.printStackTrace();
 				}
 				patientDetailImporter.convertRecords(processIds, patientDataImportServiceImpl);
-				
+
 				LOGGER.debug("Completed patient detail import");
 			} catch (Exception ex)
 			{
@@ -185,10 +185,13 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	@Override
 	public ProgressDTO getProgress()
 	{
+		String progress = patientDetailImporter.getProcessedRecordsCount() + "/" + excelConverter.getMaxRecords();
+
 		progressDto.setStatus(status);
 
-		progressDto
-				.setProgress(patientDetailImporter.getProcessedRecordsCount() + "/" + excelConverter.getMaxRecords());
+		progressDto.setProgress(progress);
+
+		LOGGER.debug("Import progress status : " + progress);
 		return progressDto;
 	}
 
@@ -196,7 +199,10 @@ public class PatientDataImportServiceImpl extends RemoteServiceServlet implement
 	@Override
 	public List<? extends BaseModelData> getProcessedRecords()
 	{
-		return patientDetailImporter.getProcessedRecords();
+		List processedRecords = new ArrayList(patientDetailImporter.getProcessedRecords());
+		LOGGER.debug("Import completed, Fetching processed records. Size:" + processedRecords.size());
+		patientDetailImporter.clearRecords();
+		return processedRecords;
 	}
 
 	@Override

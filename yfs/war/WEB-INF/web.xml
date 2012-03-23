@@ -74,7 +74,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ExportServlet</servlet-name>
-		<url-pattern>/yfs/helpFileExportServlet</url-pattern>
+		<url-pattern>/yfs/exportServlet</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

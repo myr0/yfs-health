@@ -94,4 +94,9 @@ public class PatientDetailImporter
 
 	}
 
+	public void clearRecords()
+	{
+		extractor.clearRecords();
+	}
+
 }

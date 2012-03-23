@@ -8,7 +8,9 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
@@ -214,7 +216,7 @@ public class CampScreeningDetail extends LayoutContainer
 		LayoutContainer cpPart2 = new LayoutContainer();
 		cpPart2.setLayout(new FormLayout());
 		cpPart2.setSize("33%", "280px");
-		
+
 		cpPart2.add(village, new FormData("80%"));
 		village.setEditable(false);
 		village.setForceSelection(true);
@@ -302,7 +304,14 @@ public class CampScreeningDetail extends LayoutContainer
 		editorGrid.setLoadMask(true);
 		editorGrid.setHeight("300px");
 		editorGrid.setClicksToEdit(EditorGrid.ClicksToEdit.ONE);
-
+		editorGrid.addListener(Events.AfterEdit, new Listener<BaseEvent>()
+		{
+			public void handleEvent(BaseEvent be)
+			{
+				editorGrid.getSelectionModel().deselectAll();
+				editorGrid.stopEditing();
+			};
+		});
 		final ContentPanel gridHolderPanel = new ContentPanel();
 		gridHolderPanel.setHeading("Patient Details");
 		gridHolderPanel.setHeaderVisible(true);
